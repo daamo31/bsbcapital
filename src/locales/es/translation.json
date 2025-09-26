@@ -1,0 +1,31 @@
+{
+  "nav": {
+    "inicio": "Inicio",
+    "consultoria": "Consultoría",
+    "academia": "Academia",
+    "membresias": "Membresías",
+    "empresa": "Empresa",
+    "contactar": "Contactar"
+  },
+  "footer": {
+    "logoAlt": "Logotipo de BSB Capital",
+    "tagline": "Inteligencia Financiera, Potenciada por IA.",
+    "services": "Servicios",
+    "company": "Empresa",
+    "aboutUs": "Sobre Nosotros",
+    "contact": "Contacto",
+    "subscribeTitle": "Suscríbete a BSB Habits Club",
+    "subscribeDescription": "Newsletter semanal directamente en tu bandeja de entrada para formar hábitos de inversión sólidos.",
+    "emailPlaceholder": "Tu email",
+    "rights": "Todos los derechos reservados.",
+    "office": "Oficina en Dubái. Asesores financieros acreditados en España.",
+    "terms": "Términos",
+    "privacy": "Privacidad",
+    "errorTitle": "Error",
+    "errorDescription": "Por favor, introduce tu correo electrónico.",
+    "subscriptionErrorTitle": "Error en la suscripción",
+    "subscriptionErrorDescription": "Hubo un problema al procesar tu solicitud. Por favor, inténtalo de nuevo.",
+    "subscriptionSuccessTitle": "¡Suscripción exitosa!",
+    "subscriptionSuccessDescription": "Gracias por unirte a BSB Habits Club."
+  }
+}

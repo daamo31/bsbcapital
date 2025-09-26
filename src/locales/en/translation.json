@@ -1,0 +1,31 @@
+{
+  "nav": {
+    "inicio": "Home",
+    "consultoria": "Consulting",
+    "academia": "Academy",
+    "membresias": "Memberships",
+    "empresa": "Company",
+    "contactar": "Contact"
+  },
+  "footer": {
+    "logoAlt": "BSB Capital Logo",
+    "tagline": "Financial Intelligence, Powered by AI.",
+    "services": "Services",
+    "company": "Company",
+    "aboutUs": "About Us",
+    "contact": "Contact",
+    "subscribeTitle": "Subscribe to BSB Habits Club",
+    "subscribeDescription": "Weekly newsletter directly in your inbox to build solid investment habits.",
+    "emailPlaceholder": "Your email",
+    "rights": "All rights reserved.",
+    "office": "Office in Dubai. Financial advisors accredited in Spain.",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "errorTitle": "Error",
+    "errorDescription": "Please enter your email address.",
+    "subscriptionErrorTitle": "Subscription Error",
+    "subscriptionErrorDescription": "There was a problem processing your request. Please try again.",
+    "subscriptionSuccessTitle": "Subscription successful!",
+    "subscriptionSuccessDescription": "Thank you for joining BSB Habits Club."
+  }
+}

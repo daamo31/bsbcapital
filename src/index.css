@@ -1,0 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500;700&display=swap');
+
+    @tailwind base;
+    @tailwind components;
+    @tailwind utilities;
+
+    @layer base {
+      :root {
+        --background: 240 100% 99%; /* #FAFAFA */
+        --foreground: 0 0% 7%; /* #111111 */
+
+        --card: 240 100% 99%;
+        --card-foreground: 0 0% 7%;
+    
+        --popover: 240 100% 99%;
+        --popover-foreground: 0 0% 7%;
+    
+        --primary: 43 74% 49%; /* #C9A227 */
+        --primary-foreground: 0 0% 7%; /* #111111 */
+    
+        --secondary: 165 60% 25%; /* #1A6653 approx from #1E6F5C */
+        --secondary-foreground: 0 0% 100%; /* #FFFFFF */
+    
+        --muted: 220 14.3% 95.9%;
+        --muted-foreground: 0 0% 40%;
+    
+        --accent: 165 60% 25%; /* #1E6F5C */
+        --accent-foreground: 0 0% 100%;
+    
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 100%;
+
+        --border: 0 0% 90%; /* #E6E6E6 */
+        --input: 0 0% 90%;
+        --ring: 43 74% 49%;
+    
+        --radius: 0.75rem;
+
+        /* Custom Theme Colors */
+        --brand-green-900: 165 48% 11%; /* #0E2A1F */
+        --brand-green-600: 165 60% 25%; /* #1E6F5C */
+        --brand-green-100: 164 38% 93%; /* #E7F1EC */
+        --brand-gold-600: 43 74% 49%; /* #C9A227 */
+        --brand-gold-700: 43 100% 35%; /* #B38B00 */
+        --brand-gold-100: 45 100% 94%; /* #FFF7E0 */
+        
+        --bg: 240 100% 99%; /* #FAFAFA */
+        --text: 0 0% 7%; /* #111111 */
+        --text-2: 0 0% 20%; /* #333333 */
+      }
+    
+      .dark {
+        --background: 165 48% 11%;
+        --foreground: 164 38% 93%;
+        --card: 165 48% 11%;
+        --card-foreground: 164 38% 93%;
+        --popover: 165 48% 11%;
+        --popover-foreground: 164 38% 93%;
+        --primary: 43 74% 49%;
+        --primary-foreground: 0 0% 7%;
+        --secondary: 165 60% 25%;
+        --secondary-foreground: 0 0% 100%;
+        --muted: 165 60% 25% / 0.5;
+        --muted-foreground: 164 38% 85%;
+        --accent: 43 74% 49%;
+        --accent-foreground: 0 0% 7%;
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 100%;
+        --border: 165 60% 25%;
+        --input: 165 60% 25%;
+        --ring: 43 74% 49%;
+
+        /* Custom Dark Theme Colors */
+        --brand-green-900: 165 48% 11%;
+        --brand-green-600: 165 60% 25%;
+        --brand-green-100: 164 38% 93%;
+        --brand-gold-600: 43 74% 49%;
+        --brand-gold-700: 43 100% 35%;
+        --brand-gold-100: 45 100% 94%;
+        --bg: 165 48% 11%;
+        --text: 164 38% 93%;
+        --text-2: 164 38% 80%;
+      }
+    }
+    
+    @layer base {
+      * {
+        @apply border-border;
+      }
+      body {
+        @apply bg-background text-foreground font-sans;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        @apply font-sans font-extrabold tracking-tight text-text-primary;
+      }
+      p, li, span, div {
+        @apply text-text-secondary;
+      }
+    }
+
+    .main-gradient-text {
+        background: linear-gradient(90deg, hsl(var(--brand-green-900)) 0%, hsl(var(--brand-green-600)) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+    }
+
+    .accent-gradient-text {
+        background: linear-gradient(90deg, hsl(var(--brand-gold-600)), hsl(var(--brand-gold-700)));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+    }
+    
+    .aurora-background {
+      position: relative;
+      overflow: hidden;
+      background-color: hsl(var(--brand-green-100));
+    }
+    
+    .aurora-background::before {
+      content: "";
+      position: absolute;
+      inset: -100px;
+      z-index: 0;
+      --aurora: conic-gradient(from 90deg at 50% 50%, hsl(var(--brand-green-600) / 0.1) 0%, hsl(var(--brand-gold-600) / 0.1) 25%, transparent 50%, transparent 100%);
+      background-image: var(--aurora), var(--aurora);
+      background-size: 200% 200%, 100% 100%;
+      background-position: 50% 50%;
+      animation: aurora 80s linear infinite;
+      filter: blur(60px);
+      opacity: 0.8;
+    }
+
+    .glass-card {
+      background: hsl(var(--card) / 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid hsl(var(--border));
+      box-shadow: 0 8px 32px 0 hsl(var(--primary) / 0.05);
+    }
