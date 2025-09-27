@@ -4,7 +4,7 @@ import React, { useState } from 'react';
     import { Button } from '@/components/ui/button';
     import { ArrowRight, CheckCircle, Film, FileText, LifeBuoy, ShieldCheck, BarChart, Users, HelpCircle, RefreshCw, MessageSquare } from 'lucide-react';
     import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-    import HotmartModal from '@/components/HotmartModal';
+    import CheckoutModal from '@/components/CheckoutModal';
 
     const containerVariants = {
       hidden: { opacity: 0 },
@@ -20,18 +20,18 @@ import React, { useState } from 'react';
     };
 
     const Formacion = () => {
-      const [isModalOpen, setIsModalOpen] = useState(false);
-      const hotmartUrl = "https://go.hotmart.com/D102065526G?dp=";
+      const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
 
-      const HotmartButton = ({ children, ...props }) => (
+      const ComprarCursoButton = ({ children, ...props }) => (
         <Button 
           size="lg" 
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => setIsCheckoutModalOpen(true)}
           {...props}
         >
           {children} <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
       );
+
       const benefits = [
         { icon: <ShieldCheck className="h-8 w-8 text-primary" />, title: "Claridad Fiscal", description: "Navega por la fiscalidad de criptoactivos y derivados sin estrés." },
         { icon: <BarChart className="h-8 w-8 text-primary" />, title: "Gestión del Riesgo", description: "Aprende a proteger tu capital con métodos institucionales." },
@@ -97,7 +97,7 @@ import React, { useState } from 'react';
                   Formación práctica en inversión, fiscalidad y crypto para tomar decisiones con calma y criterio.
                 </p>
                 <div className="mt-8">
-                  <HotmartButton>Acceder al curso</HotmartButton>
+                  <ComprarCursoButton>Comprar curso</ComprarCursoButton>
                 </div>
               </div>
             </motion.section>
@@ -192,7 +192,7 @@ import React, { useState } from 'react';
                 <h2 className="text-3xl md:text-4xl font-bold">Garantía de Satisfacción</h2>
                 <p className="mt-4 text-brand-green-100/80">Tu inversión en conocimiento está protegida. Tienes un período de garantía para probar el curso sin riesgo. Si no cumple tus expectativas, te devolvemos tu dinero.</p>
                 <div className="mt-8">
-                  <HotmartButton className="bg-brand-gold text-brand-green-900 hover:bg-brand-gold/90">Acceder al curso ahora</HotmartButton>
+                  <ComprarCursoButton className="bg-brand-gold text-brand-green-900 hover:bg-brand-gold/90">Comprar curso ahora</ComprarCursoButton>
                 </div>
               </div>
             </motion.section>
@@ -212,11 +212,10 @@ import React, { useState } from 'react';
             </motion.section>
           </motion.div>
           
-          {/* Modal de Hotmart */}
-          <HotmartModal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
-            productUrl={hotmartUrl}
+          {/* Modal de Checkout */}
+          <CheckoutModal
+            isOpen={isCheckoutModalOpen}
+            onClose={() => setIsCheckoutModalOpen(false)}
           />
         </>
       );

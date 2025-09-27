@@ -15,6 +15,9 @@ import React from 'react';
     import OtrosServicios from '@/pages/OtrosServicios.jsx';
     import Formacion from '@/pages/Formacion.jsx';
     import AccessPanel from '@/pages/AccessPanel.jsx';
+    import AcademiaDashboard from '@/pages/AcademiaDashboard.jsx';
+    import ModuloAcademia from '@/pages/ModuloAcademia.jsx';
+    import CompraExitosa from '@/pages/CompraExitosa.jsx';
     import ScrollToTop from '@/components/ScrollToTop';
     import { AuthProvider } from '@/contexts/SupabaseAuthContext';
     import ProtectedRoute from '@/components/ProtectedRoute';
@@ -58,10 +61,23 @@ import React from 'react';
                 <Route path="/formacion" element={<Formacion />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
+                <Route path="/compra-exitosa" element={<CompraExitosa />} />
 
                 <Route path="/panel/accesos" element={
                   <ProtectedRoute adminOnly={true}>
                     <AccessPanel />
+                  </ProtectedRoute>
+                } />
+
+                {/* Nuevas rutas de Academia integrada */}
+                <Route path="/academia/dashboard" element={
+                  <ProtectedRoute>
+                    <AcademiaDashboard />
+                  </ProtectedRoute>
+                } />
+                <Route path="/academia/modulo/:moduleId" element={
+                  <ProtectedRoute>
+                    <ModuloAcademia />
                   </ProtectedRoute>
                 } />
 

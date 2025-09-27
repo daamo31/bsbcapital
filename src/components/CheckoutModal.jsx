@@ -1,0 +1,169 @@
+import React, { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { X, Check, CreditCard, Shield, Clock } from 'lucide-react';
+
+const CheckoutModal = ({ isOpen, onClose }) => {
+  const [selectedPlan, setSelectedPlan] = useState('acceso-completo');
+  
+  const plans = {
+    'acceso-completo': {
+      name: 'Acceso Completo',
+      price: '297€',
+      originalPrice: '497€',
+      description: 'Acceso de por vida a todo el contenido',
+      features: [
+        'Todos los módulos de formación',
+        'Plantillas y checklists descargables',
+        'Soporte por email',
+        'Actualizaciones futuras incluidas',
+        'Acceso de por vida',
+        'Garantía de 30 días'
+      ],
+      popular: true
+    },
+    'mensual': {
+      name: 'Membresía Mensual',
+      price: '97€/mes',
+      description: 'Acceso mensual con flexibilidad',
+      features: [
+        'Acceso a todos los módulos',
+        'Plantillas descargables',
+        'Soporte por email',
+        'Cancela cuando quieras'
+      ],
+      popular: false
+    }
+  };
+
+  const handlePurchase = () => {
+    try {
+      // URL de éxito después de la compra en Hotmart
+      const successUrl = encodeURIComponent(`${window.location.origin}/compra-exitosa`);
+      
+      // Construimos la URL de Hotmart con parámetros de retorno
+      const hotmartUrl = selectedPlan === 'acceso-completo' 
+        ? `https://go.hotmart.com/D102065526G?dp=1` 
+        : `https://go.hotmart.com/D102065526G?dp=1`;
+      
+      // Cerramos el modal primero
+      onClose();
+      
+      // Pequeño delay antes de redirigir
+      setTimeout(() => {
+        window.location.href = hotmartUrl;
+      }, 100);
+    } catch (error) {
+      console.error('Error during purchase:', error);
+      // Fallback simple
+      window.location.href = 'https://go.hotmart.com/D102065526G?dp=1';
+    }
+  };
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onClose}>
+      <DialogContent className="max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+        <DialogHeader className="pb-4">
+          <div className="flex items-center justify-between">
+            <DialogTitle className="text-2xl font-bold">Academia BSB Capital</DialogTitle>
+            <Button variant="ghost" size="sm" onClick={onClose} className="h-8 w-8 p-0">
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+          <p className="text-muted-foreground">Elige tu plan de acceso</p>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          {Object.entries(plans).map(([key, plan]) => (
+            <div
+              key={key}
+              className={`border rounded-lg p-6 cursor-pointer transition-all ${
+                selectedPlan === key
+                  ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
+                  : 'border-gray-200 hover:border-gray-300'
+              } ${plan.popular ? 'relative' : ''}`}
+              onClick={() => setSelectedPlan(key)}
+            >
+              {plan.popular && (
+                <Badge className="absolute -top-2 left-6 bg-primary">
+                  Más Popular
+                </Badge>
+              )}
+              
+              <div className="flex items-start justify-between mb-4">
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <div className={`w-4 h-4 rounded-full border-2 ${
+                      selectedPlan === key
+                        ? 'bg-primary border-primary'
+                        : 'border-gray-300'
+                    }`}>
+                      {selectedPlan === key && (
+                        <Check className="w-3 h-3 text-white mx-auto" />
+                      )}
+                    </div>
+                    <h3 className="font-bold text-lg">{plan.name}</h3>
+                  </div>
+                  <p className="text-muted-foreground text-sm mt-1">{plan.description}</p>
+                </div>
+                <div className="text-right">
+                  <div className="text-2xl font-bold text-primary">{plan.price}</div>
+                  {plan.originalPrice && (
+                    <div className="text-sm text-muted-foreground line-through">
+                      {plan.originalPrice}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <ul className="space-y-2">
+                {plan.features.map((feature, index) => (
+                  <li key={index} className="flex items-center text-sm">
+                    <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        {/* Seguridad y garantías */}
+        <div className="bg-gray-50 rounded-lg p-4 mt-6">
+          <div className="flex items-center justify-center space-x-6 text-sm text-muted-foreground">
+            <div className="flex items-center">
+              <Shield className="h-4 w-4 mr-1" />
+              Pago seguro
+            </div>
+            <div className="flex items-center">
+              <Clock className="h-4 w-4 mr-1" />
+              Acceso inmediato
+            </div>
+            <div className="flex items-center">
+              <Check className="h-4 w-4 mr-1" />
+              Garantía 30 días
+            </div>
+          </div>
+        </div>
+
+        {/* Botón de compra */}
+        <div className="pt-4">
+          <Button 
+            onClick={handlePurchase}
+            size="lg" 
+            className="w-full bg-primary hover:bg-primary/90"
+          >
+            <CreditCard className="h-5 w-5 mr-2" />
+            Completar compra - {plans[selectedPlan].price}
+          </Button>
+          <p className="text-xs text-center text-muted-foreground mt-2">
+            Serás redirigido a nuestra plataforma de pago segura
+          </p>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};
+
+export default CheckoutModal;
