@@ -21,6 +21,7 @@ import React from 'react';
     import ScrollToTop from '@/components/ScrollToTop';
     import { AuthProvider } from '@/contexts/SupabaseAuthContext';
     import ProtectedRoute from '@/components/ProtectedRoute';
+    import AcademyProtectedRoute from '@/components/AcademyProtectedRoute';
     import Login from '@/pages/Login';
     import SignUp from '@/pages/SignUp';
 
@@ -71,14 +72,14 @@ import React from 'react';
 
                 {/* Nuevas rutas de Academia integrada */}
                 <Route path="/academia/dashboard" element={
-                  <ProtectedRoute>
+                  <AcademyProtectedRoute>
                     <AcademiaDashboard />
-                  </ProtectedRoute>
+                  </AcademyProtectedRoute>
                 } />
                 <Route path="/academia/modulo/:moduleId" element={
-                  <ProtectedRoute>
+                  <AcademyProtectedRoute>
                     <ModuloAcademia />
-                  </ProtectedRoute>
+                  </AcademyProtectedRoute>
                 } />
 
                 {oldAcademyRoutes.map(path => (

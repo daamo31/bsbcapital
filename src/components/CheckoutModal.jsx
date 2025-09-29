@@ -2,10 +2,15 @@ import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { X, Check, CreditCard, Shield, Clock } from 'lucide-react';
+import { X, Check, CreditCard, Shield, Clock, Loader2 } from 'lucide-react';
+import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { supabase } from '@/lib/customSupabaseClient';
 
 const CheckoutModal = ({ isOpen, onClose }) => {
   const [selectedPlan, setSelectedPlan] = useState('acceso-completo');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const { user } = useSupabaseAuth();
   
   const plans = {
     'acceso-completo': {
@@ -37,27 +42,42 @@ const CheckoutModal = ({ isOpen, onClose }) => {
     }
   };
 
-  const handlePurchase = () => {
+  const handlePurchase = async () => {
+    if (!user) {
+      setError('Debes iniciar sesión para realizar la compra');
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
     try {
-      // URL de éxito después de la compra en Hotmart
-      const successUrl = encodeURIComponent(`${window.location.origin}/compra-exitosa`);
-      
-      // Construimos la URL de Hotmart con parámetros de retorno
-      const hotmartUrl = selectedPlan === 'acceso-completo' 
-        ? `https://go.hotmart.com/D102065526G?dp=1` 
-        : `https://go.hotmart.com/D102065526G?dp=1`;
-      
-      // Cerramos el modal primero
-      onClose();
-      
-      // Pequeño delay antes de redirigir
-      setTimeout(() => {
-        window.location.href = hotmartUrl;
-      }, 100);
+      // Llamar a nuestra Edge Function para crear el checkout
+      const { data, error } = await supabase.functions.invoke('hotmart-checkout', {
+        body: {
+          productId: import.meta.env.VITE_HOTMART_PRODUCT_ID || 'D102065526G',
+          userEmail: user.email,
+          userId: user.id,
+          returnUrl: `${window.location.origin}/compra-exitosa`
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data.success && data.checkout_url) {
+        // Cerrar modal y redirigir al checkout de Hotmart
+        onClose();
+        window.location.href = data.checkout_url;
+      } else {
+        throw new Error('No se pudo crear el checkout');
+      }
     } catch (error) {
-      console.error('Error during purchase:', error);
-      // Fallback simple
-      window.location.href = 'https://go.hotmart.com/D102065526G?dp=1';
+      console.error('Error durante la compra:', error);
+      setError(error.message || 'Error al procesar la compra. Inténtalo de nuevo.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -147,19 +167,43 @@ const CheckoutModal = ({ isOpen, onClose }) => {
           </div>
         </div>
 
+        {/* Error message */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-md p-3 mb-4">
+            <p className="text-sm text-red-600">{error}</p>
+          </div>
+        )}
+
         {/* Botón de compra */}
         <div className="pt-4">
           <Button 
             onClick={handlePurchase}
             size="lg" 
             className="w-full bg-primary hover:bg-primary/90"
+            disabled={isLoading || !user}
           >
-            <CreditCard className="h-5 w-5 mr-2" />
-            Completar compra - {plans[selectedPlan].price}
+            {isLoading ? (
+              <>
+                <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                Procesando...
+              </>
+            ) : (
+              <>
+                <CreditCard className="h-5 w-5 mr-2" />
+                Completar compra - {plans[selectedPlan].price}
+              </>
+            )}
           </Button>
-          <p className="text-xs text-center text-muted-foreground mt-2">
-            Serás redirigido a nuestra plataforma de pago segura
-          </p>
+          {!user && (
+            <p className="text-xs text-center text-amber-600 mt-2">
+              Debes iniciar sesión para realizar la compra
+            </p>
+          )}
+          {user && (
+            <p className="text-xs text-center text-muted-foreground mt-2">
+              Serás redirigido a nuestra plataforma de pago segura
+            </p>
+          )}
         </div>
       </DialogContent>
     </Dialog>
