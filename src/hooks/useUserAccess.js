@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { supabase } from '@/lib/customSupabaseClient';
 
-export const useUserAccess = (productId = 'D102065526G') => {
+export const useUserAccess = (productId = '6308462') => {
   const [hasAccess, setHasAccess] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lastVerified, setLastVerified] = useState(null);
-  const { user } = useSupabaseAuth();
+  const { user } = useAuth();
 
   const verifyAccess = async (forceRefresh = false) => {
     if (!user) {

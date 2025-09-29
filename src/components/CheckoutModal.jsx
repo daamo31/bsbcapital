@@ -3,14 +3,16 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { X, Check, CreditCard, Shield, Clock, Loader2 } from 'lucide-react';
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { supabase } from '@/lib/customSupabaseClient';
+import { useNavigate } from 'react-router-dom';
 
 const CheckoutModal = ({ isOpen, onClose }) => {
   const [selectedPlan, setSelectedPlan] = useState('acceso-completo');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
-  const { user } = useSupabaseAuth();
+  const { user } = useAuth();
+  const navigate = useNavigate();
   
   const plans = {
     'acceso-completo': {
@@ -44,7 +46,14 @@ const CheckoutModal = ({ isOpen, onClose }) => {
 
   const handlePurchase = async () => {
     if (!user) {
-      setError('Debes iniciar sesión para realizar la compra');
+      // Cerrar modal y redirigir al login
+      onClose();
+      navigate('/login', { 
+        state: { 
+          from: '/formacion',
+          message: 'Inicia sesión para acceder a la compra de la academia' 
+        }
+      });
       return;
     }
 
@@ -55,7 +64,7 @@ const CheckoutModal = ({ isOpen, onClose }) => {
       // Llamar a nuestra Edge Function para crear el checkout
       const { data, error } = await supabase.functions.invoke('hotmart-checkout', {
         body: {
-          productId: import.meta.env.VITE_HOTMART_PRODUCT_ID || 'D102065526G',
+          productId: import.meta.env.VITE_HOTMART_PRODUCT_ID || '6308462',
           userEmail: user.email,
           userId: user.id,
           returnUrl: `${window.location.origin}/compra-exitosa`
@@ -180,12 +189,17 @@ const CheckoutModal = ({ isOpen, onClose }) => {
             onClick={handlePurchase}
             size="lg" 
             className="w-full bg-primary hover:bg-primary/90"
-            disabled={isLoading || !user}
+            disabled={isLoading}
           >
             {isLoading ? (
               <>
                 <Loader2 className="h-5 w-5 mr-2 animate-spin" />
                 Procesando...
+              </>
+            ) : !user ? (
+              <>
+                <CreditCard className="h-5 w-5 mr-2" />
+                Iniciar sesión para comprar
               </>
             ) : (
               <>
@@ -195,8 +209,8 @@ const CheckoutModal = ({ isOpen, onClose }) => {
             )}
           </Button>
           {!user && (
-            <p className="text-xs text-center text-amber-600 mt-2">
-              Debes iniciar sesión para realizar la compra
+            <p className="text-xs text-center text-blue-600 mt-2">
+              Te redirigiremos al login para continuar con la compra
             </p>
           )}
           {user && (

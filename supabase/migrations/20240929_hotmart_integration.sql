@@ -83,6 +83,6 @@ CREATE POLICY "Service role can manage webhook_logs" ON webhook_logs
 /*
 INSERT INTO user_access (user_id, product_id, has_access, purchase_date)
 VALUES 
-  ((SELECT id FROM auth.users LIMIT 1), 'D102065526G', true, NOW())
+  ((SELECT id FROM auth.users LIMIT 1), '6308462', true, NOW())
 ON CONFLICT (user_id, product_id) DO NOTHING;
 */

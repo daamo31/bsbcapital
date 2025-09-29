@@ -1,12 +1,12 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useUserAccess } from '@/hooks/useUserAccess';
 import { Loader2, Lock, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const AcademyProtectedRoute = ({ children, productId = 'D102065526G' }) => {
-  const { user, loading: authLoading } = useSupabaseAuth();
+const AcademyProtectedRoute = ({ children, productId = '6308462' }) => {
+  const { user, loading: authLoading } = useAuth();
   const { hasAccess, isLoading: accessLoading, error, refreshAccess } = useUserAccess(productId);
   const location = useLocation();
 

@@ -17,6 +17,7 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
 
   const from = location.state?.from?.pathname || "/";
+  const message = location.state?.message;
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -43,9 +44,16 @@ const Login = () => {
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle>Iniciar Sesión</CardTitle>
-            <CardDescription>Accede a tu panel de control.</CardDescription>
+            <CardDescription>
+              {message || "Accede a tu panel de control."}
+            </CardDescription>
           </CardHeader>
           <CardContent>
+            {message && (
+              <div className="bg-blue-50 border border-blue-200 rounded-md p-3 mb-4">
+                <p className="text-sm text-blue-700">{message}</p>
+              </div>
+            )}
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
                 <Label htmlFor="email">Email</Label>
