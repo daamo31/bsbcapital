@@ -97,7 +97,7 @@ import React, { useState } from 'react';
                   Formación práctica en inversión, fiscalidad y crypto para tomar decisiones con calma y criterio.
                 </p>
                 <div className="mt-8">
-                  <ComprarCursoButton>Comprar curso</ComprarCursoButton>
+                  <ComprarCursoButton>Accede al curso</ComprarCursoButton>
                 </div>
               </div>
             </motion.section>
