@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@/contexts/SimpleAuthContext';
+import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useUserAccess } from '@/hooks/useUserAccess';
 import { Loader2, Lock, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';

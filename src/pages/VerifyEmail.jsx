@@ -4,7 +4,7 @@ import React, { useState } from 'react';
     import { MailCheck, Loader2 } from 'lucide-react';
     import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
     import { useLocation } from 'react-router-dom';
-    import { useAuth } from '@/contexts/SimpleAuthContext';
+    import { useAuth } from '@/contexts/SupabaseAuthContext';
     import { Button } from '@/components/ui/button';
 
     const VerifyEmail = () => {
