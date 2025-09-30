@@ -1,17 +1,15 @@
 import React, { useState } from 'react';
-import { useSupabaseAuth } from '../contexts/SupabaseAuthContext';
+import { useAuth } from '../contexts/SupabaseAuthContext';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import WatermarkedVideo from '../components/WatermarkedVideo';
 import ContentProtection from '../components/ContentProtection';
-import { useRateLimit } from '../hooks/useRateLimit';
 
 export default function TestPage() {
-  const { user, signIn, signOut } = useSupabaseAuth();
+  const { user, signIn, signOut } = useAuth();
   const [testResults, setTestResults] = useState({});
   const [loading, setLoading] = useState({});
-  const { checkRateLimit } = useRateLimit();
 
   const updateResult = (test, result) => {
     setTestResults(prev => ({ ...prev, [test]: result }));
@@ -121,12 +119,28 @@ export default function TestPage() {
   const testRateLimit = async () => {
     setLoadingState('rateLimit', true);
     try {
-      const result = await checkRateLimit('test-action');
-      updateResult('rateLimit', { 
-        success: true, 
-        message: `Rate limit: ${result.allowed ? 'PERMITIDO' : 'BLOQUEADO'}`,
-        data: result
+      const response = await fetch('https://ietktalvzyykynhdkqhv.supabase.co/functions/v1/rate-limit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          action: 'test-action',
+          ip: '127.0.0.1'
+        })
       });
+
+      const data = await response.json();
+      
+      if (response.ok) {
+        updateResult('rateLimit', { 
+          success: true, 
+          message: `Rate limit: ${data.allowed ? 'PERMITIDO' : 'BLOQUEADO'}`,
+          data: data
+        });
+      } else {
+        updateResult('rateLimit', { success: false, error: data.error });
+      }
     } catch (error) {
       updateResult('rateLimit', { success: false, error: error.message });
     } finally {

@@ -16,22 +16,20 @@ export const AuthProvider = ({ children }) => {
       setProfile(null);
       return;
     }
+    
+    // No intentar buscar en la tabla profiles - crear perfil básico desde auth data
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*, role:raw_app_meta_data->>\'role\'')
-        .eq('id', userId)
-        .single();
-      
-      if (error && error.code !== 'PGRST116') {
-        throw error;
-      }
-      setProfile(data);
+      setProfile({
+        id: userId,
+        email: user?.email,
+        full_name: user?.user_metadata?.full_name || user?.email,
+        role: user?.app_metadata?.role || 'user'
+      });
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      console.error('Error creating profile:', error);
       setProfile(null);
     }
-  }, []);
+  }, [user]);
 
   const handleSession = useCallback(async (currentSession) => {
     setSession(currentSession);

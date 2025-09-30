@@ -19,12 +19,12 @@ import React from 'react';
     import ModuloAcademia from '@/pages/ModuloAcademia.jsx';
     import CompraExitosa from '@/pages/CompraExitosa.jsx';
     import ScrollToTop from '@/components/ScrollToTop';
-    import { AuthProvider } from '@/contexts/SupabaseAuthContext';
+    import { AuthProvider } from '@/contexts/SimpleAuthContext';
     import ProtectedRoute from '@/components/ProtectedRoute';
 import AcademyProtectedRoute from '@/components/AcademyProtectedRoute';
 import Login from '@/pages/Login';
 import SignUp from '@/pages/SignUp';
-import TestPage from '@/pages/TestPage';    function App() {
+import TestPageSimple from '@/pages/TestPageSimple';    function App() {
       const location = useLocation();
 
       const oldAcademyRoutes = [
@@ -61,7 +61,7 @@ import TestPage from '@/pages/TestPage';    function App() {
                 <Route path="/formacion" element={<Formacion />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
-                <Route path="/test" element={<TestPage />} />
+                <Route path="/test" element={<TestPageSimple />} />
                 <Route path="/compra-exitosa" element={<CompraExitosa />} />
 
                 <Route path="/panel/accesos" element={

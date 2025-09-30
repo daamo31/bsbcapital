@@ -29,9 +29,10 @@ serve(async (req) => {
     }
 
     // Configuración de Hotmart
-    const HOTMART_CLIENT_ID = Deno.env.get('VITE_HOTMART_CLIENT_ID')
-    const HOTMART_CLIENT_SECRET = Deno.env.get('VITE_HOTMART_CLIENT_SECRET')
-    const HOTMART_BASIC_AUTH = Deno.env.get('VITE_HOTMART_BASIC_AUTH')
+    const HOTMART_CLIENT_ID = Deno.env.get('HOTMART_CLIENT_ID') || Deno.env.get('VITE_HOTMART_CLIENT_ID')
+    const HOTMART_CLIENT_SECRET = Deno.env.get('HOTMART_CLIENT_SECRET') || Deno.env.get('VITE_HOTMART_CLIENT_SECRET')
+    const HOTMART_BASIC_AUTH = Deno.env.get('HOTMART_BASIC_AUTH') || Deno.env.get('VITE_HOTMART_BASIC_AUTH')
+    const HOTMART_PRODUCT_ID = Deno.env.get('HOTMART_PRODUCT_ID') || Deno.env.get('VITE_HOTMART_PRODUCT_ID')
 
     if (!HOTMART_CLIENT_ID || !HOTMART_CLIENT_SECRET || !HOTMART_BASIC_AUTH) {
       return new Response(
