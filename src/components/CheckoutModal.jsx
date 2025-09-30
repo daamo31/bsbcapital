@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { X, Check, CreditCard, Shield, Clock, Loader2 } from 'lucide-react';
@@ -62,11 +62,12 @@ const CheckoutModal = ({ isOpen, onClose }) => {
 
     try {
       // Llamar a nuestra Edge Function para crear el checkout
-      const { data, error } = await supabase.functions.invoke('hotmart-checkout', {
+      const { data, error } = await supabase.functions.invoke('hotmart-checkout-production', {
         body: {
           productId: import.meta.env.VITE_HOTMART_PRODUCT_ID || '6308462',
           userEmail: user.email,
           userId: user.id,
+          userName: user.user_metadata?.full_name || user.email.split('@')[0],
           returnUrl: `${window.location.origin}/compra-exitosa`
         }
       });
@@ -75,10 +76,10 @@ const CheckoutModal = ({ isOpen, onClose }) => {
         throw error;
       }
 
-      if (data.success && data.checkout_url) {
+      if (data.success && (data.checkoutUrl || data.checkout_url)) {
         // Cerrar modal y redirigir al checkout de Hotmart
         onClose();
-        window.location.href = data.checkout_url;
+        window.location.href = data.checkoutUrl || data.checkout_url;
       } else {
         throw new Error('No se pudo crear el checkout');
       }
@@ -100,7 +101,7 @@ const CheckoutModal = ({ isOpen, onClose }) => {
               <X className="h-4 w-4" />
             </Button>
           </div>
-          <p className="text-muted-foreground">Elige tu plan de acceso</p>
+          <DialogDescription className="text-muted-foreground">Elige tu plan de acceso</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">

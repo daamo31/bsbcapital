@@ -18,6 +18,7 @@ import React from 'react';
     import AcademiaDashboard from '@/pages/AcademiaDashboard.jsx';
     import ModuloAcademia from '@/pages/ModuloAcademia.jsx';
     import CompraExitosa from '@/pages/CompraExitosa.jsx';
+    import CheckoutPage from '@/pages/CheckoutPage.jsx';
     import ScrollToTop from '@/components/ScrollToTop';
     import { AuthProvider } from '@/contexts/SimpleAuthContext';
     import ProtectedRoute from '@/components/ProtectedRoute';
@@ -62,6 +63,7 @@ import TestPageSimple from '@/pages/TestPageSimple';    function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/test" element={<TestPageSimple />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
                 <Route path="/compra-exitosa" element={<CompraExitosa />} />
 
                 <Route path="/panel/accesos" element={

@@ -28,11 +28,17 @@ serve(async (req) => {
       )
     }
 
-    // Configuración de Hotmart
-    const HOTMART_CLIENT_ID = Deno.env.get('HOTMART_CLIENT_ID') || Deno.env.get('VITE_HOTMART_CLIENT_ID')
-    const HOTMART_CLIENT_SECRET = Deno.env.get('HOTMART_CLIENT_SECRET') || Deno.env.get('VITE_HOTMART_CLIENT_SECRET')
-    const HOTMART_BASIC_AUTH = Deno.env.get('HOTMART_BASIC_AUTH') || Deno.env.get('VITE_HOTMART_BASIC_AUTH')
-    const HOTMART_PRODUCT_ID = Deno.env.get('HOTMART_PRODUCT_ID') || Deno.env.get('VITE_HOTMART_PRODUCT_ID')
+    // Configuración de Hotmart - Credenciales para testing
+    const HOTMART_CLIENT_ID = Deno.env.get('HOTMART_CLIENT_ID') || '3b43af6e-d09d-4d7f-ac17-b6dba4354c2f'
+    const HOTMART_CLIENT_SECRET = Deno.env.get('HOTMART_CLIENT_SECRET') || '4074e45b-3375-47b9-9ee1-2797a1611698'
+    const HOTMART_BASIC_AUTH = Deno.env.get('HOTMART_BASIC_AUTH') || 'Basic M2I0M2FmNmUtZDA5ZC00ZDdmLWFjMTctYjZkYmE0MzU0YzJmOjQwNzRlNDViLTMzNzUtNDdiOS05ZWUxLTI3OTdhMTYxMTY5OA=='
+    const HOTMART_PRODUCT_ID = Deno.env.get('HOTMART_PRODUCT_ID') || '6308462'
+
+    console.log('Hotmart config:', { 
+      clientId: HOTMART_CLIENT_ID,
+      hasSecret: !!HOTMART_CLIENT_SECRET,
+      hasAuth: !!HOTMART_BASIC_AUTH 
+    })
 
     if (!HOTMART_CLIENT_ID || !HOTMART_CLIENT_SECRET || !HOTMART_BASIC_AUTH) {
       return new Response(
@@ -42,17 +48,19 @@ serve(async (req) => {
     }
 
     // 1. Obtener token de acceso de Hotmart
+    const tokenParams = new URLSearchParams({
+      grant_type: 'client_credentials',
+      client_id: HOTMART_CLIENT_ID,
+      client_secret: HOTMART_CLIENT_SECRET
+    })
+
     const tokenResponse = await fetch('https://api-sec-vlc.hotmart.com/security/oauth/token', {
       method: 'POST',
       headers: {
         'Authorization': HOTMART_BASIC_AUTH,
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: JSON.stringify({
-        grant_type: 'client_credentials',
-        client_id: HOTMART_CLIENT_ID,
-        client_secret: HOTMART_CLIENT_SECRET
-      })
+      body: tokenParams.toString()
     })
 
     if (!tokenResponse.ok) {
@@ -68,37 +76,40 @@ serve(async (req) => {
     const accessToken = tokenData.access_token
 
     // 2. Crear checkout link usando Hotmart API
-    const checkoutResponse = await fetch('https://api-sec-vlc.hotmart.com/payments/api/v1/checkouts', {
+    const checkoutData = {
+      productId: productId,
+      offerId: productId,
+      email: userEmail,
+      name: userEmail.split('@')[0],
+      price: 297,
+      currency: 'USD',
+      country: 'ES'
+    }
+
+    console.log('Creating checkout with data:', checkoutData)
+
+    const checkoutResponse = await fetch('https://developers.hotmart.com/payments/api/v1/checkouts', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${accessToken}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        product: {
-          id: productId
-        },
-        buyer: {
-          email: userEmail
-        },
-        settings: {
-          return_url: returnUrl || 'https://bsbcapital.io/academia/dashboard',
-          max_installments: 12,
-          currency_code: 'EUR'
-        }
-      })
+      body: JSON.stringify(checkoutData)
     })
 
+    console.log('Checkout response status:', checkoutResponse.status)
+
     if (!checkoutResponse.ok) {
-      const error = await checkoutResponse.text()
-      console.error('Error creando checkout en Hotmart:', error)
+      const errorText = await checkoutResponse.text()
+      console.error('Checkout error:', errorText)
       return new Response(
-        JSON.stringify({ error: 'Failed to create checkout' }),
+        JSON.stringify({ error: 'Failed to create checkout', details: errorText }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
-    const checkoutData = await checkoutResponse.json()
+    const checkoutResult = await checkoutResponse.json()
+    console.log('Checkout created successfully:', checkoutResult)
 
     // 3. Guardar información del checkout en Supabase
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
@@ -109,11 +120,12 @@ serve(async (req) => {
       .from('hotmart_checkouts')
       .insert({
         user_id: userId,
+        email: userEmail,
+        name: userEmail.split('@')[0],
         product_id: productId,
-        checkout_id: checkoutData.checkout_id,
-        checkout_url: checkoutData.checkout_url,
+        checkout_url: checkoutResult.checkoutUrl || checkoutResult.url,
         status: 'pending',
-        created_at: new Date().toISOString()
+        hotmart_data: checkoutResult
       })
 
     if (dbError) {
@@ -124,8 +136,8 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: true,
-        checkout_url: checkoutData.checkout_url,
-        checkout_id: checkoutData.checkout_id
+        checkoutUrl: checkoutResult.checkoutUrl || checkoutResult.url,
+        transactionId: checkoutResult.transactionId || checkoutResult.id
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
