@@ -12,6 +12,8 @@ import React from 'react';
     import Contacto from '@/pages/Contacto.jsx';
     import GuiaInversion from '@/pages/GuiaInversion.jsx';
     import Membresias from '@/pages/Membresias.jsx';
+    import MembresiasDB from '@/pages/MembresiasDB.jsx';
+    import UserDashboard from '@/pages/UserDashboard.jsx';
     import OtrosServicios from '@/pages/OtrosServicios.jsx';
     import Formacion from '@/pages/Formacion.jsx';
     import AccessPanel from '@/pages/AccessPanel.jsx';
@@ -20,7 +22,7 @@ import React from 'react';
     import CompraExitosa from '@/pages/CompraExitosa.jsx';
     import CheckoutPage from '@/pages/CheckoutPage.jsx';
     import ScrollToTop from '@/components/ScrollToTop';
-    import { AuthProvider } from '@/contexts/SimpleAuthContext';
+    import { AuthProvider } from '@/contexts/SupabaseAuthContext';
     import ProtectedRoute from '@/components/ProtectedRoute';
 import AcademyProtectedRoute from '@/components/AcademyProtectedRoute';
 import Login from '@/pages/Login';
@@ -52,6 +54,12 @@ import TestPageSimple from '@/pages/TestPageSimple';    function App() {
                 <Route path="/bsb-maker" element={<BsbMaker />} />
                 <Route path="/consultoria" element={<Consultoria />} />
                 <Route path="/membresias" element={<Membresias />} />
+                <Route path="/membresias-db" element={<MembresiasDB />} />
+                <Route path="/dashboard" element={
+                  <ProtectedRoute>
+                    <UserDashboard />
+                  </ProtectedRoute>
+                } />
                 <Route path="/empresa" element={<Empresa />} />
                 <Route path="/algo-fund" element={<AlgoFund />} />
                 <Route path="/otros-servicios" element={<OtrosServicios />} />

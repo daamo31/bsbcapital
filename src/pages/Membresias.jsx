@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
     import { Helmet } from 'react-helmet';
     import { motion } from 'framer-motion';
     import { Button } from '@/components/ui/button';
     import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
-    import { Check, ArrowRight, Loader2, X } from 'lucide-react';
+    import { Badge } from '@/components/ui/badge';
+    import { Check, ArrowRight, Loader2, X, Star, Crown, Zap } from 'lucide-react';
     import { useToast } from "@/components/ui/use-toast";
     import { supabase } from '@/lib/customSupabaseClient';
+    import { useAuth } from '@/contexts/SupabaseAuthContext';
+    import { useNavigate } from 'react-router-dom';
     import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
     import { Label } from "@/components/ui/label";
     import { Input } from '@/components/ui/input';

@@ -17,8 +17,8 @@ const CheckoutModal = ({ isOpen, onClose }) => {
   const plans = {
     'acceso-completo': {
       name: 'Acceso Completo',
-      price: '297€',
-      originalPrice: '497€',
+      price: '$99.99',
+      originalPrice: '$199.99',
       description: 'Acceso de por vida a todo el contenido',
       features: [
         'Todos los módulos de formación',
@@ -32,7 +32,7 @@ const CheckoutModal = ({ isOpen, onClose }) => {
     },
     'mensual': {
       name: 'Membresía Mensual',
-      price: '97€/mes',
+      price: '$29.99/mes',
       description: 'Acceso mensual con flexibilidad',
       features: [
         'Acceso a todos los módulos',

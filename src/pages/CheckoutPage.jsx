@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -17,21 +17,27 @@ import {
   Mail,
   Phone,
   MapPin,
-  Loader2
+  Loader2,
+  Star,
+  Crown,
+  Zap
 } from 'lucide-react';
-import { useAuth } from '@/contexts/SimpleAuthContext';
+import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { supabase } from '@/lib/customSupabaseClient';
-import { toast } from '@/components/ui/use-toast';
+import { useToast } from '@/components/ui/use-toast';
 
 const CheckoutPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
+  const { toast } = useToast();
   
   const [loading, setLoading] = useState(false);
+  const [planData, setPlanData] = useState(null);
   const [formData, setFormData] = useState({
-    email: searchParams.get('email') || '',
-    name: searchParams.get('name') || '',
+    email: searchParams.get('email') || user?.email || '',
+    name: searchParams.get('name') || user?.user_metadata?.full_name || '',
     phone: '',
     address: '',
     city: '',
@@ -43,15 +49,54 @@ const CheckoutPage = () => {
     cardName: ''
   });
 
-  const productId = searchParams.get('product') || '6308462';
-  const returnUrl = searchParams.get('return_url') || '/compra-exitosa';
+  useEffect(() => {
+    // Cargar datos del plan desde location.state o desde la base de datos
+    if (location.state) {
+      setPlanData(location.state);
+    } else {
+      // Si no hay datos en el state, intentar cargar desde la URL
+      loadPlanFromParams();
+    }
+    
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        email: user.email,
+        name: user.user_metadata?.full_name || user.email.split('@')[0]
+      }));
+    }
+  }, [user, location.state]);
 
-  // Información del producto
-  const productInfo = {
+  const loadPlanFromParams = async () => {
+    const planId = searchParams.get('planId');
+    if (planId) {
+      try {
+        const { data, error } = await supabase
+          .from('subscription_plans')
+          .select('*')
+          .eq('id', planId)
+          .single();
+        
+        if (error) throw error;
+        setPlanData(data);
+      } catch (error) {
+        console.error('Error loading plan:', error);
+        toast({
+          title: "Error",
+          description: "No se pudo cargar la información del plan",
+          variant: "destructive"
+        });
+        navigate('/membresias');
+      }
+    }
+  };
+
+  // Fallback para compatibilidad con el sistema anterior
+  const productInfo = planData || {
     name: 'Academia BSB Capital - Formación Completa',
     description: 'Acceso completo a la formación práctica en inversión, fiscalidad y crypto',
-    price: '297',
-    currency: 'EUR',
+    price: '99.99',
+    currency: 'USD',
     features: [
       'Acceso de por vida al contenido',
       '4 módulos completos de formación',
@@ -61,16 +106,6 @@ const CheckoutPage = () => {
       'Comunidad privada de alumnos'
     ]
   };
-
-  useEffect(() => {
-    if (user) {
-      setFormData(prev => ({
-        ...prev,
-        email: user.email,
-        name: user.user_metadata?.full_name || user.email.split('@')[0]
-      }));
-    }
-  }, [user]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -115,38 +150,84 @@ const CheckoutPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!user) {
+      toast({
+        title: "Error",
+        description: "Debes iniciar sesión para continuar con el pago",
+        variant: "destructive"
+      });
+      navigate('/login');
+      return;
+    }
+
+    if (!planData) {
+      toast({
+        title: "Error", 
+        description: "No se pudo cargar la información del plan",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
-      // Aquí integrarías con Stripe
-      // Por ahora simulamos el procesamiento
-      console.log('Procesando pago con Stripe...', formData);
+      // TODO: Integrar con Stripe real
+      // Por ahora simulamos el procesamiento de Stripe
+      console.log('Procesando pago con Stripe...', {
+        plan: planData,
+        user: user.id,
+        formData
+      });
       
-      // Simular delay de procesamiento
+      // Simular delay de procesamiento de Stripe
       await new Promise(resolve => setTimeout(resolve, 2000));
 
       // Simular respuesta exitosa de Stripe
-      const paymentResult = {
+      const stripePaymentResult = {
         id: `pi_${Date.now()}`,
         status: 'succeeded',
-        amount: parseInt(productInfo.price) * 100,
-        currency: productInfo.currency.toLowerCase()
+        amount: parseInt(planData.price) * 100,
+        currency: planData.currency.toLowerCase(),
+        customer: formData.email
       };
 
-      // Registrar la compra en Supabase
+      // Crear la suscripción a través de nuestra función
+      const { data: subscriptionResult, error: subscriptionError } = await supabase.functions.invoke(
+        'create-subscription', 
+        {
+          body: {
+            planId: planData.id,
+            userId: user.id,
+            stripePaymentIntentId: stripePaymentResult.id,
+            amount: planData.price,
+            currency: planData.currency,
+            customerEmail: formData.email,
+            customerName: formData.name
+          }
+        }
+      );
+
+      if (subscriptionError) {
+        console.error('Error creating subscription:', subscriptionError);
+        throw new Error('Error al crear la suscripción');
+      }
+
+      // También mantener compatibilidad con el sistema anterior
       const { error: dbError } = await supabase
         .from('hotmart_checkouts')
         .insert({
-          user_id: user?.id || 'guest',
+          user_id: user.id,
           email: formData.email,
           name: formData.name,
-          product_id: productId,
+          product_id: planData.id,
           checkout_url: window.location.href,
           status: 'completed',
           payment_method: 'stripe',
-          amount: productInfo.price,
-          currency: productInfo.currency,
-          stripe_data: paymentResult,
+          amount: planData.price,
+          currency: planData.currency,
+          stripe_data: stripePaymentResult,
           billing_info: {
             phone: formData.phone,
             address: formData.address,
@@ -157,52 +238,30 @@ const CheckoutPage = () => {
           hotmart_data: {
             simulated_purchase: true,
             timestamp: new Date().toISOString(),
-            product_name: productInfo.name
+            product_name: planData.name,
+            subscription_id: subscriptionResult.subscription?.id
           }
         });
 
       if (dbError) {
         console.error('Error guardando en DB:', dbError);
-        throw new Error('Error procesando la compra');
-      }
-
-      // Simular notificación a Hotmart (webhook simulado)
-      try {
-        await supabase.functions.invoke('webhook-handler', {
-          body: {
-            event: 'PURCHASE_COMPLETE',
-            data: {
-              subscriber: {
-                email: formData.email,
-                name: formData.name
-              },
-              product: {
-                id: productId,
-                name: productInfo.name
-              },
-              purchase: {
-                transaction: paymentResult.id,
-                status: 'APPROVED',
-                price: {
-                  value: productInfo.price,
-                  currency_value: productInfo.currency
-                }
-              }
-            }
-          }
-        });
-      } catch (webhookError) {
-        console.log('Warning: Webhook simulation failed:', webhookError);
+        // No lanzar error aquí porque la suscripción ya se creó
       }
 
       toast({
         title: "¡Pago procesado exitosamente!",
-        description: "Tu compra ha sido completada. Redirigiendo...",
+        description: `Suscripción a ${planData.name} activada. Redirigiendo...`,
       });
 
       // Redirigir a página de éxito
       setTimeout(() => {
-        navigate(returnUrl);
+        navigate('/compra-exitosa', {
+          state: {
+            subscription: subscriptionResult.subscription,
+            plan: planData,
+            amount: planData.price
+          }
+        });
       }, 1500);
 
     } catch (error) {
@@ -397,7 +456,7 @@ const CheckoutPage = () => {
                       ) : (
                         <>
                           <Lock className="mr-2 h-5 w-5" />
-                          Pagar {productInfo.price}€ de forma segura
+                          Pagar ${productInfo.price} USD de forma segura
                         </>
                       )}
                     </Button>
@@ -445,15 +504,15 @@ const CheckoutPage = () => {
                     <div className="border-t pt-4">
                       <div className="flex justify-between items-center text-lg">
                         <span className="font-semibold">Subtotal:</span>
-                        <span>{productInfo.price}€</span>
+                        <span>${productInfo.price} USD</span>
                       </div>
                       <div className="flex justify-between items-center text-sm text-gray-600">
-                        <span>IVA incluido:</span>
-                        <span>0€</span>
+                        <span>Impuestos incluidos:</span>
+                        <span>$0.00</span>
                       </div>
                       <div className="flex justify-between items-center text-xl font-bold text-brand-primary border-t mt-2 pt-2">
                         <span>Total:</span>
-                        <span>{productInfo.price}€</span>
+                        <span>${productInfo.price} USD</span>
                       </div>
                     </div>
 
