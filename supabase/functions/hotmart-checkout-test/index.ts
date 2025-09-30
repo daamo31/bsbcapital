@@ -19,7 +19,12 @@ serve(async (req) => {
   }
 
   try {
+    // Para testing, no requiere autenticación - solo logging
+    console.log('Hotmart checkout test called')
+    
     const { productId, userEmail, userId, returnUrl }: HotmartCheckoutRequest = await req.json()
+
+    console.log('Request data:', { productId, userEmail, userId, returnUrl })
 
     if (!productId || !userEmail || !userId) {
       return new Response(
@@ -40,17 +45,19 @@ serve(async (req) => {
     })
 
     // 1. Obtener token de acceso de Hotmart
+    const tokenParams = new URLSearchParams({
+      grant_type: 'client_credentials',
+      client_id: HOTMART_CLIENT_ID,
+      client_secret: HOTMART_CLIENT_SECRET
+    })
+
     const tokenResponse = await fetch('https://api-sec-vlc.hotmart.com/security/oauth/token', {
       method: 'POST',
       headers: {
         'Authorization': HOTMART_BASIC_AUTH,
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: JSON.stringify({
-        grant_type: 'client_credentials',
-        client_id: HOTMART_CLIENT_ID,
-        client_secret: HOTMART_CLIENT_SECRET
-      })
+      body: tokenParams.toString()
     })
 
     console.log('Token response status:', tokenResponse.status)

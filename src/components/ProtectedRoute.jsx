@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useAuth } from '@/contexts/SupabaseAuthContext';
+import { useAuth } from '@/contexts/SimpleAuthContext';
 import { Loader2 } from 'lucide-react';
 
 const ProtectedRoute = ({ children, adminOnly = false }) => {

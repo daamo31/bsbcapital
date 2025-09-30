@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
     import { Helmet } from 'react-helmet';
     import { motion } from 'framer-motion';
     import { Link, useNavigate } from 'react-router-dom';
-    import { useAuth } from '@/contexts/SupabaseAuthContext';
+    import { useAuth } from '@/contexts/SimpleAuthContext';
     import { supabase } from '@/lib/customSupabaseClient';
     import { Button } from '@/components/ui/button';
     import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";

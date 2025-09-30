@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { useAuth } from '@/contexts/SupabaseAuthContext';
+import { useAuth } from '@/contexts/SimpleAuthContext';
 
 const WatermarkedVideo = ({ 
   src, 

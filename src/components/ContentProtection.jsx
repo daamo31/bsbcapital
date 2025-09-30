@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '@/contexts/SupabaseAuthContext';
+import { useAuth } from '@/contexts/SimpleAuthContext';
 
 const ContentProtection = ({ children }) => {
   const { user } = useAuth();

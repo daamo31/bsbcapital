@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
     import { useLocation, useNavigate } from 'react-router-dom';
-    import { useAuth } from '@/contexts/SupabaseAuthContext';
+    import { useAuth } from '@/contexts/SimpleAuthContext';
     import { Button } from '@/components/ui/button';
     import { Input } from '@/components/ui/input';
     import { Label } from '@/components/ui/label';
