@@ -21,11 +21,10 @@ import React from 'react';
     import ScrollToTop from '@/components/ScrollToTop';
     import { AuthProvider } from '@/contexts/SupabaseAuthContext';
     import ProtectedRoute from '@/components/ProtectedRoute';
-    import AcademyProtectedRoute from '@/components/AcademyProtectedRoute';
-    import Login from '@/pages/Login';
-    import SignUp from '@/pages/SignUp';
-
-    function App() {
+import AcademyProtectedRoute from '@/components/AcademyProtectedRoute';
+import Login from '@/pages/Login';
+import SignUp from '@/pages/SignUp';
+import TestPage from '@/pages/TestPage';    function App() {
       const location = useLocation();
 
       const oldAcademyRoutes = [
@@ -62,6 +61,7 @@ import React from 'react';
                 <Route path="/formacion" element={<Formacion />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
+                <Route path="/test" element={<TestPage />} />
                 <Route path="/compra-exitosa" element={<CompraExitosa />} />
 
                 <Route path="/panel/accesos" element={
