@@ -33,15 +33,19 @@ const UserDashboard = () => {
   const [userContent, setUserContent] = useState([]);
   const [progress, setProgress] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingData, setLoadingData] = useState(false);
 
   useEffect(() => {
-    if (user) {
+    if (user && user.id && !loadingData) {
       loadUserData();
     }
-  }, [user]);
+  }, [user?.id]); // Solo cuando cambie el ID del usuario
 
   const loadUserData = async () => {
+    if (loadingData) return; // Evitar llamadas múltiples
+    
     try {
+      setLoadingData(true);
       await Promise.all([
         loadSubscription(),
         loadUserContent(),
@@ -56,6 +60,7 @@ const UserDashboard = () => {
       });
     } finally {
       setLoading(false);
+      setLoadingData(false);
     }
   };
 

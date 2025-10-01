@@ -11,7 +11,6 @@ import AlgoFund from '@/pages/AlgoFund.jsx';
 import Blog from '@/pages/Blog.jsx';
 import Contacto from '@/pages/Contacto.jsx';
 import GuiaInversion from '@/pages/GuiaInversion.jsx';
-import Membresias from '@/pages/payments/Membresias.jsx';
 import MembresiasDB from '@/pages/payments/MembresiasDB.jsx';
 import UserDashboard from '@/pages/dashboard/UserDashboard.jsx';
 import OtrosServicios from '@/pages/OtrosServicios.jsx';
@@ -56,7 +55,6 @@ function App() {
                 <Route path="/bsb-maker" element={<BsbMaker />} />
                 <Route path="/consultoria" element={<Consultoria />} />
                 <Route path="/membresias" element={<MembresiasDB />} />
-                <Route path="/membresias-legacy" element={<Membresias />} />
                 <Route path="/dashboard" element={
                   <ProtectedRoute>
                     <UserDashboard />
