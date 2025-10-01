@@ -28,7 +28,7 @@ const MembresiasDB = () => {
 
   const loadPlans = async () => {
     try {
-      const { data, error } = await supabase.rpc('get_available_plans');
+      const { data, error } = await supabase.rpc('get_available_plans_with_content');
       if (error) throw error;
       setPlans(data);
     } catch (error) {
