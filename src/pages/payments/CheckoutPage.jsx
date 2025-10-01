@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
+import { loadStripe } from '@stripe/stripe-js';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -26,6 +27,9 @@ import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { supabase } from '@/lib/customSupabaseClient';
 import { useToast } from '@/components/ui/use-toast';
 
+// Cargar Stripe con la clave pública del .env.local
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+
 const CheckoutPage = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -39,14 +43,7 @@ const CheckoutPage = () => {
     email: searchParams.get('email') || user?.email || '',
     name: searchParams.get('name') || user?.user_metadata?.full_name || '',
     phone: '',
-    address: '',
-    city: '',
-    postalCode: '',
-    country: 'España',
-    cardNumber: '',
-    expiryDate: '',
-    cvv: '',
-    cardName: ''
+    country: 'España'
   });
 
   useEffect(() => {
@@ -115,39 +112,6 @@ const CheckoutPage = () => {
     }));
   };
 
-  const formatCardNumber = (value) => {
-    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-    const matches = v.match(/\d{4,16}/g);
-    const match = matches && matches[0] || '';
-    const parts = [];
-    for (let i = 0, len = match.length; i < len; i += 4) {
-      parts.push(match.substring(i, i + 4));
-    }
-    if (parts.length) {
-      return parts.join(' ');
-    } else {
-      return v;
-    }
-  };
-
-  const formatExpiryDate = (value) => {
-    const v = value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
-    if (v.length >= 2) {
-      return v.substring(0, 2) + '/' + v.substring(2, 4);
-    }
-    return v;
-  };
-
-  const handleCardNumberChange = (e) => {
-    const formatted = formatCardNumber(e.target.value);
-    setFormData(prev => ({ ...prev, cardNumber: formatted }));
-  };
-
-  const handleExpiryChange = (e) => {
-    const formatted = formatExpiryDate(e.target.value);
-    setFormData(prev => ({ ...prev, expiryDate: formatted }));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -170,99 +134,54 @@ const CheckoutPage = () => {
       return;
     }
 
+    if (!planData.stripe_price_id) {
+      toast({
+        title: "Error", 
+        description: "Este plan no tiene configurado un precio de Stripe",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
-      // TODO: Integrar con Stripe real
-      // Por ahora simulamos el procesamiento de Stripe
-      console.log('Procesando pago con Stripe...', {
-        plan: planData,
-        user: user.id,
-        formData
-      });
-      
-      // Simular delay de procesamiento de Stripe
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      // Simular respuesta exitosa de Stripe
-      const stripePaymentResult = {
-        id: `pi_${Date.now()}`,
-        status: 'succeeded',
-        amount: parseInt(planData.price) * 100,
-        currency: planData.currency.toLowerCase(),
-        customer: formData.email
-      };
-
-      // Crear la suscripción a través de nuestra función
-      const { data: subscriptionResult, error: subscriptionError } = await supabase.functions.invoke(
-        'create-subscription', 
-        {
-          body: {
-            planId: planData.id,
-            userId: user.id,
-            stripePaymentIntentId: stripePaymentResult.id,
-            amount: planData.price,
-            currency: planData.currency,
-            customerEmail: formData.email,
-            customerName: formData.name
+      // Crear sesión de checkout de Stripe usando nuestra Edge Function
+      const { data, error } = await supabase.functions.invoke('create-stripe-checkout', {
+        body: {
+          priceId: planData.stripe_price_id,
+          mode: 'subscription', // Para suscripciones
+          email: formData.email,
+          metadata: {
+            user_id: user.id,
+            plan_id: planData.id,
+            plan_name: planData.name,
+            customer_name: formData.name,
+            phone: formData.phone,
+            country: formData.country
           }
         }
-      );
-
-      if (subscriptionError) {
-        console.error('Error creating subscription:', subscriptionError);
-        throw new Error('Error al crear la suscripción');
-      }
-
-      // También mantener compatibilidad con el sistema anterior
-      const { error: dbError } = await supabase
-        .from('hotmart_checkouts')
-        .insert({
-          user_id: user.id,
-          email: formData.email,
-          name: formData.name,
-          product_id: planData.id,
-          checkout_url: window.location.href,
-          status: 'completed',
-          payment_method: 'stripe',
-          amount: planData.price,
-          currency: planData.currency,
-          stripe_data: stripePaymentResult,
-          billing_info: {
-            phone: formData.phone,
-            address: formData.address,
-            city: formData.city,
-            postalCode: formData.postalCode,
-            country: formData.country
-          },
-          hotmart_data: {
-            simulated_purchase: true,
-            timestamp: new Date().toISOString(),
-            product_name: planData.name,
-            subscription_id: subscriptionResult.subscription?.id
-          }
-        });
-
-      if (dbError) {
-        console.error('Error guardando en DB:', dbError);
-        // No lanzar error aquí porque la suscripción ya se creó
-      }
-
-      toast({
-        title: "¡Pago procesado exitosamente!",
-        description: `Suscripción a ${planData.name} activada. Redirigiendo...`,
       });
 
-      // Redirigir a página de éxito
-      setTimeout(() => {
-        navigate('/compra-exitosa', {
-          state: {
-            subscription: subscriptionResult.subscription,
-            plan: planData,
-            amount: planData.price
-          }
-        });
-      }, 1500);
+      if (error) {
+        console.error('Error creating Stripe checkout:', error);
+        throw new Error(error.message || 'Error al crear la sesión de pago');
+      }
+
+      if (!data.sessionId) {
+        throw new Error('No se recibió ID de sesión de Stripe');
+      }
+
+      // Redirigir a Stripe Checkout
+      const stripe = await stripePromise;
+      const { error: stripeError } = await stripe.redirectToCheckout({
+        sessionId: data.sessionId
+      });
+
+      if (stripeError) {
+        console.error('Error redirecting to Stripe:', stripeError);
+        throw new Error(stripeError.message || 'Error al redirigir a Stripe');
+      }
 
     } catch (error) {
       console.error('Error procesando pago:', error);
@@ -320,13 +239,25 @@ const CheckoutPage = () => {
                 <CardContent className="p-6">
                   <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Información personal */}
+                    {/* Información básica del cliente */}
                     <div className="space-y-4">
                       <h3 className="font-semibold text-brand-text-primary flex items-center">
                         <User className="h-4 w-4 mr-2" />
-                        Información Personal
+                        Información de Contacto
                       </h3>
                       
-                      <div className="grid md:grid-cols-2 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <Label htmlFor="name">Nombre completo</Label>
+                          <Input
+                            id="name"
+                            name="name"
+                            value={formData.name}
+                            onChange={handleInputChange}
+                            required
+                            className="mt-1"
+                          />
+                        </div>
                         <div>
                           <Label htmlFor="email">Email</Label>
                           <Input
@@ -340,21 +271,7 @@ const CheckoutPage = () => {
                           />
                         </div>
                         <div>
-                          <Label htmlFor="name">Nombre completo</Label>
-                          <Input
-                            id="name"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleInputChange}
-                            required
-                            className="mt-1"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid md:grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="phone">Teléfono</Label>
+                          <Label htmlFor="phone">Teléfono (opcional)</Label>
                           <Input
                             id="phone"
                             name="phone"
@@ -378,67 +295,18 @@ const CheckoutPage = () => {
                       </div>
                     </div>
 
-                    {/* Información de tarjeta */}
-                    <div className="space-y-4">
+                    {/* Información del pago con Stripe */}
+                    <div className="space-y-4 bg-blue-50 p-4 rounded-lg">
                       <h3 className="font-semibold text-brand-text-primary flex items-center">
                         <CreditCard className="h-4 w-4 mr-2" />
-                        Datos de la Tarjeta
+                        Método de Pago
                       </h3>
-                      
-                      <div>
-                        <Label htmlFor="cardName">Nombre en la tarjeta</Label>
-                        <Input
-                          id="cardName"
-                          name="cardName"
-                          value={formData.cardName}
-                          onChange={handleInputChange}
-                          required
-                          className="mt-1"
-                          placeholder="Como aparece en tu tarjeta"
-                        />
-                      </div>
-
-                      <div>
-                        <Label htmlFor="cardNumber">Número de tarjeta</Label>
-                        <Input
-                          id="cardNumber"
-                          name="cardNumber"
-                          value={formData.cardNumber}
-                          onChange={handleCardNumberChange}
-                          required
-                          className="mt-1"
-                          placeholder="1234 5678 9012 3456"
-                          maxLength={19}
-                        />
-                      </div>
-
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <Label htmlFor="expiryDate">Fecha de vencimiento</Label>
-                          <Input
-                            id="expiryDate"
-                            name="expiryDate"
-                            value={formData.expiryDate}
-                            onChange={handleExpiryChange}
-                            required
-                            className="mt-1"
-                            placeholder="MM/AA"
-                            maxLength={5}
-                          />
-                        </div>
-                        <div>
-                          <Label htmlFor="cvv">CVV</Label>
-                          <Input
-                            id="cvv"
-                            name="cvv"
-                            value={formData.cvv}
-                            onChange={handleInputChange}
-                            required
-                            className="mt-1"
-                            placeholder="123"
-                            maxLength={4}
-                          />
-                        </div>
+                      <p className="text-sm text-gray-600">
+                        Al hacer clic en "Continuar al pago", serás redirigido a Stripe para completar tu pago de forma segura.
+                      </p>
+                      <div className="flex items-center text-sm text-green-600">
+                        <Shield className="h-4 w-4 mr-2" />
+                        Stripe procesa todos los pagos de forma segura y cifrada
                       </div>
                     </div>
 
@@ -451,19 +319,19 @@ const CheckoutPage = () => {
                       {loading ? (
                         <>
                           <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                          Procesando pago...
+                          Redirigiendo a Stripe...
                         </>
                       ) : (
                         <>
                           <Lock className="mr-2 h-5 w-5" />
-                          Pagar ${productInfo.price} USD de forma segura
+                          Continuar al Pago - ${productInfo.price} USD
                         </>
                       )}
                     </Button>
 
                     <div className="flex items-center justify-center text-sm text-gray-500">
                       <Shield className="h-4 w-4 mr-2" />
-                      Pago 100% seguro y cifrado
+                      Pago 100% seguro procesado por Stripe
                     </div>
                   </form>
                 </CardContent>

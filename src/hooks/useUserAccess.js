@@ -27,16 +27,17 @@ export const useUserAccess = (productId = '6308462') => {
           .select('*')
           .eq('user_id', user.id)
           .eq('product_id', productId)
-          .single();
+          .limit(1);
 
-        if (!localError && localAccess) {
+        if (!localError && localAccess && localAccess.length > 0) {
+          const accessData = localAccess[0];
           // Si la verificación es reciente (menos de 5 minutos), usar datos locales
-          const lastVerifiedTime = new Date(localAccess.last_verified);
+          const lastVerifiedTime = new Date(accessData.last_verified);
           const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
           
           if (lastVerifiedTime > fiveMinutesAgo) {
-            setHasAccess(localAccess.has_access);
-            setLastVerified(localAccess.last_verified);
+            setHasAccess(accessData.has_access);
+            setLastVerified(accessData.last_verified);
             setIsLoading(false);
             return localAccess.has_access;
           }

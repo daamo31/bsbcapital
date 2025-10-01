@@ -261,10 +261,12 @@ export const UserProgress = ({ contentId }) => {
         .select('progress_percentage')
         .eq('user_id', user.id)
         .eq('content_id', contentId)
-        .single()
+        .limit(1)
 
-      if (data) {
-        setProgress(data.progress_percentage)
+      if (!error && data && data.length > 0) {
+        setProgress(data[0].progress_percentage)
+      } else {
+        setProgress(0) // Sin progreso inicial
       }
     }
 

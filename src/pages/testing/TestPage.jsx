@@ -1,16 +1,15 @@
 import React, { useState } from 'react';
-import { useAuth } from '../contexts/SupabaseAuthContext';
-import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Alert, AlertDescription } from '../components/ui/alert';
+import { useAuth } from '@/contexts/SupabaseAuthContext';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import WatermarkedVideo from '@/components/WatermarkedVideo';
+import ContentProtection from '@/components/ContentProtection';
 
 export default function TestPage() {
   const { user, signIn, signOut } = useAuth();
   const [testResults, setTestResults] = useState({});
   const [loading, setLoading] = useState({});
-
-  // API Key para testing
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlldGt0YWx2enl5a3luaGRrcWh2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTIxNTIwNTQsImV4cCI6MjA2NzcyODA1NH0.ZRTRG5fAnJfJF0Fq-NMyBJKeWKy8wsByC8tOu6eWBFw';
 
   const updateResult = (test, result) => {
     setTestResults(prev => ({ ...prev, [test]: result }));
@@ -38,27 +37,24 @@ export default function TestPage() {
   };
 
   // Test 2: Crear checkout
-  const testCheckout = async (useMock = false) => {
+  const testCheckout = async () => {
     if (!user) {
       updateResult('checkout', { success: false, error: 'Usuario no logueado' });
       return;
     }
 
     setLoadingState('checkout', true);
-    const endpoint = useMock ? 'hotmart-checkout-mock' : 'hotmart-checkout-test';
-    
     try {
-      const response = await fetch(`https://ietktalvzyykynhdkqhv.supabase.co/functions/v1/${endpoint}`, {
+      const response = await fetch('https://ietktalvzyykynhdkqhv.supabase.co/functions/v1/hotmart-checkout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          'Authorization': `Bearer ${user.access_token}`
         },
         body: JSON.stringify({
-          productId: '6308462',
-          userEmail: user.email,
-          userId: user.id,
-          returnUrl: window.location.origin + '/compra-exitosa'
+          user_id: user.id,
+          email: user.email,
+          name: user.user_metadata.full_name || user.email
         })
       });
 
@@ -67,7 +63,7 @@ export default function TestPage() {
       if (response.ok) {
         updateResult('checkout', { 
           success: true, 
-          message: `Checkout creado ${useMock ? '(MOCK)' : '(REAL)'}`, 
+          message: 'Checkout creado', 
           data: data.checkout_url 
         });
       } else {
@@ -89,16 +85,15 @@ export default function TestPage() {
 
     setLoadingState('access', true);
     try {
-      const response = await fetch('https://ietktalvzyykynhdkqhv.supabase.co/functions/v1/verify-access-test', {
+      const response = await fetch('https://ietktalvzyykynhdkqhv.supabase.co/functions/v1/verify-access', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          'Authorization': `Bearer ${user.access_token}`
         },
         body: JSON.stringify({
-          userId: user.id,
-          productId: '6308462',
-          userEmail: user.email
+          user_id: user.id,
+          product_id: '6308462'
         })
       });
 
@@ -127,11 +122,10 @@ export default function TestPage() {
       const response = await fetch('https://ietktalvzyykynhdkqhv.supabase.co/functions/v1/rate-limit', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          action: 'login',
+          action: 'test-action',
           ip: '127.0.0.1'
         })
       });
@@ -163,7 +157,7 @@ export default function TestPage() {
         <AlertDescription>
           <strong>{title}:</strong> {result.message || result.error}
           {result.data && (
-            <pre className="mt-2 text-xs bg-gray-100 p-2 rounded overflow-auto max-h-32">
+            <pre className="mt-2 text-xs bg-gray-100 p-2 rounded overflow-auto">
               {JSON.stringify(result.data, null, 2)}
             </pre>
           )}
@@ -173,47 +167,10 @@ export default function TestPage() {
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6 max-w-4xl">
+    <div className="container mx-auto p-6 space-y-6">
       <h1 className="text-3xl font-bold text-center mb-8">
         🧪 Página de Pruebas - Sistema Hotmart
       </h1>
-
-      {/* Estado del Sistema */}
-      <Card className="mb-6 border-green-200 bg-green-50">
-        <CardHeader>
-          <CardTitle className="text-green-800">🎉 Sistema Funcionando Perfectamente</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid md:grid-cols-4 gap-4 text-sm">
-            <div className="text-center">
-              <div className="text-2xl mb-1">✅</div>
-              <div className="font-medium text-green-800">Login</div>
-              <div className="text-green-600">Funcionando</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl mb-1">✅</div>
-              <div className="font-medium text-green-800">Checkout Mock</div>
-              <div className="text-green-600">Funcionando</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl mb-1">✅</div>
-              <div className="font-medium text-green-800">Verificar Acceso</div>
-              <div className="text-green-600">Funcionando</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl mb-1">✅</div>
-              <div className="font-medium text-green-800">Rate Limiting</div>
-              <div className="text-green-600">Funcionando</div>
-            </div>
-          </div>
-          <div className="mt-4 p-3 bg-white rounded-md border border-green-200">
-            <p className="text-sm text-green-800">
-              <strong>🚀 Estado:</strong> Todos los componentes principales están operativos. 
-              La función mock de checkout proporciona una experiencia completa de testing sin depender de APIs externas.
-            </p>
-          </div>
-        </CardContent>
-      </Card>
 
       {/* Información del usuario */}
       <Card>
@@ -277,33 +234,13 @@ export default function TestPage() {
             <CardTitle>🛒 Test 2: Crear Checkout</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex flex-col space-y-2">
-              <Button 
-                onClick={() => testCheckout(true)} 
-                disabled={loading.checkout || !user}
-                className="w-full bg-green-600 hover:bg-green-700"
-              >
-                {loading.checkout ? 'Creando...' : '✅ Crear Checkout (Funciona Perfectamente)'}
-              </Button>
-              <Button 
-                disabled={true}
-                className="w-full opacity-50 cursor-not-allowed"
-                variant="outline"
-              >
-                ❌ API Real Hotmart (Temporalmente Deshabilitada)
-              </Button>
-              <div className="bg-green-50 p-3 rounded-lg text-sm border border-green-200">
-                <p className="text-green-800"><strong>✅ Checkout Mock:</strong> Totalmente funcional</p>
-                <p className="text-green-700">• Simula el comportamiento real de Hotmart</p>
-                <p className="text-green-700">• Guarda datos en la base de datos</p>
-                <p className="text-green-700">• Genera URLs de checkout válidas</p>
-                <p className="text-green-700">• Perfecto para testing y desarrollo</p>
-              </div>
-              <div className="bg-yellow-50 p-3 rounded-lg text-sm border border-yellow-200">
-                <p className="text-yellow-800"><strong>⚠️ API Real:</strong> Requiere configuración adicional</p>
-                <p className="text-yellow-700">La API real de Hotmart necesita validación de credenciales en su panel de control.</p>
-              </div>
-            </div>
+            <Button 
+              onClick={testCheckout} 
+              disabled={loading.checkout || !user}
+              className="w-full"
+            >
+              {loading.checkout ? 'Creando...' : 'Crear Checkout'}
+            </Button>
             <TestResult test="checkout" title="Checkout" />
           </CardContent>
         </Card>
@@ -343,22 +280,52 @@ export default function TestPage() {
         </Card>
       </div>
 
-      {/* Demo básico si está logueado */}
+      {/* Demo de características de seguridad */}
       {user && (
-        <Card>
-          <CardHeader>
-            <CardTitle>🎉 ¡Usuario Autenticado!</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="bg-gradient-to-r from-green-500 to-blue-600 text-white p-6 rounded-lg text-center">
-              <h3 className="text-xl font-bold mb-2">Sistema Funcionando</h3>
-              <p>El usuario {user.email} está correctamente autenticado.</p>
-              <p className="text-sm mt-2 opacity-90">
-                Ahora puedes probar los otros tests para verificar las funcionalidades de Hotmart.
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>🎥 Demo: Video con Watermark</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ContentProtection>
+                <WatermarkedVideo
+                  src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4"
+                  userEmail={user.email}
+                  className="w-full max-w-md mx-auto"
+                />
+              </ContentProtection>
+              <p className="text-sm text-gray-600 mt-2 text-center">
+                Este video tiene watermark con tu email y protección anti-descarga.
               </p>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>🔒 Demo: Contenido Protegido</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ContentProtection>
+                <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-8 rounded-lg text-center">
+                  <h3 className="text-xl font-bold mb-4">Contenido Exclusivo</h3>
+                  <p className="mb-4">
+                    Este contenido está protegido contra:
+                  </p>
+                  <ul className="text-left max-w-md mx-auto space-y-2">
+                    <li>✅ Click derecho deshabilitado</li>
+                    <li>✅ Herramientas de desarrollador bloqueadas</li>
+                    <li>✅ Screenshots dificultados</li>
+                    <li>✅ Contenido se oculta al cambiar de pestaña</li>
+                  </ul>
+                  <p className="mt-4 text-sm opacity-90">
+                    Intenta hacer click derecho o abrir DevTools (F12)
+                  </p>
+                </div>
+              </ContentProtection>
+            </CardContent>
+          </Card>
+        </div>
       )}
 
       {/* Instrucciones */}
@@ -369,21 +336,15 @@ export default function TestPage() {
         <CardContent>
           <ol className="list-decimal list-inside space-y-2 text-sm">
             <li>Ejecuta el <strong>Test 1</strong> para hacer login con el usuario de prueba</li>
-            <li>Una vez logueado, ejecuta el <strong>Test 2</strong> (botón verde) para crear un checkout</li>
+            <li>Una vez logueado, ejecuta el <strong>Test 2</strong> para crear un checkout</li>
             <li>Ejecuta el <strong>Test 3</strong> para verificar que el usuario tiene acceso</li>
             <li>Ejecuta el <strong>Test 4</strong> varias veces para probar el rate limiting</li>
+            <li>Explora las demos de <strong>video con watermark</strong> y <strong>contenido protegido</strong></li>
           </ol>
-          <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
-            <p className="text-sm font-medium text-green-800">
-              ✅ <strong>Sistema Listo:</strong> Todos los tests están funcionando perfectamente. 
-              El checkout mock proporciona toda la funcionalidad necesaria para desarrollo y testing.
-            </p>
-          </div>
-          <div className="mt-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <p className="text-sm font-medium text-blue-800">
-              💡 <strong>Para Producción:</strong> La integración con la API real de Hotmart requerirá 
-              validación adicional de credenciales en el panel de Hotmart, pero toda la infraestructura 
-              está lista y funcionando.
+          <div className="mt-4 p-4 bg-yellow-50 rounded-lg">
+            <p className="text-sm font-medium text-yellow-800">
+              💡 Nota: El usuario de prueba ya tiene acceso configurado al producto 6308462, 
+              por lo que el Test 3 debería mostrar "PERMITIDO".
             </p>
           </div>
         </CardContent>

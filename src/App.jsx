@@ -1,33 +1,35 @@
 import React from 'react';
-    import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
-    import { AnimatePresence } from 'framer-motion';
-    import Layout from '@/components/Layout';
-    import Home from '@/pages/Home';
-    import BsbMaker from '@/pages/BsbMaker';
-    import Consultoria from '@/pages/Consultoria';
-    import Empresa from '@/pages/Empresa.jsx';
-    import Legal from '@/pages/Legal.jsx';
-    import AlgoFund from '@/pages/AlgoFund.jsx';
-    import Blog from '@/pages/Blog.jsx';
-    import Contacto from '@/pages/Contacto.jsx';
-    import GuiaInversion from '@/pages/GuiaInversion.jsx';
-    import Membresias from '@/pages/Membresias.jsx';
-    import MembresiasDB from '@/pages/MembresiasDB.jsx';
-    import UserDashboard from '@/pages/UserDashboard.jsx';
-    import OtrosServicios from '@/pages/OtrosServicios.jsx';
-    import Formacion from '@/pages/Formacion.jsx';
-    import AccessPanel from '@/pages/AccessPanel.jsx';
-    import AcademiaDashboard from '@/pages/AcademiaDashboard.jsx';
-    import ModuloAcademia from '@/pages/ModuloAcademia.jsx';
-    import CompraExitosa from '@/pages/CompraExitosa.jsx';
-    import CheckoutPage from '@/pages/CheckoutPage.jsx';
-    import ScrollToTop from '@/components/ScrollToTop';
-    import { AuthProvider } from '@/contexts/SupabaseAuthContext';
-    import ProtectedRoute from '@/components/ProtectedRoute';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+import Layout from '@/components/Layout';
+import Home from '@/pages/Home';
+import BsbMaker from '@/pages/BsbMaker';
+import Consultoria from '@/pages/Consultoria';
+import Empresa from '@/pages/Empresa.jsx';
+import Legal from '@/pages/Legal.jsx';
+import AlgoFund from '@/pages/AlgoFund.jsx';
+import Blog from '@/pages/Blog.jsx';
+import Contacto from '@/pages/Contacto.jsx';
+import GuiaInversion from '@/pages/GuiaInversion.jsx';
+import Membresias from '@/pages/payments/Membresias.jsx';
+import MembresiasDB from '@/pages/payments/MembresiasDB.jsx';
+import UserDashboard from '@/pages/dashboard/UserDashboard.jsx';
+import OtrosServicios from '@/pages/OtrosServicios.jsx';
+import Formacion from '@/pages/Formacion.jsx';
+import AccessPanel from '@/pages/admin/AccessPanel.jsx';
+import AcademiaDashboard from '@/pages/dashboard/AcademiaDashboard.jsx';
+import ModuloAcademia from '@/pages/ModuloAcademia.jsx';
+import CompraExitosa from '@/pages/payments/CompraExitosa.jsx';
+import CheckoutPage from '@/pages/payments/CheckoutPage.jsx';
+import ScrollToTop from '@/components/ScrollToTop';
+import { AuthProvider } from '@/contexts/SupabaseAuthContext';
+import ProtectedRoute from '@/components/ProtectedRoute';
 import AcademyProtectedRoute from '@/components/AcademyProtectedRoute';
-import Login from '@/pages/Login';
-import SignUp from '@/pages/SignUp';
-import TestPageSimple from '@/pages/TestPageSimple';    function App() {
+import Login from '@/pages/auth/Login';
+import SignUp from '@/pages/auth/SignUp';
+import TestPageSimple from '@/pages/testing/TestPageSimple';
+
+function App() {
       const location = useLocation();
 
       const oldAcademyRoutes = [
@@ -53,8 +55,8 @@ import TestPageSimple from '@/pages/TestPageSimple';    function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/bsb-maker" element={<BsbMaker />} />
                 <Route path="/consultoria" element={<Consultoria />} />
-                <Route path="/membresias" element={<Membresias />} />
-                <Route path="/membresias-db" element={<MembresiasDB />} />
+                <Route path="/membresias" element={<MembresiasDB />} />
+                <Route path="/membresias-legacy" element={<Membresias />} />
                 <Route path="/dashboard" element={
                   <ProtectedRoute>
                     <UserDashboard />

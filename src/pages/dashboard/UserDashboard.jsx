@@ -69,11 +69,17 @@ const UserDashboard = () => {
       .eq('user_id', user.id)
       .eq('status', 'active')
       .order('created_at', { ascending: false })
-      .limit(1)
-      .single();
+      .limit(1);
 
-    if (data) {
-      setSubscription(data);
+    if (error) {
+      console.error('Error loading subscription:', error);
+      return;
+    }
+
+    if (data && data.length > 0) {
+      setSubscription(data[0]);
+    } else {
+      setSubscription(null);
     }
   };
 

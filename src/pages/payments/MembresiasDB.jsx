@@ -53,14 +53,21 @@ const MembresiasDB = () => {
         `)
         .eq('user_id', user.id)
         .eq('status', 'active')
-        .single();
+        .limit(1);
 
-      if (data) {
-        setUserSubscription(data);
+      if (error) {
+        console.error('Error loading user subscription:', error);
+        return;
+      }
+
+      if (data && data.length > 0) {
+        setUserSubscription(data[0]);
+      } else {
+        setUserSubscription(null);
       }
     } catch (error) {
-      // No active subscription is fine
       console.log('No active subscription found');
+      setUserSubscription(null);
     }
   };
 
@@ -76,12 +83,14 @@ const MembresiasDB = () => {
     setTimeout(() => {
       navigate('/checkout', {
         state: {
-          planId: plan.id,
-          planName: plan.name,
+          id: plan.id,
+          name: plan.name,
           price: plan.price,
           currency: plan.currency,
+          description: plan.description,
           features: plan.features,
-          duration: plan.duration_months
+          duration_months: plan.duration_months,
+          stripe_price_id: plan.stripe_price_id
         }
       });
       setLoadingPlan(null);
