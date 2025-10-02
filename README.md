@@ -55,6 +55,9 @@ VITE_HOTMART_CLIENT_ID=tu_hotmart_client_id
 VITE_HOTMART_CLIENT_SECRET=tu_hotmart_client_secret
 VITE_HOTMART_PRODUCT_ID=tu_hotmart_product_id
 
+# Resend (para envío de emails)
+RESEND_API_KEY=tu_resend_api_key
+
 # Configuración de entorno
 VITE_APP_URL=http://localhost:5173
 ```
@@ -245,7 +248,48 @@ const testCredentials = {
 };
 ```
 
-## 🔧 Configuración de Hotmart
+## � Sistema de Emails con Resend
+
+### Variables Requeridas
+```env
+RESEND_API_KEY=tu_resend_api_key
+```
+
+### Configuración de Resend
+1. Crear cuenta en [resend.com](https://resend.com)
+2. Generar API Key en el dashboard
+3. Configurar dominio personalizado (opcional)
+4. Agregar `RESEND_API_KEY` a las variables de entorno
+
+### Tipos de Email Disponibles
+- **welcome**: Email de bienvenida para nuevos usuarios
+- **preregistration_confirmation**: Confirmación de preregistro BSB Maker
+- **purchase_confirmation**: Confirmación de compra/suscripción
+- **subscription_activated**: Notificación de membresía activada
+- **contact_form**: Formularios de contacto (interno)
+- **service_inquiry**: Consultas de servicios (interno)
+
+### Uso del Servicio
+```javascript
+import emailService from '@/lib/emailService';
+
+// Enviar email de bienvenida
+await emailService.sendWelcomeEmail({
+  name: 'Juan Pérez',
+  email: 'juan@example.com'
+});
+
+// Enviar confirmación de compra
+await emailService.sendPurchaseConfirmation({
+  name: 'Juan Pérez',
+  email: 'juan@example.com',
+  planName: 'Premium',
+  amount: '$49/mes',
+  transactionId: 'tx_123456'
+});
+```
+
+## �🔧 Configuración de Hotmart
 
 ### Variables Requeridas
 ```env
