@@ -5,7 +5,7 @@ import { useUserAccess } from '@/hooks/useUserAccess';
 import { Loader2, Lock, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const AcademyProtectedRoute = ({ children, productId = '6308462' }) => {
+const AcademyProtectedRoute = ({ children, productId = '6308462', redirectToMemberships = false }) => {
   const { user, loading: authLoading } = useAuth();
   const { hasAccess, isLoading: accessLoading, error, refreshAccess } = useUserAccess(productId);
   const location = useLocation();
@@ -54,6 +54,11 @@ const AcademyProtectedRoute = ({ children, productId = '6308462' }) => {
     );
   }
 
+  // Redirigir a membresías si se especifica y no tiene acceso
+  if (!hasAccess && redirectToMemberships) {
+    return <Navigate to="/membresias" replace />;
+  }
+
   // Mostrar página de acceso denegado si no tiene acceso
   if (!hasAccess) {
     return (
@@ -66,7 +71,7 @@ const AcademyProtectedRoute = ({ children, productId = '6308462' }) => {
             necesitas una membresía activa.
           </p>
           <div className="space-y-2">
-            <Button onClick={() => window.location.href = '/formacion'} className="w-full">
+            <Button onClick={() => window.location.href = '/membresias'} className="w-full">
               Ver planes disponibles
             </Button>
             <Button onClick={refreshAccess} variant="outline" className="w-full">

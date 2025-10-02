@@ -3,10 +3,11 @@ import React from 'react';
     import { motion } from 'framer-motion';
     import { Link } from 'react-router-dom';
     import { Button } from '@/components/ui/button';
-    import { ArrowRight, Bot, Briefcase, BookOpen, Mail, Star } from 'lucide-react';
+    import { ArrowRight, Bot, Briefcase, BookOpen, Mail, Star, LogIn, User } from 'lucide-react';
     import { Input } from '@/components/ui/input';
     import { Textarea } from '@/components/ui/textarea';
     import { useToast } from "@/components/ui/use-toast";
+    import { useAuth } from '@/contexts/SupabaseAuthContext';
 
     const containerVariants = {
       hidden: { opacity: 0 },
@@ -117,6 +118,8 @@ import React from 'react';
     };
 
     const Home = () => {
+      const { user } = useAuth();
+
       return (
         <>
           <Helmet>
@@ -145,7 +148,24 @@ import React from 'react';
                         Explorar BSB Maker <ArrowRight className="ml-2 h-5 w-5" />
                       </Link>
                     </Button>
-                    <Button asChild size="lg" variant="secondary">
+                    
+                    {user ? (
+                      <Button asChild size="lg" variant="secondary">
+                        <Link to="/academia">
+                          <BookOpen className="mr-2 h-5 w-5" />
+                          Acceder a Academia
+                        </Link>
+                      </Button>
+                    ) : (
+                      <Button asChild size="lg" variant="secondary">
+                        <Link to="/membresias">
+                          <BookOpen className="mr-2 h-5 w-5" />
+                          Ver Membresías
+                        </Link>
+                      </Button>
+                    )}
+                    
+                    <Button asChild size="lg" variant="outline">
                       <Link to="/guia-inversion">Descubrir mi Servicio Ideal</Link>
                     </Button>
                   </motion.div>

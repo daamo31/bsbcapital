@@ -99,6 +99,13 @@ function App() {
                   </ProtectedRoute>
                 } />
 
+                {/* Ruta inteligente de Academia */}
+                <Route path="/academia" element={
+                  <AcademyProtectedRoute redirectToMemberships={true}>
+                    <Navigate to="/academia/dashboard" replace />
+                  </AcademyProtectedRoute>
+                } />
+
                 {/* Nuevas rutas de Academia integrada */}
                 <Route path="/academia/dashboard" element={
                   <AcademyProtectedRoute>

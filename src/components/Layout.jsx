@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
     import { Link, useLocation } from 'react-router-dom';
     import { motion, AnimatePresence } from 'framer-motion';
-    import { ArrowRight, Menu, X, Loader2 } from 'lucide-react';
+    import { ArrowRight, Menu, X, Loader2, LogIn, User } from 'lucide-react';
     import { Button } from '@/components/ui/button';
     import { Input } from '@/components/ui/input';
     import { useToast } from '@/components/ui/use-toast';
     import { supabase } from '@/lib/customSupabaseClient';
+    import { useAuth } from '@/contexts/SupabaseAuthContext';
     import CookieConsent from '@/components/CookieConsent';
 
     const Footer = () => {
@@ -123,6 +124,7 @@ import React, { useState, useEffect } from 'react';
 
     const Header = () => {
       const [isOpen, setIsOpen] = useState(false);
+      const { user } = useAuth();
 
       const navLinks = [
         { name: 'Inicio', href: '/' },
@@ -151,9 +153,24 @@ import React, { useState, useEffect } from 'react';
               ))}
             </nav>
             <div className="hidden lg:flex items-center gap-4">
-               <Button asChild>
+               <Button asChild variant="outline">
                   <Link to="/contacto">Contactar</Link>
                 </Button>
+                {user ? (
+                  <Button asChild>
+                    <Link to="/dashboard">
+                      <User className="mr-2 h-4 w-4" />
+                      Mi Cuenta
+                    </Link>
+                  </Button>
+                ) : (
+                  <Button asChild>
+                    <Link to="/login">
+                      <LogIn className="mr-2 h-4 w-4" />
+                      Iniciar Sesión
+                    </Link>
+                  </Button>
+                )}
             </div>
             <div className="lg:hidden flex items-center gap-2">
               <Button onClick={toggleMenu} variant="ghost" size="icon">
@@ -176,9 +193,24 @@ import React, { useState, useEffect } from 'react';
                     </Link>
                   ))}
                   <div className="border-t pt-6 mt-4 flex flex-col gap-4">
-                    <Button asChild className="w-full" onClick={closeMenu}>
+                    <Button asChild className="w-full" variant="outline" onClick={closeMenu}>
                       <Link to="/contacto">Contactar</Link>
                     </Button>
+                    {user ? (
+                      <Button asChild className="w-full" onClick={closeMenu}>
+                        <Link to="/dashboard">
+                          <User className="mr-2 h-4 w-4" />
+                          Mi Cuenta
+                        </Link>
+                      </Button>
+                    ) : (
+                      <Button asChild className="w-full" onClick={closeMenu}>
+                        <Link to="/login">
+                          <LogIn className="mr-2 h-4 w-4" />
+                          Iniciar Sesión
+                        </Link>
+                      </Button>
+                    )}
                   </div>
                 </div>
               </motion.div>
