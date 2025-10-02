@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -103,6 +103,19 @@ const MembresiasDB = () => {
     }
   }, [user?.id]);
 
+  // Debug effect (solo cuando cambian los datos importantes)
+  useEffect(() => {
+    if (plans?.length > 0) {
+      console.log('✅ Planes cargados correctamente:', {
+        plansCount: plans?.length,
+        loading,
+        userSubscription: userSubscription?.status,
+        hasUser: !!user,
+        plansWithIds: plans?.every(p => p.id)
+      });
+    }
+  }, [plans?.length]);
+
   const loadPlans = async () => {
     if (loadingPlans) return;
     
@@ -116,13 +129,12 @@ const MembresiasDB = () => {
         throw error;
       }
       
-      console.log('Planes cargados:', data);
-      
       // Si no hay datos de la DB, usar planes de fallback
       if (!data || data.length === 0) {
         console.log('No hay planes en DB, usando fallback');
         setPlans(fallbackPlans);
       } else {
+        console.log('Planes de DB cargados:', data.map(p => ({ name: p.name, id: p.id, stripe_price_id: p.stripe_price_id })));
         setPlans(data);
       }
     } catch (error) {
@@ -175,26 +187,29 @@ const MembresiasDB = () => {
   };
 
   const handleSelectPlan = (plan) => {
+    console.log('🚀 Plan seleccionado:', plan.name);
+    
     if (!user) {
       navigate('/login');
       return;
     }
 
     setLoadingPlan(plan.id);
+
+    const planData = {
+      id: plan.id,
+      name: plan.name,
+      price: plan.price,
+      currency: plan.currency,
+      description: plan.description,
+      features: plan.features,
+      duration_months: plan.duration_months,
+      stripe_price_id: plan.stripe_price_id
+    };
     
     setTimeout(() => {
-      navigate('/checkout', {
-        state: {
-          id: plan.id,
-          name: plan.name,
-          price: plan.price,
-          currency: plan.currency,
-          description: plan.description,
-          features: plan.features,
-          duration_months: plan.duration_months,
-          stripe_price_id: plan.stripe_price_id
-        }
-      });
+      console.log('➡️ Navegando a checkout para:', plan.name);
+      navigate('/checkout', { state: planData });
       setLoadingPlan(null);
     }, 500);
   };
@@ -230,7 +245,7 @@ const MembresiasDB = () => {
     const isSubscribed = userSubscription && userSubscription.subscription_plans?.name === plan.name;
     
     let buttonVariant = plan.highlight ? 'default' : 'outline';
-    let buttonClassName = "w-full";
+    let buttonClassName = "w-full relative z-10";
 
     if (plan.name.toLowerCase().includes('premium')) {
       buttonVariant = 'default';
@@ -273,8 +288,19 @@ const MembresiasDB = () => {
           <Button 
             className={buttonClassName} 
             variant={buttonVariant} 
-            onClick={() => handleSelectPlan(plan)}
+            onMouseUp={() => {
+              console.log('🔥 Button clicked:', plan.name);
+              console.log('🔍 Button disabled state:', isLoading || isSubscribed);
+              console.log('🔍 isLoading:', isLoading, 'isSubscribed:', isSubscribed);
+              if (!isLoading && !isSubscribed) {
+                handleSelectPlan(plan);
+              } else {
+                console.log('❌ Button is disabled, not executing');
+              }
+            }}
+            onMouseDown={() => console.log('🖱️ Mouse down en botón:', plan.name)}
             disabled={isLoading || isSubscribed}
+            style={{ pointerEvents: 'auto', zIndex: 10 }}
           >
             {isLoading ? (
               <Loader2 className="h-4 w-4 animate-spin mr-2" />
@@ -371,8 +397,8 @@ const MembresiasDB = () => {
     );
   };
 
-  // Crear tabla de comparación basada en los planes de la DB
-  const createComparisonFeatures = () => {
+  // Crear tabla de comparación basada en los planes de la DB (optimizado)
+  const comparisonFeatures = useMemo(() => {
     if (plans.length === 0) return [];
     
     return [
@@ -382,9 +408,7 @@ const MembresiasDB = () => {
       { feature: 'Comunidad Privada', plans: plans.reduce((acc, plan) => ({ ...acc, [plan.name]: plan.name.toLowerCase().includes('premium') || plan.name.toLowerCase().includes('wealth') }), {}) },
       { feature: 'Soporte Premium', plans: plans.reduce((acc, plan) => ({ ...acc, [plan.name]: plan.name.toLowerCase().includes('premium') || plan.name.toLowerCase().includes('wealth') }), {}) },
     ];
-  };
-
-  const comparisonFeatures = createComparisonFeatures();
+  }, [plans]);
 
   if (loading) {
     return (
@@ -442,7 +466,7 @@ const MembresiasDB = () => {
         )}
 
         <div className="mt-16 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
-          {console.log('Renderizando planes:', plans) || plans.map((plan) => (
+          {plans.map((plan) => (
             <MembershipCard key={plan.id} plan={plan} />
           ))}
           {plans.length === 0 && !loading && (

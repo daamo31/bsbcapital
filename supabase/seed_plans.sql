@@ -2,9 +2,16 @@
 -- EJECUTAR ESTOS COMANDOS EN TU SUPABASE SQL EDITOR
 -- ================================================================
 -- Ve a: https://supabase.com/dashboard/project/ietktalvzyykynhdkqhv/sql/new
--- Copia y pega estos comandos uno por uno:
 
--- 1. INSERTAR PLAN BÁSICO
+-- 1. PRIMERO: Crear constraint único para stripe_price_id
+ALTER TABLE public.subscription_plans 
+ADD CONSTRAINT subscription_plans_stripe_price_id_unique 
+UNIQUE (stripe_price_id);
+
+-- 2. LIMPIAR DATOS EXISTENTES (opcional, solo si hay datos basura)
+DELETE FROM public.subscription_plans WHERE stripe_price_id LIKE 'price_temp_%' OR stripe_price_id IN ('price_basic', 'price_premium', 'price_elite');
+
+-- 3. INSERTAR PLAN BÁSICO
 INSERT INTO public.subscription_plans (id, name, description, price, currency, duration_months, features, stripe_price_id, stripe_product_id, is_active) 
 VALUES (
   gen_random_uuid(),
@@ -23,10 +30,9 @@ VALUES (
   'price_1SDKO8JmSk3VG9oiCLuGoE4s',
   'prod_T9dfdXY3748Dlv',
   true
-)
-ON CONFLICT (stripe_price_id) DO NOTHING;
+);
 
--- 2. INSERTAR PLAN PREMIUM  
+-- 4. INSERTAR PLAN PREMIUM  
 INSERT INTO public.subscription_plans (id, name, description, price, currency, duration_months, features, stripe_price_id, stripe_product_id, is_active)
 VALUES (
   gen_random_uuid(),
@@ -48,10 +54,9 @@ VALUES (
   'price_1SDKVXJmSk3VG9oiLEm9JOoD',
   'prod_T9dnmdsdbj1ETL',
   true
-)
-ON CONFLICT (stripe_price_id) DO NOTHING;
+);
 
--- 3. INSERTAR PLAN VIP
+-- 5. INSERTAR PLAN VIP
 INSERT INTO public.subscription_plans (id, name, description, price, currency, duration_months, features, stripe_price_id, stripe_product_id, is_active)
 VALUES (
   gen_random_uuid(),
@@ -75,10 +80,9 @@ VALUES (
   'price_1SDKb2JmSk3VG9oiJr1unLZZ',
   'prod_T9dspdTkGGM7Sy',
   true
-)
-ON CONFLICT (stripe_price_id) DO NOTHING;
+);
 
--- 4. VERIFICAR QUE SE INSERTARON
+-- 6. VERIFICAR QUE SE INSERTARON
 SELECT 
   name,
   price,
@@ -89,19 +93,5 @@ FROM public.subscription_plans
 WHERE is_active = true
 ORDER BY price ASC;
 
--- 5. INSERTAR CONTENIDO DE EJEMPLO
-INSERT INTO public.course_content (id, title, description, content_type, duration_minutes, required_plans, course_id, order_index, is_free)
-VALUES 
-(gen_random_uuid(), 'Bienvenida a BSB Capital', 'Video de introducción y bienvenida al mundo del trading', 'video', 15, '{}', gen_random_uuid(), 0, true),
-(gen_random_uuid(), 'Introducción al Trading', 'Conceptos básicos del trading financiero', 'video', 45, (SELECT ARRAY[id] FROM public.subscription_plans WHERE name = 'Plan Básico'), gen_random_uuid(), 1, false),
-(gen_random_uuid(), 'Análisis Técnico Básico', 'Fundamentos del análisis técnico y lectura de gráficos', 'video', 60, (SELECT ARRAY[id] FROM public.subscription_plans WHERE name = 'Plan Básico'), gen_random_uuid(), 2, false)
-ON CONFLICT DO NOTHING;
-
--- 6. VERIFICAR CONTENIDO
-SELECT 
-  title,
-  content_type,
-  duration_minutes,
-  is_free
-FROM public.course_content
-ORDER BY order_index ASC;
+-- 7. VERIFICAR FUNCIÓN RPC
+SELECT * FROM get_available_plans_with_content();

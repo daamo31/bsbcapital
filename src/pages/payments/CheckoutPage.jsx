@@ -27,8 +27,8 @@ import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { supabase } from '@/lib/customSupabaseClient';
 import { useToast } from '@/components/ui/use-toast';
 
-// Cargar Stripe con la clave pública del .env.local
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+// Cargar Stripe con clave de test para desarrollo (hardcoded temporalmente)
+const stripePromise = loadStripe('pk_test_51SD5YXJmSk3VG9oizOg5SRv8Vla8VEJQkKN9pMKVV2g7XZOdQG7YjnZ2fvOhHyO1HQAA0DyUWu0p7hT6qfhvVh6I00FQhV3mB0');
 
 const CheckoutPage = () => {
   const [searchParams] = useSearchParams();

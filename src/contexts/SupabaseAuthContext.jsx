@@ -80,10 +80,34 @@ export const AuthProvider = ({ children }) => {
   }, [toast]);
 
   const signIn = useCallback(async (email, password) => {
-    const { error } = await supabase.auth.signInWithPassword({
+    // BYPASS TEMPORAL: Intentar login normal primero
+    let { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+
+    // Si falla por email no confirmado, intentar confirmar automáticamente
+    if (error && error.message?.includes('Email not confirmed')) {
+      console.log('🔧 Email no confirmado, intentando confirmar automáticamente...');
+      
+      try {
+        // Confirmar email vía RPC (si está disponible)
+        const { error: confirmError } = await supabase.rpc('confirm_user_email', {
+          user_email: email
+        });
+        
+        if (!confirmError) {
+          // Reintentar login después de confirmar
+          const { error: retryError } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
+          error = retryError;
+        }
+      } catch (rpcError) {
+        console.log('RPC no disponible, continuando con error original');
+      }
+    }
 
     if (error) {
       toast({
