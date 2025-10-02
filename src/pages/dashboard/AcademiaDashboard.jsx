@@ -14,15 +14,19 @@ import {
   Award,
   TrendingUp,
   Users,
-  FileText
+  FileText,
+  Lock
 } from 'lucide-react';
 import { supabase } from '@/lib/customSupabaseClient';
+import { useUserAccess } from '@/hooks/useUserAccess';
+import ModuleCard from '@/components/ModuleCard';
 
 const AcademiaDashboard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [progress, setProgress] = useState(0);
   const [completedModules, setCompletedModules] = useState([]);
+  const { hasAccess, isLoading, userSubscription } = useUserAccess('academia');
 
   const modules = [
     {
@@ -179,59 +183,12 @@ const AcademiaDashboard = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                {modules.map((module) => (
-                  <motion.div
-                    key={module.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-2 mb-2">
-                          <BookOpen className="h-5 w-5 text-primary" />
-                          <h3 className="font-semibold">{module.title}</h3>
-                          {module.completed && (
-                            <CheckCircle className="h-5 w-5 text-green-500" />
-                          )}
-                        </div>
-                        <p className="text-sm text-gray-600 mb-3">{module.description}</p>
-                        
-                        <div className="flex items-center space-x-4 text-sm text-gray-500 mb-3">
-                          <span>{module.lessons} lecciones</span>
-                          <span>{module.duration}</span>
-                        </div>
-                        
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between text-sm">
-                            <span>Progreso</span>
-                            <span>{module.progress}%</span>
-                          </div>
-                          <Progress value={module.progress} className="h-2" />
-                        </div>
-                      </div>
-                      
-                      <div className="ml-4">
-                        <Button
-                          onClick={() => navigate(`/academia/modulo/${module.id}`)}
-                          size="sm"
-                          variant={module.progress > 0 ? "default" : "outline"}
-                        >
-                          {module.progress > 0 ? (
-                            <>
-                              <Play className="h-4 w-4 mr-1" />
-                              Continuar
-                            </>
-                          ) : (
-                            <>
-                              <Play className="h-4 w-4 mr-1" />
-                              Empezar
-                            </>
-                          )}
-                        </Button>
-                      </div>
-                    </div>
-                  </motion.div>
+                {modules.map((module, index) => (
+                  <ModuleCard 
+                    key={module.id} 
+                    module={module} 
+                    index={index} 
+                  />
                 ))}
               </CardContent>
             </Card>

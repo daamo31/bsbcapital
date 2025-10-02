@@ -41,6 +41,9 @@ import SignUp from '@/pages/auth/SignUp';
 
 // Testing
 import TestPageSimple from '@/pages/testing/TestPageSimple';
+import ContentAccessDemo from '@/components/ContentAccessDemo';
+import HotmartAcademy from '@/pages/content/HotmartAcademy';
+import HotmartIntegrationDemo from '@/pages/content/HotmartIntegrationDemo';
 
 import ScrollToTop from '@/components/ScrollToTop';
 import { AuthProvider } from '@/contexts/SupabaseAuthContext';
@@ -90,6 +93,9 @@ function App() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/test" element={<TestPageSimple />} />
+                <Route path="/demo-acceso" element={<ContentAccessDemo />} />
+                <Route path="/hotmart-academy" element={<HotmartAcademy />} />
+                <Route path="/hotmart-demo" element={<HotmartIntegrationDemo />} />
                 <Route path="/checkout" element={<CheckoutPage />} />
                 <Route path="/compra-exitosa" element={<CompraExitosa />} />
 

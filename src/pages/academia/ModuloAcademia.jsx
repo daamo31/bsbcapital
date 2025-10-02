@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import HotmartVideoPlayer from '@/components/HotmartVideoPlayer';
 import { 
   ArrowLeft, 
   Play, 
@@ -193,17 +194,13 @@ const ModuloAcademia = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                {/* Placeholder para el video */}
-                <div className="aspect-video bg-gray-900 rounded-lg flex items-center justify-center mb-6">
-                  <div className="text-center text-white">
-                    <Play className="h-16 w-16 mx-auto mb-4 opacity-75" />
-                    <p className="text-lg font-medium">Video: {currentLessonData?.title}</p>
-                    <p className="text-sm opacity-75">Duración: {currentLessonData?.duration}</p>
-                    <Button className="mt-4" size="lg">
-                      <Play className="h-5 w-5 mr-2" />
-                      Reproducir
-                    </Button>
-                  </div>
+                {/* Reproductor integrado de Hotmart */}
+                <div className="mb-6">
+                  <HotmartVideoPlayer
+                    contentId={`module_${moduleId}`}
+                    title={currentLessonData?.title}
+                    description={`Lección del módulo: ${module.title}`}
+                  />
                 </div>
 
                 {/* Descripción y notas */}
