@@ -44,6 +44,8 @@ import TestPageSimple from '@/pages/testing/TestPageSimple';
 import ContentAccessDemo from '@/components/ContentAccessDemo';
 import HotmartAcademy from '@/pages/content/HotmartAcademy';
 import HotmartIntegrationDemo from '@/pages/content/HotmartIntegrationDemo';
+import HotmartTestPlayer from '@/components/HotmartTestPlayer';
+import TestNavigationPage from '@/pages/testing/TestNavigationPage';
 
 import ScrollToTop from '@/components/ScrollToTop';
 import { AuthProvider } from '@/contexts/SupabaseAuthContext';
@@ -96,6 +98,14 @@ function App() {
                 <Route path="/demo-acceso" element={<ContentAccessDemo />} />
                 <Route path="/hotmart-academy" element={<HotmartAcademy />} />
                 <Route path="/hotmart-demo" element={<HotmartIntegrationDemo />} />
+                <Route path="/hotmart-test" element={
+                  <HotmartTestPlayer 
+                    contentId="module_1" 
+                    title="Test de Integración Hotmart"
+                    description="Prueba la conexión con Hotmart en diferentes modos"
+                  />
+                } />
+                <Route path="/test-navigation" element={<TestNavigationPage />} />
                 <Route path="/checkout" element={<CheckoutPage />} />
                 <Route path="/compra-exitosa" element={<CompraExitosa />} />
 

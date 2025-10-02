@@ -4,8 +4,8 @@
 class HotmartService {
   constructor() {
     this.baseURL = 'https://developers.hotmart.com/payments'; // API base URL
-    this.clientId = process.env.REACT_APP_HOTMART_CLIENT_ID;
-    this.clientSecret = process.env.REACT_APP_HOTMART_CLIENT_SECRET;
+    this.clientId = import.meta.env.VITE_HOTMART_CLIENT_ID;
+    this.clientSecret = import.meta.env.VITE_HOTMART_CLIENT_SECRET;
     this.accessToken = null;
     this.tokenExpiry = null;
   }
@@ -214,12 +214,12 @@ class HotmartService {
   // Mapeo de IDs internos a productos de Hotmart
   getHotmartProductId(internalContentId) {
     const productMapping = {
-      'module_1': process.env.REACT_APP_HOTMART_BASIC_PRODUCT_ID || 'basic-course',
-      'module_2': process.env.REACT_APP_HOTMART_STANDARD_PRODUCT_ID || 'standard-course', 
-      'module_3': process.env.REACT_APP_HOTMART_PREMIUM_PRODUCT_ID || 'premium-course',
-      'academia': process.env.REACT_APP_HOTMART_FULL_ACADEMIA_ID || 'full-academia',
-      'video_1': process.env.REACT_APP_HOTMART_BASIC_PRODUCT_ID || 'basic-course',
-      'video_2': process.env.REACT_APP_HOTMART_PREMIUM_PRODUCT_ID || 'premium-course'
+      'module_1': import.meta.env.VITE_HOTMART_PRODUCT_ID || '6308462',
+      'module_2': import.meta.env.VITE_HOTMART_PRODUCT_ID || '6308462', 
+      'module_3': import.meta.env.VITE_HOTMART_PRODUCT_ID || '6308462',
+      'academia': import.meta.env.VITE_HOTMART_PRODUCT_ID || '6308462',
+      'video_1': import.meta.env.VITE_HOTMART_PRODUCT_ID || '6308462',
+      'video_2': import.meta.env.VITE_HOTMART_PRODUCT_ID || '6308462'
     };
 
     return productMapping[internalContentId] || internalContentId;
