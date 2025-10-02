@@ -21,6 +21,10 @@ import Blog from '@/pages/content/Blog.jsx';
 import GuiaInversion from '@/pages/content/GuiaInversion.jsx';
 
 // Academia
+import AcademiaIndex from '@/pages/academia/AcademiaIndex.jsx';
+import AcademiaCatalog from '@/pages/academia/AcademiaCatalog.jsx';
+import AcademiaContent from '@/pages/academia/AcademiaContent.jsx';
+import AcademiaAdmin from '@/pages/academia/AcademiaAdmin.jsx';
 import ModuloAcademia from '@/pages/academia/ModuloAcademia.jsx';
 
 // Payments
@@ -41,6 +45,7 @@ import SignUp from '@/pages/auth/SignUp';
 
 // Testing
 import TestPageSimple from '@/pages/testing/TestPageSimple';
+import TestSystemPage from '@/pages/TestSystemPage';
 import ContentAccessDemo from '@/components/ContentAccessDemo';
 import HotmartAcademy from '@/pages/content/HotmartAcademy';
 import HotmartIntegrationDemo from '@/pages/content/HotmartIntegrationDemo';
@@ -94,7 +99,8 @@ function App() {
                 <Route path="/formacion" element={<Formacion />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<SignUp />} />
-                <Route path="/test" element={<TestPageSimple />} />
+                <Route path="/test" element={<TestSystemPage />} />
+                <Route path="/test-simple" element={<TestPageSimple />} />
                 <Route path="/demo-acceso" element={<ContentAccessDemo />} />
                 <Route path="/hotmart-academy" element={<HotmartAcademy />} />
                 <Route path="/hotmart-demo" element={<HotmartIntegrationDemo />} />
@@ -115,24 +121,43 @@ function App() {
                   </ProtectedRoute>
                 } />
 
-                {/* Ruta inteligente de Academia */}
-                <Route path="/academia" element={
-                  <AcademyProtectedRoute redirectToMemberships={true}>
-                    <Navigate to="/academia/dashboard" replace />
-                  </AcademyProtectedRoute>
-                } />
+                {/* Academia Routes - Nueva estructura */}
+                <Route path="/academia" element={<AcademiaIndex />}>
+                  <Route path="catalogo" element={<AcademiaCatalog />} />
+                  <Route path="contenido" element={
+                    <AcademyProtectedRoute>
+                      <AcademiaContent />
+                    </AcademyProtectedRoute>
+                  } />
+                  <Route path="admin" element={
+                    <ProtectedRoute adminOnly={true}>
+                      <AcademiaAdmin />
+                    </ProtectedRoute>
+                  } />
+                  <Route path="modulo/:moduleId" element={
+                    <AcademyProtectedRoute>
+                      <ModuloAcademia />
+                    </AcademyProtectedRoute>
+                  } />
+                </Route>
 
-                {/* Nuevas rutas de Academia integrada */}
+                {/* Rutas de Dashboard separadas */}
                 <Route path="/academia/dashboard" element={
                   <AcademyProtectedRoute>
                     <AcademiaDashboard />
                   </AcademyProtectedRoute>
                 } />
-                <Route path="/academia/modulo/:moduleId" element={
-                  <AcademyProtectedRoute>
-                    <ModuloAcademia />
-                  </AcademyProtectedRoute>
+
+                {/* Rutas de Testing */}
+                <Route path="/test/hotmart" element={
+                  <HotmartTestPlayer 
+                    contentId="module_1" 
+                    title="Test de Integración Hotmart"
+                    description="Prueba la conexión con Hotmart en diferentes modos"
+                  />
                 } />
+                <Route path="/test/user-status" element={<TestNavigationPage />} />
+                <Route path="/test/tools" element={<ContentAccessDemo />} />
 
                 {oldAcademyRoutes.map(path => (
                   <Route key={path} path={path} element={<Navigate to="/formacion" replace />} />

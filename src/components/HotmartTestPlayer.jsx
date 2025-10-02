@@ -19,8 +19,11 @@ import {
 } from 'lucide-react';
 
 const HotmartTestPlayer = ({ contentId, title, description, mockContent = false }) => {
-  const { hasAccess, isLoading, error, hotmartData } = useUserAccess(contentId);
+  const { hasAccess, isLoading, error, hotmartData, userSubscription } = useUserAccess(contentId);
   const [testMode, setTestMode] = useState('demo'); // 'demo', 'mock', 'real'
+  
+  // Detectar si estamos en modo premium simulado
+  const isPremiumMockMode = hotmartData?.mockMode || userSubscription?.id === 'mock-premium-sub';
 
   // Datos simulados para testing
   const mockVideoData = {
@@ -264,6 +267,19 @@ const HotmartTestPlayer = ({ contentId, title, description, mockContent = false 
 
   return (
     <div className="max-w-4xl mx-auto p-6">
+      {/* Indicador de estado premium */}
+      {isPremiumMockMode && (
+        <div className="mb-4 p-3 bg-gradient-to-r from-purple-100 to-pink-100 border border-purple-300 rounded-lg">
+          <div className="flex items-center gap-2">
+            <span className="text-2xl">👑</span>
+            <div>
+              <p className="text-purple-800 font-semibold">¡Modo Premium Simulado Activo!</p>
+              <p className="text-purple-600 text-sm">Acceso completo a todo el contenido de prueba</p>
+            </div>
+          </div>
+        </div>
+      )}
+      
       <div className="mb-6">
         <h1 className="text-2xl font-bold mb-2">Prueba de Integración Hotmart</h1>
         <p className="text-gray-600">

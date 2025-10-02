@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import UserStatusChecker from '@/components/UserStatusChecker';
 import { 
   Play, 
   Video, 
@@ -108,6 +109,12 @@ const TestNavigationPage = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Sistema de Usuario y Credenciales */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">👤 Usuario de Prueba</h2>
+          <UserStatusChecker />
+        </div>
 
         {/* Grid de tests */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

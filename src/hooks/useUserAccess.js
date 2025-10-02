@@ -24,6 +24,71 @@ export const useUserAccess = (contentId = null) => {
       setIsLoading(true);
       setError(null);
 
+      // 🧪 MODO DE PRUEBA: Simular membresía premium automáticamente
+      const isTestMode = window.location.pathname.includes('/test') || 
+                        window.location.pathname.includes('/hotmart') ||
+                        import.meta.env.VITE_FORCE_PREMIUM_ACCESS === 'true';
+
+      if (isTestMode) {
+        // Simular suscripción premium para testing
+        const mockPremiumSubscription = {
+          id: 'mock-premium-sub',
+          user_id: user.id,
+          plan_id: 3,
+          status: 'active',
+          starts_at: new Date().toISOString(),
+          expires_at: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1 año
+          subscription_plans: {
+            id: 3,
+            name: 'Premium BSB Capital',
+            features: ['Acceso completo a academia', 'Todos los videos', 'Recursos descargables', 'Soporte prioritario'],
+            duration_months: 12
+          }
+        };
+
+        setUserSubscription(mockPremiumSubscription);
+        setHasAccess(true);
+
+        // Simular datos de contenido de Hotmart para testing
+        if (contentId) {
+          const mockContentData = {
+            videos: [
+              {
+                id: 'mock_video_1',
+                title: `Video principal - ${contentId}`,
+                duration: '25:30',
+                stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+              },
+              {
+                id: 'mock_video_2', 
+                title: 'Conceptos avanzados',
+                duration: '18:45',
+                stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'
+              }
+            ],
+            documents: [
+              { title: 'Manual del curso PDF', type: 'PDF', size: '2.5 MB', url: '/mock/manual.pdf' },
+              { title: 'Plantilla Excel', type: 'XLSX', size: '1.2 MB', url: '/mock/plantilla.xlsx' }
+            ],
+            audios: [
+              { title: 'Podcast bonus', duration: '18:30', url: '/mock/podcast.mp3' }
+            ]
+          };
+
+          setContentData(mockContentData);
+          setVideoStreamURL(mockContentData.videos[0].stream_url);
+          setHotmartData({ 
+            hasAccess: true, 
+            status: 'ACTIVE',
+            subscription: mockPremiumSubscription,
+            mockMode: true 
+          });
+        }
+
+        setIsLoading(false);
+        return true;
+      }
+
       // Verificar suscripción local primero (para UI/UX rápido)
       const { data: subscription, error: subError } = await supabase
         .from('user_subscriptions')
