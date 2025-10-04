@@ -3,7 +3,7 @@ import { supabase } from './customSupabaseClient';
 
 class EmailService {
   constructor() {
-    this.functionName = 'send-email';
+    this.functionName = 'resend-email-secure'; // Solo usar la función segura
   }
 
   /**
@@ -226,6 +226,7 @@ class EmailService {
 const emailService = new EmailService();
 
 export default emailService;
+export { emailService }; // También como named export para compatibilidad
 
 // Exportar funciones individuales para uso directo
 export const {
@@ -235,6 +236,9 @@ export const {
   sendSubscriptionActivated,
   sendContactForm,
   sendServiceInquiry,
+  sendConsultationConfirmation,
+  sendConsultationReminder,
+  sendConsultationCompleted,
   sendCustomEmail,
   healthCheck
 } = emailService;

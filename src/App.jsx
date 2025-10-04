@@ -48,6 +48,7 @@ import TestPageSimple from '@/pages/testing/TestPageSimple';
 import TestSystemPage from '@/pages/TestSystemPage';
 import ContentAccessDemo from '@/components/ContentAccessDemo';
 import HotmartAcademy from '@/pages/content/HotmartAcademy';
+import EmailTester from '@/pages/EmailTester';
 import HotmartIntegrationDemo from '@/pages/content/HotmartIntegrationDemo';
 import HotmartTestPlayer from '@/components/HotmartTestPlayer';
 import TestNavigationPage from '@/pages/testing/TestNavigationPage';
@@ -149,6 +150,7 @@ function App() {
                 } />
 
                 {/* Rutas de Testing */}
+                <Route path="/email-tester" element={<EmailTester />} />
                 <Route path="/test/hotmart" element={
                   <HotmartTestPlayer 
                     contentId="module_1" 
