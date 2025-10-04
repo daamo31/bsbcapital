@@ -45,6 +45,18 @@ serve(async (req) => {
       service_inquiry: {
         subject: '🔔 Nueva consulta de servicio - BSB Capital',
         html: generateServiceInquiryEmail(data)
+      },
+      consultation_confirmation: {
+        subject: '📅 Consultoría confirmada - BSB Capital',
+        html: generateConsultationConfirmationEmail(data)
+      },
+      consultation_reminder: {
+        subject: '⏰ Recordatorio: Tu consultoría es mañana - BSB Capital',
+        html: generateConsultationReminderEmail(data)
+      },
+      consultation_completed: {
+        subject: '📋 Resumen de tu consultoría - BSB Capital',
+        html: generateConsultationCompletedEmail(data)
       }
     }
 
@@ -475,4 +487,267 @@ function generateServiceInquiryEmail(data) {
     </body>
     </html>
   `
+}
+
+// Template para confirmación de consultoría
+function generateConsultationConfirmationEmail(data: any) {
+  const { name, email, consultationType, scheduledDate, scheduledTime, duration, consultationGoals, meetingUrl } = data;
+  
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Consultoría Confirmada - BSB Capital</title>
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f8fafc; }
+        .container { max-width: 600px; margin: 0 auto; background-color: white; }
+        .header { background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); color: white; padding: 40px 20px; text-align: center; }
+        .content { padding: 40px 30px; }
+        .consultation-details { background-color: #f0f9ff; padding: 20px; border-radius: 8px; border-left: 4px solid #3b82f6; margin: 20px 0; }
+        .button { display: inline-block; background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%); color: white; padding: 12px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0; }
+        .footer { background-color: #f1f5f9; padding: 30px; text-align: center; color: #64748b; font-size: 14px; }
+        .next-steps { background-color: #fef3c7; padding: 20px; border-radius: 8px; border-left: 4px solid #f59e0b; margin: 20px 0; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>✅ Consultoría Confirmada</h1>
+          <p>¡Tu sesión de asesoramiento está programada!</p>
+        </div>
+        
+        <div class="content">
+          <h2>Hola ${name || 'Cliente'},</h2>
+          
+          <p>¡Excelente! Tu consultoría con BSB Capital ha sido confirmada exitosamente. Estamos emocionados de ayudarte a alcanzar tus objetivos financieros.</p>
+          
+          <div class="consultation-details">
+            <h3>📅 Detalles de tu consultoría:</h3>
+            <ul>
+              <li><strong>Tipo:</strong> ${consultationType || 'Consultoría Financiera'}</li>
+              <li><strong>Fecha:</strong> ${scheduledDate || 'Por confirmar'}</li>
+              <li><strong>Hora:</strong> ${scheduledTime || 'Por confirmar'}</li>
+              <li><strong>Duración:</strong> ${duration || '60 minutos'}</li>
+              <li><strong>Modalidad:</strong> Videollamada</li>
+            </ul>
+          </div>
+          
+          ${consultationGoals ? `
+          <div>
+            <h3>🎯 Tus objetivos para la sesión:</h3>
+            <p><em>"${consultationGoals}"</em></p>
+          </div>
+          ` : ''}
+          
+          <div class="next-steps">
+            <h3>📋 Próximos pasos:</h3>
+            <ol>
+              <li><strong>Confirmación 24-48h antes:</strong> Te contactaremos para confirmar y enviarte el enlace de reunión</li>
+              <li><strong>Preparación:</strong> Prepara cualquier documentación financiera relevante</li>
+              <li><strong>Lista de preguntas:</strong> Anota todas las preguntas que quieras resolver</li>
+              <li><strong>Entorno tranquilo:</strong> Asegúrate de tener un espacio sin interrupciones</li>
+            </ol>
+          </div>
+          
+          ${meetingUrl ? `
+          <div style="text-align: center;">
+            <a href="${meetingUrl}" class="button">Enlace de la Reunión</a>
+          </div>
+          ` : ''}
+          
+          <h3>📞 ¿Necesitas cambiar la cita?</h3>
+          <p>Si necesitas reprogramar o tienes alguna pregunta, contáctanos respondiendo a este email o escribiendo a <strong>consultoria@bsbcapital.io</strong> con al menos 24 horas de antelación.</p>
+          
+          <p>¡Esperamos con ganas nuestra sesión!</p>
+          
+          <p>Saludos cordiales,<br>
+          <strong>Equipo de Consultoría BSB Capital</strong></p>
+        </div>
+        
+        <div class="footer">
+          <p>BSB Capital | Consultoría Financiera Especializada</p>
+          <p>Email: consultoria@bsbcapital.io | Web: bsbcapital.io</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+}
+
+// Template para recordatorio de consultoría
+function generateConsultationReminderEmail(data: any) {
+  const { name, consultationType, scheduledDate, scheduledTime, duration, meetingUrl } = data;
+  
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Recordatorio: Tu consultoría es mañana</title>
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f8fafc; }
+        .container { max-width: 600px; margin: 0 auto; background-color: white; }
+        .header { background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); color: white; padding: 40px 20px; text-align: center; }
+        .content { padding: 40px 30px; }
+        .reminder-details { background-color: #fef3c7; padding: 20px; border-radius: 8px; border-left: 4px solid #f59e0b; margin: 20px 0; }
+        .button { display: inline-block; background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%); color: white; padding: 12px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0; }
+        .footer { background-color: #f1f5f9; padding: 30px; text-align: center; color: #64748b; font-size: 14px; }
+        .checklist { background-color: #f0fdf4; padding: 20px; border-radius: 8px; border-left: 4px solid #22c55e; margin: 20px 0; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>⏰ Recordatorio</h1>
+          <p>Tu consultoría es mañana</p>
+        </div>
+        
+        <div class="content">
+          <h2>Hola ${name || 'Cliente'},</h2>
+          
+          <p>Este es un recordatorio amistoso de que tu consultoría con BSB Capital está programada para <strong>mañana</strong>.</p>
+          
+          <div class="reminder-details">
+            <h3>📅 Detalles de tu cita:</h3>
+            <ul>
+              <li><strong>Tipo:</strong> ${consultationType || 'Consultoría Financiera'}</li>
+              <li><strong>Fecha:</strong> ${scheduledDate || 'Mañana'}</li>
+              <li><strong>Hora:</strong> ${scheduledTime || 'Por confirmar'}</li>
+              <li><strong>Duración:</strong> ${duration || '60 minutos'}</li>
+            </ul>
+          </div>
+          
+          <div style="text-align: center;">
+            <a href="${meetingUrl || '#'}" class="button">Unirse a la Reunión</a>
+          </div>
+          
+          <div class="checklist">
+            <h3>✅ Lista de preparación:</h3>
+            <ul>
+              <li>✓ Documentación financiera relevante preparada</li>
+              <li>✓ Lista de preguntas específicas listas</li>
+              <li>✓ Entorno tranquilo y sin interrupciones</li>
+              <li>✓ Conexión a internet estable</li>
+              <li>✓ Cámara y micrófono funcionando</li>
+            </ul>
+          </div>
+          
+          <h3>🔧 Prueba técnica</h3>
+          <p>Te recomendamos hacer una prueba del enlace de reunión unos minutos antes para asegurar que todo funciona correctamente.</p>
+          
+          <h3>📞 ¿Necesitas cambios de último momento?</h3>
+          <p>Si surge algo urgente y necesitas reprogramar, contáctanos inmediatamente a <strong>consultoria@bsbcapital.io</strong> o responde a este email.</p>
+          
+          <p>¡Esperamos verte mañana!</p>
+          
+          <p>Saludos,<br>
+          <strong>Equipo BSB Capital</strong></p>
+        </div>
+        
+        <div class="footer">
+          <p>BSB Capital | Consultoría Financiera Especializada</p>
+          <p>Email: consultoria@bsbcapital.io | Web: bsbcapital.io</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+}
+
+// Template para seguimiento post-consultoría
+function generateConsultationCompletedEmail(data: any) {
+  const { name, consultationType, summary, recommendations, nextSteps, followUpDate } = data;
+  
+  return `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Resumen de tu consultoría - BSB Capital</title>
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f8fafc; }
+        .container { max-width: 600px; margin: 0 auto; background-color: white; }
+        .header { background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; padding: 40px 20px; text-align: center; }
+        .content { padding: 40px 30px; }
+        .summary-section { background-color: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .recommendations { background-color: #f0f9ff; padding: 20px; border-radius: 8px; border-left: 4px solid #3b82f6; margin: 20px 0; }
+        .next-steps { background-color: #f0fdf4; padding: 20px; border-radius: 8px; border-left: 4px solid #22c55e; margin: 20px 0; }
+        .button { display: inline-block; background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); color: white; padding: 12px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0; }
+        .footer { background-color: #f1f5f9; padding: 30px; text-align: center; color: #64748b; font-size: 14px; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>📋 Resumen de Consultoría</h1>
+          <p>Tu plan de acción personalizado</p>
+        </div>
+        
+        <div class="content">
+          <h2>Hola ${name || 'Cliente'},</h2>
+          
+          <p>Gracias por tu tiempo durante nuestra sesión de consultoría. Ha sido un placer trabajar contigo en tu estrategia financiera.</p>
+          
+          <div class="summary-section">
+            <h3>📊 Resumen de la sesión:</h3>
+            <p><strong>Tipo de consultoría:</strong> ${consultationType || 'Consultoría Financiera'}</p>
+            ${summary ? `<p><strong>Puntos clave tratados:</strong><br>${summary}</p>` : ''}
+          </div>
+          
+          ${recommendations ? `
+          <div class="recommendations">
+            <h3>💡 Recomendaciones principales:</h3>
+            <div>${recommendations}</div>
+          </div>
+          ` : ''}
+          
+          ${nextSteps ? `
+          <div class="next-steps">
+            <h3>🎯 Próximos pasos:</h3>
+            <div>${nextSteps}</div>
+          </div>
+          ` : ''}
+          
+          <h3>📚 Recursos adicionales</h3>
+          <p>Te hemos enviado por separado algunos recursos y herramientas que mencionamos durante la sesión. Revísalos a tu ritmo y no dudes en consultarnos si tienes preguntas.</p>
+          
+          <div style="text-align: center;">
+            <a href="https://bsbcapital.io/academia" class="button">Acceder a Recursos</a>
+          </div>
+          
+          ${followUpDate ? `
+          <h3>📅 Seguimiento programado</h3>
+          <p>Hemos programado un seguimiento para el <strong>${followUpDate}</strong> para revisar tu progreso y ajustar la estrategia según sea necesario.</p>
+          ` : ''}
+          
+          <h3>💬 ¿Preguntas o dudas?</h3>
+          <p>Si tienes alguna pregunta sobre lo discutido o necesitas aclaraciones sobre las recomendaciones, no dudes en contactarnos:</p>
+          <ul>
+            <li>Email: <strong>consultoria@bsbcapital.io</strong></li>
+            <li>Responder directamente a este email</li>
+            <li>Agendar una sesión de seguimiento</li>
+          </ul>
+          
+          <h3>⭐ Tu opinión es importante</h3>
+          <p>Nos encantaría conocer tu opinión sobre la sesión. Tu feedback nos ayuda a mejorar nuestros servicios.</p>
+          
+          <p>¡Gracias por confiar en BSB Capital para tu journey financiero!</p>
+          
+          <p>Saludos cordiales,<br>
+          <strong>Equipo de Consultoría BSB Capital</strong></p>
+        </div>
+        
+        <div class="footer">
+          <p>BSB Capital | Consultoría Financiera Especializada</p>
+          <p>Email: consultoria@bsbcapital.io | Web: bsbcapital.io</p>
+          <p>¿No quieres recibir estos emails? <a href="#">Darse de baja</a></p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
 }

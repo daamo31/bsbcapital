@@ -180,6 +180,27 @@ class EmailService {
   }
 
   /**
+   * Envía confirmación de consulta
+   */
+  async sendConsultationConfirmation(data) {
+    return this.sendCustomEmail('consultation_confirmation', data.email, data);
+  }
+
+  /**
+   * Envía recordatorio de consulta
+   */
+  async sendConsultationReminder(data) {
+    return this.sendCustomEmail('consultation_reminder', data.email, data);
+  }
+
+  /**
+   * Envía seguimiento post-consulta
+   */
+  async sendConsultationCompleted(data) {
+    return this.sendCustomEmail('consultation_completed', data.email, data);
+  }
+
+  /**
    * Verifica si el servicio de email está disponible
    */
   async healthCheck() {
