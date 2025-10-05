@@ -3,15 +3,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import emailService from '@/lib/emailService';
 import { supabase } from '@/lib/customSupabaseClient';
 
 const EmailTester = () => {
   const [testResults, setTestResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [testEmail, setTestEmail] = useState('takingriskpodcast@gmail.com'); // Email registrado en Resend
 
   const addResult = (test, result) => {
     const newResult = {
@@ -20,7 +16,7 @@ const EmailTester = () => {
       ...result,
       timestamp: new Date().toLocaleTimeString()
     };
-    setTestResults(prev => [newResult, ...prev.slice(0, 9)]); // Mantener últimos 10 resultados
+    setTestResults(prev => [newResult, ...prev.slice(0, 9)]);
   };
 
   const runTest = async (testName, testFunction) => {
@@ -34,228 +30,222 @@ const EmailTester = () => {
     setIsLoading(false);
   };
 
-  const tests = [
-    {
-      name: 'Test Básico',
-      description: 'Email de prueba simple',
-      action: () => runTest('Test Básico', async () => {
-        const { data, error } = await supabase.functions.invoke('resend-email-secure', {
-          body: {
-            type: 'test',
-            to: testEmail,
-            data: {
-              name: 'Daniel (Test)',
-              email: testEmail
-            }
-          }
-        });
-        
-        if (error) throw new Error(error.message);
-        return data;
-      })
-    },
-    {
-      name: 'Email de Bienvenida',
-      description: 'Email de bienvenida profesional',
-      action: () => runTest('Email de Bienvenida', async () => {
-        const { data, error } = await supabase.functions.invoke('resend-email-secure', {
-          body: {
-            type: 'welcome',
-            to: testEmail,
-            data: {
-              name: 'Daniel',
-              email: testEmail
-            }
-          }
-        });
-        
-        if (error) throw new Error(error.message);
-        return data;
-      })
-    },
-    {
-      name: 'Confirmación de Consultoría',
-      description: 'Email de confirmación de consultoría',
-      action: () => runTest('Confirmación de Consultoría', async () => {
-        const { data, error } = await supabase.functions.invoke('resend-email-secure', {
-          body: {
-            type: 'consultation_confirmation',
-            to: testEmail,
-            data: {
-              name: 'Daniel',
-              email: testEmail,
-              consultationType: 'Estrategia de Inversión',
-              scheduledDate: '25 de octubre de 2024',
-              scheduledTime: '15:00',
-              duration: '60 minutos',
-              consultationGoals: 'Optimizar mi cartera de inversiones'
-            }
-          }
-        });
-        
-        if (error) throw new Error(error.message);
-        return data;
-      })
-    },
-    {
-      name: 'Email Personalizado',
-      description: 'Email con contenido personalizado',
-      action: () => runTest('Email Personalizado', async () => {
-        const { data, error } = await supabase.functions.invoke('resend-email-secure', {
-          body: {
-            type: 'custom',
-            to: testEmail,
-            subject: '🎯 Email Personalizado - BSB Capital',
-            html: `
-              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-                <h1 style="color: #1e40af;">🎯 Email Personalizado</h1>
-                <p>Este es un email personalizado desde BSB Capital.</p>
-                <div style="background-color: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
-                  <p><strong>Enviado a:</strong> ${testEmail}</p>
-                  <p><strong>Hora:</strong> ${new Date().toLocaleString()}</p>
-                  <p><strong>Sistema:</strong> resend-email-secure</p>
-                </div>
-                <p style="color: #059669;"><strong>✅ Sistema de emails personalizado funcionando!</strong></p>
-              </div>
-            `
-          }
-        });
-        
-        if (error) throw new Error(error.message);
-        return data;
-      })
-    }
-  ];
+  const testBasico = () => runTest('Test Básico', async () => {
+    const { data, error } = await supabase.functions.invoke('resend-email-secure', {
+      body: {
+        type: 'test',
+        to: 'cualquier@email.com',
+        data: { name: 'Daniel Test' }
+      }
+    });
+    
+    if (error) throw new Error(error.message);
+    return data;
+  });
+
+  const testDiagnostico = () => runTest('Diagnóstico Completo', async () => {
+    const { data, error } = await supabase.functions.invoke('resend-email-secure', {
+      body: {
+        type: 'test',
+        to: 'test@example.com',
+        data: { 
+          name: 'Diagnóstico BSB',
+          timestamp: new Date().toISOString(),
+          userAgent: navigator.userAgent
+        }
+      }
+    });
+    
+    if (error) throw new Error(error.message);
+    
+    // Agregar información extra al resultado
+    return {
+      ...data,
+      diagnostic: true,
+      sentAt: new Date().toLocaleString(),
+      function: 'resend-email-secure',
+      resendApi: 'https://api.resend.com'
+    };
+  });
+
+  const testBienvenida = () => runTest('Email de Bienvenida', async () => {
+    const { data, error } = await supabase.functions.invoke('resend-email-secure', {
+      body: {
+        type: 'welcome',
+        to: 'danieldelamo31@gmail.com',
+        data: { name: 'Daniel' }
+      }
+    });
+    
+    if (error) throw new Error(error.message);
+    return data;
+  });
+
+  const testConsultoria = () => runTest('Confirmación de Consultoría', async () => {
+    const { data, error } = await supabase.functions.invoke('resend-email-secure', {
+      body: {
+        type: 'consultation_confirmation',
+        to: 'danieldelamo31@gmail.com',
+        data: {
+          name: 'Daniel',
+          consultationType: 'Estrategia de Inversión',
+          scheduledDate: '25 de octubre de 2024',
+          scheduledTime: '15:00',
+          duration: '60 minutos',
+          consultationGoals: 'Optimizar mi cartera de inversiones'
+        }
+      }
+    });
+    
+    if (error) throw new Error(error.message);
+    return data;
+  });
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       <div className="text-center">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          📧 Test de Sistema de Emails
+          📧 Tester de Emails BSB Capital
         </h1>
         <p className="text-gray-600">
-          Herramienta para probar todos los tipos de emails del sistema BSB Capital
+          Sistema de testing con múltiples destinatarios
         </p>
       </div>
 
-      {/* Configuración */}
-      <Card>
+      <Card className="border-green-200 bg-green-50">
         <CardHeader>
-          <CardTitle>⚙️ Configuración</CardTitle>
+          <CardTitle className="text-green-800">🟢 Sistema Activo</CardTitle>
           <CardDescription>
-            Configura el email de destino para las pruebas
+            Función: resend-email-secure | Remitente: BSB Capital | Plan: Gratuito (limitado)
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2">
-            <Label htmlFor="test-email">Email de Destino</Label>
-            <Input
-              id="test-email"
-              type="email"
-              value={testEmail}
-              onChange={(e) => setTestEmail(e.target.value)}
-              placeholder="tu-email@ejemplo.com"
-              className="max-w-md"
-            />
-            <p className="text-sm text-gray-500">
-              Los emails de prueba se enviarán a esta dirección
-            </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div className="bg-white p-3 rounded border">
+              <strong>📤 Remitente:</strong><br/>
+              BSB Capital &lt;onboarding@resend.dev&gt;
+            </div>
+            <div className="bg-white p-3 rounded border">
+              <strong>📨 Destinatario:</strong><br/>
+              • danieldelamo31@gmail.com<br/>
+              <span className="text-xs text-green-600">✅ Confirmado por dashboard</span>
+            </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Tests Disponibles */}
       <Card>
         <CardHeader>
           <CardTitle>🧪 Tests Disponibles</CardTitle>
-          <CardDescription>
-            Ejecuta tests individuales para cada tipo de email
-          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {tests.map((test, index) => (
-              <div key={index} className="border rounded-lg p-4 space-y-3">
-                <div>
-                  <h3 className="font-semibold text-gray-900">{test.name}</h3>
-                  <p className="text-sm text-gray-600">{test.description}</p>
-                </div>
-                <Button 
-                  onClick={test.action}
-                  disabled={isLoading}
-                  className="w-full"
-                  variant="outline"
-                >
-                  {isLoading ? 'Ejecutando...' : `Ejecutar ${test.name}`}
-                </Button>
-              </div>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Button 
+              onClick={testBasico}
+              disabled={isLoading}
+              variant="outline"
+              className="h-20 flex flex-col"
+            >
+              <span className="text-lg mb-1">🧪</span>
+              Test Básico
+            </Button>
+            
+            <Button 
+              onClick={testDiagnostico}
+              disabled={isLoading}
+              variant="outline"
+              className="h-20 flex flex-col border-blue-300 text-blue-700"
+            >
+              <span className="text-lg mb-1">🔍</span>
+              Diagnóstico
+            </Button>
+            
+            <Button 
+              onClick={testBienvenida}
+              disabled={isLoading}
+              variant="outline"
+              className="h-20 flex flex-col"
+            >
+              <span className="text-lg mb-1">👋</span>
+              Bienvenida
+            </Button>
+            
+            <Button 
+              onClick={testConsultoria}
+              disabled={isLoading}
+              variant="outline"
+              className="h-20 flex flex-col"
+            >
+              <span className="text-lg mb-1">📅</span>
+              Consultoría
+            </Button>
           </div>
         </CardContent>
       </Card>
 
-      {/* Ejecutar Todos */}
-      <Card>
-        <CardHeader>
-          <CardTitle>🚀 Test Completo</CardTitle>
-          <CardDescription>
-            Ejecutar todos los tests en secuencia
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button 
-            onClick={async () => {
-              for (const test of tests) {
-                await test.action();
-                // Esperar 1 segundo entre tests para no sobrecargar
-                await new Promise(resolve => setTimeout(resolve, 1000));
-              }
-            }}
-            disabled={isLoading}
-            className="w-full"
-            size="lg"
-          >
-            {isLoading ? 'Ejecutando Tests...' : 'Ejecutar Todos los Tests'}
-          </Button>
-        </CardContent>
-      </Card>
-
-      {/* Resultados */}
       {testResults.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>📊 Resultados de Tests</CardTitle>
-            <CardDescription>
-              Últimos {testResults.length} resultados (más recientes primero)
-            </CardDescription>
+            <CardTitle>📊 Resultados</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               {testResults.map((result) => (
                 <Alert key={result.id} className={result.success ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <Badge variant={result.success ? 'default' : 'destructive'}>
-                        {result.success ? '✅' : '❌'}
-                      </Badge>
-                      <span className="font-medium">{result.test}</span>
-                      <span className="text-sm text-gray-500">{result.timestamp}</span>
-                    </div>
+                  <div className="flex items-center space-x-3 mb-2">
+                    <Badge variant={result.success ? 'default' : 'destructive'}>
+                      {result.success ? '✅' : '❌'}
+                    </Badge>
+                    <span className="font-medium">{result.test}</span>
+                    <span className="text-sm text-gray-500">{result.timestamp}</span>
                   </div>
-                  <AlertDescription className="mt-2">
+                  <AlertDescription>
                     {result.success ? (
                       <div>
-                        <p className="text-green-800">✅ Test exitoso</p>
+                        <p className="text-green-800 mb-2">✅ Email enviado exitosamente</p>
                         {result.data && (
-                          <pre className="mt-2 text-xs bg-green-100 p-2 rounded overflow-x-auto">
-                            {JSON.stringify(result.data, null, 2)}
-                          </pre>
+                          <div className="space-y-2 text-sm">
+                            {result.data.sender && (
+                              <div className="bg-blue-100 p-2 rounded">
+                                <strong>📤 Remitente:</strong> {result.data.sender}
+                              </div>
+                            )}
+                            {result.data.actualRecipients && (
+                              <div className="bg-green-100 p-2 rounded">
+                                <strong>📨 Enviado a:</strong> {result.data.actualRecipients.join(', ')}
+                              </div>
+                            )}
+                            {result.data.id && (
+                              <div className="bg-purple-100 p-2 rounded">
+                                <strong>🆔 ID Resend:</strong> {result.data.id}
+                                <p className="text-xs mt-1 text-purple-700">✅ Confirmación de que el email se procesó por Resend</p>
+                              </div>
+                            )}
+                            {result.data.testingMode && (
+                              <div className="bg-yellow-100 p-2 rounded">
+                                <strong>🧪 Modo Testing:</strong> Activo
+                                <p className="text-xs mt-1 text-yellow-700">Los emails van a direcciones de prueba configuradas</p>
+                              </div>
+                            )}
+                            {result.data.diagnostic && (
+                              <div className="bg-indigo-100 p-2 rounded">
+                                <strong>🔍 Diagnóstico Completo:</strong>
+                                <p className="text-xs mt-1 text-indigo-700">Función: {result.data.function}</p>
+                                <p className="text-xs text-indigo-700">API: {result.data.resendApi}</p>
+                                <p className="text-xs text-indigo-700">Enviado: {result.data.sentAt}</p>
+                              </div>
+                            )}
+                            <div className="bg-orange-100 p-2 rounded border border-orange-300">
+                              <strong className="text-orange-800">⚠️ Si no recibes el email:</strong>
+                              <p className="text-xs mt-1 text-orange-700">1. Revisa tu carpeta de SPAM/CORREO NO DESEADO</p>
+                              <p className="text-xs text-orange-700">2. Los emails vienen de onboarding@resend.dev</p>
+                              <p className="text-xs text-orange-700">3. Plan gratuito de Resend tiene limitaciones</p>
+                            </div>
+                          </div>
                         )}
                       </div>
                     ) : (
-                      <div>
-                        <p className="text-red-800">❌ Error: {result.error}</p>
-                      </div>
+                      <p className="text-red-800">❌ Error: {result.error}</p>
                     )}
                   </AlertDescription>
                 </Alert>
@@ -265,36 +255,53 @@ const EmailTester = () => {
         </Card>
       )}
 
-      {/* Instrucciones */}
       <Card>
         <CardHeader>
-          <CardTitle>📝 Instrucciones</CardTitle>
+          <CardTitle>📖 Información</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-3 text-sm">
-            <div className="p-3 bg-blue-50 rounded-lg">
-              <h4 className="font-semibold text-blue-900">� Email de Destino:</h4>
-              <p className="text-blue-800">
-                Actualmente configurado para: <code className="bg-white px-1">takingriskpodcast@gmail.com</code>
-                <br />
-                (Email registrado en Resend - requerido para testing)
-              </p>
+            <div className="bg-blue-50 p-3 rounded">
+              <strong className="text-blue-900">📧 Destinatario:</strong>
+              <p className="text-blue-800">Solo se envía a danieldelamo31@gmail.com (propietario confirmado por dashboard)</p>
             </div>
-            
-            <div className="p-3 bg-green-50 rounded-lg">
-              <h4 className="font-semibold text-green-900">✅ Función Activa:</h4>
-              <p className="text-green-800">
-                Usando: <code className="bg-white px-1">resend-email-secure</code>
-                <br />
-                (Versión final optimizada con máxima seguridad)
-              </p>
+            <div className="bg-green-50 p-3 rounded">
+              <strong className="text-green-900">👤 Remitente:</strong>
+              <p className="text-green-800">BSB Capital &lt;onboarding@resend.dev&gt;</p>
             </div>
-            
-            <div className="p-3 bg-yellow-50 rounded-lg">
-              <h4 className="font-semibold text-yellow-900">⚡ Para usar en producción:</h4>
-              <p className="text-yellow-800">
-                Configura tu dominio en resend.com/domains y actualiza el email FROM
-              </p>
+            <div className="bg-orange-50 p-3 rounded">
+              <strong className="text-orange-900">⚠️ Plan Gratuito:</strong>
+              <p className="text-orange-800">Resend solo permite enviar al propietario de la cuenta</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card className="border-yellow-200 bg-yellow-50">
+        <CardHeader>
+          <CardTitle className="text-yellow-800">⚠️ Importante: Verificación de Emails</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3 text-sm">
+            <div className="bg-orange-50 p-3 rounded border-l-4 border-orange-400">
+              <strong className="text-orange-900">🗂️ Revisa tu carpeta de SPAM:</strong>
+              <p className="text-orange-800 mt-1">Los emails pueden ir a spam porque usamos onboarding@resend.dev (dominio de desarrollo)</p>
+            </div>
+            <div className="bg-red-50 p-3 rounded border-l-4 border-red-400">
+              <strong className="text-red-900">🚫 Limitaciones del Plan Gratuito:</strong>
+              <p className="text-red-800 mt-1">Resend plan gratuito tiene límites y restricciones de entrega</p>
+            </div>
+            <div className="bg-green-50 p-3 rounded border-l-4 border-green-400">
+              <strong className="text-green-900">✅ Dashboard Confirmado:</strong>
+              <p className="text-green-800 mt-1">Solo 1 email enviado visible en métricas de Resend (a danieldelamo31@gmail.com)</p>
+            </div>
+            <div className="bg-blue-50 p-3 rounded border-l-4 border-blue-400">
+              <strong className="text-blue-900">✅ Propietario Real:</strong>
+              <p className="text-blue-800 mt-1">danieldelamo31@gmail.com (confirmado por dashboard de Resend)</p>
+            </div>
+            <div className="bg-purple-50 p-3 rounded border-l-4 border-purple-400">
+              <strong className="text-purple-900">🔍 Diagnóstico:</strong>
+              <p className="text-purple-800 mt-1">Use el botón "Diagnóstico" para obtener información completa del envío</p>
             </div>
           </div>
         </CardContent>

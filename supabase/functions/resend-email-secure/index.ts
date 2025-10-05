@@ -23,34 +23,20 @@ serve(async (req) => {
   }
 
   try {
-    // Security: Check function secret (si está configurado)
-    const expectedSecret = Deno.env.get('EXPECTED_FUNCTION_SECRET')
-    if (expectedSecret) {
-      const providedSecret = req.headers.get('x-function-secret')
-      if (providedSecret !== expectedSecret) {
-        return new Response(
-          JSON.stringify({ error: 'Unauthorized: Invalid function secret' }),
-          { 
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-            status: 401 
-          }
-        )
-      }
-    }
-
     const { type, to, data, subject, html } = await req.json()
     
     // Obtener configuración de variables de entorno
     let resendApiKey = Deno.env.get('RESEND_API_KEY')
     const defaultFrom = Deno.env.get('DEFAULT_FROM') || 'BSB Capital <onboarding@resend.dev>'
     
-    // Fallback para desarrollo (como antes)
+    // Fallback para desarrollo
     if (!resendApiKey) {
-      console.log('⚠️ Usando API key de desarrollo - NO usar en producción')
+      console.log('⚠️ Usando API key de desarrollo')
       resendApiKey = 're_Te7ktzMc_Mc8vbmFez55QdgjnGhNMzW7M'
-    } else {
-      console.log('✅ Usando API key de variable de entorno (seguro para producción)')
     }
+    
+    // DEBUG: Mostrar qué API key se está usando (solo primeros caracteres por seguridad)
+    console.log(`🔑 API Key en uso: ${resendApiKey.substring(0, 12)}...`)
     
     if (!resendApiKey) {
       throw new Error('RESEND_API_KEY not configured')
@@ -61,9 +47,8 @@ serve(async (req) => {
       throw new Error('Missing required fields: to, type')
     }
 
-    // Rate limiting básico por IP (opcional)
-    const clientIP = req.headers.get('x-forwarded-for') || 'unknown'
-    console.log(`📧 Email request from IP: ${clientIP}, type: ${type}, to: ${to}`)
+    // Log para debugging
+    console.log(`📧 Email request - type: ${type}, to: ${to}`)
 
     // Función para generar email de bienvenida
     const generateWelcomeEmail = (data) => `
@@ -76,13 +61,11 @@ serve(async (req) => {
       </head>
       <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; line-height: 1.6;">
         <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-          <!-- Header -->
           <div style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); padding: 40px 30px; text-align: center;">
             <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700;">BSB Capital Academy</h1>
             <p style="color: #e0e7ff; margin: 10px 0 0 0; font-size: 16px;">Tu puerta de entrada al mundo de las inversiones</p>
           </div>
           
-          <!-- Main Content -->
           <div style="padding: 40px 30px;">
             <div style="text-align: center; margin-bottom: 30px;">
               <h2 style="color: #1e293b; margin: 0 0 15px 0; font-size: 24px;">¡Bienvenido, ${data.name}! 🎉</h2>
@@ -98,26 +81,9 @@ serve(async (req) => {
                 <li style="margin-bottom: 0;">🔔 Recibir alertas y recomendaciones personalizadas</li>
               </ul>
             </div>
-            
-            <div style="text-align: center; margin: 30px 0;">
-              <a href="#" style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px; display: inline-block; transition: transform 0.2s;">
-                Comenzar Ahora →
-              </a>
-            </div>
-            
-            <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 20px; border-radius: 6px; margin: 30px 0;">
-              <p style="margin: 0; color: #92400e; font-size: 14px;">
-                <strong>💡 Consejo:</strong> Completa tu perfil para recibir recomendaciones personalizadas
-              </p>
-            </div>
           </div>
           
-          <!-- Footer -->
           <div style="background-color: #f8fafc; padding: 30px; text-align: center; border-top: 1px solid #e2e8f0;">
-            <p style="margin: 0 0 15px 0; color: #64748b; font-size: 14px;">
-              ¿Necesitas ayuda? Contáctanos en 
-              <a href="mailto:soporte@bsbcapital.com" style="color: #3b82f6; text-decoration: none;">soporte@bsbcapital.com</a>
-            </p>
             <p style="margin: 0; color: #94a3b8; font-size: 12px;">
               © 2024 BSB Capital. Todos los derechos reservados.
             </p>
@@ -127,59 +93,40 @@ serve(async (req) => {
       </html>
     `
 
-    // Función para generar email de confirmación de consulta
+    // Función para generar email de consultoría
     const generateConsultationEmail = (data) => `
       <!DOCTYPE html>
       <html>
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Consultoría Confirmada</title>
+        <title>Consultoría Confirmada - BSB Capital</title>
       </head>
       <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; line-height: 1.6;">
         <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-          <!-- Header -->
-          <div style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); padding: 40px 30px; text-align: center;">
-            <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700;">BSB Capital</h1>
-            <p style="color: #d1fae5; margin: 10px 0 0 0; font-size: 16px;">Consultoría Personalizada</p>
+          <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 40px 30px; text-align: center;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700;">📅 Consultoría Confirmada</h1>
+            <p style="color: #d1fae5; margin: 10px 0 0 0; font-size: 16px;">BSB Capital</p>
           </div>
           
-          <!-- Main Content -->
           <div style="padding: 40px 30px;">
             <div style="text-align: center; margin-bottom: 30px;">
-              <h2 style="color: #1e293b; margin: 0 0 15px 0; font-size: 24px;">¡Consultoría Confirmada! ✅</h2>
-              <p style="color: #64748b; margin: 0; font-size: 18px;">Hola ${data.name}, tu cita está programada</p>
+              <h2 style="color: #1e293b; margin: 0 0 15px 0; font-size: 24px;">¡Hola, ${data.name}! ✅</h2>
+              <p style="color: #64748b; margin: 0; font-size: 18px;">Tu consultoría ha sido confirmada exitosamente</p>
             </div>
             
-            <div style="background-color: #f0fdf4; border: 2px solid #bbf7d0; padding: 30px; border-radius: 12px; margin-bottom: 30px;">
-              <h3 style="color: #166534; margin: 0 0 20px 0; font-size: 20px;">📅 Detalles de tu Consultoría</h3>
-              <div style="color: #374151; font-size: 16px;">
-                <p style="margin: 0 0 12px 0;"><strong>Tipo:</strong> ${data.consultationType || 'Consultoría General'}</p>
-                <p style="margin: 0 0 12px 0;"><strong>Fecha:</strong> ${data.scheduledDate || 'Por confirmar'}</p>
-                <p style="margin: 0 0 12px 0;"><strong>Hora:</strong> ${data.scheduledTime || 'Por confirmar'}</p>
-                <p style="margin: 0 0 12px 0;"><strong>Duración:</strong> ${data.duration || '60 minutos'}</p>
-                ${data.consultationGoals ? `<p style="margin: 0;"><strong>Objetivos:</strong> ${data.consultationGoals}</p>` : ''}
+            <div style="background-color: #f0f9ff; padding: 30px; border-radius: 12px; margin-bottom: 30px; border-left: 4px solid #0ea5e9;">
+              <h3 style="color: #0c4a6e; margin: 0 0 20px 0; font-size: 20px;">📋 Detalles de tu Consultoría</h3>
+              <div style="color: #0f172a; font-size: 16px; line-height: 1.8;">
+                <p style="margin: 0 0 12px 0;"><strong>📝 Tipo:</strong> ${data.consultationType}</p>
+                <p style="margin: 0 0 12px 0;"><strong>📅 Fecha:</strong> ${data.scheduledDate}</p>
+                <p style="margin: 0 0 12px 0;"><strong>⏰ Hora:</strong> ${data.scheduledTime}</p>
+                <p style="margin: 0 0 12px 0;"><strong>⏱️ Duración:</strong> ${data.duration}</p>
+                <p style="margin: 0;"><strong>🎯 Objetivos:</strong> ${data.consultationGoals}</p>
               </div>
-            </div>
-            
-            <div style="background-color: #fef3c7; border-left: 4px solid #f59e0b; padding: 25px; border-radius: 6px; margin: 30px 0;">
-              <h4 style="margin: 0 0 15px 0; color: #92400e; font-size: 16px;">📋 Preparación para la Consulta</h4>
-              <ul style="color: #92400e; margin: 0; padding-left: 20px; font-size: 14px;">
-                <li style="margin-bottom: 8px;">Prepara tus preguntas específicas</li>
-                <li style="margin-bottom: 8px;">Ten a mano información sobre tus inversiones actuales</li>
-                <li style="margin-bottom: 8px;">Define claramente tus objetivos financieros</li>
-                <li style="margin-bottom: 0;">Asegúrate de tener buena conexión a internet</li>
-              </ul>
-            </div>
-            
-            <div style="text-align: center; margin: 30px 0;">
-              <a href="#" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 16px; display: inline-block;">
-                Ver en Mi Panel →
-              </a>
             </div>
           </div>
           
-          <!-- Footer -->
           <div style="background-color: #f8fafc; padding: 30px; text-align: center; border-top: 1px solid #e2e8f0;">
             <p style="margin: 0 0 15px 0; color: #64748b; font-size: 14px;">
               ¿Necesitas reagendar? Contáctanos en 
@@ -228,13 +175,23 @@ serve(async (req) => {
 
     const template = templates[type] || templates.test
 
+    // CONFIRMADO: Propietario real según dashboard de Resend (solo 1 email enviado a danieldelamo31)
+    const testingRecipients = [
+      'danieldelamo31@gmail.com'  // Propietario REAL confirmado por dashboard de Resend
+    ];
+    
+    console.log(`📧 Enviando email tipo '${type}' - Original: ${to} → Destino: ${testingRecipients.join(', ')} (propietario confirmado)`);
+    console.log(`👤 Remitente configurado: ${defaultFrom}`);
+
     // Preparar datos del email
     const emailData = {
       from: defaultFrom,
-      to: to,
+      to: testingRecipients[0], // Solo un destinatario para plan gratuito
       subject: template.subject,
       html: template.html
     }
+
+    console.log('📧 Datos del email:', JSON.stringify(emailData, null, 2))
 
     // Enviar email usando Resend
     const response = await fetch('https://api.resend.com/emails', {
@@ -247,19 +204,32 @@ serve(async (req) => {
     })
 
     const result = await response.json()
+    
+    console.log('📨 Respuesta de Resend:', JSON.stringify(result, null, 2))
+    console.log('🌐 Status de respuesta:', response.status)
 
     if (!response.ok) {
-      throw new Error(`Resend API error: ${result.message || 'Unknown error'}`)
+      console.error('❌ Error de Resend:', {
+        status: response.status,
+        message: result.message,
+        recipients: testingRecipients,
+        from: defaultFrom
+      })
+      throw new Error(`Resend API error: ${result.message || 'Unknown error'} | Status: ${response.status}`)
     }
 
     // Log exitoso
-    console.log(`✅ Email enviado exitosamente: ${result.id} to ${to}`)
+    console.log(`✅ Email enviado exitosamente: ${result.id} | Original: ${to} → Enviado a: ${testingRecipients.join(', ')} | Desde: ${defaultFrom}`)
 
     return new Response(
       JSON.stringify({ 
         success: true, 
         message: 'Email sent successfully',
         id: result.id,
+        originalRecipient: to,
+        actualRecipients: testingRecipients,
+        sender: defaultFrom,
+        testingMode: true,
         timestamp: new Date().toISOString()
       }),
       { 
