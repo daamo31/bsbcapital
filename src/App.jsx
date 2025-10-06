@@ -38,6 +38,10 @@ import AcademiaDashboard from '@/pages/dashboard/AcademiaDashboard.jsx';
 
 // Admin
 import AccessPanel from '@/pages/admin/AccessPanel.jsx';
+import AdminDashboard from '@/pages/AdminDashboard.jsx';
+
+// Components
+import ProtectedAdminRoute from '@/components/ProtectedAdminRoute.jsx';
 
 // Auth
 import Login from '@/pages/auth/Login';
@@ -120,6 +124,18 @@ function App() {
                   <ProtectedRoute adminOnly={true}>
                     <AccessPanel />
                   </ProtectedRoute>
+                } />
+
+                {/* Admin Dashboard - Sistema completo de administración */}
+                <Route path="/admin" element={
+                  <ProtectedAdminRoute>
+                    <AdminDashboard />
+                  </ProtectedAdminRoute>
+                } />
+                <Route path="/admin/*" element={
+                  <ProtectedAdminRoute>
+                    <AdminDashboard />
+                  </ProtectedAdminRoute>
                 } />
 
                 {/* Academia Routes - Nueva estructura */}

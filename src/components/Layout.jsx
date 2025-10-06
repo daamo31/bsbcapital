@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
     import { Link, useLocation } from 'react-router-dom';
     import { motion, AnimatePresence } from 'framer-motion';
-    import { ArrowRight, Menu, X, Loader2, LogIn, User } from 'lucide-react';
+    import { ArrowRight, Menu, X, Loader2, LogIn, User, Settings } from 'lucide-react';
     import { Button } from '@/components/ui/button';
     import { Input } from '@/components/ui/input';
     import { useToast } from '@/components/ui/use-toast';
     import { supabase } from '@/lib/customSupabaseClient';
     import { useAuth } from '@/contexts/SupabaseAuthContext';
+    import { useAdmin } from '@/hooks/useAdmin';
+    import AdminDropdown from '@/components/AdminDropdown';
     import CookieConsent from '@/components/CookieConsent';
 
     const Footer = () => {
@@ -125,6 +127,7 @@ import React, { useState, useEffect } from 'react';
     const Header = () => {
       const [isOpen, setIsOpen] = useState(false);
       const { user } = useAuth();
+      const { isAdmin } = useAdmin();
 
       const navLinks = [
         { name: 'Inicio', href: '/' },
@@ -157,12 +160,15 @@ import React, { useState, useEffect } from 'react';
                   <Link to="/contacto">Contactar</Link>
                 </Button>
                 {user ? (
-                  <Button asChild>
-                    <Link to="/dashboard">
-                      <User className="mr-2 h-4 w-4" />
-                      Mi Cuenta
-                    </Link>
-                  </Button>
+                  <>
+                    {isAdmin && <AdminDropdown />}
+                    <Button asChild>
+                      <Link to="/dashboard">
+                        <User className="mr-2 h-4 w-4" />
+                        Mi Cuenta
+                      </Link>
+                    </Button>
+                  </>
                 ) : (
                   <Button asChild>
                     <Link to="/login">
@@ -197,12 +203,22 @@ import React, { useState, useEffect } from 'react';
                       <Link to="/contacto">Contactar</Link>
                     </Button>
                     {user ? (
-                      <Button asChild className="w-full" onClick={closeMenu}>
-                        <Link to="/dashboard">
-                          <User className="mr-2 h-4 w-4" />
-                          Mi Cuenta
-                        </Link>
-                      </Button>
+                      <>
+                        {isAdmin && (
+                          <Button asChild className="w-full" variant="outline" onClick={closeMenu}>
+                            <Link to="/admin" className="text-orange-600 hover:text-orange-700">
+                              <Settings className="mr-2 h-4 w-4" />
+                              Panel de Administración
+                            </Link>
+                          </Button>
+                        )}
+                        <Button asChild className="w-full" onClick={closeMenu}>
+                          <Link to="/dashboard">
+                            <User className="mr-2 h-4 w-4" />
+                            Mi Cuenta
+                          </Link>
+                        </Button>
+                      </>
                     ) : (
                       <Button asChild className="w-full" onClick={closeMenu}>
                         <Link to="/login">

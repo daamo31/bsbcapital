@@ -17,15 +17,19 @@ import {
   Star,
   Settings,
   Download,
-  Eye
+  Eye,
+  Shield
 } from 'lucide-react';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
+import { useAdmin } from '@/hooks/useAdmin';
 import { supabase } from '@/lib/customSupabaseClient';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
+import AdminNotification from '@/components/AdminNotification';
 
 const UserDashboard = () => {
   const { user } = useAuth();
+  const { isAdmin } = useAdmin();
   const navigate = useNavigate();
   const { toast } = useToast();
   
@@ -166,13 +170,34 @@ const UserDashboard = () => {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Bienvenido, {user.user_metadata?.full_name || user.email.split('@')[0]}
-          </h1>
-          <p className="text-gray-600">
-            Gestiona tu membresía y revisa tu progreso de aprendizaje
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
+                Bienvenido, {user.user_metadata?.full_name || user.email.split('@')[0]}
+                {isAdmin && (
+                  <Badge variant="secondary" className="bg-orange-100 text-orange-800 border-orange-200">
+                    <Shield className="h-3 w-3 mr-1" />
+                    Administrador
+                  </Badge>
+                )}
+              </h1>
+              <p className="text-gray-600">
+                Gestiona tu membresía y revisa tu progreso de aprendizaje
+              </p>
+            </div>
+            {isAdmin && (
+              <Button asChild variant="outline" className="border-orange-200 text-orange-700 hover:bg-orange-50">
+                <Link to="/admin">
+                  <Settings className="mr-2 h-4 w-4" />
+                  Panel de Administración
+                </Link>
+              </Button>
+            )}
+          </div>
         </div>
+
+        {/* Admin Notification */}
+        <AdminNotification />
 
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">

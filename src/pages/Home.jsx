@@ -3,11 +3,12 @@ import React from 'react';
     import { motion } from 'framer-motion';
     import { Link } from 'react-router-dom';
     import { Button } from '@/components/ui/button';
-    import { ArrowRight, Bot, Briefcase, BookOpen, Mail, Star, LogIn, User } from 'lucide-react';
+    import { ArrowRight, Bot, Briefcase, BookOpen, Mail, Star, LogIn, User, Settings, Shield } from 'lucide-react';
     import { Input } from '@/components/ui/input';
     import { Textarea } from '@/components/ui/textarea';
     import { useToast } from "@/components/ui/use-toast";
     import { useAuth } from '@/contexts/SupabaseAuthContext';
+    import { useAdmin } from '@/hooks/useAdmin';
 
     const containerVariants = {
       hidden: { opacity: 0 },
@@ -119,6 +120,7 @@ import React from 'react';
 
     const Home = () => {
       const { user } = useAuth();
+      const { isAdmin } = useAdmin();
 
       return (
         <>
@@ -126,6 +128,30 @@ import React from 'react';
             <title>BSB Capital - Inteligencia Financiera Potenciada por IA</title>
             <meta name="description" content="Fusionamos experiencia de mercado y tecnología de vanguardia para ofrecer soluciones de inversión fiables, escalables y a tu medida." />
           </Helmet>
+          
+          {/* Barra de notificación para administradores */}
+          {isAdmin && (
+            <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 shadow-lg">
+              <div className="container mx-auto px-4">
+                <div className="flex items-center justify-center gap-3 text-sm font-medium">
+                  <Shield className="h-4 w-4" />
+                  <span>Modo Administrador Activo</span>
+                  <Button 
+                    asChild 
+                    size="sm" 
+                    variant="secondary" 
+                    className="ml-4 bg-white/10 hover:bg-white/20 text-white border-white/20"
+                  >
+                    <Link to="/admin" className="flex items-center gap-2">
+                      <Settings className="h-3 w-3" />
+                      Ir al Panel
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+          
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
