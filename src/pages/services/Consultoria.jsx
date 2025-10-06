@@ -66,6 +66,12 @@ const BookingModal = () => {
           metadata: {
             client_name: formData.name,
             client_email: formData.email,
+            consultation_type: formData.service_interest,
+            scheduled_at: bookingDateTime.toISOString(),
+            duration_minutes: formData.duration === '30min' ? '30' : '60',
+            description: formData.more_info,
+            status: 'scheduled',
+            // Mantenemos campos originales para compatibilidad
             service: serviceDescription,
             booking_date: bookingDateTime.toISOString(),
             notes: formData.more_info,

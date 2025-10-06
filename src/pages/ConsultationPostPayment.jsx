@@ -142,6 +142,7 @@ const ConsultationPostPayment = () => {
       const { error: updateError } = await supabase
         .from('consultations')
         .update({
+          // Usar estructura alineada con admin
           client_name: formData.client_name,
           client_email: formData.client_email,
           client_phone: formData.client_phone,
@@ -149,8 +150,10 @@ const ConsultationPostPayment = () => {
           investment_experience: formData.investment_experience,
           portfolio_size: formData.portfolio_size,
           consultation_goals: formData.consultation_goals,
-          additional_notes: `${formData.additional_notes}\n\nInversiones actuales: ${formData.current_investments}\nPreguntas específicas: ${formData.specific_questions}\nPreferencia de comunicación: ${formData.preferred_communication}`,
-          status: 'confirmed' // Confirmar la consulta después del pago
+          description: `${formData.additional_notes}\n\nInversiones actuales: ${formData.current_investments}\nPreguntas específicas: ${formData.specific_questions}\nPreferencia de comunicación: ${formData.preferred_communication}`,
+          status: 'confirmed', // Confirmar la consulta después del pago
+          // Mantener campos originales para compatibilidad
+          additional_notes: `${formData.additional_notes}\n\nInversiones actuales: ${formData.current_investments}\nPreguntas específicas: ${formData.specific_questions}\nPreferencia de comunicación: ${formData.preferred_communication}`
         })
         .eq('id', consultation.id);
 

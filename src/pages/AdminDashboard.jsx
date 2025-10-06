@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/lib/customSupabaseClient';
 import UserManagement from '@/components/admin/UserManagement';
+import AdminCalendar from '@/components/admin/AdminCalendar';
 import { 
   Users, 
   Calendar, 
@@ -269,15 +270,7 @@ const AdminDashboard = () => {
           </TabsContent>
 
           <TabsContent value="calendar">
-            <Card>
-              <CardHeader>
-                <CardTitle>Gestión de Calendario</CardTitle>
-                <CardDescription>Administrar citas y disponibilidad</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600">Módulo de gestión de calendario en desarrollo...</p>
-              </CardContent>
-            </Card>
+            <AdminCalendar />
           </TabsContent>
 
           <TabsContent value="content">
