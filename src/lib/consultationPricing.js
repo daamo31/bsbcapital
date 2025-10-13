@@ -8,9 +8,9 @@ export const CONSULTATION_PRODUCTS = {
     name: 'Consultoría 30 minutos',
     duration: 30,
     regular_price: 75, // Regular price in EUR
-    regular_stripe_price_id: 'price_regular_30min', // Regular price ID
+    regular_stripe_price_id: import.meta.env.VITE_STRIPE_CONSULTATION_30MIN_REGULAR || 'price_regular_30min',
     member_price: 60, // 20% discount
-    member_stripe_price_id: 'price_1SHoSzJmSk3VG9oiEF2xRHNp', // Your discounted price ID
+    member_stripe_price_id: import.meta.env.VITE_STRIPE_CONSULTATION_30MIN_MEMBER || 'price_1SHoSzJmSk3VG9oiEF2xRHNp',
     member_product_id: 'prod_TEH1pw7rFSqXke',
     discount_percentage: 20
   },
@@ -19,9 +19,9 @@ export const CONSULTATION_PRODUCTS = {
     name: 'Consultoría 1 hora',
     duration: 60,
     regular_price: 150, // Regular price in EUR
-    regular_stripe_price_id: 'price_regular_60min', // Regular price ID
+    regular_stripe_price_id: import.meta.env.VITE_STRIPE_CONSULTATION_60MIN_REGULAR || 'price_regular_60min',
     member_price: 120, // 20% discount
-    member_stripe_price_id: 'price_1SHoU8JmSk3VG9oiiMmypJRJ', // Your discounted price ID
+    member_stripe_price_id: import.meta.env.VITE_STRIPE_CONSULTATION_60MIN_MEMBER || 'price_1SHoU8JmSk3VG9oiiMmypJRJ',
     member_product_id: 'prod_TEH29G9Y4nF82x',
     discount_percentage: 20
   }
