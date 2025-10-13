@@ -6,8 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/components/ui/use-toast';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import DetailedConsultationForm from '@/components/DetailedConsultationForm';
-import ConsultationDetailsView from '@/components/admin/ConsultationDetailsView';
+import DetailedConsultationForm from '@/components/DetailedConsultationForm.jsx';
+import ConsultationDetailsView from '@/components/admin/ConsultationDetailsView.jsx';
 import { Eye, FileText, Download, Clock, User, Shield, Calendar } from 'lucide-react';
 
 const ConsultationFormDemo = () => {

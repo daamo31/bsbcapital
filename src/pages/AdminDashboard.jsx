@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/lib/customSupabaseClient';
 import UserManagement from '@/components/admin/UserManagement';
 import AdminCalendar from '@/components/admin/AdminCalendar';
+import ConsultationManagement from '@/components/admin/ConsultationManagement';
 import { 
   Users, 
   Calendar, 
@@ -122,9 +123,10 @@ const AdminDashboard = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="overview">Vista General</TabsTrigger>
             <TabsTrigger value="users">Usuarios</TabsTrigger>
+            <TabsTrigger value="consultations">Consultorías</TabsTrigger>
             <TabsTrigger value="calendar">Calendario</TabsTrigger>
             <TabsTrigger value="content">Contenido</TabsTrigger>
             <TabsTrigger value="analytics">Análisis</TabsTrigger>
@@ -267,6 +269,11 @@ const AdminDashboard = () => {
           {/* Users Tab */}
           <TabsContent value="users">
             <UserManagement />
+          </TabsContent>
+
+          {/* Consultations Tab */}
+          <TabsContent value="consultations">
+            <ConsultationManagement />
           </TabsContent>
 
           <TabsContent value="calendar">
