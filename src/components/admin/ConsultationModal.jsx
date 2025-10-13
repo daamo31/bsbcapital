@@ -5,9 +5,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/lib/customSupabaseClient';
 import { useAdmin } from '@/hooks/useAdmin';
-import { Calendar, Clock, User, Save, X } from 'lucide-react';
+import { Calendar, Clock, User, Save, X, FileText } from 'lucide-react';
+import ConsultationDetailsView from './ConsultationDetailsView';
 
 // Función para generar UUID
 const generateUUID = () => {
@@ -213,19 +215,32 @@ const ConsultationModal = ({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Título */}
-            <div className="md:col-span-2">
-              <Label htmlFor="title">Título *</Label>
-              <Input
-                id="title"
-                value={formData.title}
-                onChange={(e) => handleChange('title', e.target.value)}
-                placeholder="Ej: Consultoría de inversión"
-                required
-              />
-            </div>
+        <Tabs defaultValue="form" className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="form" className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              Datos básicos
+            </TabsTrigger>
+            <TabsTrigger value="details" className="flex items-center gap-2" disabled={!consultation}>
+              <FileText className="h-4 w-4" />
+              Formulario detallado
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="form">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Título */}
+                <div className="md:col-span-2">
+                  <Label htmlFor="title">Título *</Label>
+                  <Input
+                    id="title"
+                    value={formData.title}
+                    onChange={(e) => handleChange('title', e.target.value)}
+                    placeholder="Ej: Consultoría de inversión"
+                    required
+                  />
+                </div>
 
             {/* Email del cliente */}
             <div>
@@ -374,6 +389,32 @@ const ConsultationModal = ({
             </Button>
           </div>
         </form>
+          </TabsContent>
+          
+          <TabsContent value="details">
+            {consultation && consultation.form_completed_at ? (
+              <div className="space-y-4">
+                <div className="p-4 bg-green-50 border border-green-200 rounded-md">
+                  <p className="text-sm text-green-700">
+                    ✅ Formulario completado el {new Date(consultation.form_completed_at).toLocaleDateString('es-ES')}
+                  </p>
+                </div>
+                <ConsultationDetailsView consultation={consultation} />
+              </div>
+            ) : consultation ? (
+              <div className="p-8 text-center text-gray-500">
+                <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                <p>El cliente aún no ha completado el formulario detallado.</p>
+                <p className="text-sm mt-2">Una vez que realice el pago y complete el formulario, los datos aparecerán aquí.</p>
+              </div>
+            ) : (
+              <div className="p-8 text-center text-gray-500">
+                <FileText className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                <p>Guarda la consultoría primero para ver los detalles del formulario.</p>
+              </div>
+            )}
+          </TabsContent>
+        </Tabs>
       </DialogContent>
     </Dialog>
   );

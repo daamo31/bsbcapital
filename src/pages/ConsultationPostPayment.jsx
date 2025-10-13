@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
+import DetailedConsultationForm from '@/components/DetailedConsultationForm';
 import { 
   CheckCircle, 
   Loader2, 
@@ -33,6 +34,7 @@ const ConsultationPostPayment = () => {
 
   const [loading, setLoading] = useState(false);
   const [consultation, setConsultation] = useState(null);
+  const [showDetailedForm, setShowDetailedForm] = useState(false);
   const [formData, setFormData] = useState({
     client_name: '',
     client_email: user?.email || '',
@@ -121,6 +123,59 @@ const ConsultationPostPayment = () => {
 
   const handleSelectChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
+  };
+
+  const handleDetailedFormSubmit = async (detailedData) => {
+    setLoading(true);
+
+    try {
+      // Actualizar la consulta con los datos detallados
+      const { error: updateError } = await supabase
+        .from('consultations')
+        .update({
+          // Estructura alineada con admin
+          ...detailedData,
+          form_completed_at: new Date().toISOString(),
+          status: 'confirmed'
+        })
+        .eq('id', consultation.id);
+
+      if (updateError) throw updateError;
+
+      // Intentar enviar PDF por email (no bloquear si falla)
+      try {
+        const consultationPDFService = await import('@/lib/consultationPDFService');
+        await consultationPDFService.default.sendConsultationSummaryEmail(
+          consultation,
+          detailedData,
+          detailedData.client_email || consultation.client_email
+        );
+        
+        toast({
+          title: "¡Formulario completado!",
+          description: "Datos guardados y resumen enviado por email. Te contactaremos pronto."
+        });
+      } catch (emailError) {
+        console.error('Error sending PDF email:', emailError);
+        toast({
+          title: "¡Formulario completado!",
+          description: "Datos guardados correctamente. Te contactaremos pronto con los detalles."
+        });
+      }
+
+      // Redirigir a área cliente
+      navigate('/area-cliente?tab=consultations');
+
+    } catch (error) {
+      console.error('Error updating consultation:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Hubo un problema al guardar tus datos. Por favor, inténtalo de nuevo."
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -310,7 +365,37 @@ const ConsultationPostPayment = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Selector de tipo de formulario */}
+                <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium text-blue-900">Formulario de consultoría</h4>
+                      <p className="text-sm text-blue-700">
+                        {showDetailedForm ? 
+                          "Formulario completo y personalizado para tu tipo de consultoría" : 
+                          "Formulario básico y rápido"
+                        }
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => setShowDetailedForm(!showDetailedForm)}
+                      className="ml-4"
+                    >
+                      {showDetailedForm ? "Formulario simple" : "Formulario completo"}
+                    </Button>
+                  </div>
+                </div>
+
+                {showDetailedForm ? (
+                  <DetailedConsultationForm 
+                    consultation={consultation}
+                    onSubmit={handleDetailedFormSubmit}
+                    loading={loading}
+                  />
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-6">
                   {/* Información personal */}
                   <div className="grid md:grid-cols-2 gap-4">
                     <div>
@@ -507,6 +592,7 @@ const ConsultationPostPayment = () => {
                     </Button>
                   </div>
                 </form>
+                )}
               </CardContent>
             </Card>
           </motion.div>

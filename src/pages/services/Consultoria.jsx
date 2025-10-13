@@ -3,6 +3,7 @@ import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
+import { Link } from 'react-router-dom';
 import { supabase } from '@/lib/customSupabaseClient';
 import { Loader2, Clock } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
@@ -219,6 +220,16 @@ const Consultoria = () => {
         <p className="mt-4 text-lg text-brand-text-secondary max-w-2xl mx-auto">Te ayudamos a navegar la complejidad de los mercados con estrategias personalizadas en planificación, carteras y activos digitales.</p>
         
         <BookingModal />
+
+        {/* Enlace temporal para probar el formulario detallado */}
+        <div className="mt-6">
+          <Link 
+            to="/demo/consultation-form" 
+            className="inline-flex items-center gap-2 px-4 py-2 text-sm text-blue-600 hover:text-blue-800 border border-blue-200 rounded-lg hover:bg-blue-50 transition-colors"
+          >
+            🧪 Probar formulario detallado (Demo)
+          </Link>
+        </div>
 
         <div className="mt-12 relative">
             <div className="absolute inset-0 bg-brand-primary/10 rounded-full blur-3xl"></div>

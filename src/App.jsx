@@ -38,6 +38,9 @@ import AcademiaDashboard from '@/pages/dashboard/AcademiaDashboard.jsx';
 
 // Admin
 import AccessPanel from '@/pages/admin/AccessPanel.jsx';
+
+// Demo/Testing
+import ConsultationFormDemo from '@/pages/ConsultationFormDemo.jsx';
 import AdminDashboard from '@/pages/AdminDashboard.jsx';
 
 // Components
@@ -175,6 +178,7 @@ function App() {
                   />
                 } />
                 <Route path="/test/user-status" element={<TestNavigationPage />} />
+                <Route path="/demo/consultation-form" element={<ConsultationFormDemo />} />
                 <Route path="/test/tools" element={<ContentAccessDemo />} />
 
                 {oldAcademyRoutes.map(path => (
