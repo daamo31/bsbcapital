@@ -7,6 +7,7 @@ import Home from '@/pages/Home';
 // Services
 import BsbMaker from '@/pages/services/BsbMaker';
 import Consultoria from '@/pages/services/Consultoria';
+import ConsultationPricing from '@/pages/ConsultationPricing';
 import AlgoFund from '@/pages/services/AlgoFund.jsx';
 import OtrosServicios from '@/pages/services/OtrosServicios.jsx';
 import Formacion from '@/pages/services/Formacion.jsx';
@@ -91,6 +92,7 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/bsb-maker" element={<BsbMaker />} />
                 <Route path="/consultoria" element={<Consultoria />} />
+                <Route path="/consultoria/precios" element={<ConsultationPricing />} />
                 <Route path="/membresias" element={<MembresiasDB />} />
                 <Route path="/dashboard" element={
                   <ProtectedRoute>
