@@ -146,7 +146,7 @@ import React, { useState, useEffect } from 'react';
         <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
           <div className="container mx-auto px-4 h-20 flex justify-between items-center">
             <Link to="/" className="flex items-center gap-3" onClick={closeMenu}>
-              <img alt="Logotipo de BSB Capital" className="h-10 w-auto" src="https://horizons-cdn.hostinger.com/817ad863-5db3-450e-8aa2-198248142884/b6e16d0690a67f5cbf9123ef9d9129e7.png" />
+              <img alt="Logotipo de BSB Capital" className="h-12 w-auto" src="https://horizons-cdn.hostinger.com/817ad863-5db3-450e-8aa2-198248142884/b6e16d0690a67f5cbf9123ef9d9129e7.png" />
             </Link>
             <nav className="hidden lg:flex items-center gap-8">
               {navLinks.map((link) => (

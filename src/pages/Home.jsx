@@ -66,7 +66,7 @@ import React from 'react';
       {
         icon: <Bot />,
         title: 'Trading',
-        description: 'Herramientas de IA y algoritmos para potenciar tus operaciones.',
+        description: 'Convierte la volatilidad en oportunidad. Herramientas de IA y algoritmos avanzados que te permiten operar con ventaja frente al resto de traders.',
         isGroup: true,
         subServices: [
           { name: 'BSB Maker', href: '/bsb-maker' },
@@ -76,19 +76,19 @@ import React from 'react';
       {
         icon: <Briefcase />,
         title: 'Consultoría',
-        description: 'Asesoramiento experto en tesorería, inversión y criptoactivos.',
+        description: 'Decisiones financieras con respaldo profesional. Asesoramiento experto en tesorería, inversión y criptoactivos, diseñado para proteger y hacer crecer tu patrimonio y siempre adaptado a tus necesidades.',
         href: '/consultoria',
       },
       {
         icon: <BookOpen />,
-        title: 'Formación',
-        description: 'Cursos y research premium para llevar tu conocimiento al siguiente nivel.',
+        title: 'Academia',
+        description: 'Aprende con un método distinto. Formación dinámica basada en píldoras rápidas y masterclass especializadas, pensada para que avances desde lo básico hasta estrategias avanzadas de inversión de manera clara y aplicable.',
         href: '/formacion',
       },
       {
         icon: <Star />,
         title: 'Membresías',
-        description: 'Planes exclusivos con beneficios y acceso a comunidad privada.',
+        description: 'El acceso que te diferencia del resto. Planes exclusivos que incluyen beneficios, descuentos y una comunidad privada de inversores visionarios.',
         href: '/membresias',
       },
     ];
@@ -163,7 +163,7 @@ import React from 'react';
               <div className="container mx-auto px-4 text-center relative z-10 py-28 md:py-48">
                 <motion.div variants={containerVariants} initial="hidden" animate="visible">
                   <motion.h1 variants={itemVariants} className="text-4xl md:text-7xl font-extrabold leading-tight">
-                    <span className="text-brand-text-primary">Inteligencia Financiera,</span><br/> <span className="main-gradient-text">Potenciada por IA</span>
+                    <span className="text-brand-text-primary">Inteligencia Financiera</span><br/> <span className="main-gradient-text">Potenciada por IA</span>
                   </motion.h1>
                   <motion.p variants={itemVariants} className="mt-6 max-w-2xl mx-auto text-lg text-brand-text-secondary">
                     En BSB Capital unimos consultoría con asesores financieros, algoritmos y herramientas desarrolladas con IA para que inviertas con confianza y construyas un futuro sólido.
@@ -203,8 +203,8 @@ import React from 'react';
             <section className="py-20 md:py-28 bg-background">
                 <div className="container mx-auto px-4">
                     <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
-                        <motion.h2 variants={itemVariants} className="text-4xl md:text-5xl font-bold text-center text-brand-text-primary">Soluciones de Inversión <span className="main-gradient-text">a tu Medida</span></motion.h2>
-                        <motion.p variants={itemVariants} className="mt-4 text-center text-lg text-brand-text-secondary max-w-2xl mx-auto">Tanto si buscas <span className="text-brand-accent font-semibold">autonomía</span>, <span className="text-brand-accent font-semibold">formación</span> o <span className="text-brand-accent font-semibold">delegar la gestión</span>, tenemos una solución para ti.</motion.p>
+                        <motion.h2 variants={itemVariants} className="text-4xl md:text-5xl font-bold text-center text-brand-text-primary">Soluciones de inversión que <span className="main-gradient-text">Multiplican tu Potencial</span></motion.h2>
+                        <motion.p variants={itemVariants} className="mt-4 text-center text-lg text-brand-text-secondary max-w-2xl mx-auto">Tanto si quieres operar con autonomía, formarte con rigor o delegar tu capital en expertos, en BSB Capital tenemos el plan que transforma tu manera de invertir.</motion.p>
                         <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                             {services.map((service) => (
                                 <ServiceCard key={service.title} {...service} />
