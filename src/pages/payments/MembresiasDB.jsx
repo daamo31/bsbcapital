@@ -12,10 +12,6 @@ import { useNavigate } from 'react-router-dom';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Input } from '@/components/ui/input';
-import { loadStripe } from '@stripe/stripe-js';
-
-// Inicializar Stripe
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 const MembresiasDB = () => {
   const { user } = useAuth();
@@ -36,67 +32,59 @@ const MembresiasDB = () => {
   // Planes de fallback para cuando no se pueden cargar de la DB
   const fallbackPlans = [
     {
-      id: 'free-access',
-      name: 'Free Access',
-      price: 0,
-      currency: '€',
-      duration_months: null,
-      description: 'Para empezar a conocernos',
+      id: 'fallback-1',
+      name: 'Plan Básico',
+      price: 99.99,
+      currency: 'USD',
+      duration_months: 3,
       features: [
-        'Newsletter gratuita con análisis y reflexiones financieras.'
+        'Acceso a 5 cursos básicos',
+        'Videos de análisis técnico',
+        'Soporte por email',
+        'Acceso por 3 meses',
+        'Certificado de finalización'
       ],
-      stripe_price_id: null,
+      stripe_price_id: 'price_1SDKO8JmSk3VG9oiCLuGoE4s',
       highlight: false
     },
     {
-      id: 'trader-plan-pro',
-      name: 'Trader Plan Pro',
-      price: 29.90,
-      currency: '€',
-      duration_months: 1,
-      description: 'o 299 €/año',
+      id: 'fallback-2',
+      name: 'Plan Premium',
+      price: 299.99,
+      currency: 'USD',
+      duration_months: 12,
       features: [
-        'Newsletter incluida',
-        'Acceso anticipado a BSB Maker (IA copiloto para traders)',
-        'Acceso completo a la formación (cursos temáticos + masterclass)',
-        '20% de descuento en consultorías',
-        '1 consultoría de 30 min incluida en el plan anual'
+        'Acceso a TODOS los cursos',
+        'Videos premium y análisis avanzado',
+        'Webinars en vivo mensuales',
+        'Soporte prioritario 24/7',
+        'Herramientas de trading',
+        'Comunidad exclusiva',
+        'Acceso por 12 meses',
+        'Certificación profesional'
       ],
       stripe_price_id: 'price_1SDKVXJmSk3VG9oiLEm9JOoD',
       highlight: true
     },
     {
-      id: 'premium-investor',
-      name: 'Premium Investor',
-      price: 29.90,
-      currency: '€',
-      duration_months: 1,
-      description: 'o 299 €/año',
+      id: 'fallback-3',
+      name: 'Plan VIP Lifetime',
+      price: 999.99,
+      currency: 'USD',
+      duration_months: null,
       features: [
-        'Newsletter incluida',
-        'Acceso a la Comunidad privada',
-        'Acceso completo a la formación (cursos temáticos + masterclass)',
-        '20% de descuento en consultorías',
-        '1 consultoría de 30 min incluida en el plan anual'
+        'Acceso ILIMITADO de por vida',
+        'TODO el contenido actual y futuro',
+        'Mentorías personalizadas 1:1',
+        'Sesiones de trading en vivo',
+        'Acceso a estrategias exclusivas',
+        'Soporte VIP prioritario',
+        'Comunidad VIP exclusiva',
+        'Revisión de portfolio personal',
+        'Señales de trading premium',
+        'Sin fecha de expiración'
       ],
       stripe_price_id: 'price_1SDKb2JmSk3VG9oiJr1unLZZ',
-      highlight: false
-    },
-    {
-      id: 'wealth-membership',
-      name: 'Wealth Membership',
-      price: 2400,
-      currency: '€',
-      duration_months: 12,
-      description: 'Co-Gestión Patrimonial - pago único',
-      features: [
-        '6 consultorías de 1h/año (valor: 1.800€)',
-        'Revisión completa de cartera semestral',
-        'Plan estratégico anual con propuestas de optimización',
-        'Canal privado prioritario + comunidad élite (networking + análisis exclusivos)',
-        'Diseñada para clientes con patrimonio elevado que buscan claridad y continuidad sin ceder la gestión.'
-      ],
-      stripe_price_id: 'price_1SDKO8JmSk3VG9oiCLuGoE4s',
       highlight: false
     }
   ];
@@ -198,7 +186,7 @@ const MembresiasDB = () => {
     }
   };
 
-    const handlePlanSelection = async (plan) => {
+  const handleSelectPlan = (plan) => {
     console.log('🚀 Plan seleccionado:', plan.name);
     
     if (!user) {
@@ -206,53 +194,24 @@ const MembresiasDB = () => {
       return;
     }
 
-    if (!plan.stripe_price_id) {
-      toast({
-        title: "Error",
-        description: "Este plan no tiene configurado un price ID de Stripe.",
-        variant: "destructive"
-      });
-      return;
-    }
-
     setLoadingPlan(plan.id);
 
-    try {
-      // Crear sesión de checkout en Stripe
-      const { data, error } = await supabase.functions.invoke('create-stripe-checkout', {
-        body: {
-          priceId: plan.stripe_price_id,
-          mode: 'subscription',
-          email: user.email,
-          metadata: {
-            user_id: user.id,
-            plan_id: plan.id,
-            plan_name: plan.name
-          }
-        }
-      });
-
-      if (error) throw error;
-
-      // Redireccionar a Stripe Checkout
-      const stripe = await stripePromise;
-      const { error: stripeError } = await stripe.redirectToCheckout({
-        sessionId: data.sessionId
-      });
-
-      if (stripeError) {
-        throw stripeError;
-      }
-    } catch (error) {
-      console.error('Error al procesar el pago:', error);
-      toast({
-        title: "Error en el pago",
-        description: "Hubo un problema procesando tu pago. Inténtalo de nuevo.",
-        variant: "destructive"
-      });
-    } finally {
+    const planData = {
+      id: plan.id,
+      name: plan.name,
+      price: plan.price,
+      currency: plan.currency,
+      description: plan.description,
+      features: plan.features,
+      duration_months: plan.duration_months,
+      stripe_price_id: plan.stripe_price_id
+    };
+    
+    setTimeout(() => {
+      console.log('➡️ Navegando a checkout para:', plan.name);
+      navigate('/checkout', { state: planData });
       setLoadingPlan(null);
-    }
+    }, 500);
   };
 
   const handleNewsletterSubscription = async (userEmail) => {
@@ -287,22 +246,13 @@ const MembresiasDB = () => {
     
     let buttonVariant = plan.highlight ? 'default' : 'outline';
     let buttonClassName = "w-full relative z-10";
-    let buttonText = "Quiero este plan";
 
-    if (plan.name === 'Free Access') {
-      buttonText = "Suscribirme gratis";
-      buttonVariant = 'outline';
-    } else if (plan.name === 'Wealth Membership') {
-      buttonText = "Solicitar acceso";
+    if (plan.name.toLowerCase().includes('premium')) {
+      buttonVariant = 'default';
+    } else if (plan.name.toLowerCase().includes('wealth')) {
       buttonClassName += " bg-black text-white hover:bg-gray-800";
       buttonVariant = 'default';
     }
-
-    const getPriceDisplay = () => {
-      if (plan.price === 0) return "Gratis";
-      if (plan.name === 'Wealth Membership') return `${plan.price} €/año`;
-      return `${plan.price} €/mes`;
-    };
 
     return (
       <Card className={`flex flex-col glass-card ${plan.highlight ? 'border-primary border-2 shadow-lg shadow-primary/20' : ''} ${isSubscribed ? 'bg-green-50 border-green-500' : ''}`}>
@@ -312,11 +262,9 @@ const MembresiasDB = () => {
             {isSubscribed && <Badge className="ml-2 bg-green-500">Activa</Badge>}
           </CardTitle>
           <CardDescription className="text-brand-text-secondary">
-            {plan.description || (
-              plan.duration_months === null ? 'Acceso de por vida' : 
-              plan.duration_months === 12 ? 'Pago anual' : 
-              plan.duration_months === 3 ? 'Pago trimestral' : 'Pago mensual'
-            )}
+            {plan.duration_months === null ? 'Acceso de por vida' : 
+             plan.duration_months === 12 ? 'Pago anual' : 
+             plan.duration_months === 3 ? 'Pago trimestral' : 'Pago mensual'}
           </CardDescription>
         </CardHeader>
         <CardContent className="flex-grow flex flex-col">
@@ -329,7 +277,11 @@ const MembresiasDB = () => {
             ))}
           </ul>
           <p className="text-4xl font-bold mt-6 text-brand-text-primary">
-            {getPriceDisplay()}
+            {plan.price} {plan.currency}
+            {plan.duration_months === null ? '' : 
+             plan.duration_months === 1 ? '/mes' : 
+             plan.duration_months === 3 ? '/trimestre' :
+             plan.duration_months === 12 ? '/año' : ''}
           </p>
         </CardContent>
         <CardFooter>
@@ -337,11 +289,6 @@ const MembresiasDB = () => {
             className={buttonClassName} 
             variant={buttonVariant} 
             onMouseUp={() => {
-              if (plan.name === 'Free Access') {
-                // Manejar suscripción gratuita
-                handleNewsletterSubscription('');
-                return;
-              }
               console.log('🔥 Button clicked:', plan.name);
               console.log('🔍 Button disabled state:', isLoading || isSubscribed);
               console.log('🔍 isLoading:', isLoading, 'isSubscribed:', isSubscribed);
@@ -360,7 +307,7 @@ const MembresiasDB = () => {
             ) : isSubscribed ? (
               'Plan Activo'
             ) : (
-              buttonText
+              'Seleccionar Plan'
             )}
             {!isLoading && !isSubscribed && <ArrowRight className="ml-2 h-4 w-4" />}
           </Button>
@@ -455,57 +402,11 @@ const MembresiasDB = () => {
     if (plans.length === 0) return [];
     
     return [
-      { 
-        feature: 'Newsletter', 
-        plans: plans.reduce((acc, plan) => ({ 
-          ...acc, 
-          [plan.name]: true 
-        }), {}) 
-      },
-      { 
-        feature: 'Acceso BSB Maker', 
-        plans: plans.reduce((acc, plan) => ({ 
-          ...acc, 
-          [plan.name]: plan.name === 'Trader Plan Pro'
-        }), {}) 
-      },
-      { 
-        feature: 'Acceso Formación', 
-        plans: plans.reduce((acc, plan) => ({ 
-          ...acc, 
-          [plan.name]: plan.name !== 'Free Access'
-        }), {}) 
-      },
-      { 
-        feature: 'Comunidad Privada', 
-        plans: plans.reduce((acc, plan) => ({ 
-          ...acc, 
-          [plan.name]: plan.name === 'Premium Investor' || plan.name === 'Wealth Membership'
-        }), {}) 
-      },
-      { 
-        feature: 'Descuento Consultorías', 
-        plans: plans.reduce((acc, plan) => ({ 
-          ...acc, 
-          [plan.name]: plan.name === 'Trader Plan Pro' || plan.name === 'Premium Investor' ? '20%' : 
-                       plan.name === 'Wealth Membership' ? 'Incluidas' : false
-        }), {}) 
-      },
-      { 
-        feature: 'Consultorías Incluidas', 
-        plans: plans.reduce((acc, plan) => ({ 
-          ...acc, 
-          [plan.name]: plan.name === 'Trader Plan Pro' || plan.name === 'Premium Investor' ? '1x30min (anual)' :
-                       plan.name === 'Wealth Membership' ? '6x1h (anual)' : false
-        }), {}) 
-      },
-      { 
-        feature: 'Comunidad Élite', 
-        plans: plans.reduce((acc, plan) => ({ 
-          ...acc, 
-          [plan.name]: plan.name === 'Wealth Membership'
-        }), {}) 
-      }
+      { feature: 'Newsletter', plans: plans.reduce((acc, plan) => ({ ...acc, [plan.name]: true }), {}) },
+      { feature: 'Acceso BSB Maker', plans: plans.reduce((acc, plan) => ({ ...acc, [plan.name]: plan.name.toLowerCase().includes('trader') || plan.name.toLowerCase().includes('pro') }), {}) },
+      { feature: 'Acceso Formación', plans: plans.reduce((acc, plan) => ({ ...acc, [plan.name]: !plan.name.toLowerCase().includes('free') && !plan.name.toLowerCase().includes('basic') }), {}) },
+      { feature: 'Comunidad Privada', plans: plans.reduce((acc, plan) => ({ ...acc, [plan.name]: plan.name.toLowerCase().includes('premium') || plan.name.toLowerCase().includes('wealth') }), {}) },
+      { feature: 'Soporte Premium', plans: plans.reduce((acc, plan) => ({ ...acc, [plan.name]: plan.name.toLowerCase().includes('premium') || plan.name.toLowerCase().includes('wealth') }), {}) },
     ];
   }, [plans]);
 

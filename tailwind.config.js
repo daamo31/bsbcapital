@@ -64,6 +64,9 @@
             md: "calc(var(--radius) - 2px)",
             sm: "calc(var(--radius) - 4px)",
           },
+          height: {
+            '13': '3.25rem', // 52px - 30% más grande que h-10 (40px)
+          },
           keyframes: {
             "accordion-down": {
               from: { height: 0 },

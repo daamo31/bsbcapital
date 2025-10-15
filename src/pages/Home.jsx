@@ -83,7 +83,7 @@ import React from 'react';
         icon: <BookOpen />,
         title: 'Academia',
         description: 'Aprende con un método distinto. Formación dinámica basada en píldoras rápidas y masterclass especializadas, pensada para que avances desde lo básico hasta estrategias avanzadas de inversión de manera clara y aplicable.',
-        href: '/academia',
+        href: '/formacion',
       },
       {
         icon: <Star />,
@@ -203,7 +203,7 @@ import React from 'react';
             <section className="py-20 md:py-28 bg-background">
                 <div className="container mx-auto px-4">
                     <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
-                        <motion.h2 variants={itemVariants} className="text-4xl md:text-5xl font-bold text-center text-brand-text-primary">Soluciones de inversión que <span className="main-gradient-text">Multiplican tu Potencial</span></motion.h2>
+                        <motion.h2 variants={itemVariants} className="text-4xl md:text-5xl font-bold text-center text-brand-text-primary">Soluciones de Inversión que <span className="main-gradient-text">Multiplican tu Potencial</span></motion.h2>
                         <motion.p variants={itemVariants} className="mt-4 text-center text-lg text-brand-text-secondary max-w-2xl mx-auto">Tanto si quieres operar con autonomía, formarte con rigor o delegar tu capital en expertos, en BSB Capital tenemos el plan que transforma tu manera de invertir.</motion.p>
                         <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                             {services.map((service) => (
