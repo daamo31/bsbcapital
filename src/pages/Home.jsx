@@ -234,7 +234,7 @@ import React from 'react';
                     </motion.div>
                   </div>
                   <motion.div variants={itemVariants} className="mt-20 max-w-3xl mx-auto text-center p-8 bg-background border rounded-xl shadow-sm">
-                    <img class="w-20 h-20 rounded-full mx-auto" alt="Foto de cliente satisfecho" src="https://images.unsplash.com/photo-1603991414220-51b87b89a371" />
+                    <img className="w-20 h-20 rounded-full mx-auto" alt="Foto de cliente satisfecho" src="https://images.unsplash.com/photo-1603991414220-51b87b89a371" />
                     <blockquote className="mt-6 text-xl text-brand-text-primary/90 italic">
                       "BSB Maker ha cambiado mi forma de operar. La claridad y la asistencia de la IA son simplemente <span className="text-brand-accent font-semibold">revolucionarias</span>. Mis resultados han mejorado notablemente."
                     </blockquote>

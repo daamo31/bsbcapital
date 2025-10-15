@@ -19,7 +19,18 @@ export const useAdmin = () => {
     try {
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       
-      if (userError || !user) {
+      if (userError) {
+        // Si hay error de JWT, limpiar la sesión corrupta
+        if (userError.message?.includes('invalid claim') || userError.message?.includes('bad_jwt')) {
+          console.log('JWT corrupto detectado, limpiando sesión...');
+          await supabase.auth.signOut();
+          localStorage.removeItem('supabase.auth.token');
+        }
+        resetUserStatus();
+        return;
+      }
+      
+      if (!user) {
         resetUserStatus();
         return;
       }

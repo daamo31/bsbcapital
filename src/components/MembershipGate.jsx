@@ -39,24 +39,24 @@ const MembershipGate = ({
     switch (requiredLevel) {
       case 1:
         return {
-          title: "Contenido del Plan Básico",
-          description: "Necesitas el Plan Básico para acceder a este contenido.",
+          title: "Contenido del Trader Plan Pro",
+          description: "Necesitas el Trader Plan Pro para acceder a este contenido.",
           icon: <Star className="h-6 w-6" />,
           color: "border-blue-200 bg-blue-50",
           badgeColor: "bg-blue-100 text-blue-800"
         };
       case 2:
         return {
-          title: "Contenido Premium",
-          description: "Este contenido está disponible para miembros Premium.",
+          title: "Contenido Premium Investor",
+          description: "Este contenido está disponible para miembros Premium Investor.",
           icon: <Crown className="h-6 w-6" />,
           color: "border-purple-200 bg-purple-50",
           badgeColor: "bg-purple-100 text-purple-800"
         };
       case 3:
         return {
-          title: "Contenido VIP Exclusivo",
-          description: "Acceso exclusivo para miembros VIP.",
+          title: "Contenido Wealth Membership",
+          description: "Acceso exclusivo para miembros Wealth Membership.",
           icon: <Diamond className="h-6 w-6" />,
           color: "border-gold-200 bg-amber-50",
           badgeColor: "bg-amber-100 text-amber-800"

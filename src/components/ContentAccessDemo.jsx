@@ -75,22 +75,22 @@ const ContentAccessDemo = () => {
               <div className="flex items-start space-x-3">
                 <CheckCircle className="h-5 w-5 text-green-500 mt-0.5" />
                 <div>
-                  <p className="font-semibold">Plan Básico</p>
-                  <p className="text-sm text-gray-600">Acceso a módulos fundamentales</p>
+                  <p className="font-semibold">Trader Plan Pro</p>
+                  <p className="text-sm text-gray-600">Acceso a BSB Maker y formación completa</p>
                 </div>
               </div>
               <div className="flex items-start space-x-3">
                 <Crown className="h-5 w-5 text-yellow-500 mt-0.5" />
                 <div>
-                  <p className="font-semibold">Plan Estándar</p>
-                  <p className="text-sm text-gray-600">Incluye contenido intermedio y algunos videos</p>
+                  <p className="font-semibold">Premium Investor</p>
+                  <p className="text-sm text-gray-600">Incluye comunidad privada y descuentos</p>
                 </div>
               </div>
               <div className="flex items-start space-x-3">
                 <Crown className="h-5 w-5 text-purple-500 mt-0.5" />
                 <div>
-                  <p className="font-semibold">Plan Premium</p>
-                  <p className="text-sm text-gray-600">Acceso completo a todo el contenido</p>
+                  <p className="font-semibold">Wealth Membership</p>
+                  <p className="text-sm text-gray-600">Co-gestión patrimonial completa</p>
                 </div>
               </div>
             </div>

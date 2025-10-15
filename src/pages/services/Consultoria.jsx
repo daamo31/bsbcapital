@@ -107,7 +107,7 @@ const BookingModal = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="mt-8" size="lg">
+        <Button className="mt-8 bg-white text-brand-green-900 hover:bg-brand-gold-100 hover:text-brand-green-900 shadow-lg transition-all duration-300" size="lg">
           Agendar una llamada
         </Button>
       </DialogTrigger>
@@ -217,59 +217,74 @@ const Consultoria = () => {
         className="min-h-screen bg-background"
       >
         {/* Hero Section */}
-        <div className="container mx-auto px-4 py-16 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-brand-text-primary">
-            Consultoría Financiera <span className="main-gradient-text">Estratégica y Personalizada</span>
-          </h1>
-          <p className="mt-6 text-lg text-brand-text-secondary max-w-3xl mx-auto">
-            En un mercado donde la información se multiplica y la volatilidad marca el pulso, tener un plan no es opcional: es la diferencia entre reaccionar tarde o adelantarse a las oportunidades.
-          </p>
+        <div className="relative overflow-hidden bg-gradient-to-br from-brand-green-600 via-brand-green-600 to-brand-green-900">
+          {/* Background overlay for depth */}
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-green-900/20 to-transparent"></div>
           
-          <div className="mt-8">
-            <BookingModal />
+          {/* Content */}
+          <div className="relative container mx-auto px-4 py-20 text-center">
+            <h1 className="text-4xl md:text-5xl font-bold text-white">
+              Consultoría Financiera <span className="text-brand-gold-100">Estratégica y Personalizada</span>
+            </h1>
+            <p className="mt-6 text-lg text-white/90 max-w-3xl mx-auto">
+              En un mercado donde la información se multiplica y la volatilidad marca el pulso, tener un plan no es opcional: es la diferencia entre reaccionar tarde o adelantarse a las oportunidades.
+            </p>
+            
+            <div className="mt-8">
+              <BookingModal />
+            </div>
           </div>
         </div>
 
         {/* Storytelling Section */}
-        <div className="container mx-auto px-4 py-16">
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-card p-8 rounded-xl shadow-lg border border-primary/10">
-              <p className="text-xl text-brand-text-primary leading-relaxed">
-                Imagina que tu cartera es un barco. Algunos navegan sin brújula y esperan que el viento les lleve; otros confían en que la tormenta amaine. En BSB Capital trazamos la ruta contigo: analizamos tus activos, identificamos los riesgos invisibles y diseñamos un plan de acción que te permita avanzar con seguridad, ya sea en los mercados tradicionales o en el ecosistema cripto y Web3.
-              </p>
+        <div className="bg-brand-green-50 py-16">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-white/95 backdrop-blur-sm p-8 rounded-xl shadow-lg border border-brand-green-200">
+                <p className="text-xl text-brand-green-900 leading-relaxed">
+                  Imagina que tu cartera es un barco. Algunos navegan sin brújula y esperan que el viento les lleve; otros confían en que la tormenta amaine. En BSB Capital trazamos la ruta contigo: analizamos tus activos, identificamos los riesgos invisibles y diseñamos un plan de acción que te permita avanzar con seguridad, ya sea en los mercados tradicionales o en el ecosistema cripto y Web3.
+                </p>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Benefits Section */}
-        <div className="container mx-auto px-4 py-16">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-            <div className="bg-card p-6 rounded-xl shadow-sm border hover:shadow-md transition-shadow">
-              <BarChart3 className="h-12 w-12 text-brand-accent mb-4" />
-              <h3 className="text-xl font-bold text-brand-text-primary mb-3">Planificación Financiera</h3>
-              <p className="text-brand-text-secondary">Estrategias claras para optimizar ingresos, gastos e impuestos.</p>
-            </div>
-            <div className="bg-card p-6 rounded-xl shadow-sm border hover:shadow-md transition-shadow">
-              <Briefcase className="h-12 w-12 text-brand-accent mb-4" />
-              <h3 className="text-xl font-bold text-brand-text-primary mb-3">Optimización de Carteras</h3>
-              <p className="text-brand-text-secondary">Ajustamos tu portafolio para reducir riesgos sin perder rentabilidad.</p>
-            </div>
-            <div className="bg-card p-6 rounded-xl shadow-sm border hover:shadow-md transition-shadow">
-              <Globe className="h-12 w-12 text-brand-accent mb-4" />
-              <h3 className="text-xl font-bold text-brand-text-primary mb-3">Crypto & Web3</h3>
-              <p className="text-brand-text-secondary">Te guiamos para aprovechar nuevas oportunidades con fundamentos sólidos y control del riesgo.</p>
-            </div>
-            <div className="bg-card p-6 rounded-xl shadow-sm border hover:shadow-md transition-shadow">
-              <Rocket className="h-12 w-12 text-brand-accent mb-4" />
-              <h3 className="text-xl font-bold text-brand-text-primary mb-3">Onboarding Crypto</h3>
-              <p className="text-brand-text-secondary">Has oído hablar de las rentabilidades de las criptomonedas, pero no sabes cómo empezar. Este servicio es tu puerta de entrada, acompañándote paso a paso para invertir de forma segura y consciente.</p>
+        <div className="relative overflow-hidden bg-gradient-to-br from-brand-green-600 via-brand-green-600 to-brand-green-900">
+          {/* Background overlay for depth */}
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-green-900/20 to-transparent"></div>
+          
+          {/* Content */}
+          <div className="relative container mx-auto px-4 py-20">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+              <div className="bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:bg-white">
+                <BarChart3 className="h-12 w-12 text-brand-green-600 mb-4" />
+                <h3 className="text-xl font-bold text-brand-green-900 mb-3">Planificación Financiera</h3>
+                <p className="text-brand-green-800">Estrategias claras para optimizar ingresos, gastos e impuestos.</p>
+              </div>
+              <div className="bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:bg-white">
+                <Briefcase className="h-12 w-12 text-brand-green-600 mb-4" />
+                <h3 className="text-xl font-bold text-brand-green-900 mb-3">Optimización de Carteras</h3>
+                <p className="text-brand-green-800">Ajustamos tu portafolio para reducir riesgos sin perder rentabilidad.</p>
+              </div>
+              <div className="bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:bg-white">
+                <Globe className="h-12 w-12 text-brand-green-600 mb-4" />
+                <h3 className="text-xl font-bold text-brand-green-900 mb-3">Crypto & Web3</h3>
+                <p className="text-brand-green-800">Te guiamos para aprovechar nuevas oportunidades con fundamentos sólidos y control del riesgo.</p>
+              </div>
+              <div className="bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:bg-white">
+                <Rocket className="h-12 w-12 text-brand-green-600 mb-4" />
+                <h3 className="text-xl font-bold text-brand-green-900 mb-3">Onboarding Crypto</h3>
+                <p className="text-brand-green-800">Has oído hablar de las rentabilidades de las criptomonedas, pero no sabes cómo empezar. Este servicio es tu puerta de entrada, acompañándote paso a paso para invertir de forma segura y consciente.</p>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Testimonials Carousel Section */}
-        <div className="container mx-auto px-4 py-16 bg-muted/30">
-          <h2 className="text-3xl font-bold text-center text-brand-text-primary mb-12">Lo que dicen nuestros clientes</h2>
+        <div className="relative overflow-hidden bg-gradient-to-br from-brand-green-100 via-brand-green-50 to-brand-green-100">
+          <div className="container mx-auto px-4 py-16">
+            <h2 className="text-3xl font-bold text-center text-brand-green-900 mb-12">Lo que dicen nuestros clientes</h2>
           
           <div className="relative overflow-hidden">
             <div className="flex animate-[scroll_40s_linear_infinite] pause-animation">
@@ -481,17 +496,20 @@ const Consultoria = () => {
             </div>
           </div>
           
-          <p className="text-center text-sm text-brand-text-secondary mt-6 italic">
+          <p className="text-center text-sm text-brand-green-700 mt-6 italic">
             💡 Pasa el cursor por encima para pausar la animación
           </p>
+          </div>
         </div>
 
         {/* Final CTA Section */}
-        <div className="container mx-auto px-4 py-16 text-center">
-          <h2 className="text-3xl font-bold text-brand-text-primary mb-6">
-            ¿Listo para transformar tu estrategia financiera?
-          </h2>
-          <BookingModal />
+        <div className="relative overflow-hidden bg-gradient-to-br from-brand-green-900 via-brand-green-800 to-brand-green-900">
+          <div className="container mx-auto px-4 py-16 text-center">
+            <h2 className="text-3xl font-bold text-white mb-6">
+              ¿Listo para transformar tu estrategia financiera?
+            </h2>
+            <BookingModal />
+          </div>
         </div>
 
   

@@ -33,59 +33,67 @@ const MembresiasDB = () => {
   const fallbackPlans = [
     {
       id: 'fallback-1',
-      name: 'Plan Básico',
-      price: 99.99,
-      currency: 'USD',
-      duration_months: 3,
+      name: 'Free Access',
+      price: 0,
+      currency: 'EUR',
+      duration_months: null,
       features: [
-        'Acceso a 5 cursos básicos',
-        'Videos de análisis técnico',
-        'Soporte por email',
-        'Acceso por 3 meses',
-        'Certificado de finalización'
+        'Newsletter gratuita con análisis y reflexiones financieras'
       ],
-      stripe_price_id: 'price_1SDKO8JmSk3VG9oiCLuGoE4s',
-      highlight: false
+      stripe_price_id: null,
+      highlight: false,
+      description: 'Para empezar a conocernos'
     },
     {
       id: 'fallback-2',
-      name: 'Plan Premium',
-      price: 299.99,
-      currency: 'USD',
-      duration_months: 12,
+      name: 'Trader Plan Pro',
+      price: 29.90,
+      currency: 'EUR',
+      duration_months: 1,
       features: [
-        'Acceso a TODOS los cursos',
-        'Videos premium y análisis avanzado',
-        'Webinars en vivo mensuales',
-        'Soporte prioritario 24/7',
-        'Herramientas de trading',
-        'Comunidad exclusiva',
-        'Acceso por 12 meses',
-        'Certificación profesional'
+        'Newsletter incluida',
+        'Acceso anticipado a BSB Maker (IA copiloto para traders)',
+        'Acceso completo a la formación (cursos temáticos + masterclass)',
+        '20% de descuento en consultorías',
+        '1 consultoría de 30 min incluida en el plan anual'
       ],
-      stripe_price_id: 'price_1SDKVXJmSk3VG9oiLEm9JOoD',
-      highlight: true
+      stripe_price_id: 'price_1SDKO8JmSk3VG9oiCLuGoE4s',
+      highlight: false,
+      description: 'o 299 €/año'
     },
     {
       id: 'fallback-3',
-      name: 'Plan VIP Lifetime',
-      price: 999.99,
-      currency: 'USD',
-      duration_months: null,
+      name: 'Premium Investor',
+      price: 29.90,
+      currency: 'EUR',
+      duration_months: 1,
       features: [
-        'Acceso ILIMITADO de por vida',
-        'TODO el contenido actual y futuro',
-        'Mentorías personalizadas 1:1',
-        'Sesiones de trading en vivo',
-        'Acceso a estrategias exclusivas',
-        'Soporte VIP prioritario',
-        'Comunidad VIP exclusiva',
-        'Revisión de portfolio personal',
-        'Señales de trading premium',
-        'Sin fecha de expiración'
+        'Newsletter incluida',
+        'Acceso a la Comunidad privada',
+        'Acceso completo a la formación (cursos temáticos + masterclass)',
+        '20% de descuento en consultorías',
+        '1 consultoría de 30 min incluida en el plan anual'
+      ],
+      stripe_price_id: 'price_1SDKVXJmSk3VG9oiLEm9JOoD',
+      highlight: true,
+      description: 'o 299 €/año'
+    },
+    {
+      id: 'fallback-4',
+      name: 'Wealth Membership',
+      price: 2400,
+      currency: 'EUR',
+      duration_months: 12,
+      features: [
+        '6 consultorías de 1h/año (valor: 1.800€)',
+        'Revisión completa de cartera semestral',
+        'Plan estratégico anual con propuestas de optimización',
+        'Canal privado prioritario + comunidad élite (networking + análisis exclusivos)',
+        'Diseñada para clientes con patrimonio elevado que buscan claridad y continuidad sin ceder la gestión'
       ],
       stripe_price_id: 'price_1SDKb2JmSk3VG9oiJr1unLZZ',
-      highlight: false
+      highlight: false,
+      description: 'Co-Gestión Patrimonial'
     }
   ];
 
@@ -189,6 +197,20 @@ const MembresiasDB = () => {
   const handleSelectPlan = (plan) => {
     console.log('🚀 Plan seleccionado:', plan.name);
     
+    // Si es el plan gratuito, dirigir a la sección de newsletter
+    if (plan.price === 0) {
+      const newsletterSection = document.getElementById('newsletter-section');
+      if (newsletterSection) {
+        newsletterSection.scrollIntoView({ behavior: 'smooth' });
+        // Enfocar el input del email
+        setTimeout(() => {
+          const emailInput = document.getElementById('newsletter-input');
+          if (emailInput) emailInput.focus();
+        }, 500);
+      }
+      return;
+    }
+    
     if (!user) {
       navigate('/login');
       return;
@@ -215,6 +237,27 @@ const MembresiasDB = () => {
   };
 
   const handleNewsletterSubscription = async (userEmail) => {
+    // Validar email antes de proceder
+    if (!userEmail || !userEmail.trim()) {
+      toast({
+        title: "Email requerido",
+        description: "Por favor, introduce tu dirección de email.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Validar formato de email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(userEmail)) {
+      toast({
+        title: "Email inválido",
+        description: "Por favor, introduce un email válido.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     try {
       setNewsletterLoading(true);
       // Aquí puedes agregar la lógica para suscribir al newsletter
@@ -236,7 +279,7 @@ const MembresiasDB = () => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    handleNewsletterSubscription(email);
+    handleNewsletterSubscription(email.trim());
   };
 
   // Componentes UI del diseño original
@@ -262,9 +305,10 @@ const MembresiasDB = () => {
             {isSubscribed && <Badge className="ml-2 bg-green-500">Activa</Badge>}
           </CardTitle>
           <CardDescription className="text-brand-text-secondary">
-            {plan.duration_months === null ? 'Acceso de por vida' : 
-             plan.duration_months === 12 ? 'Pago anual' : 
-             plan.duration_months === 3 ? 'Pago trimestral' : 'Pago mensual'}
+            {plan.description || 
+             (plan.duration_months === null ? 'Acceso de por vida' : 
+              plan.duration_months === 12 ? 'Pago anual' : 
+              plan.duration_months === 3 ? 'Pago trimestral' : 'Pago mensual')}
           </CardDescription>
         </CardHeader>
         <CardContent className="flex-grow flex flex-col">
@@ -277,11 +321,13 @@ const MembresiasDB = () => {
             ))}
           </ul>
           <p className="text-4xl font-bold mt-6 text-brand-text-primary">
-            {plan.price} {plan.currency}
-            {plan.duration_months === null ? '' : 
-             plan.duration_months === 1 ? '/mes' : 
-             plan.duration_months === 3 ? '/trimestre' :
-             plan.duration_months === 12 ? '/año' : ''}
+            {plan.price === 0 ? 'Gratis' : `${plan.price} ${plan.currency}`}
+            {plan.price > 0 ? (
+              plan.duration_months === null ? '' : 
+              plan.duration_months === 1 ? '/mes' : 
+              plan.duration_months === 3 ? '/trimestre' :
+              plan.duration_months === 12 ? '/año' : ''
+            ) : ''}
           </p>
         </CardContent>
         <CardFooter>
@@ -306,8 +352,10 @@ const MembresiasDB = () => {
               <Loader2 className="h-4 w-4 animate-spin mr-2" />
             ) : isSubscribed ? (
               'Plan Activo'
+            ) : plan.price === 0 ? (
+              'Suscribirme gratis'
             ) : (
-              'Seleccionar Plan'
+              'Quiero este plan'
             )}
             {!isLoading && !isSubscribed && <ArrowRight className="ml-2 h-4 w-4" />}
           </Button>
@@ -342,7 +390,7 @@ const MembresiasDB = () => {
         result = plans.find(p => p.name.toLowerCase().includes('wealth') || p.name.toLowerCase().includes('elite')) || plans[3];
       }
       
-      onResult(result?.name || 'Plan Básico');
+      onResult(result?.name || 'Free Access');
     };
 
     const questions = [
@@ -528,7 +576,7 @@ const MembresiasDB = () => {
           )
         )}
 
-        <div className="mt-24 max-w-2xl mx-auto text-center bg-card p-8 rounded-xl shadow-lg border">
+        <div id="newsletter-section" className="mt-24 max-w-2xl mx-auto text-center bg-card p-8 rounded-xl shadow-lg border">
           <h2 className="text-3xl font-bold text-brand-text-primary">Empieza con Free Access</h2>
           <p className="mt-4 text-brand-text-secondary">Recibe nuestra newsletter gratuita con análisis y reflexiones financieras para empezar a conocernos.</p>
           <form onSubmit={handleFormSubmit} className="mt-6 flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
@@ -540,8 +588,10 @@ const MembresiasDB = () => {
               onChange={(e) => setEmail(e.target.value)}
               disabled={newsletterLoading}
               className="flex-grow"
+              required
+              minLength={5}
             />
-            <Button type="submit" disabled={newsletterLoading}>
+            <Button type="submit" disabled={newsletterLoading || !email.trim()}>
               {newsletterLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Suscribirme gratis'}
             </Button>
           </form>
