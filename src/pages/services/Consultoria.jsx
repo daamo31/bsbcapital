@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Link } from 'react-router-dom';
 import { supabase } from '@/lib/customSupabaseClient';
-import { Loader2, Clock, BarChart3, Briefcase, Globe, Rocket, Quote } from 'lucide-react';
+import { Loader2, Clock, BarChart3, Briefcase, Globe, Rocket, Quote, ArrowRight } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from '@/components/ui/button';
 import { Calendar } from "@/components/ui/calendar";
@@ -107,8 +107,8 @@ const BookingModal = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="mt-8 bg-white text-brand-green-900 hover:bg-brand-gold-100 hover:text-brand-green-900 shadow-lg transition-all duration-300" size="lg">
-          Agendar una llamada
+        <Button size="lg">
+          Agendar una llamada <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-4xl p-0 glass-card">
@@ -217,24 +217,30 @@ const Consultoria = () => {
         className="min-h-screen bg-background"
       >
         {/* Hero Section */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-brand-green-600 via-brand-green-600 to-brand-green-900">
-          {/* Background overlay for depth */}
-          <div className="absolute inset-0 bg-gradient-to-r from-brand-green-900/20 to-transparent"></div>
-          
-          {/* Content */}
-          <div className="relative container mx-auto px-4 py-20 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-white">
+        <header className="py-20 md:py-32 text-center aurora-background">
+          <div className="container mx-auto px-4 relative z-10">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="text-4xl md:text-5xl font-bold main-gradient-text"
+            >
               Consultoría Financiera <span className="text-brand-gold-100">Estratégica y Personalizada</span>
-            </h1>
-            <p className="mt-6 text-lg text-white/90 max-w-3xl mx-auto">
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+              className="mt-6 text-lg text-text-2 max-w-3xl mx-auto"
+            >
               En un mercado donde la información se multiplica y la volatilidad marca el pulso, tener un plan no es opcional: es la diferencia entre reaccionar tarde o adelantarse a las oportunidades.
-            </p>
+            </motion.p>
             
             <div className="mt-8">
               <BookingModal />
             </div>
           </div>
-        </div>
+        </header>
 
         {/* Storytelling Section */}
         <div className="bg-brand-green-50 py-16">
@@ -250,12 +256,8 @@ const Consultoria = () => {
         </div>
 
         {/* Benefits Section */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-brand-green-600 via-brand-green-600 to-brand-green-900">
-          {/* Background overlay for depth */}
-          <div className="absolute inset-0 bg-gradient-to-r from-brand-green-900/20 to-transparent"></div>
-          
-          {/* Content */}
-          <div className="relative container mx-auto px-4 py-20">
+        <section className="py-20 md:py-32 aurora-background">
+          <div className="container mx-auto px-4 relative z-10">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
               <div className="bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:bg-white">
                 <BarChart3 className="h-12 w-12 text-brand-green-600 mb-4" />
@@ -279,12 +281,12 @@ const Consultoria = () => {
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Testimonials Carousel Section */}
         <div className="relative overflow-hidden bg-gradient-to-br from-brand-green-100 via-brand-green-50 to-brand-green-100">
           <div className="container mx-auto px-4 py-16">
-            <h2 className="text-3xl font-bold text-center text-brand-green-900 mb-12">Lo que dicen nuestros clientes</h2>
+            <h2 className="text-3xl font-bold text-center main-gradient-text mb-12">Lo que dicen nuestros clientes</h2>
           
           <div className="relative overflow-hidden">
             <div className="flex animate-[scroll_40s_linear_infinite] pause-animation">
@@ -449,6 +451,121 @@ const Consultoria = () => {
                 </div>
               </div>
 
+              {/* Testimonial 8 */}
+              <div className="flex-shrink-0 w-80 mx-4">
+                <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                  <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                      PC
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-brand-text-primary">Pedro Caballero</h3>
+                      <p className="text-sm text-brand-text-secondary">Abogado, Sevilla</p>
+                    </div>
+                  </div>
+                  <p className="text-brand-text-secondary italic">
+                    "Como autónomo mis ingresos varían mucho. BSB me ayudó a estructurar un plan adaptado a mi situación: reservas para la época baja y inversiones para cuando sobra. Game changer total 🎯"
+                  </p>
+                  <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                    <span>⭐⭐⭐⭐⭐</span>
+                    <span className="ml-2">• hace 1 semana</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Testimonial 9 */}
+              <div className="flex-shrink-0 w-80 mx-4">
+                <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                  <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                      LF
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-brand-text-primary">Laura Fernández</h3>
+                      <p className="text-sm text-brand-text-secondary">Ejecutiva, Bilbao</p>
+                    </div>
+                  </div>
+                  <p className="text-brand-text-secondary italic">
+                    "Tenía miedo de invertir en bolsa después de 2008. Me explicaron todo con calma, empezamos poco a poco y ahora tengo una cartera diversificada que me da mucha más confianza 💪"
+                  </p>
+                  <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                    <span>⭐⭐⭐⭐⭐</span>
+                    <span className="ml-2">• hace 2 semanas</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Testimonial 10 */}
+              <div className="flex-shrink-0 w-80 mx-4">
+                <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                  <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                      RT
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-brand-text-primary">Roberto Torres</h3>
+                      <p className="text-sm text-brand-text-secondary">Empresario, Valencia</p>
+                    </div>
+                  </div>
+                  <p className="text-brand-text-secondary italic">
+                    "Necesitaba optimizar los impuestos de mi empresa. Su asesoramiento fiscal me ha ahorrado miles de euros y además tengo todo más organizado. Súper recomendable 📊"
+                  </p>
+                  <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                    <span>⭐⭐⭐⭐⭐</span>
+                    <span className="ml-2">• hace 3 días</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Testimonial 11 */}
+              <div className="flex-shrink-0 w-80 mx-4">
+                <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                  <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-rose-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                      CV
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-brand-text-primary">Carmen Vega</h3>
+                      <p className="text-sm text-brand-text-secondary">Profesora, Granada</p>
+                    </div>
+                  </div>
+                  <p className="text-brand-text-secondary italic">
+                    "Quería empezar a invertir pero no sabía nada. Me explicaron desde lo básico hasta estrategias avanzadas. Ahora entiendo mis inversiones y duermo tranquila 😌"
+                  </p>
+                  <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                    <span>⭐⭐⭐⭐⭐</span>
+                    <span className="ml-2">• hace 10 días</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Testimonial 12 */}
+              <div className="flex-shrink-0 w-80 mx-4">
+                <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                  <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                      AB
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-brand-text-primary">Alejandro Blanco</h3>
+                      <p className="text-sm text-brand-text-secondary">Desarrollador, Madrid</p>
+                    </div>
+                  </div>
+                  <p className="text-brand-text-secondary italic">
+                    "Trabajo en tech y quería diversificar más allá de las acciones de mi empresa. Me ayudaron a crear un portfolio balanceado. Mi patrimonio ha crecido un 15% este año 🚀"
+                  </p>
+                  <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                    <span>⭐⭐⭐⭐⭐</span>
+                    <span className="ml-2">• hace 1 mes</span>
+                  </div>
+                </div>
+              </div>
+
               {/* Duplicamos los primeros testimonials para crear loop infinito */}
               <div className="flex-shrink-0 w-80 mx-4">
                 <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
@@ -495,22 +612,25 @@ const Consultoria = () => {
               </div>
             </div>
           </div>
-          
-          <p className="text-center text-sm text-brand-green-700 mt-6 italic">
-            💡 Pasa el cursor por encima para pausar la animación
-          </p>
+      
+         
           </div>
         </div>
 
         {/* Final CTA Section */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-brand-green-900 via-brand-green-800 to-brand-green-900">
-          <div className="container mx-auto px-4 py-16 text-center">
-            <h2 className="text-3xl font-bold text-white mb-6">
+        <section className="py-20 md:py-32 text-center aurora-background">
+          <div className="container mx-auto px-4 relative z-10">
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="text-3xl font-bold main-gradient-text mb-6"
+            >
               ¿Listo para transformar tu estrategia financiera?
-            </h2>
+            </motion.h2>
             <BookingModal />
           </div>
-        </div>
+        </section>
 
   
       </motion.div>

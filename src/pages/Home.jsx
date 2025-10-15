@@ -191,8 +191,10 @@ import React from 'react';
                       </Button>
                     )}
                     
-                    <Button asChild size="lg" variant="outline">
-                      <Link to="/guia-inversion">Descubrir mi Servicio Ideal</Link>
+                    <Button asChild size="lg">
+                      <Link to="/guia-inversion">
+                        Descubrir mi Servicio Ideal <ArrowRight className="ml-2 h-5 w-5" />
+                      </Link>
                     </Button>
                   </motion.div>
                 </motion.div>
