@@ -83,7 +83,7 @@ import React from 'react';
         icon: <BookOpen />,
         title: 'Academia',
         description: 'Aprende con un método distinto. Formación dinámica basada en píldoras rápidas y masterclass especializadas, pensada para que avances desde lo básico hasta estrategias avanzadas de inversión de manera clara y aplicable.',
-        href: '/formacion',
+        href: '/academia',
       },
       {
         icon: <Star />,

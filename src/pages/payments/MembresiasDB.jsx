@@ -12,6 +12,10 @@ import { useNavigate } from 'react-router-dom';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Input } from '@/components/ui/input';
+import { loadStripe } from '@stripe/stripe-js';
+
+// Inicializar Stripe
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 const MembresiasDB = () => {
   const { user } = useAuth();
@@ -194,7 +198,7 @@ const MembresiasDB = () => {
     }
   };
 
-  const handleSelectPlan = (plan) => {
+    const handlePlanSelection = async (plan) => {
     console.log('🚀 Plan seleccionado:', plan.name);
     
     if (!user) {
@@ -202,24 +206,53 @@ const MembresiasDB = () => {
       return;
     }
 
+    if (!plan.stripe_price_id) {
+      toast({
+        title: "Error",
+        description: "Este plan no tiene configurado un price ID de Stripe.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setLoadingPlan(plan.id);
 
-    const planData = {
-      id: plan.id,
-      name: plan.name,
-      price: plan.price,
-      currency: plan.currency,
-      description: plan.description,
-      features: plan.features,
-      duration_months: plan.duration_months,
-      stripe_price_id: plan.stripe_price_id
-    };
-    
-    setTimeout(() => {
-      console.log('➡️ Navegando a checkout para:', plan.name);
-      navigate('/checkout', { state: planData });
+    try {
+      // Crear sesión de checkout en Stripe
+      const { data, error } = await supabase.functions.invoke('create-stripe-checkout', {
+        body: {
+          priceId: plan.stripe_price_id,
+          mode: 'subscription',
+          email: user.email,
+          metadata: {
+            user_id: user.id,
+            plan_id: plan.id,
+            plan_name: plan.name
+          }
+        }
+      });
+
+      if (error) throw error;
+
+      // Redireccionar a Stripe Checkout
+      const stripe = await stripePromise;
+      const { error: stripeError } = await stripe.redirectToCheckout({
+        sessionId: data.sessionId
+      });
+
+      if (stripeError) {
+        throw stripeError;
+      }
+    } catch (error) {
+      console.error('Error al procesar el pago:', error);
+      toast({
+        title: "Error en el pago",
+        description: "Hubo un problema procesando tu pago. Inténtalo de nuevo.",
+        variant: "destructive"
+      });
+    } finally {
       setLoadingPlan(null);
-    }, 500);
+    }
   };
 
   const handleNewsletterSubscription = async (userEmail) => {
