@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Link } from 'react-rout              className="text-3xl sm:text-4xl md:text-5xl font-bold main-gradient-text">r-dom';
+import { Link } from 'react-router-dom';
 import { supabase } from '@/lib/customSupabaseClient';
 import { Loader2, Clock, BarChart3, Briefcase, Globe, Rocket, Quote, ArrowRight } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
