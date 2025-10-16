@@ -107,82 +107,82 @@ const AcademiaDashboard = () => {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b">
-        <div className="container mx-auto px-4 py-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Mi Academia</h1>
-              <p className="text-gray-600">Bienvenido de vuelta, {user.email.split('@')[0]}</p>
+        <div className="container mx-auto px-4 py-4 sm:py-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Mi Academia</h1>
+              <p className="text-sm sm:text-base text-gray-600 truncate">Bienvenido de vuelta, {user.email.split('@')[0]}</p>
             </div>
-            <Badge variant="outline" className="bg-green-50 text-green-700">
+            <Badge variant="outline" className="bg-green-50 text-green-700 self-start sm:self-auto text-xs sm:text-sm">
               Acceso Completo
             </Badge>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-6 sm:py-8">
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-4 lg:p-6">
               <div className="flex items-center">
-                <TrendingUp className="h-8 w-8 text-blue-600" />
-                <div className="ml-4">
-                  <p className="text-2xl font-bold">{Math.round(progress)}%</p>
-                  <p className="text-gray-600">Progreso Total</p>
+                <TrendingUp className="h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 text-blue-600 flex-shrink-0" />
+                <div className="ml-2 sm:ml-3 lg:ml-4 min-w-0">
+                  <p className="text-lg sm:text-xl lg:text-2xl font-bold">{Math.round(progress)}%</p>
+                  <p className="text-xs sm:text-sm text-gray-600 truncate">Progreso Total</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-4 lg:p-6">
               <div className="flex items-center">
-                <CheckCircle className="h-8 w-8 text-green-600" />
-                <div className="ml-4">
-                  <p className="text-2xl font-bold">{completedModules.length}</p>
-                  <p className="text-gray-600">Módulos Completados</p>
+                <CheckCircle className="h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 text-green-600 flex-shrink-0" />
+                <div className="ml-2 sm:ml-3 lg:ml-4 min-w-0">
+                  <p className="text-lg sm:text-xl lg:text-2xl font-bold">{completedModules.length}</p>
+                  <p className="text-xs sm:text-sm text-gray-600 truncate">Módulos Completados</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-4 lg:p-6">
               <div className="flex items-center">
-                <Clock className="h-8 w-8 text-orange-600" />
-                <div className="ml-4">
-                  <p className="text-2xl font-bold">9h 30m</p>
-                  <p className="text-gray-600">Contenido Total</p>
+                <Clock className="h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 text-orange-600 flex-shrink-0" />
+                <div className="ml-2 sm:ml-3 lg:ml-4 min-w-0">
+                  <p className="text-lg sm:text-xl lg:text-2xl font-bold">9h 30m</p>
+                  <p className="text-xs sm:text-sm text-gray-600 truncate">Contenido Total</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-4 lg:p-6">
               <div className="flex items-center">
-                <Award className="h-8 w-8 text-purple-600" />
-                <div className="ml-4">
-                  <p className="text-2xl font-bold">4</p>
-                  <p className="text-gray-600">Certificados</p>
+                <Award className="h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 text-purple-600 flex-shrink-0" />
+                <div className="ml-2 sm:ml-3 lg:ml-4 min-w-0">
+                  <p className="text-lg sm:text-xl lg:text-2xl font-bold">4</p>
+                  <p className="text-xs sm:text-sm text-gray-600 truncate">Certificados</p>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {/* Módulos del Curso */}
           <div className="lg:col-span-2">
             <Card>
-              <CardHeader>
-                <CardTitle>Módulos del Curso</CardTitle>
-                <CardDescription>
+              <CardHeader className="pb-3 sm:pb-4">
+                <CardTitle className="text-lg sm:text-xl">Módulos del Curso</CardTitle>
+                <CardDescription className="text-sm">
                   Continúa tu formación donde lo dejaste
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3 sm:space-y-4 pt-0">
                 {modules.map((module, index) => (
                   <ModuleCard 
                     key={module.id} 
@@ -197,24 +197,24 @@ const AcademiaDashboard = () => {
           {/* Recursos Descargables */}
           <div>
             <Card>
-              <CardHeader>
-                <CardTitle>Recursos Descargables</CardTitle>
-                <CardDescription>
+              <CardHeader className="pb-3 sm:pb-4">
+                <CardTitle className="text-lg sm:text-xl">Recursos Descargables</CardTitle>
+                <CardDescription className="text-sm">
                   Plantillas y materiales de apoyo
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-3">
+              <CardContent className="space-y-3 pt-0">
                 {resources.map((resource, index) => (
                   <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                    <div className="flex items-center space-x-3">
-                      <FileText className="h-5 w-5 text-gray-500" />
-                      <div>
-                        <p className="text-sm font-medium">{resource.name}</p>
+                    <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
+                      <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-gray-500 flex-shrink-0" />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs sm:text-sm font-medium truncate">{resource.name}</p>
                         <p className="text-xs text-gray-500">{resource.type} • {resource.size}</p>
                       </div>
                     </div>
-                    <Button size="sm" variant="ghost">
-                      <Download className="h-4 w-4" />
+                    <Button size="sm" variant="ghost" className="flex-shrink-0 p-2">
+                      <Download className="h-3 w-3 sm:h-4 sm:w-4" />
                     </Button>
                   </div>
                 ))}
@@ -222,16 +222,16 @@ const AcademiaDashboard = () => {
             </Card>
 
             {/* Soporte */}
-            <Card className="mt-6">
-              <CardHeader>
-                <CardTitle>¿Necesitas ayuda?</CardTitle>
+            <Card className="mt-4 sm:mt-6">
+              <CardHeader className="pb-3 sm:pb-4">
+                <CardTitle className="text-lg sm:text-xl">¿Necesitas ayuda?</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-sm text-gray-600 mb-4">
+              <CardContent className="pt-0">
+                <p className="text-xs sm:text-sm text-gray-600 mb-4">
                   Nuestro equipo está aquí para ayudarte en tu proceso de aprendizaje.
                 </p>
-                <Button variant="outline" className="w-full">
-                  <Users className="h-4 w-4 mr-2" />
+                <Button variant="outline" className="w-full text-sm">
+                  <Users className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                   Contactar Soporte
                 </Button>
               </CardContent>

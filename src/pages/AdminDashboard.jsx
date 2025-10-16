@@ -70,20 +70,23 @@ const AdminDashboard = () => {
   };
 
   const MetricCard = ({ title, value, icon: Icon, trend, description }) => (
-    <Card>
+    <Card className="h-full">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium">{title}</CardTitle>
-        <Icon className="h-4 w-4 text-muted-foreground" />
+        <CardTitle className="text-xs sm:text-sm font-medium leading-tight">{title}</CardTitle>
+        <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground flex-shrink-0" />
       </CardHeader>
-      <CardContent>
-        <div className="text-2xl font-bold">{value}</div>
+      <CardContent className="space-y-1">
+        <div className="text-xl sm:text-2xl font-bold">{value}</div>
         {trend && (
-          <p className="text-xs text-muted-foreground">
+          <p className="text-xs text-muted-foreground flex items-center">
+            <span className={`mr-1 ${trend > 0 ? 'text-green-600' : 'text-red-600'}`}>
+              {trend > 0 ? '↗' : '↘'}
+            </span>
             {trend > 0 ? '+' : ''}{trend}% desde el mes pasado
           </p>
         )}
         {description && (
-          <p className="text-xs text-muted-foreground mt-1">{description}</p>
+          <p className="text-xs text-muted-foreground leading-tight">{description}</p>
         )}
       </CardContent>
     </Card>
@@ -105,15 +108,15 @@ const AdminDashboard = () => {
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 flex items-center">
-                <Shield className="h-8 w-8 mr-3 text-blue-600" />
-                Panel de Administración BSB Capital
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center py-4 sm:py-6 gap-4">
+            <div className="min-w-0 flex-1">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 flex items-center">
+                <Shield className="h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 mr-2 sm:mr-3 text-blue-600 flex-shrink-0" />
+                <span className="truncate">Panel de Administración BSB Capital</span>
               </h1>
-              <p className="text-gray-600 mt-1">Gestión completa del negocio</p>
+              <p className="text-sm sm:text-base text-gray-600 mt-1">Gestión completa del negocio</p>
             </div>
-            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 self-start sm:self-auto">
               <Activity className="h-3 w-3 mr-1" />
               Sistema Activo
             </Badge>
@@ -121,22 +124,24 @@ const AdminDashboard = () => {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
-            <TabsTrigger value="overview">Vista General</TabsTrigger>
-            <TabsTrigger value="users">Usuarios</TabsTrigger>
-            <TabsTrigger value="consultations">Consultorías</TabsTrigger>
-            <TabsTrigger value="calendar">Calendario</TabsTrigger>
-            <TabsTrigger value="content">Contenido</TabsTrigger>
-            <TabsTrigger value="analytics">Análisis</TabsTrigger>
-            <TabsTrigger value="settings">Configuración</TabsTrigger>
-          </TabsList>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
+          <div className="overflow-x-auto">
+            <TabsList className="grid w-full min-w-[640px] sm:min-w-0 grid-cols-7 gap-1 sm:gap-0">
+              <TabsTrigger value="overview" className="text-xs sm:text-sm px-2 sm:px-3">Vista General</TabsTrigger>
+              <TabsTrigger value="users" className="text-xs sm:text-sm px-2 sm:px-3">Usuarios</TabsTrigger>
+              <TabsTrigger value="consultations" className="text-xs sm:text-sm px-2 sm:px-3">Consultorías</TabsTrigger>
+              <TabsTrigger value="calendar" className="text-xs sm:text-sm px-2 sm:px-3">Calendario</TabsTrigger>
+              <TabsTrigger value="content" className="text-xs sm:text-sm px-2 sm:px-3">Contenido</TabsTrigger>
+              <TabsTrigger value="analytics" className="text-xs sm:text-sm px-2 sm:px-3">Análisis</TabsTrigger>
+              <TabsTrigger value="settings" className="text-xs sm:text-sm px-2 sm:px-3">Config.</TabsTrigger>
+            </TabsList>
+          </div>
 
           {/* Overview Tab */}
-          <TabsContent value="overview" className="space-y-6">
+          <TabsContent value="overview" className="space-y-4 sm:space-y-6">
             {/* Key Metrics */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               <MetricCard
                 title="Usuarios Totales"
                 value={metrics?.total_users || 0}
@@ -168,70 +173,70 @@ const AdminDashboard = () => {
             {/* Quick Actions */}
             <Card>
               <CardHeader>
-                <CardTitle>Acciones Rápidas</CardTitle>
+                <CardTitle className="text-lg sm:text-xl">Acciones Rápidas</CardTitle>
                 <CardDescription>Tareas de administración más comunes</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                   <Button 
                     onClick={() => setActiveTab('users')}
-                    className="h-16 flex flex-col"
+                    className="h-14 sm:h-16 flex flex-col p-2 sm:p-3"
                     variant="outline"
                   >
-                    <Users className="h-5 w-5 mb-1" />
-                    Gestionar Usuarios
+                    <Users className="h-4 w-4 sm:h-5 sm:w-5 mb-1" />
+                    <span className="text-xs sm:text-sm">Gestionar Usuarios</span>
                   </Button>
                   <Button 
                     onClick={() => setActiveTab('calendar')}
-                    className="h-16 flex flex-col"
+                    className="h-14 sm:h-16 flex flex-col p-2 sm:p-3"
                     variant="outline"
                   >
-                    <Calendar className="h-5 w-5 mb-1" />
-                    Ver Calendario
+                    <Calendar className="h-4 w-4 sm:h-5 sm:w-5 mb-1" />
+                    <span className="text-xs sm:text-sm">Ver Calendario</span>
                   </Button>
                   <Button 
                     onClick={() => setActiveTab('content')}
-                    className="h-16 flex flex-col"
+                    className="h-14 sm:h-16 flex flex-col p-2 sm:p-3"
                     variant="outline"
                   >
-                    <FileText className="h-5 w-5 mb-1" />
-                    Subir Contenido
+                    <FileText className="h-4 w-4 sm:h-5 sm:w-5 mb-1" />
+                    <span className="text-xs sm:text-sm">Subir Contenido</span>
                   </Button>
                   <Button 
                     onClick={() => setActiveTab('analytics')}
-                    className="h-16 flex flex-col"
+                    className="h-14 sm:h-16 flex flex-col p-2 sm:p-3"
                     variant="outline"
                   >
-                    <BarChart3 className="h-5 w-5 mb-1" />
-                    Ver Estadísticas
+                    <BarChart3 className="h-4 w-4 sm:h-5 sm:w-5 mb-1" />
+                    <span className="text-xs sm:text-sm">Ver Estadísticas</span>
                   </Button>
                 </div>
               </CardContent>
             </Card>
 
             {/* Recent Activity */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle>Actividad Reciente</CardTitle>
+                  <CardTitle className="text-lg sm:text-xl">Actividad Reciente</CardTitle>
                   <CardDescription>Últimas acciones del sistema</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
                     {recentActivity.length > 0 ? (
                       recentActivity.slice(0, 5).map((activity, index) => (
-                        <div key={index} className="flex items-center space-x-3 text-sm">
-                          <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                          <div className="flex-1">
-                            <p className="font-medium">{activity.action}</p>
-                            <p className="text-gray-500">
+                        <div key={index} className="flex items-start space-x-3 text-sm">
+                          <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium truncate sm:whitespace-normal">{activity.action}</p>
+                            <p className="text-gray-500 text-xs sm:text-sm">
                               {new Date(activity.created_at).toLocaleString()}
                             </p>
                           </div>
                         </div>
                       ))
                     ) : (
-                      <p className="text-gray-500">No hay actividad reciente</p>
+                      <p className="text-gray-500 text-center py-4">No hay actividad reciente</p>
                     )}
                   </div>
                 </CardContent>
@@ -239,18 +244,18 @@ const AdminDashboard = () => {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Estado del Sistema</CardTitle>
+                  <CardTitle className="text-lg sm:text-xl">Estado del Sistema</CardTitle>
                   <CardDescription>Salud y rendimiento de la plataforma</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
-                      <span>Base de Datos</span>
-                      <Badge className="bg-green-100 text-green-800">Conectada</Badge>
+                      <span className="text-sm sm:text-base">Base de Datos</span>
+                      <Badge className="bg-green-100 text-green-800 text-xs">Conectada</Badge>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span>Emails</span>
-                      <Badge className="bg-green-100 text-green-800">Funcionando</Badge>
+                      <span className="text-sm sm:text-base">Emails</span>
+                      <Badge className="bg-green-100 text-green-800 text-xs">Funcionando</Badge>
                     </div>
                     <div className="flex justify-between items-center">
                       <span>Hotmart API</span>

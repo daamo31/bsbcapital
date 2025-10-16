@@ -24,12 +24,12 @@ import React, { useState, useEffect } from 'react';
 
     const ServiceStatus = ({ status }) => {
       const statusMap = {
-        'Activo': { icon: <CheckCircle className="h-5 w-5 text-green-400" />, text: 'Activo', color: 'bg-green-500/10 text-green-300' },
-        'No contratado': { icon: <XCircle className="h-5 w-5 text-red-400" />, text: 'No contratado', color: 'bg-red-500/10 text-red-300' },
-        'Demo': { icon: <Clock className="h-5 w-5 text-yellow-400" />, text: 'Demo', color: 'bg-yellow-500/10 text-yellow-300' },
+        'Activo': { icon: <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-400" />, text: 'Activo', color: 'bg-green-500/10 text-green-300' },
+        'No contratado': { icon: <XCircle className="h-4 w-4 sm:h-5 sm:w-5 text-red-400" />, text: 'No contratado', color: 'bg-red-500/10 text-red-300' },
+        'Demo': { icon: <Clock className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-400" />, text: 'Demo', color: 'bg-yellow-500/10 text-yellow-300' },
       };
       const current = statusMap[status] || statusMap['No contratado'];
-      return <Badge variant="outline" className={`flex items-center gap-2 ${current.color} border-none font-semibold`}>{current.icon} {current.text}</Badge>;
+      return <Badge variant="outline" className={`flex items-center gap-1 sm:gap-2 ${current.color} border-none font-semibold text-xs sm:text-sm`}>{current.icon} <span className="hidden sm:inline">{current.text}</span></Badge>;
     };
 
     const ClientDashboard = () => {
@@ -101,49 +101,53 @@ import React, { useState, useEffect } from 'react';
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.5 }}
-            className="container mx-auto px-4 py-16 md:py-24"
+            className="container mx-auto px-4 py-8 sm:py-12 md:py-16 lg:py-24"
           >
-            <div className="mb-12">
-              <h1 className="text-4xl md:text-5xl font-bold text-brand-text-primary">Área de Cliente</h1>
-              <p className="mt-2 text-lg text-brand-text-secondary">Bienvenido de nuevo, <span className="font-semibold text-brand-primary">{user?.user_metadata?.full_name || user?.email}</span>.</p>
+            <div className="mb-8 sm:mb-12">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-brand-text-primary">Área de Cliente</h1>
+              <p className="mt-2 text-base sm:text-lg text-brand-text-secondary">
+                Bienvenido de nuevo, <span className="font-semibold text-brand-primary break-words">{user?.user_metadata?.full_name || user?.email}</span>.
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-1 gap-6 sm:gap-8">
               
               <Card className="glass-card">
-                <CardHeader>
-                  <CardTitle className="text-brand-text-primary">Mis Servicios</CardTitle>
-                  <CardDescription className="text-brand-text-secondary">Gestiona todos tus servicios contratados con BSB Capital.</CardDescription>
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-brand-text-primary text-lg sm:text-xl">Mis Servicios</CardTitle>
+                  <CardDescription className="text-brand-text-secondary text-sm sm:text-base">Gestiona todos tus servicios contratados con BSB Capital.</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-3 sm:space-y-4">
                   {Object.values(allServices).flat().map(service => (
-                     <div key={service.id} className="flex justify-between items-center p-4 bg-brand-surface/50 rounded-lg">
-                       <div>
-                         <h4 className="font-semibold text-brand-text-primary">{service.name}</h4>
-                         <p className="text-sm text-brand-text-secondary">{service.description}</p>
+                     <div key={service.id} className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 p-3 sm:p-4 bg-brand-surface/50 rounded-lg">
+                       <div className="min-w-0 flex-1">
+                         <h4 className="font-semibold text-brand-text-primary text-sm sm:text-base truncate">{service.name}</h4>
+                         <p className="text-xs sm:text-sm text-brand-text-secondary">{service.description}</p>
                        </div>
-                       <ServiceStatus status={services[service.id] || 'No contratado'} />
+                       <div className="self-start sm:self-auto">
+                         <ServiceStatus status={services[service.id] || 'No contratado'} />
+                       </div>
                      </div>
                   ))}
                 </CardContent>
-                <CardFooter>
-                  <Button asChild className="w-full">
+                <CardFooter className="pt-4">
+                  <Button asChild className="w-full text-sm sm:text-base">
                     <Link to="/">Explorar más servicios</Link>
                   </Button>
                 </CardFooter>
               </Card>
 
               <Card className="glass-card">
-                <CardHeader>
-                  <CardTitle className="text-brand-text-primary">Consultoría</CardTitle>
-                  <CardDescription className="text-brand-text-secondary">Tus sesiones de asesoramiento personalizado.</CardDescription>
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-brand-text-primary text-lg sm:text-xl">Consultoría</CardTitle>
+                  <CardDescription className="text-brand-text-secondary text-sm sm:text-base">Tus sesiones de asesoramiento personalizado.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-brand-text-secondary">No tienes sesiones programadas. ¡Agenda una para empezar!</p>
+                  <p className="text-xs sm:text-sm text-brand-text-secondary">No tienes sesiones programadas. ¡Agenda una para empezar!</p>
                 </CardContent>
-                <CardFooter>
-                  <Button asChild variant="outline" className="w-full border-brand-accent text-brand-accent hover:bg-brand-accent hover:text-brand-background">
-                    <Link to="/consultoria"><PlusCircle className="mr-2 h-4 w-4" /> Agendar Nueva Sesión</Link>
+                <CardFooter className="pt-4">
+                  <Button asChild variant="outline" className="w-full border-brand-accent text-brand-accent hover:bg-brand-accent hover:text-brand-background text-sm sm:text-base">
+                    <Link to="/consultoria"><PlusCircle className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4" /> Agendar Nueva Sesión</Link>
                   </Button>
                 </CardFooter>
               </Card>

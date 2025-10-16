@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Link } from 'react-router-dom';
+import { Link } from 'react-rout              className="text-3xl sm:text-4xl md:text-5xl font-bold main-gradient-text">r-dom';
 import { supabase } from '@/lib/customSupabaseClient';
 import { Loader2, Clock, BarChart3, Briefcase, Globe, Rocket, Quote, ArrowRight } from 'lucide-react';
 import { useToast } from "@/components/ui/use-toast";
@@ -111,9 +111,9 @@ const BookingModal = () => {
           Agendar una llamada <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-4xl p-0 glass-card">
+      <DialogContent className="max-w-[95vw] sm:max-w-4xl p-0 glass-card">
         <div className="grid grid-cols-1 md:grid-cols-2">
-            <div className="p-6 flex flex-col justify-center">
+            <div className="p-4 sm:p-6 flex flex-col justify-center">
                 <Calendar
                     mode="single"
                     selected={date}
@@ -140,7 +140,7 @@ const BookingModal = () => {
                     </div>
                 )}
             </div>
-            <div className="p-6 bg-brand-surface/80 rounded-r-lg">
+            <div className="p-4 sm:p-6 bg-brand-surface/80 rounded-r-lg">
             <form onSubmit={handleSubmit}>
                 <DialogHeader>
                 <DialogTitle className="text-brand-text-primary">Completa tu reserva</DialogTitle>
@@ -149,7 +149,7 @@ const BookingModal = () => {
                 </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="grid items-center gap-1.5">
                       <Label htmlFor="service_interest" className="text-brand-text-primary">Tema de la consultoría</Label>
                       <Select onValueChange={(value) => handleSelectChange('service_interest', value)} value={formData.service_interest} required>
@@ -217,8 +217,8 @@ const Consultoria = () => {
         className="min-h-screen bg-background"
       >
         {/* Hero Section */}
-        <header className="py-20 md:py-32 text-center aurora-background">
-          <div className="container mx-auto px-4 relative z-10">
+        <header className="py-12 md:py-32 text-center aurora-background">
+          <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -243,10 +243,10 @@ const Consultoria = () => {
         </header>
 
         {/* Storytelling Section */}
-        <div className="bg-brand-green-50 py-16">
-          <div className="container mx-auto px-4">
+        <div className="bg-brand-green-50 py-8 sm:py-16">
+          <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-4xl mx-auto">
-              <div className="bg-white/95 backdrop-blur-sm p-8 rounded-xl shadow-lg border border-brand-green-200">
+              <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-8 rounded-xl shadow-lg border border-brand-green-200">
                 <p className="text-xl text-brand-green-900 leading-relaxed">
                   Imagina que tu cartera es un barco. Algunos navegan sin brújula y esperan que el viento les lleve; otros confían en que la tormenta amaine. En BSB Capital trazamos la ruta contigo: analizamos tus activos, identificamos los riesgos invisibles y diseñamos un plan de acción que te permita avanzar con seguridad, ya sea en los mercados tradicionales o en el ecosistema cripto y Web3.
                 </p>
@@ -256,25 +256,25 @@ const Consultoria = () => {
         </div>
 
         {/* Benefits Section */}
-        <section className="py-20 md:py-32 aurora-background">
-          <div className="container mx-auto px-4 relative z-10">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-              <div className="bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:bg-white">
+        <section className="py-12 sm:py-20 md:py-32 aurora-background">
+          <div className="container mx-auto px-4 sm:px-6 relative z-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 max-w-6xl mx-auto">
+              <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:bg-white">
                 <BarChart3 className="h-12 w-12 text-brand-green-600 mb-4" />
                 <h3 className="text-xl font-bold text-brand-green-900 mb-3">Planificación Financiera</h3>
                 <p className="text-brand-green-800">Estrategias claras para optimizar ingresos, gastos e impuestos.</p>
               </div>
-              <div className="bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:bg-white">
+              <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:bg-white">
                 <Briefcase className="h-12 w-12 text-brand-green-600 mb-4" />
                 <h3 className="text-xl font-bold text-brand-green-900 mb-3">Optimización de Carteras</h3>
                 <p className="text-brand-green-800">Ajustamos tu portafolio para reducir riesgos sin perder rentabilidad.</p>
               </div>
-              <div className="bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:bg-white">
+              <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:bg-white">
                 <Globe className="h-12 w-12 text-brand-green-600 mb-4" />
                 <h3 className="text-xl font-bold text-brand-green-900 mb-3">Crypto & Web3</h3>
                 <p className="text-brand-green-800">Te guiamos para aprovechar nuevas oportunidades con fundamentos sólidos y control del riesgo.</p>
               </div>
-              <div className="bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:bg-white">
+              <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:bg-white">
                 <Rocket className="h-12 w-12 text-brand-green-600 mb-4" />
                 <h3 className="text-xl font-bold text-brand-green-900 mb-3">Onboarding Crypto</h3>
                 <p className="text-brand-green-800">Has oído hablar de las rentabilidades de las criptomonedas, pero no sabes cómo empezar. Este servicio es tu puerta de entrada, acompañándote paso a paso para invertir de forma segura y consciente.</p>
@@ -288,15 +288,15 @@ const Consultoria = () => {
           <div className="container mx-auto px-4 py-16">
             <h2 className="text-3xl font-bold text-center main-gradient-text mb-12">Lo que dicen nuestros clientes</h2>
           
-          <div className="relative overflow-hidden">
-            <div className="flex animate-[scroll_40s_linear_infinite] pause-animation">
-              {/* Testimonial 1 */}
-              <div className="flex-shrink-0 w-80 mx-4">
-                <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                  <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                  <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-brand-accent to-brand-primary rounded-full flex items-center justify-center text-white font-bold mr-3">
-                      CM
+            <div className="relative overflow-hidden">
+              <div className="flex animate-[scroll_40s_linear_infinite] pause-animation">
+                {/* Testimonial 1 */}
+                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                    <div className="flex items-center mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-brand-accent to-brand-primary rounded-full flex items-center justify-center text-white font-bold mr-3">
+                        CM
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-brand-text-primary">Carlos Mendoza</h3>
@@ -307,14 +307,14 @@ const Consultoria = () => {
                     "Llevaba años sin control de mis finanzas como freelancer. En 2 meses con BSB Capital ya tengo mi fondo de emergencia completo y un plan de inversión que me da tranquilidad. ¡Brutal cómo cambió mi mentalidad financiera! 🚀"
                   </p>
                   <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                    <span>⭐⭐⭐⭐⭐</span>
+                    <span>⭐⭐⭐⭐</span>
                     <span className="ml-2">• hace 3 semanas</span>
                   </div>
                 </div>
               </div>
 
               {/* Testimonial 2 */}
-              <div className="flex-shrink-0 w-80 mx-4">
+              <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
                 <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
                   <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
                   <div className="flex items-center mb-4">
@@ -337,7 +337,7 @@ const Consultoria = () => {
               </div>
 
               {/* Testimonial 3 */}
-              <div className="flex-shrink-0 w-80 mx-4">
+              <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
                 <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
                   <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
                   <div className="flex items-center mb-4">
@@ -360,7 +360,7 @@ const Consultoria = () => {
               </div>
 
               {/* Testimonial 4 */}
-              <div className="flex-shrink-0 w-80 mx-4">
+              <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
                 <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
                   <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
                   <div className="flex items-center mb-4">
@@ -383,7 +383,7 @@ const Consultoria = () => {
               </div>
 
               {/* Testimonial 5 */}
-              <div className="flex-shrink-0 w-80 mx-4">
+              <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
                 <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
                   <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
                   <div className="flex items-center mb-4">
@@ -406,7 +406,7 @@ const Consultoria = () => {
               </div>
 
               {/* Testimonial 6 */}
-              <div className="flex-shrink-0 w-80 mx-4">
+              <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
                 <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
                   <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
                   <div className="flex items-center mb-4">
@@ -429,7 +429,7 @@ const Consultoria = () => {
               </div>
 
               {/* Testimonial 7 */}
-              <div className="flex-shrink-0 w-80 mx-4">
+              <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
                 <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
                   <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
                   <div className="flex items-center mb-4">
@@ -452,7 +452,7 @@ const Consultoria = () => {
               </div>
 
               {/* Testimonial 8 */}
-              <div className="flex-shrink-0 w-80 mx-4">
+              <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
                 <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
                   <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
                   <div className="flex items-center mb-4">
@@ -475,7 +475,7 @@ const Consultoria = () => {
               </div>
 
               {/* Testimonial 9 */}
-              <div className="flex-shrink-0 w-80 mx-4">
+              <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
                 <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
                   <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
                   <div className="flex items-center mb-4">
@@ -498,7 +498,7 @@ const Consultoria = () => {
               </div>
 
               {/* Testimonial 10 */}
-              <div className="flex-shrink-0 w-80 mx-4">
+              <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
                 <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
                   <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
                   <div className="flex items-center mb-4">
@@ -521,7 +521,7 @@ const Consultoria = () => {
               </div>
 
               {/* Testimonial 11 */}
-              <div className="flex-shrink-0 w-80 mx-4">
+              <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
                 <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
                   <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
                   <div className="flex items-center mb-4">
@@ -544,7 +544,7 @@ const Consultoria = () => {
               </div>
 
               {/* Testimonial 12 */}
-              <div className="flex-shrink-0 w-80 mx-4">
+              <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
                 <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
                   <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
                   <div className="flex items-center mb-4">
@@ -588,43 +588,19 @@ const Consultoria = () => {
                   </div>
                 </div>
               </div>
-
-              <div className="flex-shrink-0 w-80 mx-4">
-                <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                  <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                  <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                      AS
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-brand-text-primary">Ana Sánchez</h3>
-                      <p className="text-sm text-brand-text-secondary">Arquitecta, Barcelona</p>
-                    </div>
-                  </div>
-                  <p className="text-brand-text-secondary italic">
-                    "Tenía mis ahorros en el banco ganando 0%. Después de la consultoría redistribuí todo: ETFs, algo de crypto y renta fija. En 6 meses ya veo resultados reales. Su enfoque es súper profesional 💪"
-                  </p>
-                  <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                    <span>⭐⭐⭐⭐⭐</span>
-                    <span className="ml-2">• hace 1 mes</span>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
-      
-         
-          </div>
+        </div>
         </div>
 
         {/* Final CTA Section */}
-        <section className="py-20 md:py-32 text-center aurora-background">
-          <div className="container mx-auto px-4 relative z-10">
+        <section className="py-12 sm:py-20 md:py-32 text-center aurora-background">
+          <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="text-3xl font-bold main-gradient-text mb-6"
+              className="text-2xl sm:text-3xl font-bold main-gradient-text mb-6"
             >
               ¿Listo para transformar tu estrategia financiera?
             </motion.h2>
@@ -632,7 +608,6 @@ const Consultoria = () => {
           </div>
         </section>
 
-  
       </motion.div>
     </>
   );

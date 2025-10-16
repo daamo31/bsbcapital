@@ -169,27 +169,28 @@ const UserDashboard = () => {
 
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center gap-3">
-                Bienvenido, {user.user_metadata?.full_name || user.email.split('@')[0]}
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="min-w-0 flex-1">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2 flex flex-wrap items-center gap-2 sm:gap-3">
+                <span className="truncate">Bienvenido, {user.user_metadata?.full_name || user.email.split('@')[0]}</span>
                 {isAdmin && (
-                  <Badge variant="secondary" className="bg-orange-100 text-orange-800 border-orange-200">
+                  <Badge variant="secondary" className="bg-orange-100 text-orange-800 border-orange-200 text-xs sm:text-sm">
                     <Shield className="h-3 w-3 mr-1" />
                     Administrador
                   </Badge>
                 )}
               </h1>
-              <p className="text-gray-600">
+              <p className="text-sm sm:text-base text-gray-600">
                 Gestiona tu membresía y revisa tu progreso de aprendizaje
               </p>
             </div>
             {isAdmin && (
-              <Button asChild variant="outline" className="border-orange-200 text-orange-700 hover:bg-orange-50">
+              <Button asChild variant="outline" className="border-orange-200 text-orange-700 hover:bg-orange-50 self-start sm:self-auto text-sm">
                 <Link to="/admin">
-                  <Settings className="mr-2 h-4 w-4" />
-                  Panel de Administración
+                  <Settings className="mr-1 sm:mr-2 h-4 w-4" />
+                  <span className="hidden sm:inline">Panel de Administración</span>
+                  <span className="sm:hidden">Admin</span>
                 </Link>
               </Button>
             )}
@@ -200,79 +201,79 @@ const UserDashboard = () => {
         <AdminNotification />
 
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6 mb-6 sm:mb-8">
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-4 lg:p-6">
               <div className="flex items-center">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <BookOpen className="h-6 w-6 text-blue-600" />
+                <div className="p-1.5 sm:p-2 bg-blue-100 rounded-lg flex-shrink-0">
+                  <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-blue-600" />
                 </div>
-                <div className="ml-4">
-                  <p className="text-sm text-gray-600">Contenido Total</p>
-                  <p className="text-2xl font-bold">{stats.totalContent}</p>
+                <div className="ml-2 sm:ml-3 lg:ml-4 min-w-0">
+                  <p className="text-xs sm:text-sm text-gray-600 truncate">Contenido Total</p>
+                  <p className="text-lg sm:text-xl lg:text-2xl font-bold">{stats.totalContent}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-4 lg:p-6">
               <div className="flex items-center">
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <CheckCircle className="h-6 w-6 text-green-600" />
+                <div className="p-1.5 sm:p-2 bg-green-100 rounded-lg flex-shrink-0">
+                  <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-green-600" />
                 </div>
-                <div className="ml-4">
-                  <p className="text-sm text-gray-600">Completado</p>
-                  <p className="text-2xl font-bold">{stats.completedContent}</p>
+                <div className="ml-2 sm:ml-3 lg:ml-4 min-w-0">
+                  <p className="text-xs sm:text-sm text-gray-600 truncate">Completado</p>
+                  <p className="text-lg sm:text-xl lg:text-2xl font-bold">{stats.completedContent}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-4 lg:p-6">
               <div className="flex items-center">
-                <div className="p-2 bg-yellow-100 rounded-lg">
-                  <Play className="h-6 w-6 text-yellow-600" />
+                <div className="p-1.5 sm:p-2 bg-yellow-100 rounded-lg flex-shrink-0">
+                  <Play className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-yellow-600" />
                 </div>
-                <div className="ml-4">
-                  <p className="text-sm text-gray-600">En Progreso</p>
-                  <p className="text-2xl font-bold">{stats.inProgressContent}</p>
+                <div className="ml-2 sm:ml-3 lg:ml-4 min-w-0">
+                  <p className="text-xs sm:text-sm text-gray-600 truncate">En Progreso</p>
+                  <p className="text-lg sm:text-xl lg:text-2xl font-bold">{stats.inProgressContent}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-3 sm:p-4 lg:p-6">
               <div className="flex items-center">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <Clock className="h-6 w-6 text-purple-600" />
+                <div className="p-1.5 sm:p-2 bg-purple-100 rounded-lg flex-shrink-0">
+                  <Clock className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-purple-600" />
                 </div>
-                <div className="ml-4">
-                  <p className="text-sm text-gray-600">Tiempo Total</p>
-                  <p className="text-2xl font-bold">{formatDuration(totalWatchTime)}</p>
+                <div className="ml-2 sm:ml-3 lg:ml-4 min-w-0">
+                  <p className="text-xs sm:text-sm text-gray-600 truncate">Tiempo Total</p>
+                  <p className="text-lg sm:text-xl lg:text-2xl font-bold">{formatDuration(totalWatchTime)}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
           {/* Subscription Info */}
           <div className="lg:col-span-1">
-            <Card className="mb-6">
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <CreditCard className="h-5 w-5 mr-2" />
+            <Card className="mb-4 sm:mb-6">
+              <CardHeader className="pb-3 sm:pb-4">
+                <CardTitle className="flex items-center text-lg sm:text-xl">
+                  <CreditCard className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                   Mi Membresía
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-0">
                 {subscription ? (
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     <div>
-                      <Badge className="bg-green-100 text-green-800">
+                      <Badge className="bg-green-100 text-green-800 text-xs sm:text-sm">
                         {subscription.subscription_plans.name}
                       </Badge>
                     </div>
@@ -301,8 +302,8 @@ const UserDashboard = () => {
                   </div>
                 ) : (
                   <div className="text-center py-4">
-                    <p className="text-gray-600 mb-4">No tienes una membresía activa</p>
-                    <Button onClick={() => navigate('/membresias')}>
+                    <p className="text-sm sm:text-base text-gray-600 mb-4">No tienes una membresía activa</p>
+                    <Button onClick={() => navigate('/membresias')} className="text-sm">
                       Ver Planes
                     </Button>
                   </div>
@@ -312,21 +313,21 @@ const UserDashboard = () => {
 
             {/* Recent Activity */}
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Trophy className="h-5 w-5 mr-2" />
+              <CardHeader className="pb-3 sm:pb-4">
+                <CardTitle className="flex items-center text-lg sm:text-xl">
+                  <Trophy className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                   Progreso Reciente
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="pt-0">
                 <div className="space-y-3">
                   {progress.slice(0, 5).map((item) => (
-                    <div key={item.id} className="flex items-center justify-between">
+                    <div key={item.id} className="space-y-2">
                       <div className="flex-1">
-                        <p className="text-sm font-medium">{item.course_content.title}</p>
-                        <div className="flex items-center mt-1">
-                          <Progress value={item.progress_percentage} className="w-16 h-2" />
-                          <span className="text-xs text-gray-500 ml-2">
+                        <p className="text-xs sm:text-sm font-medium truncate">{item.course_content.title}</p>
+                        <div className="flex items-center mt-1 gap-2">
+                          <Progress value={item.progress_percentage} className="flex-1 h-2" />
+                          <span className="text-xs text-gray-500 whitespace-nowrap">
                             {item.progress_percentage}%
                           </span>
                         </div>
@@ -334,7 +335,7 @@ const UserDashboard = () => {
                     </div>
                   ))}
                   {progress.length === 0 && (
-                    <p className="text-gray-500 text-sm">
+                    <p className="text-gray-500 text-xs sm:text-sm text-center py-4">
                       Aún no has comenzado ningún contenido
                     </p>
                   )}
@@ -346,29 +347,29 @@ const UserDashboard = () => {
           {/* Content Library */}
           <div className="lg:col-span-2">
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center">
-                  <BookOpen className="h-5 w-5 mr-2" />
+              <CardHeader className="pb-3 sm:pb-4">
+                <CardTitle className="flex items-center text-lg sm:text-xl">
+                  <BookOpen className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
                   Mi Contenido
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-sm">
                   Contenido al que tienes acceso con tu membresía actual
                 </CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
+              <CardContent className="pt-0">
+                <div className="space-y-3 sm:space-y-4">
                   {userContent.filter(c => c.has_access).map((content) => {
                     const userProgress = progress.find(p => p.content_id === content.content_id);
                     const progressPercent = userProgress?.progress_percentage || 0;
                     
                     return (
-                      <div key={content.content_id} className="border rounded-lg p-4 hover:shadow-md transition-shadow">
-                        <div className="flex items-start justify-between">
-                          <div className="flex-1">
-                            <h4 className="font-medium text-gray-900">{content.title}</h4>
-                            <p className="text-sm text-gray-600 mt-1">{content.description}</p>
-                            <div className="flex items-center mt-2 space-x-4">
-                              <Badge variant="outline" className="capitalize">
+                      <div key={content.content_id} className="border rounded-lg p-3 sm:p-4 hover:shadow-md transition-shadow">
+                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                          <div className="flex-1 min-w-0">
+                            <h4 className="font-medium text-gray-900 text-sm sm:text-base truncate">{content.title}</h4>
+                            <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-2">{content.description}</p>
+                            <div className="flex flex-wrap items-center mt-2 gap-2">
+                              <Badge variant="outline" className="capitalize text-xs">
                                 {content.content_type}
                               </Badge>
                               {content.duration_minutes && (
@@ -381,15 +382,15 @@ const UserDashboard = () => {
                             {progressPercent > 0 && (
                               <div className="mt-3">
                                 <Progress value={progressPercent} className="w-full h-2" />
-                                <span className="text-xs text-gray-500 mt-1">
+                                <span className="text-xs text-gray-500 mt-1 block">
                                   {progressPercent}% completado
                                 </span>
                               </div>
                             )}
                           </div>
-                          <div className="ml-4">
-                            <Button size="sm" variant="outline">
-                              <Eye className="h-4 w-4 mr-1" />
+                          <div className="self-start sm:ml-4">
+                            <Button size="sm" variant="outline" className="text-xs sm:text-sm">
+                              <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                               Ver
                             </Button>
                           </div>
@@ -397,6 +398,13 @@ const UserDashboard = () => {
                       </div>
                     );
                   })}
+                  {userContent.filter(c => c.has_access).length === 0 && (
+                    <div className="text-center py-8">
+                      <p className="text-gray-500 text-sm">
+                        No tienes contenido disponible con tu plan actual
+                      </p>
+                    </div>
+                  )}
                   
                   {userContent.filter(c => c.has_access).length === 0 && (
                     <div className="text-center py-8">

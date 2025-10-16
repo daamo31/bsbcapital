@@ -90,10 +90,10 @@ import React, { useState } from 'react';
           </Helmet>
           <motion.div initial="hidden" animate="visible" variants={containerVariants}>
             {/* Hero Section */}
-            <motion.section variants={itemVariants} className="aurora-background text-center py-20 md:py-32">
-              <div className="container mx-auto px-4">
-                <h1 className="text-4xl md:text-6xl font-bold text-brand-text-primary">Academia BSB Capital</h1>
-                <p className="mt-4 max-w-2xl mx-auto text-lg md:text-xl text-brand-text-secondary">
+            <motion.section variants={itemVariants} className="aurora-background text-center py-12 sm:py-20 md:py-32">
+              <div className="container mx-auto px-4 sm:px-6">
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-brand-text-primary">Academia BSB Capital</h1>
+                <p className="mt-4 max-w-2xl mx-auto text-base sm:text-lg md:text-xl text-brand-text-secondary">
                   Formación práctica en inversión, fiscalidad y crypto para tomar decisiones con calma y criterio.
                 </p>
                 <div className="mt-8">
@@ -103,10 +103,10 @@ import React, { useState } from 'react';
             </motion.section>
 
             {/* What's Included Section */}
-            <motion.section variants={itemVariants} className="py-16 md:py-24 bg-background">
-              <div className="container mx-auto px-4">
-                <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">¿Qué incluye el curso?</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <motion.section variants={itemVariants} className="py-12 sm:py-16 md:py-24 bg-background">
+              <div className="container mx-auto px-4 sm:px-6">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12">¿Qué incluye el curso?</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
                   <div className="text-center p-6 bg-card rounded-lg border">
                     <Film className="h-10 w-10 mx-auto text-primary mb-4" />
                     <h3 className="text-xl font-semibold">Vídeos paso a paso</h3>
@@ -127,10 +127,10 @@ import React, { useState } from 'react';
             </motion.section>
 
             {/* Benefits Section */}
-            <motion.section variants={itemVariants} className="py-16 md:py-24 bg-brand-green-100">
-              <div className="container mx-auto px-4">
-                <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Transforma tu manera de invertir</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            <motion.section variants={itemVariants} className="py-12 sm:py-16 md:py-24 bg-brand-green-100">
+              <div className="container mx-auto px-4 sm:px-6">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12">Transforma tu manera de invertir</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
                   {benefits.map((benefit, index) => (
                     <div key={index} className="flex items-start gap-4">
                       <div>{benefit.icon}</div>

@@ -57,8 +57,8 @@ import React, { useState, useEffect } from 'react';
 
       return (
         <footer className="bg-brand-green-900 text-brand-green-100">
-          <div className="container mx-auto px-4 py-16">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+          <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-16">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-12">
               <div className="lg:col-span-1">
                 <Link to="/" className="flex items-center gap-3">
                   <img alt="Logotipo de BSB Capital" className="h-13 w-auto" src="https://horizons-cdn.hostinger.com/817ad863-5db3-450e-8aa2-198248142884/b6e16d0690a67f5cbf9123ef9d9129e7.png" />
@@ -68,7 +68,7 @@ import React, { useState, useEffect } from 'react';
                   Inteligencia Financiera, Potenciada por IA.
                 </p>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-8 lg:col-span-2">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 lg:col-span-2">
                 <div>
                   <p className="font-semibold text-white">Servicios</p>
                   <ul className="mt-4 space-y-2 text-sm">
@@ -144,7 +144,7 @@ import React, { useState, useEffect } from 'react';
 
       return (
         <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
-          <div className="container mx-auto px-4 h-20 flex justify-between items-center">
+          <div className="container mx-auto px-4 sm:px-6 h-16 sm:h-20 flex justify-between items-center">
             <Link to="/" className="flex items-center gap-3" onClick={closeMenu}>
               <img alt="Logotipo de BSB Capital" className="h-13 w-auto" src="https://horizons-cdn.hostinger.com/817ad863-5db3-450e-8aa2-198248142884/b6e16d0690a67f5cbf9123ef9d9129e7.png" />
             </Link>
@@ -192,9 +192,9 @@ import React, { useState, useEffect } from 'react';
                 exit={{ opacity: 0, y: -20 }}
                 className="lg:hidden absolute top-full left-0 right-0 bg-background shadow-lg border-t"
               >
-                <div className="container mx-auto px-4 py-6 flex flex-col gap-4">
+                <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col gap-4">
                   {navLinks.map((link) => (
-                    <Link key={link.name} to={link.href} onClick={closeMenu} className="text-lg font-semibold text-text-secondary hover:text-primary transition-colors py-2">
+                    <Link key={link.name} to={link.href} onClick={closeMenu} className="text-base sm:text-lg font-semibold text-text-secondary hover:text-primary transition-colors py-2">
                       {link.name}
                     </Link>
                   ))}

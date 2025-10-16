@@ -72,7 +72,7 @@ const DayDetailsPanel = ({
   ].sort((a, b) => a.time.localeCompare(b.time));
 
   return (
-    <div className="bg-white border rounded-lg p-4 shadow-lg">
+    <div className="fixed inset-0 lg:relative lg:inset-auto bg-white lg:bg-transparent border-0 lg:border lg:border-gray-200 lg:rounded-lg lg:shadow-lg p-4 lg:p-4 z-50 lg:z-auto overflow-y-auto lg:overflow-visible">
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-lg font-semibold">
           Eventos para {format(date, 'dd/MM/yyyy', { locale: es })}
@@ -85,53 +85,59 @@ const DayDetailsPanel = ({
       {/* Lista de eventos */}
       <div className="space-y-2 mb-4">
         {allEvents.length === 0 ? (
-          <p className="text-gray-500 text-sm">No hay eventos programados</p>
+          <p className="text-gray-500 text-sm text-center py-4">No hay eventos programados</p>
         ) : (
           allEvents.map((event) => (
-            <div key={`${event.type}-${event.id}`} className="bg-gray-50 p-3 rounded flex justify-between items-start">
-              <div>
-                <div className="font-medium">{event.title}</div>
-                <div className="text-sm text-gray-600 flex items-center gap-2">
-                  <Clock className="w-4 h-4" />
-                  {event.time}
-                  {event.client && (
-                    <>
-                      <User className="w-4 h-4" />
-                      {event.client}
-                    </>
-                  )}
-                  {event.admin && (
-                    <Badge variant="outline">
-                      {event.admin}
-                    </Badge>
-                  )}
-                  {event.status && (
-                    <Badge className={getStatusColor(event.status)}>
-                      {event.status}
-                    </Badge>
-                  )}
+            <div key={`${event.type}-${event.id}`} className="bg-gray-50 p-3 rounded-lg">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-sm sm:text-base">{event.title}</div>
+                  <div className="text-xs sm:text-sm text-gray-600 flex flex-wrap items-center gap-2 mt-1">
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
+                      {event.time}
+                    </span>
+                    {event.client && (
+                      <span className="flex items-center gap-1">
+                        <User className="w-3 h-3 sm:w-4 sm:h-4" />
+                        <span className="truncate max-w-32 sm:max-w-none">{event.client}</span>
+                      </span>
+                    )}
+                    {event.admin && (
+                      <Badge variant="outline" className="text-xs">
+                        {event.admin}
+                      </Badge>
+                    )}
+                    {event.status && (
+                      <Badge className={`${getStatusColor(event.status)} text-xs`}>
+                        {event.status}
+                      </Badge>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <div className="flex gap-1">
-                {event.type === 'consultation' && (
+                <div className="flex gap-1 self-end sm:self-start">
+                  {event.type === 'consultation' && (
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => onEditConsultation(event.originalData)}
+                      className="p-2"
+                    >
+                      <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
+                    </Button>
+                  )}
                   <Button 
                     variant="outline" 
-                    size="sm"
-                    onClick={() => onEditConsultation(event.originalData)}
+                    size="sm" 
+                    onClick={() => event.type === 'consultation' ? 
+                      onDeleteConsultation(event.id) : 
+                      onDeleteTimeBlock(event.id)
+                    }
+                    className="p-2"
                   >
-                    <Edit className="w-4 h-4" />
+                    <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                   </Button>
-                )}
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={() => event.type === 'consultation' ? 
-                    onDeleteConsultation(event.id) : 
-                    onDeleteTimeBlock(event.id)
-                  }
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
+                </div>
               </div>
             </div>
           ))
@@ -140,12 +146,12 @@ const DayDetailsPanel = ({
 
       {/* Bloqueo rápido */}
       <div className="border-t pt-4">
-        <h4 className="font-medium mb-2">Bloqueo rápido de tiempo</h4>
-        <div className="flex gap-2 mb-2">
+        <h4 className="font-medium mb-3 text-sm sm:text-base">Bloqueo rápido de tiempo</h4>
+        <div className="flex flex-col sm:flex-row gap-2 mb-3">
           <select 
             value={selectedAdmin} 
             onChange={(e) => setSelectedAdmin(e.target.value)}
-            className="flex-1 p-2 border rounded"
+            className="flex-1 p-2 border rounded text-sm"
           >
             <option value="">Seleccionar admin</option>
             {admins.map(admin => (
@@ -157,7 +163,7 @@ const DayDetailsPanel = ({
           <select 
             value={selectedTimeSlot} 
             onChange={(e) => setSelectedTimeSlot(e.target.value)}
-            className="flex-1 p-2 border rounded"
+            className="flex-1 p-2 border rounded text-sm"
           >
             <option value="">Seleccionar hora</option>
             {timeSlots.map(time => (
@@ -170,9 +176,9 @@ const DayDetailsPanel = ({
         <Button 
           onClick={handleQuickBlock}
           disabled={!selectedAdmin || !selectedTimeSlot}
-          className="w-full"
+          className="w-full text-sm"
         >
-          <Ban className="w-4 h-4 mr-2" />
+          <Ban className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
           Bloquear tiempo
         </Button>
       </div>
@@ -386,11 +392,12 @@ const AdminCalendar = () => {
     const days = eachDayOfInterval({ start: calendarStart, end: calendarEnd });
 
     return (
-      <div className="grid grid-cols-7 gap-1 mt-4">
+      <div className="grid grid-cols-7 gap-px sm:gap-1 mt-4 bg-gray-200 sm:bg-transparent">
         {/* Headers de días */}
-        {['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].map(day => (
-          <div key={day} className="p-2 text-center font-semibold text-gray-600 bg-gray-50">
-            {day}
+        {['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].map((day, index) => (
+          <div key={day} className="p-1 sm:p-2 text-center font-semibold text-gray-600 bg-gray-50 text-xs sm:text-sm">
+            <span className="hidden sm:inline">{day}</span>
+            <span className="sm:hidden">{['D', 'L', 'M', 'X', 'J', 'V', 'S'][index]}</span>
           </div>
         ))}
         
@@ -404,48 +411,48 @@ const AdminCalendar = () => {
           return (
             <div
               key={day.toISOString()}
-              className={`min-h-[120px] p-1 border border-gray-200 cursor-pointer hover:bg-gray-50 ${
+              className={`min-h-[80px] sm:min-h-[120px] p-1 border border-gray-200 cursor-pointer hover:bg-gray-50 ${
                 isToday ? 'bg-blue-50' : 'bg-white'
               } ${!isCurrentMonth ? 'opacity-40' : ''}`}
               onClick={() => setSelectedDate(day)}
             >
               <div className="flex justify-between items-start mb-1">
-                <span className={`text-sm font-medium ${
+                <span className={`text-xs sm:text-sm font-medium ${
                   isToday ? 'text-blue-600' : 'text-gray-900'
                 }`}>
                   {format(day, 'd')}
                 </span>
                 {hasEvents && (
-                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-blue-500 rounded-full"></div>
                 )}
               </div>
               
-              <div className="space-y-1">
-                {consultations.slice(0, 2).map(consultation => (
+              <div className="space-y-0.5 sm:space-y-1">
+                {consultations.slice(0, window.innerWidth < 640 ? 1 : 2).map(consultation => (
                   <div
                     key={consultation.id}
-                    className={`text-xs p-1 rounded border ${getStatusColor(consultation.status)}`}
+                    className={`text-xs p-0.5 sm:p-1 rounded border ${getStatusColor(consultation.status)}`}
                   >
-                    <div className="font-medium truncate">{consultation.title}</div>
-                    <div className="text-xs opacity-75">
+                    <div className="font-medium truncate text-xs">{consultation.title}</div>
+                    <div className="text-xs opacity-75 hidden sm:block">
                       {format(new Date(consultation.start_time), 'HH:mm')}
                     </div>
                   </div>
                 ))}
                 
-                {blocks.slice(0, 1).map(block => (
+                {blocks.slice(0, window.innerWidth < 640 ? 0 : 1).map(block => (
                   <div
                     key={block.id}
-                    className="text-xs p-1 rounded bg-red-100 text-red-800 border border-red-200"
+                    className="text-xs p-0.5 sm:p-1 rounded bg-red-100 text-red-800 border border-red-200 hidden sm:block"
                   >
-                    <Ban className="w-3 h-3 inline mr-1" />
-                    Bloqueado
+                    <Ban className="w-2 h-2 sm:w-3 sm:h-3 inline mr-1" />
+                    <span className="hidden sm:inline">Bloqueado</span>
                   </div>
                 ))}
                 
-                {(consultations.length + blocks.length) > 3 && (
+                {(consultations.length + blocks.length) > (window.innerWidth < 640 ? 1 : 3) && (
                   <div className="text-xs text-gray-500 text-center">
-                    +{(consultations.length + blocks.length) - 3} más
+                    +{(consultations.length + blocks.length) - (window.innerWidth < 640 ? 1 : 3)}
                   </div>
                 )}
               </div>
@@ -465,13 +472,13 @@ const AdminCalendar = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header del calendario */}
       <Card>
         <CardHeader>
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-4">
             <div>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
                 <CalendarIcon className="h-5 w-5" />
                 Gestión de Calendario
               </CardTitle>
@@ -480,12 +487,12 @@ const AdminCalendar = () => {
               </CardDescription>
             </div>
             
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
               {/* Filtro por administrador */}
               <select
                 value={selectedAdmin || ''}
                 onChange={(e) => setSelectedAdmin(e.target.value || null)}
-                className="px-3 py-2 border rounded-md"
+                className="px-3 py-2 border rounded-md text-sm min-w-[180px] sm:min-w-[200px]"
               >
                 <option value="">Todos los administradores</option>
                 {(calendarData?.admins || []).map(admin => (
@@ -501,11 +508,12 @@ const AdminCalendar = () => {
                   variant="outline"
                   size="sm"
                   onClick={() => setCurrentDate(subMonths(currentDate, 1))}
+                  className="p-2"
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
                 
-                <h3 className="font-semibold min-w-[150px] text-center">
+                <h3 className="font-semibold min-w-[120px] sm:min-w-[150px] text-center text-sm sm:text-base">
                   {format(currentDate, 'MMMM yyyy', { locale: es })}
                 </h3>
                 
@@ -513,20 +521,25 @@ const AdminCalendar = () => {
                   variant="outline"
                   size="sm"
                   onClick={() => setCurrentDate(addMonths(currentDate, 1))}
+                  className="p-2"
                 >
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
               
-              <Button onClick={() => setShowConsultationModal(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Nueva Reserva
+              <Button 
+                onClick={() => setShowConsultationModal(true)}
+                className="text-sm px-3 py-2"
+              >
+                <Plus className="h-4 w-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Nueva Reserva</span>
+                <span className="sm:hidden">Nueva</span>
               </Button>
             </div>
           </div>
         </CardHeader>
         
-        <CardContent>
+        <CardContent className="p-4 sm:p-6">
           <CalendarGrid />
         </CardContent>
       </Card>

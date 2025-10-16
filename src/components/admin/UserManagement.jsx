@@ -221,39 +221,40 @@ const UserManagement = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 flex items-center">
-            <Users className="h-6 w-6 mr-2" />
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center">
+            <Users className="h-5 w-5 sm:h-6 sm:w-6 mr-2" />
             Gestión de Usuarios
           </h2>
-          <p className="text-gray-600">Administra usuarios, roles y membresías</p>
+          <p className="text-sm sm:text-base text-gray-600">Administra usuarios, roles y membresías</p>
         </div>
-        <Button>
-          <UserPlus className="h-4 w-4 mr-2" />
-          Nuevo Usuario
+        <Button className="text-sm self-start sm:self-auto">
+          <UserPlus className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
+          <span className="hidden sm:inline">Nuevo Usuario</span>
+          <span className="sm:hidden">Nuevo</span>
         </Button>
       </div>
 
       {/* Filters */}
       <Card>
-        <CardHeader>
-          <CardTitle className="text-lg">Filtros y Búsqueda</CardTitle>
+        <CardHeader className="pb-3 sm:pb-4">
+          <CardTitle className="text-base sm:text-lg">Filtros y Búsqueda</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <CardContent className="pt-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <div className="relative">
-              <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+              <Search className="absolute left-3 top-3 h-3 w-3 sm:h-4 sm:w-4 text-gray-400" />
               <Input
                 placeholder="Buscar por nombre o email..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-8 sm:pl-10 text-sm"
               />
             </div>
             <Select value={filterRole} onValueChange={setFilterRole}>
-              <SelectTrigger>
+              <SelectTrigger className="text-sm">
                 <SelectValue placeholder="Filtrar por rol" />
               </SelectTrigger>
               <SelectContent>
@@ -264,7 +265,7 @@ const UserManagement = () => {
               </SelectContent>
             </Select>
             <Select value={filterMembership} onValueChange={setFilterMembership}>
-              <SelectTrigger>
+              <SelectTrigger className="text-sm">
                 <SelectValue placeholder="Filtrar por membresía" />
               </SelectTrigger>
               <SelectContent>
@@ -275,12 +276,10 @@ const UserManagement = () => {
                 <SelectItem value="vip">VIP</SelectItem>
               </SelectContent>
             </Select>
-            <div className="flex space-x-2">
-              <Button variant="outline" size="sm">
-                <Filter className="h-4 w-4 mr-2" />
-                Exportar
-              </Button>
-            </div>
+            <Button variant="outline" className="text-sm">
+              <Filter className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
+              Limpiar filtros
+            </Button>
           </div>
         </CardContent>
       </Card>

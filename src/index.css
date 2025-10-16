@@ -130,8 +130,32 @@
       background-size: 200% 200%, 100% 100%;
       background-position: 50% 50%;
       animation: aurora 80s linear infinite;
-      filter: blur(60px);
-      opacity: 0.8;
+      filter: blur(30px);
+      opacity: 0.6;
+    }
+
+    /* Optimización para móviles */
+    @media (max-width: 768px) {
+      .aurora-background::before {
+        filter: blur(20px);
+        opacity: 0.4;
+        animation: aurora 100s linear infinite;
+      }
+      
+      /* Ajuste del carousel para móviles */
+      .pause-animation {
+        animation-duration: 50s;
+      }
+      
+      /* Reducir motion para dispositivos con preferencias de accesibilidad */
+      @media (prefers-reduced-motion: reduce) {
+        .aurora-background::before {
+          animation: none;
+        }
+        .pause-animation {
+          animation: none;
+        }
+      }
     }
 
     .glass-card {
@@ -148,7 +172,7 @@
         transform: translateX(0);
       }
       100% {
-        transform: translateX(calc(-320px * 7)); /* 7 unique testimonials * width */
+        transform: translateX(calc(-288px * 12)); /* 12 testimonials * avg width (288px for mobile, 320px for desktop) */
       }
     }
 
