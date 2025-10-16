@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
     import { Link, useLocation } from 'react-router-dom';
-    import { motion, AnimatePresence } from 'framer-motion';
     import { ArrowRight, Menu, X, Loader2, LogIn, User, Settings } from 'lucide-react';
     import { Button } from '@/components/ui/button';
     import { Input } from '@/components/ui/input';
@@ -185,54 +184,48 @@ import React, { useState, useEffect } from 'react';
               </Button>
             </div>
           </div>
-          <AnimatePresence>
-            {isOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="lg:hidden absolute top-full left-0 right-0 bg-background shadow-lg border-t"
-              >
-                <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col gap-4">
-                  {navLinks.map((link) => (
-                    <Link key={link.name} to={link.href} onClick={closeMenu} className="text-base sm:text-lg font-semibold text-text-secondary hover:text-primary transition-colors py-2">
-                      {link.name}
-                    </Link>
-                  ))}
-                  <div className="border-t pt-6 mt-4 flex flex-col gap-4">
-                    <Button asChild className="w-full" variant="outline" onClick={closeMenu}>
-                      <Link to="/contacto">Contactar</Link>
-                    </Button>
-                    {user ? (
-                      <>
-                        {isAdmin && (
-                          <Button asChild className="w-full" variant="outline" onClick={closeMenu}>
-                            <Link to="/admin" className="text-orange-600 hover:text-orange-700">
-                              <Settings className="mr-2 h-4 w-4" />
-                              Panel de Administración
-                            </Link>
-                          </Button>
-                        )}
-                        <Button asChild className="w-full" onClick={closeMenu}>
-                          <Link to="/dashboard">
-                            <User className="mr-2 h-4 w-4" />
-                            Mi Cuenta
+          {/* Mobile menu sin AnimatePresence - FIX para móvil */}
+          {isOpen && (
+            <div className="lg:hidden absolute top-full left-0 right-0 bg-background shadow-lg border-t">
+              <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col gap-4">
+                {navLinks.map((link) => (
+                  <Link key={link.name} to={link.href} onClick={closeMenu} className="text-base sm:text-lg font-semibold text-text-secondary hover:text-primary transition-colors py-2">
+                    {link.name}
+                  </Link>
+                ))}
+                <div className="border-t pt-6 mt-4 flex flex-col gap-4">
+                  <Button asChild className="w-full" variant="outline" onClick={closeMenu}>
+                    <Link to="/contacto">Contactar</Link>
+                  </Button>
+                  {user ? (
+                    <>
+                      {isAdmin && (
+                        <Button asChild className="w-full" variant="outline" onClick={closeMenu}>
+                          <Link to="/admin" className="text-orange-600 hover:text-orange-700">
+                            <Settings className="mr-2 h-4 w-4" />
+                            Panel de Administración
                           </Link>
                         </Button>
-                      </>
-                    ) : (
+                      )}
                       <Button asChild className="w-full" onClick={closeMenu}>
-                        <Link to="/login">
-                          <LogIn className="mr-2 h-4 w-4" />
-                          Iniciar Sesión
+                        <Link to="/dashboard">
+                          <User className="mr-2 h-4 w-4" />
+                          Mi Cuenta
                         </Link>
                       </Button>
-                    )}
-                  </div>
+                    </>
+                  ) : (
+                    <Button asChild className="w-full" onClick={closeMenu}>
+                      <Link to="/login">
+                        <LogIn className="mr-2 h-4 w-4" />
+                        Iniciar Sesión
+                      </Link>
+                    </Button>
+                  )}
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+              </div>
+            </div>
+          )}
         </header>
       );
     };

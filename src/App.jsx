@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Layout from '@/components/Layout';
+import DebugLayout from '@/components/DebugLayout';
 import MobileErrorBoundary from '@/components/MobileErrorBoundary';
 import Home from '@/pages/Home';
 
