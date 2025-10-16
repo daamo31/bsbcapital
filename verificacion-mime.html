@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verificación MIME Types - BSB Capital</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .test { background: #f0f0f0; padding: 20px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .loading { background: #fff3cd; color: #856404; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Verificación de MIME Types y Assets</h1>
+    
+    <div class="test">
+        <h3>1. Test de Título de Página</h3>
+        <p>Título actual: "<span id="page-title"></span>"</p>
+        <p>✅ Debería mostrar "BSB Capital" NO "Hostinger Horizons"</p>
+    </div>
+    
+    <div class="test loading" id="css-test">
+        <h3>2. Test de CSS</h3>
+        <p>⏳ Cargando archivos CSS...</p>
+    </div>
+    
+    <div class="test loading" id="js-test">
+        <h3>3. Test de JavaScript</h3>
+        <p>⏳ Cargando archivos JavaScript...</p>
+    </div>
+    
+    <div class="test" id="assets-test">
+        <h3>4. Test de Assets</h3>
+        <div id="assets-results"></div>
+    </div>
+    
+    <div class="test">
+        <h3>5. URLs de Verificación</h3>
+        <ul>
+            <li><a href="/" target="_blank">🏠 Página principal</a></li>
+            <li><a href="/bsb-maker" target="_blank">🤖 BSB Maker</a></li>
+            <li><a href="/version.json" target="_blank">📋 Version.json</a></li>
+        </ul>
+    </div>
+    
+    <script>
+        // Test de título
+        document.getElementById('page-title').textContent = document.title;
+        
+        // Test de CSS
+        const testCSS = () => {
+            const cssTest = document.getElementById('css-test');
+            const links = document.querySelectorAll('link[rel="stylesheet"]');
+            
+            if (links.length > 0) {
+                cssTest.className = 'test success';
+                cssTest.innerHTML = '<h3>2. Test de CSS</h3><p>✅ CSS cargado correctamente</p>';
+            } else {
+                fetch('/assets/index-54119529-1760617146013.css')
+                    .then(response => {
+                        if (response.ok && response.headers.get('content-type').includes('text/css')) {
+                            cssTest.className = 'test success';
+                            cssTest.innerHTML = '<h3>2. Test de CSS</h3><p>✅ CSS disponible con MIME type correcto</p>';
+                        } else {
+                            throw new Error('MIME type incorrecto');
+                        }
+                    })
+                    .catch(error => {
+                        cssTest.className = 'test error';
+                        cssTest.innerHTML = '<h3>2. Test de CSS</h3><p>❌ Error: ' + error.message + '</p>';
+                    });
+            }
+        };
+        
+        // Test de JavaScript
+        const testJS = () => {
+            const jsTest = document.getElementById('js-test');
+            
+            fetch('/assets/index-042b967e-1760617146013.js')
+                .then(response => {
+                    if (response.ok && (
+                        response.headers.get('content-type').includes('application/javascript') ||
+                        response.headers.get('content-type').includes('text/javascript')
+                    )) {
+                        jsTest.className = 'test success';
+                        jsTest.innerHTML = '<h3>3. Test de JavaScript</h3><p>✅ JavaScript disponible con MIME type correcto</p>';
+                    } else {
+                        throw new Error('MIME type incorrecto: ' + response.headers.get('content-type'));
+                    }
+                })
+                .catch(error => {
+                    jsTest.className = 'test error';
+                    jsTest.innerHTML = '<h3>3. Test de JavaScript</h3><p>❌ Error: ' + error.message + '</p>';
+                });
+        };
+        
+        // Test de otros assets
+        const testAssets = () => {
+            const assetsTest = document.getElementById('assets-results');
+            const tests = [
+                { url: '/favicon.ico', type: 'image' },
+                { url: '/version.json', type: 'application/json' }
+            ];
+            
+            Promise.all(tests.map(test => 
+                fetch(test.url)
+                    .then(response => ({
+                        ...test,
+                        success: response.ok,
+                        contentType: response.headers.get('content-type')
+                    }))
+                    .catch(error => ({
+                        ...test,
+                        success: false,
+                        error: error.message
+                    }))
+            )).then(results => {
+                assetsTest.innerHTML = results.map(result => 
+                    `<p>${result.success ? '✅' : '❌'} ${result.url}: ${result.contentType || result.error}</p>`
+                ).join('');
+            });
+        };
+        
+        // Ejecutar tests
+        setTimeout(() => {
+            testCSS();
+            testJS();
+            testAssets();
+        }, 1000);
+    </script>
+</body>
+</html>

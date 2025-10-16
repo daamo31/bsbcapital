@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEBUG MÓVIL - BSB Capital</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        .test-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        .success { border-left: 4px solid #4CAF50; }
+        .error { border-left: 4px solid #f44336; }
+        .warning { border-left: 4px solid #ff9800; }
+        .loading { border-left: 4px solid #2196F3; }
+        
+        h1 { text-align: center; margin-bottom: 30px; }
+        h3 { margin-top: 0; color: #fff; }
+        
+        .big-button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .big-button:hover {
+            background: #45a049;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            font-size: 14px;
+        }
+        
+        @media (min-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-ok { background: #4CAF50; }
+        .status-error { background: #f44336; }
+        .status-loading { background: #2196F3; animation: pulse 1s infinite; }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .timestamp {
+            font-size: 12px;
+            opacity: 0.8;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 DEBUG MÓVIL BSB CAPITAL</h1>
+        
+        <div class="test-card loading" id="device-info">
+            <h3><span class="status-indicator status-loading"></span>Información del Dispositivo</h3>
+            <div class="info-grid" id="device-details">
+                <p>⏳ Cargando...</p>
+            </div>
+        </div>
+        
+        <div class="test-card loading" id="network-test">
+            <h3><span class="status-indicator status-loading"></span>Test de Conectividad</h3>
+            <div id="network-results">
+                <p>⏳ Probando conexión...</p>
+            </div>
+        </div>
+        
+        <div class="test-card loading" id="assets-test">
+            <h3><span class="status-indicator status-loading"></span>Test de Assets</h3>
+            <div id="assets-results">
+                <p>⏳ Verificando archivos CSS y JS...</p>
+            </div>
+        </div>
+        
+        <div class="test-card loading" id="routing-test">
+            <h3><span class="status-indicator status-loading"></span>Test de Routing</h3>
+            <div id="routing-results">
+                <p>⏳ Probando rutas de React...</p>
+            </div>
+        </div>
+        
+        <div class="test-card">
+            <h3>🚀 Tests Manuales</h3>
+            <a href="/" class="big-button">🏠 Ir a Inicio</a>
+            <a href="/bsb-maker" class="big-button">🤖 Probar BSB Maker</a>
+            <a href="/consultoria" class="big-button">💼 Probar Consultoría</a>
+            <button onclick="forceReload()" class="big-button" style="background: #ff9800;">🔄 Forzar Recarga</button>
+        </div>
+        
+        <div class="test-card">
+            <h3>📋 Instrucciones de Debug</h3>
+            <p><strong>Si esta página se ve bien:</strong></p>
+            <ul>
+                <li>✅ Los archivos HTML básicos funcionan</li>
+                <li>✅ El CSS simple se carga correctamente</li>
+                <li>✅ JavaScript básico ejecuta</li>
+            </ul>
+            <p><strong>Si los botones de arriba no funcionan:</strong></p>
+            <ul>
+                <li>❌ Problema con React Router</li>
+                <li>❌ Assets de React no cargan</li>
+                <li>❌ JavaScript principal tiene errores</li>
+            </ul>
+        </div>
+        
+        <div class="timestamp" id="timestamp"></div>
+    </div>
+
+    <script>
+        // Información del dispositivo
+        function updateDeviceInfo() {
+            const deviceCard = document.getElementById('device-info');
+            const deviceDetails = document.getElementById('device-details');
+            
+            const info = {
+                'User Agent': navigator.userAgent.substring(0, 80) + '...',
+                'Pantalla': `${window.screen.width}x${window.screen.height}`,
+                'Viewport': `${window.innerWidth}x${window.innerHeight}`,
+                'Orientación': window.screen.orientation ? window.screen.orientation.angle + '°' : 'Desconocida',
+                'Conexión': navigator.connection ? navigator.connection.effectiveType : 'Desconocida',
+                'Online': navigator.onLine ? 'Sí' : 'No',
+                'Táctil': 'ontouchstart' in window ? 'Sí' : 'No',
+                'URL Actual': window.location.href
+            };
+            
+            deviceDetails.innerHTML = Object.entries(info).map(([key, value]) => 
+                `<p><strong>${key}:</strong> ${value}</p>`
+            ).join('');
+            
+            deviceCard.className = 'test-card success';
+            deviceCard.querySelector('.status-indicator').className = 'status-indicator status-ok';
+        }
+        
+        // Test de red
+        async function testNetwork() {
+            const networkCard = document.getElementById('network-test');
+            const networkResults = document.getElementById('network-results');
+            
+            const tests = [
+                { name: 'Version JSON', url: '/version.json' },
+                { name: 'Página principal', url: '/' },
+                { name: 'CSS Principal', url: '/assets/index-54119529-1760617146013.css' },
+                { name: 'JS Principal', url: '/assets/index-042b967e-1760617146013.js' }
+            ];
+            
+            const results = [];
+            
+            for (const test of tests) {
+                try {
+                    const response = await fetch(test.url, { 
+                        method: 'HEAD',
+                        cache: 'no-cache'
+                    });
+                    results.push({
+                        name: test.name,
+                        status: response.status,
+                        contentType: response.headers.get('content-type'),
+                        success: response.ok
+                    });
+                } catch (error) {
+                    results.push({
+                        name: test.name,
+                        error: error.message,
+                        success: false
+                    });
+                }
+            }
+            
+            networkResults.innerHTML = results.map(result => 
+                `<p>${result.success ? '✅' : '❌'} <strong>${result.name}:</strong> ${
+                    result.success ? 
+                    `${result.status} - ${result.contentType}` : 
+                    `Error: ${result.error}`
+                }</p>`
+            ).join('');
+            
+            const allSuccessful = results.every(r => r.success);
+            networkCard.className = `test-card ${allSuccessful ? 'success' : 'error'}`;
+            networkCard.querySelector('.status-indicator').className = 
+                `status-indicator ${allSuccessful ? 'status-ok' : 'status-error'}`;
+        }
+        
+        // Test de assets específicos
+        async function testAssets() {
+            const assetsCard = document.getElementById('assets-test');
+            const assetsResults = document.getElementById('assets-results');
+            
+            try {
+                // Intentar cargar dinámicamente el CSS principal
+                const cssTest = document.createElement('link');
+                cssTest.rel = 'stylesheet';
+                cssTest.href = '/assets/index-54119529-1760617146013.css';
+                
+                cssTest.onload = () => {
+                    assetsResults.innerHTML += '<p>✅ CSS principal cargado correctamente</p>';
+                };
+                
+                cssTest.onerror = () => {
+                    assetsResults.innerHTML += '<p>❌ Error cargando CSS principal</p>';
+                };
+                
+                document.head.appendChild(cssTest);
+                
+                // Test del JS principal
+                const jsResponse = await fetch('/assets/index-042b967e-1760617146013.js');
+                if (jsResponse.ok) {
+                    assetsResults.innerHTML += '<p>✅ JavaScript principal accesible</p>';
+                } else {
+                    assetsResults.innerHTML += '<p>❌ JavaScript principal no accesible</p>';
+                }
+                
+                assetsCard.className = 'test-card success';
+                assetsCard.querySelector('.status-indicator').className = 'status-indicator status-ok';
+                
+            } catch (error) {
+                assetsResults.innerHTML = `<p>❌ Error general: ${error.message}</p>`;
+                assetsCard.className = 'test-card error';
+                assetsCard.querySelector('.status-indicator').className = 'status-indicator status-error';
+            }
+        }
+        
+        // Test de routing
+        function testRouting() {
+            const routingCard = document.getElementById('routing-test');
+            const routingResults = document.getElementById('routing-results');
+            
+            // Verificar si React se ha cargado
+            const hasReact = typeof React !== 'undefined';
+            const hasReactDOM = typeof ReactDOM !== 'undefined';
+            const hasRouter = typeof window.ReactRouterDOM !== 'undefined';
+            
+            routingResults.innerHTML = `
+                <p>${hasReact ? '✅' : '❌'} React cargado: ${hasReact}</p>
+                <p>${hasReactDOM ? '✅' : '❌'} ReactDOM cargado: ${hasReactDOM}</p>
+                <p>${hasRouter ? '✅' : '❌'} React Router cargado: ${hasRouter}</p>
+                <p>🔄 Root element: ${document.getElementById('root') ? 'Encontrado' : 'No encontrado'}</p>
+            `;
+            
+            const allGood = hasReact && hasReactDOM && document.getElementById('root');
+            routingCard.className = `test-card ${allGood ? 'success' : 'error'}`;
+            routingCard.querySelector('.status-indicator').className = 
+                `status-indicator ${allGood ? 'status-ok' : 'status-error'}`;
+        }
+        
+        // Funciones auxiliares
+        function forceReload() {
+            window.location.reload(true);
+        }
+        
+        function updateTimestamp() {
+            document.getElementById('timestamp').textContent = 
+                `🕐 Generado: ${new Date().toLocaleString('es-ES')}`;
+        }
+        
+        // Ejecutar tests
+        window.onload = function() {
+            updateTimestamp();
+            updateDeviceInfo();
+            
+            setTimeout(() => {
+                testNetwork();
+                testAssets();
+                testRouting();
+            }, 1000);
+        };
+        
+        // Auto-refresh cada 30 segundos para testing continuo
+        setTimeout(() => {
+            window.location.reload();
+        }, 30000);
+    </script>
+</body>
+</html>
