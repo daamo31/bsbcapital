@@ -239,6 +239,32 @@ const ConsultationPostPayment = () => {
         // No bloquear el flujo si falla el email
       }
 
+      // Enviar notificación a administradores sobre la nueva consultoría
+      try {
+        await emailService.sendAdminConsultationNotification({
+          clientName: formData.client_name,
+          clientEmail: formData.client_email,
+          clientPhone: formData.client_phone,
+          consultationType: consultation.title,
+          preferredDate: new Date(consultation.scheduled_at).toLocaleDateString('es-ES', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }),
+          preferredTime: new Date(consultation.scheduled_at).toLocaleTimeString('es-ES', {
+            hour: '2-digit',
+            minute: '2-digit'
+          }),
+          price: `${consultation.duration_minutes === 30 ? '97€' : '167€'}`,
+          consultationGoals: formData.consultation_goals,
+          additionalInfo: formData.additional_notes
+        });
+      } catch (emailError) {
+        console.error('Error sending admin notification email:', emailError);
+        // No bloquear el flujo si falla el email de admin
+      }
+
       toast({
         title: "¡Consulta confirmada!",
         description: "Hemos registrado tus datos. Te contactaremos pronto con los detalles de la reunión."

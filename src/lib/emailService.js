@@ -187,6 +187,87 @@ class EmailService {
   }
 
   /**
+   * Envía confirmación de consultoría financiera
+   */
+  async sendConsultationFinancial(data) {
+    return this.sendCustomEmail('consultation_financial', data.email, data);
+  }
+
+  /**
+   * Envía confirmación de consultoría crypto avanzada
+   */
+  async sendConsultationCryptoAdvanced(data) {
+    return this.sendCustomEmail('consultation_crypto_advanced', data.email, data);
+  }
+
+  /**
+   * Envía confirmación de onboarding crypto
+   */
+  async sendConsultationCryptoOnboarding(data) {
+    return this.sendCustomEmail('consultation_crypto_onboarding', data.email, data);
+  }
+
+  /**
+   * Envía confirmación de academia BSB
+   */
+  async sendAcademiaBSB(data) {
+    return this.sendCustomEmail('academia_bsb', data.email, data);
+  }
+
+  /**
+   * Envía confirmación de Trader Plan Pro
+   */
+  async sendTraderPlanPro(data) {
+    return this.sendCustomEmail('trader_plan_pro', data.email, data);
+  }
+
+  /**
+   * Envía confirmación de Premium Investor
+   */
+  async sendPremiumInvestor(data) {
+    return this.sendCustomEmail('premium_investor', data.email, data);
+  }
+
+  /**
+   * Envía confirmación de Wealth Membership
+   */
+  async sendWealthMembership(data) {
+    return this.sendCustomEmail('wealth_membership', data.email, data);
+  }
+
+  /**
+   * Envía notificación a administradores sobre nueva consultoría
+   */
+  async sendAdminConsultationNotification(consultationData) {
+    try {
+      const { data, error } = await supabase.functions.invoke(this.functionName, {
+        body: JSON.stringify({
+          type: 'admin_consultation_notification',
+          to: 'info@bsbcapital.io', // Email de administradores
+          data: {
+            clientName: consultationData.clientName || consultationData.name,
+            clientEmail: consultationData.clientEmail || consultationData.email,
+            clientPhone: consultationData.clientPhone || consultationData.phone,
+            consultationType: consultationData.consultationType || consultationData.type,
+            preferredDate: consultationData.preferredDate || consultationData.scheduledDate,
+            preferredTime: consultationData.preferredTime || consultationData.scheduledTime,
+            price: consultationData.price,
+            consultationGoals: consultationData.consultationGoals || consultationData.goals,
+            additionalInfo: consultationData.additionalInfo || consultationData.message,
+            timestamp: new Date().toISOString()
+          }
+        })
+      });
+
+      if (error) throw error;
+      return { success: true, data };
+    } catch (error) {
+      console.error('Error sending admin consultation notification:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  /**
    * Envía recordatorio de consulta
    */
   async sendConsultationReminder(data) {
@@ -237,6 +318,14 @@ export const {
   sendContactForm,
   sendServiceInquiry,
   sendConsultationConfirmation,
+  sendConsultationFinancial,
+  sendConsultationCryptoAdvanced,
+  sendConsultationCryptoOnboarding,
+  sendAcademiaBSB,
+  sendTraderPlanPro,
+  sendPremiumInvestor,
+  sendWealthMembership,
+  sendAdminConsultationNotification,
   sendConsultationReminder,
   sendConsultationCompleted,
   sendCustomEmail,

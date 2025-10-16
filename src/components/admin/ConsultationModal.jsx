@@ -10,6 +10,7 @@ import { supabase } from '@/lib/customSupabaseClient';
 import { useAdmin } from '@/hooks/useAdmin';
 import { Calendar, Clock, User, Save, X, FileText } from 'lucide-react';
 import ConsultationDetailsView from './ConsultationDetailsView';
+import emailService from '@/lib/emailService';
 
 // Función para generar UUID
 const generateUUID = () => {
@@ -186,6 +187,32 @@ const ConsultationModal = ({
           'consultation',
           result.id
         );
+
+        // Enviar notificación a administradores sobre la nueva consultoría creada desde admin
+        try {
+          await emailService.sendAdminConsultationNotification({
+            clientName: formData.client_email ? formData.client_email.split('@')[0] : 'Cliente desde Admin',
+            clientEmail: formData.client_email || 'No proporcionado',
+            clientPhone: 'No proporcionado',
+            consultationType: formData.consultation_type,
+            preferredDate: new Date(startDateTime).toLocaleDateString('es-ES', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            }),
+            preferredTime: new Date(startDateTime).toLocaleTimeString('es-ES', {
+              hour: '2-digit',
+              minute: '2-digit'
+            }),
+            price: `${formData.duration * 60 === 30 ? '97€' : '167€'} (creada desde admin)`,
+            consultationGoals: formData.description,
+            additionalInfo: `Consultoría creada directamente desde el panel de administración.\nTítulo: ${formData.title}\nEstado: ${formData.status}`
+          });
+        } catch (emailError) {
+          console.error('Error sending admin notification email:', emailError);
+          // No bloquear el flujo si falla el email de admin
+        }
       }
 
       onSave?.(result);
