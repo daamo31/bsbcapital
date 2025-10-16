@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Cache - BSB Capital</title>
+    <meta charset="UTF-8">
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 40px; 
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            text-align: center;
+        }
+        .timestamp {
+            font-size: 24px;
+            font-weight: bold;
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .test-box {
+            background: rgba(255,255,255,0.2);
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🕐 TEST DE CACHE ACTUALIZADO</h1>
+    
+    <div class="timestamp">
+        ⏰ TIMESTAMP: <span id="timestamp"></span>
+    </div>
+    
+    <div class="test-box">
+        <h2>✅ Si ves este contenido con colores, el cache se está actualizando</h2>
+        <p>Hora de creación: <script>document.write(new Date().toLocaleString());</script></p>
+        <p>Timestamp del build: 1760614279</p>
+    </div>
+    
+    <div class="test-box">
+        <h3>🔍 Información del navegador:</h3>
+        <div id="browser-info"></div>
+    </div>
+    
+    <script>
+        // Mostrar timestamp actual
+        document.getElementById('timestamp').textContent = Date.now();
+        
+        // Información del navegador
+        document.getElementById('browser-info').innerHTML = `
+            <p><strong>URL:</strong> ${window.location.href}</p>
+            <p><strong>User Agent:</strong> ${navigator.userAgent.substring(0, 80)}...</p>
+            <p><strong>Hora local:</strong> ${new Date().toLocaleString()}</p>
+            <p><strong>Cache del navegador:</strong> ${performance.navigation.type === 1 ? 'Recarga normal' : 'Primera carga'}</p>
+        `;
+        
+        // Auto-refresh cada 10 segundos para testing
+        setTimeout(() => {
+            window.location.reload();
+        }, 10000);
+    </script>
+    
+    <div class="test-box">
+        <h3>📋 Instrucciones:</h3>
+        <p>1. Si ves este diseño colorido = El HTML se está actualizando ✅</p>
+        <p>2. Si ves contenido anterior = Aún hay cache activo ❌</p>
+        <p>3. Esta página se recarga automáticamente cada 10 segundos</p>
+    </div>
+</body>
+</html>

@@ -179,3 +179,66 @@
     .pause-animation:hover {
       animation-play-state: paused;
     }
+
+    /* Optimizaciones específicas para formularios móviles */
+    @media (max-width: 768px) {
+      /* Asegurar scroll suave en formularios largos */
+      body {
+        -webkit-overflow-scrolling: touch;
+        overflow-x: hidden;
+      }
+      
+      /* Mejorar el comportamiento de scroll en iOS */
+      .mobile-scroll-container {
+        -webkit-overflow-scrolling: touch;
+        overflow-y: auto;
+        position: relative;
+        height: 100vh;
+      }
+      
+      /* Prevenir problemas de viewport en iOS Safari */
+      .mobile-form-container {
+        min-height: 100vh;
+        min-height: -webkit-fill-available;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      /* Botones sticky en formularios móviles */
+      .mobile-sticky-button {
+        position: sticky;
+        bottom: 0;
+        z-index: 50;
+        background: white;
+        padding: 1rem;
+        margin: 0 -1rem;
+        border-top: 1px solid hsl(var(--border));
+        box-shadow: 0 -4px 12px 0 hsl(var(--primary) / 0.1);
+      }
+      
+      /* Mejorar táctil para inputs en móvil */
+      input, textarea, select, button {
+        font-size: 16px; /* Previene zoom en iOS */
+      }
+      
+      /* Asegurar que los formularios no se corten */
+      .mobile-form-field {
+        margin-bottom: 1.5rem;
+      }
+      
+      /* Espaciado extra en el último elemento del formulario */
+      .mobile-form-spacing {
+        padding-bottom: 6rem;
+      }
+    }
+
+    /* Mejoras para el scroll en dispositivos táctiles */
+    @supports (-webkit-touch-callout: none) {
+      /* iOS Safari específico */
+      .ios-scroll-fix {
+        -webkit-overflow-scrolling: touch;
+        overflow-y: scroll;
+        height: 100vh;
+        height: -webkit-fill-available;
+      }
+    }

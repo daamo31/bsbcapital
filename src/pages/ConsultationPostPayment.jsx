@@ -300,8 +300,8 @@ const ConsultationPostPayment = () => {
         <meta name="description" content="Completa tu información para personalizar tu consultoría financiera." />
       </Helmet>
 
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white py-12">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white py-6 sm:py-12 overflow-x-hidden">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 sm:pb-8">
           {/* Header de éxito */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -598,12 +598,13 @@ const ConsultationPostPayment = () => {
                     </div>
                   </div>
 
-                  {/* Botones de acción */}
-                  <div className="flex flex-col sm:flex-row gap-4 pt-6">
+                  {/* Botones de acción con mejora para móvil */}
+                  <div className="flex flex-col gap-4 pt-6 pb-8 sm:pb-6 sticky bottom-0 bg-white sm:bg-transparent sm:static p-4 sm:p-0 -mx-4 sm:mx-0 border-t sm:border-t-0 mt-6">
                     <Button
                       type="submit"
                       disabled={loading}
-                      className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 flex-1"
+                      className="bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 w-full h-12 text-base font-medium"
+                      size="lg"
                     >
                       {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                       Confirmar Consultoría
@@ -612,7 +613,7 @@ const ConsultationPostPayment = () => {
                       type="button"
                       variant="outline"
                       onClick={() => navigate('/area-cliente')}
-                      className="sm:w-auto"
+                      className="w-full h-10"
                     >
                       Completar Más Tarde
                     </Button>

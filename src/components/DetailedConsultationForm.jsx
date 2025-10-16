@@ -479,30 +479,38 @@ const DetailedConsultationForm = ({ consultation, onSubmit, loading }) => {
   );
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-4xl mx-auto p-6">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-brand-text-primary mb-2">
-          Formulario Completo de Consultoría
-        </h2>
-        <p className="text-brand-text-secondary">
-          Comparte tu situación financiera actual para recibir el mejor asesoramiento personalizado. 
-          Completa solo las secciones que sean relevantes para ti.
-        </p>
-      </div>
+    <div className="w-full min-h-screen overflow-y-auto">
+      <form onSubmit={handleSubmit} className="max-w-4xl mx-auto p-4 sm:p-6 space-y-6">
+        <div className="mb-6">
+          <h2 className="text-xl sm:text-2xl font-bold text-brand-text-primary mb-2">
+            Formulario Completo de Consultoría
+          </h2>
+          <p className="text-sm sm:text-base text-brand-text-secondary">
+            Comparte tu situación financiera actual para recibir el mejor asesoramiento personalizado. 
+            Completa solo las secciones que sean relevantes para ti.
+          </p>
+        </div>
 
-      {renderPersonalData()}
-      {renderPlanificacionFields()}
-      {renderCarterasFields()}
-      {renderCryptoFields()}
-      {renderFinalComments()}
+        {renderPersonalData()}
+        {renderPlanificacionFields()}
+        {renderCarterasFields()}
+        {renderCryptoFields()}
+        {renderFinalComments()}
 
-      <div className="flex justify-end">
-        <Button type="submit" disabled={loading} className="px-8">
-          {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          Completar formulario
-        </Button>
-      </div>
-    </form>
+        {/* Botón de envío con espacio extra en móvil */}
+        <div className="flex justify-end pt-6 pb-20 sm:pb-6">
+          <Button 
+            type="submit" 
+            disabled={loading} 
+            className="w-full sm:w-auto px-8 py-3 text-base"
+            size="lg"
+          >
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            Completar formulario
+          </Button>
+        </div>
+      </form>
+    </div>
   );
 };
 
