@@ -2,7 +2,7 @@ import React, { useState } from 'react';
     import { Helmet } from 'react-helmet';
     import { motion } from 'framer-motion';
     import { Button } from '@/components/ui/button';
-    import { ArrowRight, CheckCircle, Film, FileText, LifeBuoy, ShieldCheck, BarChart, Users, HelpCircle, RefreshCw, MessageSquare } from 'lucide-react';
+    import { ArrowRight, CheckCircle, Film, FileText, LifeBuoy, ShieldCheck, BarChart, Users, HelpCircle, RefreshCw, MessageSquare, Quote } from 'lucide-react';
     import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
     import CheckoutModal from '@/components/CheckoutModal';
 
@@ -144,31 +144,248 @@ import React, { useState } from 'react';
               </div>
             </motion.section>
 
-            {/* Program Section */}
-            <motion.section variants={itemVariants} className="py-16 md:py-24">
-              <div className="container mx-auto px-4 max-w-3xl">
-                <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Programa del Curso</h2>
-                <Accordion type="single" collapsible className="w-full">
-                  {programModules.map((module, index) => (
-                    <AccordionItem value={`item-${index + 1}`} key={index}>
-                      <AccordionTrigger className="text-lg font-semibold">{module.title}</AccordionTrigger>
-                      <AccordionContent className="text-base text-muted-foreground">{module.content}</AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </div>
-            </motion.section>
+           
 
-            {/* Testimonials Section */}
-            <motion.section variants={itemVariants} className="py-16 md:py-24 bg-brand-green-100">
-              <div className="container mx-auto px-4 text-center max-w-3xl">
-                <h2 className="text-3xl md:text-4xl font-bold mb-8">Lo que dicen nuestros alumnos</h2>
-                <div className="bg-card p-8 rounded-lg border">
-                  <p className="text-xl italic text-muted-foreground">"Este es un placeholder para un testimonio increíble de un alumno satisfecho. El curso le cambió la vida y ahora es un inversor mucho más seguro y rentable."</p>
-                  <p className="font-bold mt-4 text-primary">- Alumno Feliz</p>
+            {/* Testimonials Carousel Section */}
+            <div className="relative overflow-hidden bg-gradient-to-br from-brand-green-100 via-brand-green-50 to-brand-green-100">
+              <div className="container mx-auto px-4 py-16">
+                <h2 className="text-3xl font-bold text-center main-gradient-text mb-12">Lo que dicen nuestros alumnos</h2>
+              
+                <div className="relative overflow-hidden">
+                  <div className="flex animate-[scroll_40s_linear_infinite] pause-animation">
+                    {/* Testimonial 1 */}
+                    <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                      <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                        <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                        <div className="flex items-center mb-4">
+                          <div className="w-12 h-12 bg-gradient-to-br from-brand-accent to-brand-primary rounded-full flex items-center justify-center text-white font-bold mr-3">
+                            AG
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold text-brand-text-primary">Ana García</h3>
+                            <p className="text-sm text-brand-text-secondary">Contable, Sevilla</p>
+                          </div>
+                        </div>
+                        <p className="text-brand-text-secondary italic">
+                          "Nunca pensé que entendería los derivados. El curso me abrió los ojos: ahora protejo mis ETFs con opciones y ya he evitado 2 caídas importantes. ¡Mi cartera está blindada! 🛡️"
+                        </p>
+                        <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                          <span>⭐⭐⭐⭐⭐</span>
+                          <span className="ml-2">• hace 1 semana</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Testimonial 2 */}
+                    <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                      <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                        <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                        <div className="flex items-center mb-4">
+                          <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                            MR
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold text-brand-text-primary">Miguel Rodríguez</h3>
+                            <p className="text-sm text-brand-text-secondary">Ingeniero, Barcelona</p>
+                          </div>
+                        </div>
+                        <p className="text-brand-text-secondary italic">
+                          "Tenía un lío tremendo con las crypto en Hacienda. Después del módulo fiscal lo tengo todo controlado: plantillas, Excel automatizado, cero estrés 🎯"
+                        </p>
+                        <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                          <span>⭐⭐⭐⭐⭐</span>
+                          <span className="ml-2">• hace 3 días</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Testimonial 3 */}
+                    <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                      <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                        <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                        <div className="flex items-center mb-4">
+                          <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                            CP
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold text-brand-text-primary">Carlos Pérez</h3>
+                            <p className="text-sm text-brand-text-secondary">Trader, Madrid</p>
+                          </div>
+                        </div>
+                        <p className="text-brand-text-secondary italic">
+                          "Era un gambler total. El módulo de gestión de riesgo me enseñó a operar como los institucionales. Ahora tengo consistencia y duermo tranquilo 😴"
+                        </p>
+                        <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                          <span>⭐⭐⭐⭐⭐</span>
+                          <span className="ml-2">• hace 2 semanas</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Testimonial 4 */}
+                    <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                      <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                        <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                        <div className="flex items-center mb-4">
+                          <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                            LS
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold text-brand-text-primary">Laura Sánchez</h3>
+                            <p className="text-sm text-brand-text-secondary">Médica, Valencia</p>
+                          </div>
+                        </div>
+                        <p className="text-brand-text-secondary italic">
+                          "Como médica no tenía tiempo para estudiar trading. Los checklists del curso son oro puro: analizo, ejecuto y listo. Ya voy por el 18% este año 📈"
+                        </p>
+                        <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                          <span>⭐⭐⭐⭐⭐</span>
+                          <span className="ml-2">• hace 5 días</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Testimonial 5 */}
+                    <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                      <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                        <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                        <div className="flex items-center mb-4">
+                          <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                            JM
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold text-brand-text-primary">Javier Martín</h3>
+                            <p className="text-sm text-brand-text-secondary">Autónomo, Bilbao</p>
+                          </div>
+                        </div>
+                        <p className="text-brand-text-secondary italic">
+                          "Estaba perdiendo pasta como un loco en futuros. El curso me enseñó gestión de riesgo real: position sizing, stops... Ahora opero como un profesional 💪"
+                        </p>
+                        <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                          <span>⭐⭐⭐⭐⭐</span>
+                          <span className="ml-2">• hace 10 días</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Testimonial 6 */}
+                    <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                      <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                        <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                        <div className="flex items-center mb-4">
+                          <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                            EP
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold text-brand-text-primary">Elena Prieto</h3>
+                            <p className="text-sm text-brand-text-secondary">Arquitecta, Zaragoza</p>
+                          </div>
+                        </div>
+                        <p className="text-brand-text-secondary italic">
+                          "Me daba pánico tocar crypto por el tema fiscal. Después del curso tengo todo claro: declaraciones, costes, ganancias... Ya declaré sin problemas 📊"
+                        </p>
+                        <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                          <span>⭐⭐⭐⭐⭐</span>
+                          <span className="ml-2">• hace 1 mes</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Testimonial 7 */}
+                    <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                      <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                        <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                        <div className="flex items-center mb-4">
+                          <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                            DR
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold text-brand-text-primary">David Ruiz</h3>
+                            <p className="text-sm text-brand-text-secondary">Programador, Málaga</p>
+                          </div>
+                        </div>
+                        <p className="text-brand-text-secondary italic">
+                          "Trabajo en tech y quería aprovechar mi cartera de acciones. Con las opciones del curso ahora genero ingresos extra cubriendo riesgo. Genial! 🚀"
+                        </p>
+                        <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                          <span>⭐⭐⭐⭐⭐</span>
+                          <span className="ml-2">• hace 4 días</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Testimonial 8 */}
+                    <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                      <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                        <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                        <div className="flex items-center mb-4">
+                          <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                            SC
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold text-brand-text-primary">Sofía Castro</h3>
+                            <p className="text-sm text-brand-text-secondary">Abogada, Granada</p>
+                          </div>
+                        </div>
+                        <p className="text-brand-text-secondary italic">
+                          "Tenía Bitcoin desde 2020 pero no sabía cómo declararlo bien. El módulo fiscal me salvó la vida: ahora sé exactamente qué hacer cada año 🎯"
+                        </p>
+                        <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                          <span>⭐⭐⭐⭐⭐</span>
+                          <span className="ml-2">• hace 2 semanas</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Testimonial 9 */}
+                    <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                      <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                        <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                        <div className="flex items-center mb-4">
+                          <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                            RT
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold text-brand-text-primary">Raúl Torres</h3>
+                            <p className="text-sm text-brand-text-secondary">Comercial, Murcia</p>
+                          </div>
+                        </div>
+                        <p className="text-brand-text-secondary italic">
+                          "Era un desastre con el risk management. Perdía el 50% y lo recuperaba... hasta que no. Ahora tengo un sistema: nunca más del 2% por trade 💡"
+                        </p>
+                        <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                          <span>⭐⭐⭐⭐⭐</span>
+                          <span className="ml-2">• hace 1 semana</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Testimonials duplicados para loop infinito */}
+                    <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                      <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                        <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                        <div className="flex items-center mb-4">
+                          <div className="w-12 h-12 bg-gradient-to-br from-brand-accent to-brand-primary rounded-full flex items-center justify-center text-white font-bold mr-3">
+                            AG
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-semibold text-brand-text-primary">Ana García</h3>
+                            <p className="text-sm text-brand-text-secondary">Contable, Sevilla</p>
+                          </div>
+                        </div>
+                        <p className="text-brand-text-secondary italic">
+                          "Nunca pensé que entendería los derivados. El curso me abrió los ojos: ahora protejo mis ETFs con opciones y ya he evitado 2 caídas importantes. ¡Mi cartera está blindada! 🛡️"
+                        </p>
+                        <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                          <span>⭐⭐⭐⭐⭐</span>
+                          <span className="ml-2">• hace 1 semana</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </motion.section>
+            </div>
 
             {/* FAQs Section */}
             <motion.section variants={itemVariants} className="py-16 md:py-24">
@@ -186,13 +403,13 @@ import React, { useState } from 'react';
             </motion.section>
 
             {/* Guarantee & Final CTA */}
-            <motion.section variants={itemVariants} className="py-16 md:py-24 bg-brand-green-900 text-white">
+            <motion.section variants={itemVariants} className="py-16 md:py-24 bg-brand-green-100">
               <div className="container mx-auto px-4 text-center max-w-3xl">
                 <ShieldCheck className="h-16 w-16 mx-auto text-brand-gold mb-4" />
                 <h2 className="text-3xl md:text-4xl font-bold">Garantía de Satisfacción</h2>
                 <p className="mt-4 text-brand-green-100/80">Tu inversión en conocimiento está protegida. Tienes un período de garantía para probar el curso sin riesgo. Si no cumple tus expectativas, te devolvemos tu dinero.</p>
                 <div className="mt-8">
-                  <ComprarCursoButton className="bg-brand-gold text-brand-green-900 hover:bg-brand-gold/90">Comprar curso ahora</ComprarCursoButton>
+                  <ComprarCursoButton>Comprar curso ahora</ComprarCursoButton>
                 </div>
               </div>
             </motion.section>

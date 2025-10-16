@@ -39,6 +39,7 @@ const CheckoutPage = () => {
   
   const [loading, setLoading] = useState(false);
   const [planData, setPlanData] = useState(null);
+  const [billingCycle, setBillingCycle] = useState('monthly'); // 'monthly' o 'annual'
   const [formData, setFormData] = useState({
     email: searchParams.get('email') || user?.email || '',
     name: searchParams.get('name') || user?.user_metadata?.full_name || '',
@@ -88,14 +89,29 @@ const CheckoutPage = () => {
     }
   };
 
+  // Información de precios para diferentes planes
+  const pricingInfo = {
+    monthly: { 
+      price: '29.99', 
+      saveText: null,
+      stripeId: 'price_1SDKO8JmSk3VG9oiCLuGoE4s' // PLAN TRADER PRO mensual
+    },
+    annual: { 
+      price: '299.00', 
+      saveText: 'Ahorra $60 al año',
+      stripeId: 'price_1SDKQZJmSk3VG9oiGudek18k' // PLAN TRADER PRO ANUAL
+    }
+  };
+
   // Fallback para compatibilidad con el sistema anterior
   const productInfo = planData || {
     name: 'Academia BSB Capital - Formación Completa',
     description: 'Acceso completo a la formación práctica en inversión, fiscalidad y crypto',
-    price: '99.99',
+    price: pricingInfo[billingCycle].price,
     currency: 'USD',
+    billingCycle: billingCycle,
     features: [
-      'Acceso de por vida al contenido',
+      'Acceso completo al contenido',
       '4 módulos completos de formación',
       'Plantillas y checklists descargables',
       'Soporte prioritario por email',
@@ -125,19 +141,12 @@ const CheckoutPage = () => {
       return;
     }
 
-    if (!planData) {
+    // Obtener el precio de Stripe según el ciclo de facturación seleccionado
+    const selectedPrice = pricingInfo[billingCycle];
+    if (!selectedPrice || !selectedPrice.stripeId) {
       toast({
         title: "Error", 
-        description: "No se pudo cargar la información del plan",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    if (!planData.stripe_price_id) {
-      toast({
-        title: "Error", 
-        description: "Este plan no tiene configurado un precio de Stripe",
+        description: "No se pudo determinar el precio para el plan seleccionado",
         variant: "destructive"
       });
       return;
@@ -146,48 +155,52 @@ const CheckoutPage = () => {
     setLoading(true);
 
     try {
-      // Crear sesión de checkout de Stripe usando nuestra Edge Function
-      const { data, error } = await supabase.functions.invoke('create-stripe-checkout', {
+      console.log('Enviando datos a Stripe:', {
+        priceId: selectedPrice.stripeId,
+        billingCycle,
+        price: selectedPrice.price
+      });
+
+      // Crear sesión de checkout directamente con Stripe (temporal)
+      const stripe = await stripePromise;
+      
+      // Para desarrollo, vamos a usar la función de hotmart que maneja mejor los pagos
+      const { data, error } = await supabase.functions.invoke('hotmart-checkout-production', {
         body: {
-          priceId: planData.stripe_price_id,
-          mode: 'subscription', // Para suscripciones
-          email: formData.email,
-          metadata: {
-            user_id: user.id,
-            plan_id: planData.id,
-            plan_name: planData.name,
-            customer_name: formData.name,
-            phone: formData.phone,
-            country: formData.country
-          }
+          productId: 'ACADEMIA_BSB', // Identificador temporal
+          userEmail: formData.email,
+          userId: user.id,
+          userName: formData.name,
+          planType: billingCycle,
+          priceId: selectedPrice.stripeId,
+          returnUrl: `${window.location.origin}/compra-exitosa?plan=${billingCycle}`
         }
       });
 
       if (error) {
-        console.error('Error creating Stripe checkout:', error);
-        throw new Error(error.message || 'Error al crear la sesión de pago');
+        console.error('Error creating checkout:', error);
+        
+        // Fallback: mostrar información del precio para debug
+        toast({
+          title: "Error temporal",
+          description: `Price ID: ${selectedPrice.stripeId} - Contacta soporte`,
+          variant: "destructive"
+        });
+        return;
       }
 
-      if (!data.sessionId) {
-        throw new Error('No se recibió ID de sesión de Stripe');
-      }
-
-      // Redirigir a Stripe Checkout
-      const stripe = await stripePromise;
-      const { error: stripeError } = await stripe.redirectToCheckout({
-        sessionId: data.sessionId
-      });
-
-      if (stripeError) {
-        console.error('Error redirecting to Stripe:', stripeError);
-        throw new Error(stripeError.message || 'Error al redirigir a Stripe');
+      if (data.success && (data.checkoutUrl || data.checkout_url)) {
+        // Redirigir al checkout
+        window.location.href = data.checkoutUrl || data.checkout_url;
+      } else {
+        throw new Error('No se pudo crear el checkout');
       }
 
     } catch (error) {
       console.error('Error procesando pago:', error);
       toast({
         title: "Error en el pago",
-        description: error.message || "Hubo un problema procesando tu pago. Inténtalo de nuevo.",
+        description: `Plan: ${billingCycle} - Precio: $${selectedPrice.price} - ${error.message || "Error desconocido"}`,
         variant: "destructive"
       });
     } finally {
@@ -313,7 +326,7 @@ const CheckoutPage = () => {
                     {/* Botón de pago */}
                     <Button
                       type="submit"
-                      className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white py-3 text-lg font-semibold"
+                      className="w-full bg-green-900 hover:bg-green-800 text-white py-3 text-lg font-semibold"
                       disabled={loading}
                     >
                       {loading ? (
@@ -324,13 +337,13 @@ const CheckoutPage = () => {
                       ) : (
                         <>
                           <Lock className="mr-2 h-5 w-5" />
-                          Continuar al Pago - ${productInfo.price} USD
+                          Continuar al Pago - ${pricingInfo[billingCycle].price} USD{billingCycle === 'monthly' ? '/mes' : '/año'}
                         </>
                       )}
                     </Button>
 
-                    <div className="flex items-center justify-center text-sm text-gray-500">
-                      <Shield className="h-4 w-4 mr-2" />
+                    <div className="flex items-center justify-center text-sm text-green-600">
+                      <Shield className="h-4 w-4 mr-2 text-green-500" />
                       Pago 100% seguro procesado por Stripe
                     </div>
                   </form>
@@ -359,6 +372,76 @@ const CheckoutPage = () => {
                       </p>
                     </div>
 
+                    {/* Selector de ciclo de facturación */}
+                    <div className="space-y-3">
+                      <h4 className="font-medium text-brand-text-primary">Plan de Facturación:</h4>
+                      <div className="space-y-2">
+                        <div 
+                          className={`border rounded-lg p-3 cursor-pointer transition-all ${
+                            billingCycle === 'monthly' 
+                              ? 'border-green-500 bg-green-50 ring-2 ring-green-200' 
+                              : 'border-gray-200 hover:border-gray-300'
+                          }`}
+                          onClick={() => setBillingCycle('monthly')}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center">
+                              <div className={`w-5 h-5 rounded-full border-2 mr-3 flex items-center justify-center ${
+                                billingCycle === 'monthly' 
+                                  ? 'bg-green-500 border-green-500' 
+                                  : 'border-gray-300 bg-white'
+                              }`}>
+                                {billingCycle === 'monthly' && (
+                                  <div className="w-2 h-2 rounded-full bg-white"></div>
+                                )}
+                              </div>
+                              <div>
+                                <p className={`font-medium ${billingCycle === 'monthly' ? 'text-green-700' : ''}`}>Mensual</p>
+                                <p className="text-sm text-gray-600">Cancela cuando quieras</p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p className={`text-lg font-bold ${billingCycle === 'monthly' ? 'text-green-700' : ''}`}>$29.99/mes</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div 
+                          className={`border rounded-lg p-3 cursor-pointer transition-all relative ${
+                            billingCycle === 'annual' 
+                              ? 'border-green-500 bg-green-50 ring-2 ring-green-200' 
+                              : 'border-gray-200 hover:border-gray-300'
+                          }`}
+                          onClick={() => setBillingCycle('annual')}
+                        >
+                          <Badge className="absolute -top-2 left-4 bg-orange-500 text-white text-xs">
+                            Más Popular
+                          </Badge>
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center">
+                              <div className={`w-5 h-5 rounded-full border-2 mr-3 flex items-center justify-center ${
+                                billingCycle === 'annual' 
+                                  ? 'bg-green-500 border-green-500' 
+                                  : 'border-gray-300 bg-white'
+                              }`}>
+                                {billingCycle === 'annual' && (
+                                  <div className="w-2 h-2 rounded-full bg-white"></div>
+                                )}
+                              </div>
+                              <div>
+                                <p className={`font-medium ${billingCycle === 'annual' ? 'text-green-700' : ''}`}>Anual</p>
+                                <p className="text-sm text-green-600 font-medium">Ahorra $60 al año</p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p className={`text-lg font-bold ${billingCycle === 'annual' ? 'text-green-700' : ''}`}>$299.00/año</p>
+                              <p className="text-sm text-gray-500 line-through">$359.88</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
                     <div className="space-y-2">
                       <h4 className="font-medium text-brand-text-primary">Incluye:</h4>
                       {productInfo.features.map((feature, index) => (
@@ -372,15 +455,21 @@ const CheckoutPage = () => {
                     <div className="border-t pt-4">
                       <div className="flex justify-between items-center text-lg">
                         <span className="font-semibold">Subtotal:</span>
-                        <span>${productInfo.price} USD</span>
+                        <span>${pricingInfo[billingCycle].price} USD</span>
                       </div>
                       <div className="flex justify-between items-center text-sm text-gray-600">
                         <span>Impuestos incluidos:</span>
                         <span>$0.00</span>
                       </div>
+                      {billingCycle === 'annual' && (
+                        <div className="flex justify-between items-center text-sm text-green-600">
+                          <span>Descuento anual:</span>
+                          <span>-$60.00</span>
+                        </div>
+                      )}
                       <div className="flex justify-between items-center text-xl font-bold text-brand-primary border-t mt-2 pt-2">
                         <span>Total:</span>
-                        <span>${productInfo.price} USD</span>
+                        <span>${pricingInfo[billingCycle].price} USD{billingCycle === 'monthly' ? '/mes' : '/año'}</span>
                       </div>
                     </div>
 

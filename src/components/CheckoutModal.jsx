@@ -17,8 +17,8 @@ const CheckoutModal = ({ isOpen, onClose }) => {
   const plans = {
     'acceso-completo': {
       name: 'Acceso Completo',
-      price: '$99.99',
-      originalPrice: '$199.99',
+      price: '149,99€',
+      originalPrice: '299,99€',
       description: 'Acceso de por vida a todo el contenido',
       features: [
         'Todos los módulos de formación',
@@ -30,17 +30,20 @@ const CheckoutModal = ({ isOpen, onClose }) => {
       ],
       popular: true
     },
-    'mensual': {
-      name: 'Membresía Mensual',
-      price: '$29.99/mes',
-      description: 'Acceso mensual con flexibilidad',
+    'membresia': {
+      name: 'Membresía Premium',
+      price: 'Ver planes',
+      description: 'Acceso completo a toda la plataforma',
       features: [
-        'Acceso a todos los módulos',
-        'Plantillas descargables',
-        'Soporte por email',
-        'Cancela cuando quieras'
+        'Academia + Consultoría ilimitada',
+        'Señales de trading en vivo',
+        'Comunidad exclusiva',
+        'Análisis de mercado diarios',
+        'Soporte prioritario'
       ],
-      popular: false
+      popular: false,
+      isLink: true,
+      linkTo: '/membresia'
     }
   };
 
@@ -109,11 +112,18 @@ const CheckoutModal = ({ isOpen, onClose }) => {
             <div
               key={key}
               className={`border rounded-lg p-6 cursor-pointer transition-all ${
-                selectedPlan === key
+                !plan.isLink && selectedPlan === key
                   ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
                   : 'border-gray-200 hover:border-gray-300'
-              } ${plan.popular ? 'relative' : ''}`}
-              onClick={() => setSelectedPlan(key)}
+              } ${plan.popular ? 'relative' : ''} ${plan.isLink ? 'hover:bg-blue-50 hover:border-blue-300' : ''}`}
+              onClick={() => {
+                if (plan.isLink) {
+                  onClose();
+                  navigate(plan.linkTo);
+                } else {
+                  setSelectedPlan(key);
+                }
+              }}
             >
               {plan.popular && (
                 <Badge className="absolute -top-2 left-6 bg-primary">
@@ -124,16 +134,21 @@ const CheckoutModal = ({ isOpen, onClose }) => {
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <div className="flex items-center space-x-2">
-                    <div className={`w-4 h-4 rounded-full border-2 ${
-                      selectedPlan === key
-                        ? 'bg-primary border-primary'
-                        : 'border-gray-300'
-                    }`}>
-                      {selectedPlan === key && (
-                        <Check className="w-3 h-3 text-white mx-auto" />
-                      )}
-                    </div>
-                    <h3 className="font-bold text-lg">{plan.name}</h3>
+                    {!plan.isLink && (
+                      <div className={`w-4 h-4 rounded-full border-2 ${
+                        selectedPlan === key
+                          ? 'bg-primary border-primary'
+                          : 'border-gray-300'
+                      }`}>
+                        {selectedPlan === key && (
+                          <Check className="w-3 h-3 text-white mx-auto" />
+                        )}
+                      </div>
+                    )}
+                    <h3 className={`font-bold text-lg ${plan.isLink ? 'text-blue-600' : ''}`}>
+                      {plan.name}
+                      {plan.isLink && <span className="ml-2 text-sm">→</span>}
+                    </h3>
                   </div>
                   <p className="text-muted-foreground text-sm mt-1">{plan.description}</p>
                 </div>
@@ -185,41 +200,52 @@ const CheckoutModal = ({ isOpen, onClose }) => {
         )}
 
         {/* Botón de compra */}
-        <div className="pt-4">
-          <Button 
-            onClick={handlePurchase}
-            size="lg" 
-            className="w-full bg-primary hover:bg-primary/90"
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                Procesando...
-              </>
-            ) : !user ? (
-              <>
-                <CreditCard className="h-5 w-5 mr-2" />
-                Iniciar sesión para comprar
-              </>
-            ) : (
-              <>
-                <CreditCard className="h-5 w-5 mr-2" />
-                Completar compra - {plans[selectedPlan].price}
-              </>
+        {!plans[selectedPlan]?.isLink && (
+          <div className="pt-4">
+            <Button 
+              onClick={handlePurchase}
+              size="lg" 
+              className="w-full bg-primary hover:bg-primary/90"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                  Procesando...
+                </>
+              ) : !user ? (
+                <>
+                  <CreditCard className="h-5 w-5 mr-2" />
+                  Iniciar sesión para comprar
+                </>
+              ) : (
+                <>
+                  <CreditCard className="h-5 w-5 mr-2" />
+                  Completar compra - {plans[selectedPlan].price}
+                </>
+              )}
+            </Button>
+            {!user && (
+              <p className="text-xs text-center text-blue-600 mt-2">
+                Te redirigiremos al login para continuar con la compra
+              </p>
             )}
-          </Button>
-          {!user && (
-            <p className="text-xs text-center text-blue-600 mt-2">
-              Te redirigiremos al login para continuar con la compra
+            {user && (
+              <p className="text-xs text-center text-muted-foreground mt-2">
+                Serás redirigido a nuestra plataforma de pago segura
+              </p>
+            )}
+          </div>
+        )}
+        
+        {/* Mensaje para enlaces */}
+        {plans[selectedPlan]?.isLink && (
+          <div className="pt-4 text-center">
+            <p className="text-sm text-blue-600 mb-2">
+              Haz clic en "Membresía Premium" para ver todos los planes disponibles
             </p>
-          )}
-          {user && (
-            <p className="text-xs text-center text-muted-foreground mt-2">
-              Serás redirigido a nuestra plataforma de pago segura
-            </p>
-          )}
-        </div>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

@@ -175,23 +175,16 @@ import React from 'react';
                       </Link>
                     </Button>
                     
-                    {user ? (
+                    {user && (
                       <Button asChild size="lg" variant="secondary">
                         <Link to="/academia">
                           <BookOpen className="mr-2 h-5 w-5" />
                           Acceder a Academia
                         </Link>
                       </Button>
-                    ) : (
-                      <Button asChild size="lg" variant="secondary">
-                        <Link to="/membresias">
-                          <BookOpen className="mr-2 h-5 w-5" />
-                          Ver Membresías
-                        </Link>
-                      </Button>
                     )}
                     
-                    <Button asChild size="lg">
+                    <Button asChild size="lg" className="bg-green-900 hover:bg-green-800 text-white">
                       <Link to="/guia-inversion">
                         Descubrir mi Servicio Ideal <ArrowRight className="ml-2 h-5 w-5" />
                       </Link>
@@ -235,14 +228,6 @@ import React from 'react';
                       <p className="text-brand-text-secondary mt-2">operaciones analizadas por IA</p>
                     </motion.div>
                   </div>
-                  <motion.div variants={itemVariants} className="mt-12 sm:mt-20 max-w-3xl mx-auto text-center p-4 sm:p-8 bg-background border rounded-xl shadow-sm">
-                    <img className="w-16 h-16 sm:w-20 sm:h-20 rounded-full mx-auto" alt="Foto de cliente satisfecho" src="https://images.unsplash.com/photo-1603991414220-51b87b89a371" />
-                    <blockquote className="mt-4 sm:mt-6 text-lg sm:text-xl text-brand-text-primary/90 italic">
-                      "BSB Maker ha cambiado mi forma de operar. La claridad y la asistencia de la IA son simplemente <span className="text-brand-accent font-semibold">revolucionarias</span>. Mis resultados han mejorado notablemente."
-                    </blockquote>
-                    <p className="mt-4 font-semibold text-brand-accent">Carlos G.</p>
-                    <p className="text-sm text-brand-text-secondary">Trader Profesional</p>
-                  </motion.div>
                 </motion.div>
               </div>
             </section>
