@@ -69,29 +69,29 @@ import ProtectedRoute from '@/components/ProtectedRoute';
 import AcademyProtectedRoute from '@/components/AcademyProtectedRoute';
 
 function App() {
-      const location = useLocation();
+  const location = useLocation();
 
-      const oldAcademyRoutes = [
-        "/academia",
-        "/academia/contenido/:slug",
-        "/academia/ruta/:slug",
-        "/academia/admin",
-        "/academia/gracias",
-        "/verify-email",
-        "/error-verificacion",
-        "/academia-legacy",
-        "/app",
-        "/area-cliente",
-        "/client-dashboard"
-      ];
+  const oldAcademyRoutes = [
+    "/academia",
+    "/academia/contenido/:slug",
+    "/academia/ruta/:slug",
+    "/academia/admin",
+    "/academia/gracias",
+    "/verify-email",
+    "/error-verificacion",
+    "/academia-legacy",
+    "/app",
+    "/area-cliente",
+    "/client-dashboard"
+  ];
 
-      return (
-        <MobileErrorBoundary>
-          <AuthProvider>
-            <Layout>
-              <ScrollToTop />
-              <AnimatePresence mode="wait">
-              <Routes location={location} key={location.pathname}>
+  return (
+    <MobileErrorBoundary>
+      <AuthProvider>
+        <Layout>
+          <ScrollToTop />
+          <AnimatePresence mode="wait">
+            <Routes location={location} key={location.pathname}>
                 <Route path="/" element={<Home />} />
                 <Route path="/bsb-maker" element={<BsbMaker />} />
                 <Route path="/consultoria" element={<Consultoria />} />
@@ -196,7 +196,7 @@ function App() {
           </Layout>
         </AuthProvider>
       </MobileErrorBoundary>
-      );
-    }
+    );
+}
 
-    export default App;
+export default App;

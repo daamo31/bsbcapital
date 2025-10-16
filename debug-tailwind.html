@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Tailwind CSS</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .debug-box {
+            border: 2px solid #333;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+        }
+        .success { border-color: #22c55e; background-color: #f0fdf4; }
+        .error { border-color: #ef4444; background-color: #fef2f2; }
+        .warning { border-color: #f59e0b; background-color: #fffbeb; }
+    </style>
+</head>
+<body>
+    <h1>Debug Tailwind CSS - Diagnóstico del Sistema</h1>
+    
+    <div id="results"></div>
+    
+    <script>
+        function checkTailwindCSS() {
+            const resultsDiv = document.getElementById('results');
+            const results = [];
+            
+            // Verificar si hay hojas de estilo cargadas
+            const stylesheets = Array.from(document.styleSheets);
+            const tailwindSheets = stylesheets.filter(sheet => {
+                try {
+                    return sheet.href && (sheet.href.includes('tailwind') || sheet.href.includes('index.css'));
+                } catch (e) {
+                    return false;
+                }
+            });
+            
+            results.push({
+                test: 'Hojas de estilo detectadas',
+                status: stylesheets.length > 0 ? 'success' : 'error',
+                message: `${stylesheets.length} hojas de estilo cargadas`
+            });
+            
+            results.push({
+                test: 'Hojas relacionadas con Tailwind',
+                status: tailwindSheets.length > 0 ? 'success' : 'warning',
+                message: `${tailwindSheets.length} hojas relacionadas encontradas`
+            });
+            
+            // Crear un elemento de prueba con clases de Tailwind
+            const testElement = document.createElement('div');
+            testElement.className = 'bg-red-500 text-white p-4 hidden';
+            testElement.textContent = 'Test Element';
+            document.body.appendChild(testElement);
+            
+            // Verificar estilos computados
+            const computedStyle = window.getComputedStyle(testElement);
+            const backgroundColor = computedStyle.backgroundColor;
+            const padding = computedStyle.padding;
+            
+            const tailwindWorking = backgroundColor.includes('239, 68, 68') || backgroundColor.includes('rgb(239, 68, 68)');
+            
+            results.push({
+                test: 'Clases de Tailwind funcionando',
+                status: tailwindWorking ? 'success' : 'error',
+                message: tailwindWorking ? 'bg-red-500 se aplica correctamente' : `bg-red-500 no funciona. Color detectado: ${backgroundColor}`
+            });
+            
+            // Remover elemento de prueba
+            document.body.removeChild(testElement);
+            
+            // Verificar información del viewport
+            const screenInfo = {
+                width: window.innerWidth,
+                height: window.innerHeight,
+                devicePixelRatio: window.devicePixelRatio || 1
+            };
+            
+            results.push({
+                test: 'Información del dispositivo',
+                status: 'success',
+                message: `${screenInfo.width}x${screenInfo.height}, DPR: ${screenInfo.devicePixelRatio}`
+            });
+            
+            // Verificar si es móvil
+            const isMobile = window.innerWidth < 768;
+            results.push({
+                test: 'Detección móvil',
+                status: isMobile ? 'warning' : 'success',
+                message: isMobile ? 'Dispositivo móvil detectado' : 'Dispositivo desktop'
+            });
+            
+            // Renderizar resultados
+            resultsDiv.innerHTML = results.map(result => `
+                <div class="debug-box ${result.status}">
+                    <h3>${result.test}</h3>
+                    <p>${result.message}</p>
+                </div>
+            `).join('');
+        }
+        
+        // Verificar inmediatamente y después de que el DOM esté listo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', checkTailwindCSS);
+        } else {
+            checkTailwindCSS();
+        }
+        
+        // Re-verificar después de 2 segundos para dar tiempo a cargar CSS
+        setTimeout(checkTailwindCSS, 2000);
+    </script>
+</body>
+</html>
