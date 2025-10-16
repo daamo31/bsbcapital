@@ -2,8 +2,6 @@ import React from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Layout from '@/components/Layout';
-import DebugLayout from '@/components/DebugLayout';
-import MobileErrorBoundary from '@/components/MobileErrorBoundary';
 import Home from '@/pages/Home';
 
 // Services
@@ -87,12 +85,11 @@ function App() {
   ];
 
   return (
-    <MobileErrorBoundary>
-      <AuthProvider>
-        <Layout>
-          <ScrollToTop />
-          <AnimatePresence mode="wait">
-            <Routes location={location} key={location.pathname}>
+    <AuthProvider>
+      <Layout>
+        <ScrollToTop />
+        <AnimatePresence mode="wait">
+          <Routes location={location} key={location.pathname}>
                 <Route path="/" element={<Home />} />
                 <Route path="/bsb-maker" element={<BsbMaker />} />
                 <Route path="/consultoria" element={<Consultoria />} />
@@ -192,11 +189,10 @@ function App() {
                   <Route key={path} path={path} element={<Navigate to="/formacion" replace />} />
                 ))}
 
-              </Routes>
-            </AnimatePresence>
-          </Layout>
-        </AuthProvider>
-      </MobileErrorBoundary>
+            </Routes>
+          </AnimatePresence>
+        </Layout>
+      </AuthProvider>
     );
 }
 

@@ -7,7 +7,6 @@ import React, { useState, useEffect } from 'react';
     import { supabase } from '@/lib/customSupabaseClient';
     import { useAuth } from '@/contexts/SupabaseAuthContext';
     import { useAdmin } from '@/hooks/useAdmin';
-    import useMobileDebug from '@/hooks/useMobileDebug';
     import AdminDropdown from '@/components/AdminDropdown';
     import CookieConsent from '@/components/CookieConsent';
 
@@ -231,9 +230,6 @@ import React, { useState, useEffect } from 'react';
     };
 
     const Layout = ({ children }) => {
-      // Hook para debugging móvil
-      const { mobileInfo } = useMobileDebug();
-      
       return (
         <div className="flex flex-col min-h-screen">
           <Header />

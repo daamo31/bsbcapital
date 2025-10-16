@@ -9,7 +9,6 @@ import React from 'react';
     import { useToast } from "@/components/ui/use-toast";
     import { useAuth } from '@/contexts/SupabaseAuthContext';
     import { useAdmin } from '@/hooks/useAdmin';
-    import MobileDebugger from '@/components/MobileDebugger';
 
     const containerVariants = {
       hidden: { opacity: 0 },
@@ -271,7 +270,6 @@ import React from 'react';
                 </div>
             </section>
           </motion.div>
-          <MobileDebugger />
         </>
       );
     };

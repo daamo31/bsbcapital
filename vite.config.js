@@ -228,7 +228,17 @@ export default defineConfig({
 				'@babel/traverse',
 				'@babel/generator',
 				'@babel/types'
-			]
-		}
+			],
+			output: {
+				// Cache busting: agregar timestamp a los nombres de archivo
+				entryFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
+				chunkFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
+				assetFileNames: `assets/[name]-[hash]-${Date.now()}.[ext]`
+			}
+		},
+		// Genera manifest para cache busting
+		manifest: true,
+		// Asegurar que el CSS tenga hash único
+		cssCodeSplit: true
 	}
 });
