@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Layout from '@/components/Layout';
+import MobileErrorBoundary from '@/components/MobileErrorBoundary';
 import Home from '@/pages/Home';
 
 // Services
@@ -43,6 +44,7 @@ import AccessPanel from '@/pages/admin/AccessPanel.jsx';
 // Demo/Testing
 import ConsultationFormDemo from '@/pages/ConsultationFormDemo.jsx';
 import AdminDashboard from '@/pages/AdminDashboard.jsx';
+import ResponsiveTest from '@/pages/ResponsiveTest.jsx';
 
 // Components
 import ProtectedAdminRoute from '@/components/ProtectedAdminRoute.jsx';
@@ -84,10 +86,11 @@ function App() {
       ];
 
       return (
-        <AuthProvider>
-          <Layout>
-            <ScrollToTop />
-            <AnimatePresence mode="wait">
+        <MobileErrorBoundary>
+          <AuthProvider>
+            <Layout>
+              <ScrollToTop />
+              <AnimatePresence mode="wait">
               <Routes location={location} key={location.pathname}>
                 <Route path="/" element={<Home />} />
                 <Route path="/bsb-maker" element={<BsbMaker />} />
@@ -182,6 +185,7 @@ function App() {
                 <Route path="/test/user-status" element={<TestNavigationPage />} />
                 <Route path="/demo/consultation-form" element={<ConsultationFormDemo />} />
                 <Route path="/test/tools" element={<ContentAccessDemo />} />
+                <Route path="/test/responsive" element={<ResponsiveTest />} />
 
                 {oldAcademyRoutes.map(path => (
                   <Route key={path} path={path} element={<Navigate to="/formacion" replace />} />
@@ -191,6 +195,7 @@ function App() {
             </AnimatePresence>
           </Layout>
         </AuthProvider>
+      </MobileErrorBoundary>
       );
     }
 
