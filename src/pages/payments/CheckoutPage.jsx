@@ -161,39 +161,47 @@ const CheckoutPage = () => {
         price: selectedPrice.price
       });
 
-      // Crear sesión de checkout directamente con Stripe (temporal)
-      const stripe = await stripePromise;
-      
-      // Para desarrollo, vamos a usar la función de hotmart que maneja mejor los pagos
-      const { data, error } = await supabase.functions.invoke('hotmart-checkout-production', {
+      // Usar la función create-stripe-checkout que ya funciona correctamente
+      const { data, error } = await supabase.functions.invoke('create-stripe-checkout', {
         body: {
-          productId: 'ACADEMIA_BSB', // Identificador temporal
-          userEmail: formData.email,
-          userId: user.id,
-          userName: formData.name,
-          planType: billingCycle,
           priceId: selectedPrice.stripeId,
-          returnUrl: `${window.location.origin}/compra-exitosa?plan=${billingCycle}`
+          mode: 'subscription',
+          email: formData.email,
+          metadata: {
+            client_name: formData.name,
+            client_email: formData.email,
+            plan_type: billingCycle,
+            plan_name: planData?.name || 'Premium Plan',
+            billing_cycle: billingCycle,
+            phone: formData.phone,
+            country: formData.country,
+            user_id: user.id
+          }
         }
       });
 
       if (error) {
         console.error('Error creating checkout:', error);
-        
-        // Fallback: mostrar información del precio para debug
         toast({
-          title: "Error temporal",
-          description: `Price ID: ${selectedPrice.stripeId} - Contacta soporte`,
+          title: "Error al procesar pago",
+          description: error.message,
           variant: "destructive"
         });
         return;
       }
 
-      if (data.success && (data.checkoutUrl || data.checkout_url)) {
-        // Redirigir al checkout
-        window.location.href = data.checkoutUrl || data.checkout_url;
+      if (data.sessionId) {
+        // Usar Stripe para redirigir al checkout
+        const stripe = await stripePromise;
+        const { error: stripeError } = await stripe.redirectToCheckout({
+          sessionId: data.sessionId,
+        });
+
+        if (stripeError) {
+          throw new Error(stripeError.message);
+        }
       } else {
-        throw new Error('No se pudo crear el checkout');
+        throw new Error('No se pudo crear la sesión de checkout');
       }
 
     } catch (error) {

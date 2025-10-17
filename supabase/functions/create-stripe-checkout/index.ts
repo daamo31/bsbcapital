@@ -40,32 +40,37 @@ serve(async (req) => {
     // Inicializar Supabase
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
-    // Crear la consulta en la base de datos con la estructura real de la tabla
-    const consultationData = {
-      client_name: metadata.client_name,
-      client_email: metadata.client_email,
-      service: metadata.consultation_type || metadata.service || 'general',
-      booking_date: metadata.scheduled_at || metadata.booking_date,
-      notes: metadata.description || metadata.notes,
-      status: 'pending_payment',
-      title: `Consulta ${metadata.consultation_type || 'general'}`,
-    }
+    // Solo crear consulta si es un pago único (no suscripción)
+    let consultation = null;
     
-    console.log('Creating consultation with data:', consultationData)
-    
-    const { data: consultation, error: consultationError } = await supabase
-      .from('consultations')
-      .insert(consultationData)
-      .select()
-      .single()
+    if (mode !== 'subscription') {
+      const consultationData = {
+        client_name: metadata.client_name,
+        client_email: metadata.client_email,
+        service: metadata.consultation_type || metadata.service || 'general',
+        booking_date: metadata.scheduled_at || metadata.booking_date,
+        notes: metadata.description || metadata.notes,
+        status: 'pending_payment',
+        title: `Consulta ${metadata.consultation_type || 'general'}`,
+      }
+      
+      console.log('Creating consultation with data:', consultationData)
+      
+      const { data: consultationResult, error: consultationError } = await supabase
+        .from('consultations')
+        .insert(consultationData)
+        .select()
+        .single()
 
-    if (consultationError) {
-      console.error('Error creating consultation:', consultationError)
-      throw new Error(`Failed to create consultation record: ${consultationError.message}`)
-    }
-    
-    console.log('Consultation created successfully:', consultation.id)    // Crear sesión de Stripe
-    console.log('Creating Stripe session for consultation:', consultation.id)
+      if (consultationError) {
+        console.error('Error creating consultation:', consultationError)
+        throw new Error(`Failed to create consultation record: ${consultationError.message}`)
+      }
+      
+      consultation = consultationResult;
+      console.log('Consultation created successfully:', consultation.id)
+    }    // Crear sesión de Stripe
+    console.log('Creating Stripe session for mode:', mode, consultation ? `consultation: ${consultation.id}` : 'subscription')
     console.log('Stripe session data:', { priceId, mode, email, origin: req.headers.get('origin') })
     
     const session = await stripe.checkout.sessions.create({
@@ -78,21 +83,27 @@ serve(async (req) => {
       ],
       mode: mode || 'payment',
       customer_email: email,
-      success_url: `${req.headers.get('origin') || 'https://localhost:5173'}/consultation-post-payment?session_id={CHECKOUT_SESSION_ID}&consultation_id=${consultation.id}`,
-      cancel_url: `${req.headers.get('origin') || 'https://localhost:5173'}/consultoria`,
+      success_url: mode === 'subscription' 
+        ? `${req.headers.get('origin') || 'https://localhost:5173'}/compra-exitosa?session_id={CHECKOUT_SESSION_ID}`
+        : `${req.headers.get('origin') || 'https://localhost:5173'}/consultation-post-payment?session_id={CHECKOUT_SESSION_ID}&consultation_id=${consultation?.id}`,
+      cancel_url: mode === 'subscription'
+        ? `${req.headers.get('origin') || 'https://localhost:5173'}/membresias`
+        : `${req.headers.get('origin') || 'https://localhost:5173'}/consultoria`,
       metadata: {
         ...metadata,
-        consultation_id: consultation.id,
+        ...(consultation && { consultation_id: consultation.id }),
       },
     })
     
     console.log('Stripe session created successfully:', session.id)
 
-    // Actualizar la consulta con el session_id de Stripe
-    await supabase
-      .from('consultations')
-      .update({ stripe_session_id: session.id })
-      .eq('id', consultation.id)
+    // Actualizar la consulta con el session_id de Stripe (solo si existe)
+    if (consultation) {
+      await supabase
+        .from('consultations')
+        .update({ stripe_session_id: session.id })
+        .eq('id', consultation.id)
+    }
 
     return new Response(
       JSON.stringify({ sessionId: session.id }),
