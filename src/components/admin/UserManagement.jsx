@@ -47,20 +47,34 @@ const UserManagement = () => {
 
   const loadUsers = async () => {
     try {
+      // Primero intentar cargar usuarios básicos
       const { data, error } = await supabase
         .from('users')
-        .select(`
-          *,
-          consultations:consultations(count),
-          academy_progress:academy_progress(count)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error loading users:', error);
+        throw error;
+      }
 
+      console.log('✅ Usuarios cargados:', data?.length || 0);
       setUsers(data || []);
     } catch (error) {
       console.error('Error loading users:', error);
+      // Fallback: intentar con consulta más simple
+      try {
+        const { data: fallbackData, error: fallbackError } = await supabase
+          .from('users')
+          .select('id, email, full_name, role, membership_tier, subscription_status, created_at, is_active');
+        
+        if (!fallbackError) {
+          console.log('✅ Usuarios cargados (fallback):', fallbackData?.length || 0);
+          setUsers(fallbackData || []);
+        }
+      } catch (fallbackErr) {
+        console.error('Error en fallback:', fallbackErr);
+      }
     } finally {
       setLoading(false);
     }
@@ -307,62 +321,92 @@ const UserManagement = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredUsers.map((user) => (
-                  <TableRow key={user.id}>
-                    <TableCell>
-                      <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                          {getRoleIcon(user.role)}
-                        </div>
-                        <div>
-                          <div className="font-medium">{user.full_name || 'Sin nombre'}</div>
-                          <div className="text-sm text-gray-500">{user.email}</div>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>{getRoleBadge(user.role)}</TableCell>
-                    <TableCell>{getMembershipBadge(user.membership_tier)}</TableCell>
-                    <TableCell>
-                      {new Date(user.created_at).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>
-                      {user.last_login ? 
-                        new Date(user.last_login).toLocaleDateString() : 
-                        'Nunca'
-                      }
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant={user.is_active ? 'default' : 'secondary'}>
-                        {user.is_active ? 'Activo' : 'Inactivo'}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex space-x-2">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleEditUser(user)}
-                        >
-                          <Edit3 className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => sendEmailToUser(user)}
-                        >
-                          <Mail className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDeleteUser(user)}
-                        >
-                          <Trash2 className="h-3 w-3" />
-                        </Button>
+                {loading ? (
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center py-8">
+                      <div className="flex flex-col items-center space-y-2">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                        <p>Cargando usuarios...</p>
                       </div>
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : filteredUsers.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={7} className="text-center py-8">
+                      <div className="flex flex-col items-center space-y-2">
+                        <Users className="h-12 w-12 text-gray-400" />
+                        <p className="text-gray-500">
+                          {users.length === 0 ? 'No hay usuarios registrados' : 'No se encontraron usuarios con los filtros aplicados'}
+                        </p>
+                        {users.length === 0 && (
+                          <div className="text-xs text-gray-400 mt-2 space-y-1">
+                            <p>Debug info:</p>
+                            <p>Total usuarios en array: {users.length}</p>
+                            <p>Loading: {loading.toString()}</p>
+                            <p>Filtros aplicados: {searchTerm || 'ninguno'}</p>
+                          </div>
+                        )}
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  filteredUsers.map((user) => (
+                    <TableRow key={user.id}>
+                      <TableCell>
+                        <div className="flex items-center space-x-3">
+                          <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                            {getRoleIcon(user.role)}
+                          </div>
+                          <div>
+                            <div className="font-medium">{user.full_name || 'Sin nombre'}</div>
+                            <div className="text-sm text-gray-500">{user.email}</div>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>{getRoleBadge(user.role)}</TableCell>
+                      <TableCell>{getMembershipBadge(user.membership_tier)}</TableCell>
+                      <TableCell>
+                        {new Date(user.created_at).toLocaleDateString()}
+                      </TableCell>
+                      <TableCell>
+                        {user.last_login ? 
+                          new Date(user.last_login).toLocaleDateString() : 
+                          'Nunca'
+                        }
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={user.is_active ? 'default' : 'secondary'}>
+                          {user.is_active ? 'Activo' : 'Inactivo'}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex space-x-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleEditUser(user)}
+                          >
+                            <Edit3 className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => sendEmailToUser(user)}
+                          >
+                            <Mail className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleDeleteUser(user)}
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </div>

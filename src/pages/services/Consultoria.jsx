@@ -27,6 +27,7 @@ const availableTimeSlots = [
 const consultationPrices = {
   "30min": "price_1RtYGsJmSk3VG9oicAWmQ4sN",
   "60min": "price_1RtYFkJmSk3VG9oi8wUdMK5k",
+  "test": "price_1SIrIzJmSk3VG9oiTnMp1RfI", // PRUEBA PRODUCCIÓN: price_1SIrIzJmSk3VG9oiTnMp1RfI + prod_TFM1UHRowDlqKB
 };
 
 const BookingModal = () => {
@@ -77,7 +78,11 @@ const BookingModal = () => {
     bookingDateTime.setHours(parseInt(hours), parseInt(minutes));
     
     const priceId = consultationPrices[formData.duration];
-    const serviceDescription = `${formData.service_interest} (${formData.duration === '30min' ? '30 min' : '1 hora'})`;
+    const serviceDescription = `${formData.service_interest} (${
+      formData.duration === '30min' ? '30 min' : 
+      formData.duration === '60min' ? '1 hora' : 
+      formData.duration === 'test' ? 'Prueba' : formData.duration
+    })`;
 
     try {
       const { data, error } = await supabase.functions.invoke('create-stripe-checkout', {
@@ -90,7 +95,9 @@ const BookingModal = () => {
             client_email: formData.email,
             consultation_type: formData.service_interest,
             scheduled_at: bookingDateTime.toISOString(),
-            duration_minutes: formData.duration === '30min' ? '30' : '60',
+            duration_minutes: formData.duration === '30min' ? '30' : 
+                            formData.duration === '60min' ? '60' : 
+                            formData.duration === 'test' ? '5' : '30',
             description: formData.more_info,
             status: 'scheduled',
             // Mantenemos campos originales para compatibilidad
@@ -178,7 +185,7 @@ const BookingModal = () => {
 
               <div className="space-y-3">
                 <Label className="text-sm font-medium">Duración</Label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   <Button
                     type="button"
                     variant={formData.duration === "30min" ? "default" : "outline"}
@@ -197,8 +204,38 @@ const BookingModal = () => {
                     <span className="font-semibold">60 min</span>
                     <span className="text-xs opacity-70">Consulta completa</span>
                   </Button>
+                  <Button
+                    type="button"
+                    variant={formData.duration === "test" ? "default" : "outline"}
+                    onClick={() => handleSelectChange('duration', 'test')}
+                    className="h-16 flex flex-col bg-yellow-50 border-yellow-200 hover:bg-yellow-100"
+                  >
+                    <span className="font-semibold text-xs">Prueba</span>
+                    <span className="text-xs opacity-70">Test producción</span>
+                  </Button>
                 </div>
               </div>
+              
+              {/* Alerta para prueba de producción */}
+              {formData.duration === "test" && (
+                <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0">
+                      <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <div className="ml-3">
+                      <h3 className="text-sm font-medium text-yellow-800">
+                        Modo de Prueba Activado
+                      </h3>
+                      <div className="mt-2 text-sm text-yellow-700">
+                        <p>Esta es una consulta de prueba para verificar el flujo de pagos y emails en producción. Duración: 5 minutos.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </motion.div>
           )}
 
@@ -273,7 +310,12 @@ const BookingModal = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium">Duración:</span>
-                  <span>{formData.duration === "30min" ? "30 minutos" : "1 hora"}</span>
+                  <span>{
+                    formData.duration === "30min" ? "30 minutos" : 
+                    formData.duration === "60min" ? "1 hora" : 
+                    formData.duration === "test" ? "Prueba (5 min)" : 
+                    formData.duration
+                  }</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium">Fecha:</span>

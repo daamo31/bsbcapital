@@ -174,16 +174,8 @@ import React from 'react';
                         Explorar BSB Maker <ArrowRight className="ml-2 h-5 w-5" />
                       </Link>
                     </Button>
-                    
-                    {user && (
-                      <Button asChild size="lg" variant="secondary">
-                        <Link to="/academia">
-                          <BookOpen className="mr-2 h-5 w-5" />
-                          Acceder a Academia
-                        </Link>
-                      </Button>
-                    )}
-                    
+                   
+             
                     <Button asChild size="lg" className="bg-green-900 hover:bg-green-800 text-white">
                       <Link to="/guia-inversion">
                         Descubrir mi Servicio Ideal <ArrowRight className="ml-2 h-5 w-5" />

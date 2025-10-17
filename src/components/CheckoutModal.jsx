@@ -43,7 +43,7 @@ const CheckoutModal = ({ isOpen, onClose }) => {
       ],
       popular: false,
       isLink: true,
-      linkTo: '/membresia'
+      linkTo: '/membresias'
     }
   };
 

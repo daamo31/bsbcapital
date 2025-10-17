@@ -46,7 +46,7 @@ import React, { useState } from 'react';
       ];
 
       const faqs = [
-        { question: "¿Cómo accedo al curso?", answer: "Tras completar la compra en Hotmart, recibirás un correo electrónico con un enlace para acceder al área de alumnos de forma inmediata. Podrás empezar tu formación al instante." },
+        { question: "¿Cómo accedo al curso?", answer: "Tras completar la compra, recibirás un correo electrónico con un enlace para acceder al área de alumnos de forma inmediata. Podrás empezar tu formación al instante." },
         { question: "¿Hay devoluciones?", answer: "Sí, ofrecemos una garantía de satisfacción. Puedes solicitar una devolución completa según la política de reembolso de Hotmart y nuestras condiciones. Consulta nuestros términos para más detalles." },
         { question: "¿Qué tipo de soporte incluye?", answer: "El curso incluye soporte básico por email para resolver dudas sobre el contenido de las lecciones. Escríbenos a info@bsbcapital.io y te ayudaremos." },
       ];
