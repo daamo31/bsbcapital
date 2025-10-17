@@ -3,7 +3,7 @@ import React from 'react';
     import { motion } from 'framer-motion';
     import { Link } from 'react-router-dom';
     import { XCircle } from 'lucide-react';
-    import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+    import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/data-display/card';
     import { Button } from '@/components/ui/button';
 
     const VerificationError = () => {

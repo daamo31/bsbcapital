@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
+import { Badge } from '@/components/ui/data-display/badge';
+import { Alert, AlertDescription } from '@/components/ui/feedback/alert';
 import { supabase } from '@/lib/customSupabaseClient';
 
 const EmailTester = () => {

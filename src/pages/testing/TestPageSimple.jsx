@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/data-display/card';
+import { Alert, AlertDescription } from '@/components/ui/feedback/alert';
 
 export default function TestPage() {
   const { user, signIn, signOut } = useAuth();

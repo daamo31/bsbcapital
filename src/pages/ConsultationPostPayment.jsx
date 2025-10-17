@@ -5,13 +5,13 @@ import { motion } from 'framer-motion';
 import { supabase } from '@/lib/customSupabaseClient';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useToast } from '@/components/ui/use-toast';
-import DetailedConsultationForm from '@/components/DetailedConsultationForm';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/data-display/card';
+import { Input } from '@/components/ui/forms/input';
+import { Label } from '@/components/ui/forms/label';
+import { Textarea } from '@/components/ui/forms/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/forms/select';
+import { useToast } from '@/components/ui/feedback/use-toast';
+import DetailedConsultationForm from '@/components/consultations/DetailedConsultationForm';
 import { 
   CheckCircle, 
   Loader2, 

@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/forms/input';
+import { Label } from '@/components/ui/forms/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { Loader2 } from 'lucide-react';
 import { Helmet } from 'react-helmet';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/components/ui/feedback/use-toast';
 
 const SignUp = () => {
   const { signUp } = useAuth();

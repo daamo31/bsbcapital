@@ -3,8 +3,8 @@ import React, { useState } from 'react';
     import { motion } from 'framer-motion';
     import { Button } from '@/components/ui/button';
     import { ArrowRight, CheckCircle, Film, FileText, LifeBuoy, ShieldCheck, BarChart, Users, HelpCircle, RefreshCw, MessageSquare, Quote } from 'lucide-react';
-    import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-    import CheckoutModal from '@/components/CheckoutModal';
+    import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/data-display/accordion";
+    import CheckoutModal from '@/components/consultations/CheckoutModal';
 
     const containerVariants = {
       hidden: { opacity: 0 },

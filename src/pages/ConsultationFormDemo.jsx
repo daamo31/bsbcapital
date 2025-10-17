@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { useToast } from '@/components/ui/use-toast';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import DetailedConsultationForm from '@/components/DetailedConsultationForm.jsx';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/data-display/card';
+import { Badge } from '@/components/ui/data-display/badge';
+import { useToast } from '@/components/ui/feedback/use-toast';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/navigation/tabs';
+import DetailedConsultationForm from '@/components/consultations/DetailedConsultationForm.jsx';
 import ConsultationDetailsView from '@/components/admin/ConsultationDetailsView.jsx';
 import { Eye, FileText, Download, Clock, User, Shield, Calendar } from 'lucide-react';
 

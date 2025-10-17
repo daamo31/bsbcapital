@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import HotmartContentCard from '@/components/HotmartContentCard';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
+import HotmartContentCard from '@/components/hotmart/HotmartContentCard';
 import { BookOpen, Video, Award } from 'lucide-react';
 
 const HotmartAcademyPage = () => {

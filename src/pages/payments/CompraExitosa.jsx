@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/data-display/card';
 import { CheckCircle, ArrowRight, BookOpen, Download, Users } from 'lucide-react';
 import { supabase } from '@/lib/customSupabaseClient';
 

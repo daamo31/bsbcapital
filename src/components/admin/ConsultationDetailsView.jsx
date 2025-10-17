@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
+import { Badge } from '@/components/ui/data-display/badge';
 import { User, MapPin, Calendar, TrendingUp, Target, PieChart, DollarSign } from 'lucide-react';
 
 const ConsultationDetailsView = ({ consultation }) => {

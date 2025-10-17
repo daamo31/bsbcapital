@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Badge } from '../components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/data-display/card';
+import { Badge } from '../components/ui/data-display/badge';
 import { 
   TestTube, 
   Play, 
@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { useUserAccess } from '../hooks/useUserAccess';
 import { useAuth } from '../contexts/SupabaseAuthContext';
-import UserStatusChecker from '../components/UserStatusChecker';
+import UserStatusChecker from '../components/common/UserStatusChecker';
 
 const TestSystemPage = () => {
   const { user } = useAuth();

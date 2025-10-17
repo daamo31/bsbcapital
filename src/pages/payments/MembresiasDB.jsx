@@ -1,25 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/data-display/card';
+import { Badge } from '@/components/ui/data-display/badge';
 import { Check, ArrowRight, Loader2, X } from 'lucide-react';
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/components/ui/feedback/use-toast";
 import { supabase } from '@/lib/customSupabaseClient';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useNavigate } from 'react-router-dom';
 
-const MembresiasDB = () => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-  const { toast } = useToast();
-  
-  const [plans, setPlans] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [loadingPlan, setLoadingPlan] = useState(null);
-
-  const fallbackPlans = [
+// Mover fallbackPlans fuera del componente para evitar recrearlo en cada render
+const fallbackPlans = [
     {
       id: 'free-access',
       name: 'Free Access',
@@ -78,13 +70,20 @@ const MembresiasDB = () => {
       description: 'Plan completo',
       stripe_price_monthly: 'price_wealth_monthly'
     }
-  ];
+];
 
-  useEffect(() => {
-    loadPlans();
-  }, []);
+const MembresiasDB = () => {
+  console.log('MembresiasDB: Component rendering');
+  
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  
+  const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingPlan, setLoadingPlan] = useState(null);
 
-  const loadPlans = async () => {
+  const loadPlans = useCallback(async () => {
     try {
       setLoading(true);
       console.log('Loading plans from Supabase...');
@@ -199,9 +198,14 @@ const MembresiasDB = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const handleSelectPlan = (plan) => {
+  useEffect(() => {
+    console.log('MembresiasDB: useEffect triggered, calling loadPlans');
+    loadPlans();
+  }, [loadPlans]);
+
+  const handleSelectPlan = useCallback((plan) => {
     if (!user) {
       navigate('/login');
       return;
@@ -219,7 +223,7 @@ const MembresiasDB = () => {
         billing_cycle: 'monthly'
       }
     });
-  };
+  }, [user, navigate, loadingPlan]);
 
   if (loading) {
     return (
@@ -246,16 +250,10 @@ const MembresiasDB = () => {
           </p>
         </div>
 
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
+                <div className="mt-16 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
           {plans.map((plan) => {
             const currentPrice = plan.price_monthly ?? 0;
             const isLoading = loadingPlan === plan.id;
-            
-            console.log(`Rendering plan ${plan.name}:`, {
-              price_monthly: plan.price_monthly,
-              currentPrice,
-              currency: plan.currency
-            });
             
             return (
               <Card key={plan.id} className={`${plan.highlight ? 'border-primary border-2' : ''} h-full flex flex-col`}>
@@ -269,12 +267,12 @@ const MembresiasDB = () => {
                     {currentPrice > 0 && <span className="text-lg">/mes</span>}
                   </div>
                   <ul className="space-y-2">
-                    {plan.features?.map((feature, i) => (
-                      <li key={i} className="flex items-center">
-                        <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
+                    {Array.isArray(plan.features) ? plan.features.map((feature, index) => (
+                      <li key={index} className="flex items-start">
+                        <Check className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
                         <span className="text-sm">{feature}</span>
                       </li>
-                    ))}
+                    )) : null}
                   </ul>
                 </CardContent>
                 <CardFooter className="mt-auto">

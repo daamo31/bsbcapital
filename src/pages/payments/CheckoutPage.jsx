@@ -4,10 +4,10 @@ import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { loadStripe } from '@stripe/stripe-js';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
+import { Input } from '@/components/ui/forms/input';
+import { Label } from '@/components/ui/forms/label';
+import { Badge } from '@/components/ui/data-display/badge';
 import { 
   CreditCard, 
   Shield, 
@@ -25,7 +25,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { supabase } from '@/lib/customSupabaseClient';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/components/ui/feedback/use-toast';
 
 // Cargar Stripe con clave de test para desarrollo (hardcoded temporalmente)
 const stripePromise = loadStripe('pk_test_51SD5YXJmSk3VG9oizOg5SRv8Vla8VEJQkKN9pMKVV2g7XZOdQG7YjnZ2fvOhHyO1HQAA0DyUWu0p7hT6qfhvVh6I00FQhV3mB0');

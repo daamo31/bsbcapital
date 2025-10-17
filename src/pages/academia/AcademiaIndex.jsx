@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import Layout from '../../components/Layout';
-import AcademyNavigation from '../../components/AcademyNavigation';
+import Layout from '../../components/layout/Layout';
+import AcademyNavigation from '../../components/academy/AcademyNavigation';
 
 const AcademiaIndex = () => {
   const location = useLocation();

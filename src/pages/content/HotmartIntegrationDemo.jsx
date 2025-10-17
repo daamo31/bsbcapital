@@ -1,7 +1,7 @@
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import HotmartVideoPlayer from '@/components/HotmartVideoPlayer';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
+import { Badge } from '@/components/ui/data-display/badge';
+import HotmartVideoPlayer from '@/components/hotmart/HotmartVideoPlayer';
 import { 
   Zap, 
   Shield, 

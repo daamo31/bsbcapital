@@ -3,12 +3,12 @@ import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { supabase } from '@/lib/customSupabaseClient';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useToast } from '@/components/ui/use-toast';
+import { Input } from '@/components/ui/forms/input';
+import { Label } from '@/components/ui/forms/label';
+import { Checkbox } from '@/components/ui/forms/checkbox';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/forms/select';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/data-display/card';
+import { useToast } from '@/components/ui/feedback/use-toast';
 import { ArrowRight, Check, Zap, BrainCircuit, ShieldCheck, BarChart, Rocket, AlertTriangle, Sparkles, Loader2, Target, BookOpen } from 'lucide-react';
 
 const PreRegistrationForm = () => {

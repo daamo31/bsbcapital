@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import UserStatusChecker from '@/components/UserStatusChecker';
+import { Badge } from '@/components/ui/data-display/badge';
+import UserStatusChecker from '@/components/common/UserStatusChecker';
 import { 
   Play, 
   Video, 

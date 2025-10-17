@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import WatermarkedVideo from '@/components/WatermarkedVideo';
-import ContentProtection from '@/components/ContentProtection';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/data-display/card';
+import { Alert, AlertDescription } from '@/components/ui/feedback/alert';
+import WatermarkedVideo from '@/components/hotmart/WatermarkedVideo';
+import ContentProtection from '@/components/auth/ContentProtection';
 
 export default function TestPage() {
   const { user, signIn, signOut } = useAuth();

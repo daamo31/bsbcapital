@@ -1,7 +1,7 @@
 import React from 'react';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
-import Layout from '@/components/Layout';
+import Layout from '@/components/layout/Layout';
 import Home from '@/pages/Home';
 
 // Services
@@ -46,7 +46,7 @@ import AdminDashboard from '@/pages/AdminDashboard.jsx';
 import ResponsiveTest from '@/pages/ResponsiveTest.jsx';
 
 // Components
-import ProtectedAdminRoute from '@/components/ProtectedAdminRoute.jsx';
+import ProtectedAdminRoute from '@/components/auth/ProtectedAdminRoute.jsx';
 
 // Auth
 import Login from '@/pages/auth/Login';
@@ -55,17 +55,17 @@ import SignUp from '@/pages/auth/SignUp';
 // Testing
 import TestPageSimple from '@/pages/testing/TestPageSimple';
 import TestSystemPage from '@/pages/TestSystemPage';
-import ContentAccessDemo from '@/components/ContentAccessDemo';
+import ContentAccessDemo from '@/components/academy/ContentAccessDemo';
 import HotmartAcademy from '@/pages/content/HotmartAcademy';
 import EmailTester from '@/pages/EmailTester';
 import HotmartIntegrationDemo from '@/pages/content/HotmartIntegrationDemo';
-import HotmartTestPlayer from '@/components/HotmartTestPlayer';
+import HotmartTestPlayer from '@/components/hotmart/HotmartTestPlayer';
 import TestNavigationPage from '@/pages/testing/TestNavigationPage';
 
-import ScrollToTop from '@/components/ScrollToTop';
+import ScrollToTop from '@/components/layout/ScrollToTop';
 import { AuthProvider } from '@/contexts/SupabaseAuthContext';
-import ProtectedRoute from '@/components/ProtectedRoute';
-import AcademyProtectedRoute from '@/components/AcademyProtectedRoute';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import AcademyProtectedRoute from '@/components/auth/AcademyProtectedRoute';
 
 function App() {
   const location = useLocation();

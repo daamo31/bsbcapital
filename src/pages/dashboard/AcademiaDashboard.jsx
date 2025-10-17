@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Progress } from '@/components/ui/feedback/progress';
+import { Badge } from '@/components/ui/data-display/badge';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { 
   BookOpen, 
   CheckCircle, 
@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/lib/customSupabaseClient';
 import { useUserAccess } from '@/hooks/useUserAccess';
-import ModuleCard from '@/components/ModuleCard';
+import ModuleCard from '@/components/academy/ModuleCard';
 
 const AcademiaDashboard = () => {
   const navigate = useNavigate();

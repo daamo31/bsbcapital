@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
+import { Badge } from '@/components/ui/data-display/badge';
+import { Progress } from '@/components/ui/feedback/progress';
 import { 
   User, 
   Calendar, 
@@ -24,8 +24,8 @@ import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useAdmin } from '@/hooks/useAdmin';
 import { supabase } from '@/lib/customSupabaseClient';
 import { useNavigate, Link } from 'react-router-dom';
-import { useToast } from '@/components/ui/use-toast';
-import AdminNotification from '@/components/AdminNotification';
+import { useToast } from '@/components/ui/feedback/use-toast';
+import AdminNotification from '@/components/admin/AdminNotification';
 
 const UserDashboard = () => {
   const { user } = useAuth();

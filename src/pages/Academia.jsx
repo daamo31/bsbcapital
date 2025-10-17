@@ -6,8 +6,8 @@ import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useUserAccess } from '@/hooks/useUserAccess';
 import { supabase } from '@/lib/customSupabaseClient';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/data-display/card';
+import { Badge } from '@/components/ui/data-display/badge';
 import { 
   Loader2, 
   Play, 

@@ -2,7 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/components/ui/feedback/use-toast";
 
 const PlaceholderPage = ({ title, description }) => {
   const { toast } = useToast();

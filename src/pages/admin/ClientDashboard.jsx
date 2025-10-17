@@ -5,8 +5,8 @@ import React, { useState, useEffect } from 'react';
     import { useAuth } from '@/contexts/SupabaseAuthContext';
     import { supabase } from '@/lib/customSupabaseClient';
     import { Button } from '@/components/ui/button';
-    import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
-    import { Badge } from "@/components/ui/badge";
+    import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/data-display/card";
+    import { Badge } from "@/components/ui/data-display/badge";
     import { CheckCircle, XCircle, Clock, PlusCircle, Loader2, AlertTriangle } from 'lucide-react';
 
     const allServices = {

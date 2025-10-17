@@ -2,7 +2,7 @@ import React, { useState } from 'react';
     import { Helmet } from 'react-helmet';
     import { motion } from 'framer-motion';
     import { MailCheck, Loader2 } from 'lucide-react';
-    import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+    import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/data-display/card';
     import { useLocation } from 'react-router-dom';
     import { useAuth } from '@/contexts/SupabaseAuthContext';
     import { Button } from '@/components/ui/button';

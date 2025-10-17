@@ -2,11 +2,11 @@ import React, { useState, useRef } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/components/ui/use-toast';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/data-display/card';
+import { Input } from '@/components/ui/forms/input';
+import { Label } from '@/components/ui/forms/label';
+import { Textarea } from '@/components/ui/forms/textarea';
+import { useToast } from '@/components/ui/feedback/use-toast';
 import { supabase } from '@/lib/customSupabaseClient';
 import { Loader2, Building, Home, ShieldCheck } from 'lucide-react';
 

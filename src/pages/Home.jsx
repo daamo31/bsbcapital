@@ -4,9 +4,9 @@ import React from 'react';
     import { Link } from 'react-router-dom';
     import { Button } from '@/components/ui/button';
     import { ArrowRight, Bot, Briefcase, BookOpen, Mail, Star, LogIn, User, Settings, Shield } from 'lucide-react';
-    import { Input } from '@/components/ui/input';
-    import { Textarea } from '@/components/ui/textarea';
-    import { useToast } from "@/components/ui/use-toast";
+    import { Input } from '@/components/ui/forms/input';
+    import { Textarea } from '@/components/ui/forms/textarea';
+    import { useToast } from "@/components/ui/feedback/use-toast";
     import { useAuth } from '@/contexts/SupabaseAuthContext';
     import { useAdmin } from '@/hooks/useAdmin';
 

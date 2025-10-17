@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { Badge } from '@/components/ui/data-display/badge';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useMembership } from '@/hooks/useMembership';
-import ConsultationPricingCard from '@/components/ConsultationPricingCard';
+import ConsultationPricingCard from '@/components/consultations/ConsultationPricingCard';
 import { Crown, Users, TrendingUp, Shield, Zap, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
