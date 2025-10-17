@@ -14,30 +14,45 @@ serve(async (req) => {
 
   try {
     const { priceId, mode, email, metadata } = await req.json()
+    
+    console.log('Request data:', { priceId, mode, email, metadata })
+
+    // Verificar variables de entorno
+    const stripeSecretKey = Deno.env.get('STRIPE_SECRET_KEY')
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')
+    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+    
+    if (!stripeSecretKey) {
+      throw new Error('STRIPE_SECRET_KEY not configured. Please set this environment variable in Supabase Dashboard > Settings > Edge Functions > Environment Variables')
+    }
+    if (!supabaseUrl) {
+      throw new Error('SUPABASE_URL not configured')
+    }
+    if (!supabaseServiceKey) {
+      throw new Error('SUPABASE_SERVICE_ROLE_KEY not configured')
+    }
 
     // Inicializar Stripe
-    const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY')!, {
+    const stripe = new Stripe(stripeSecretKey, {
       apiVersion: '2023-10-16',
     })
 
     // Inicializar Supabase
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')!
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
-    // Crear la consulta en la base de datos con la estructura alineada
+    // Crear la consulta en la base de datos con la estructura real de la tabla
     const consultationData = {
-      consultation_type: metadata.consultation_type || metadata.service,
-      scheduled_at: metadata.scheduled_at || metadata.booking_date,
-      duration_minutes: parseInt(metadata.duration_minutes) || (metadata.duration === '30min' ? 30 : 60),
-      description: metadata.description || metadata.notes,
-      status: 'pending_payment',
       client_name: metadata.client_name,
       client_email: metadata.client_email,
-      // Agregar consultant_id por defecto (asumiendo que hay un consultor principal)
-      consultant_id: '00000000-0000-0000-0000-000000000000' // UUID por defecto, actualizar según sea necesario
+      service: metadata.consultation_type || metadata.service || 'general',
+      booking_date: metadata.scheduled_at || metadata.booking_date,
+      notes: metadata.description || metadata.notes,
+      status: 'pending_payment',
+      title: `Consulta ${metadata.consultation_type || 'general'}`,
     }
-
+    
+    console.log('Creating consultation with data:', consultationData)
+    
     const { data: consultation, error: consultationError } = await supabase
       .from('consultations')
       .insert(consultationData)
@@ -46,10 +61,13 @@ serve(async (req) => {
 
     if (consultationError) {
       console.error('Error creating consultation:', consultationError)
-      throw new Error('Failed to create consultation record')
+      throw new Error(`Failed to create consultation record: ${consultationError.message}`)
     }
-
-    // Crear sesión de Stripe
+    
+    console.log('Consultation created successfully:', consultation.id)    // Crear sesión de Stripe
+    console.log('Creating Stripe session for consultation:', consultation.id)
+    console.log('Stripe session data:', { priceId, mode, email, origin: req.headers.get('origin') })
+    
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -67,6 +85,8 @@ serve(async (req) => {
         consultation_id: consultation.id,
       },
     })
+    
+    console.log('Stripe session created successfully:', session.id)
 
     // Actualizar la consulta con el session_id de Stripe
     await supabase
