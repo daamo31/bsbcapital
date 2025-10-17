@@ -34,6 +34,7 @@ const BookingModal = () => {
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
   const [date, setDate] = useState();
   const [selectedTime, setSelectedTime] = useState("");
   const [formData, setFormData] = useState({
@@ -42,6 +43,26 @@ const BookingModal = () => {
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.id]: e.target.value });
   const handleSelectChange = (name, value) => setFormData({ ...formData, [name]: value });
+
+  const nextStep = () => setCurrentStep(prev => Math.min(prev + 1, 4));
+  const prevStep = () => setCurrentStep(prev => Math.max(prev - 1, 1));
+
+  const resetForm = () => {
+    setCurrentStep(1);
+    setDate(null);
+    setSelectedTime("");
+    setFormData({ name: '', email: '', service_interest: '', duration: '', more_info: '' });
+  };
+
+  const isStepValid = (step) => {
+    switch(step) {
+      case 1: return formData.service_interest && formData.duration;
+      case 2: return date;
+      case 3: return selectedTime;
+      case 4: return formData.name && formData.email;
+      default: return true;
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -105,98 +126,239 @@ const BookingModal = () => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(isOpen) => {
+      setOpen(isOpen);
+      if (!isOpen) resetForm();
+    }}>
       <DialogTrigger asChild>
         <Button size="lg">
           Agendar una llamada <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-[95vw] sm:max-w-4xl p-0 glass-card">
-        <div className="grid grid-cols-1 md:grid-cols-2">
-            <div className="p-4 sm:p-6 flex flex-col justify-center">
+      <DialogContent className="max-w-[95vw] sm:max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="text-center">Agendar Consultoría</DialogTitle>
+          <DialogDescription className="text-center">
+            Paso {currentStep} de 4
+          </DialogDescription>
+          {/* Progress bar */}
+          <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+            <div 
+              className="bg-green-600 h-2 rounded-full transition-all duration-300" 
+              style={{ width: `${(currentStep / 4) * 100}%` }}
+            />
+          </div>
+        </DialogHeader>
+
+        <div className="py-4 min-h-[300px]">
+          {/* Step 1: Service & Duration */}
+          {currentStep === 1 && (
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-4"
+            >
+              <h3 className="text-lg font-semibold text-center mb-4">¿Qué tipo de consultoría necesitas?</h3>
+              
+              <div className="space-y-3">
+                <Label className="text-sm font-medium">Tema de la consultoría</Label>
+                <Select onValueChange={(value) => handleSelectChange('service_interest', value)} value={formData.service_interest}>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Selecciona un tema" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Onboarding Crypto">Onboarding Crypto (Primera consultoría)</SelectItem>
+                    <SelectItem value="Planificación financiera">Planificación financiera</SelectItem>
+                    <SelectItem value="Creación y optimización de carteras">Creación y optimización de carteras</SelectItem>
+                    <SelectItem value="Crypto/Web3">Crypto/Web3</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-3">
+                <Label className="text-sm font-medium">Duración</Label>
+                <div className="grid grid-cols-2 gap-3">
+                  <Button
+                    type="button"
+                    variant={formData.duration === "30min" ? "default" : "outline"}
+                    onClick={() => handleSelectChange('duration', '30min')}
+                    className="h-16 flex flex-col"
+                  >
+                    <span className="font-semibold">30 min</span>
+                    <span className="text-xs opacity-70">Consulta rápida</span>
+                  </Button>
+                  <Button
+                    type="button"
+                    variant={formData.duration === "60min" ? "default" : "outline"}
+                    onClick={() => handleSelectChange('duration', '60min')}
+                    className="h-16 flex flex-col"
+                  >
+                    <span className="font-semibold">60 min</span>
+                    <span className="text-xs opacity-70">Consulta completa</span>
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Step 2: Calendar */}
+          {currentStep === 2 && (
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-4"
+            >
+              <h3 className="text-lg font-semibold text-center mb-4">Selecciona una fecha</h3>
+              <div className="flex justify-center">
                 <Calendar
-                    mode="single"
-                    selected={date}
-                    onSelect={setDate}
-                    disabled={(day) => day < new Date(new Date().setDate(new Date().getDate() - 1)) || day.getDay() === 0 || day.getDay() === 6}
-                    className="rounded-md"
-                    locale={es}
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  disabled={(day) => day < new Date(new Date().setDate(new Date().getDate() - 1)) || day.getDay() === 0 || day.getDay() === 6}
+                  className="rounded-md border shadow-sm"
+                  locale={es}
                 />
-                {date && (
-                    <div className="mt-4">
-                    <h3 className="text-lg font-medium mb-2 text-center text-brand-text-primary">Horas disponibles para {format(date, "PPP", { locale: es })}</h3>
-                    <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                        {availableTimeSlots.map(time => (
-                        <Button
-                            key={time}
-                            variant={selectedTime === time ? "default" : "outline"}
-                            onClick={() => setSelectedTime(time)}
-                            className="flex items-center gap-2"
-                        >
-                            <Clock className="h-4 w-4" /> {time}
-                        </Button>
-                        ))}
-                    </div>
-                    </div>
-                )}
-            </div>
-            <div className="p-4 sm:p-6 bg-brand-surface/80 rounded-r-lg">
-            <form onSubmit={handleSubmit}>
-                <DialogHeader>
-                <DialogTitle className="text-brand-text-primary">Completa tu reserva</DialogTitle>
-                <DialogDescription className="text-brand-text-secondary">
-                    Selecciona tema, duración, día y hora, y completa tus datos para proceder al pago.
-                </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="grid items-center gap-1.5">
-                      <Label htmlFor="service_interest" className="text-brand-text-primary">Tema de la consultoría</Label>
-                      <Select onValueChange={(value) => handleSelectChange('service_interest', value)} value={formData.service_interest} required>
-                      <SelectTrigger><SelectValue placeholder="Selecciona un tema" /></SelectTrigger>
-                      <SelectContent>
-                          <SelectItem value="Planificación financiera">Planificación financiera</SelectItem>
-                          <SelectItem value="Creación y optimización de carteras">Creación y optimización de carteras</SelectItem>
-                          <SelectItem value="Crypto/Web3">Crypto/Web3</SelectItem>
-                      </SelectContent>
-                      </Select>
-                  </div>
-                  <div className="grid items-center gap-1.5">
-                      <Label htmlFor="duration" className="text-brand-text-primary">Duración</Label>
-                      <Select onValueChange={(value) => handleSelectChange('duration', value)} value={formData.duration} required>
-                      <SelectTrigger><SelectValue placeholder="Selecciona duración" /></SelectTrigger>
-                      <SelectContent>
-                          <SelectItem value="30min">30 minutos</SelectItem>
-                          <SelectItem value="60min">1 hora</SelectItem>
-                      </SelectContent>
-                      </Select>
-                  </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Step 3: Time Selection */}
+          {currentStep === 3 && (
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-4"
+            >
+              <h3 className="text-lg font-semibold text-center mb-2">Elige una hora</h3>
+              {date && (
+                <p className="text-center text-sm text-gray-600 mb-4">
+                  {format(date, "EEEE, dd 'de' MMMM", { locale: es })}
+                </p>
+              )}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {availableTimeSlots.map(time => (
+                  <Button
+                    key={time}
+                    type="button"
+                    variant={selectedTime === time ? "default" : "outline"}
+                    onClick={() => setSelectedTime(time)}
+                    className="h-12 flex items-center justify-center gap-2"
+                  >
+                    <Clock className="h-4 w-4" />
+                    {time}
+                  </Button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          {/* Step 4: Personal Info */}
+          {currentStep === 4 && (
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-4"
+            >
+              <h3 className="text-lg font-semibold text-center mb-4">Completa tus datos</h3>
+              
+              {/* Summary */}
+              <div className="bg-gray-50 rounded-lg p-4 text-sm space-y-1">
+                <div className="flex justify-between">
+                  <span className="font-medium">Tema:</span>
+                  <span>{formData.service_interest}</span>
                 </div>
-                <div className="grid items-center gap-1.5">
-                    <Label htmlFor="name" className="text-brand-text-primary">Nombre</Label>
-                    <Input id="name" value={formData.name} onChange={handleChange} required />
+                <div className="flex justify-between">
+                  <span className="font-medium">Duración:</span>
+                  <span>{formData.duration === "30min" ? "30 minutos" : "1 hora"}</span>
                 </div>
-                <div className="grid items-center gap-1.5">
-                    <Label htmlFor="email" className="text-brand-text-primary">Email</Label>
-                    <Input id="email" type="email" value={formData.email} onChange={handleChange} required />
+                <div className="flex justify-between">
+                  <span className="font-medium">Fecha:</span>
+                  <span>{date ? format(date, "dd/MM/yyyy", { locale: es }) : ""}</span>
                 </div>
-                <div className="grid items-center gap-1.5">
-                    <Label htmlFor="more_info" className="text-brand-text-primary">Nota (Opcional)</Label>
-                    <Textarea id="more_info" value={formData.more_info} onChange={handleChange} placeholder="Añade cualquier información relevante." />
+                <div className="flex justify-between">
+                  <span className="font-medium">Hora:</span>
+                  <span>{selectedTime}</span>
                 </div>
+              </div>
+
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Nombre completo</Label>
+                  <Input 
+                    id="name" 
+                    value={formData.name} 
+                    onChange={handleChange} 
+                    placeholder="Tu nombre completo"
+                    className="w-full"
+                  />
                 </div>
-                <DialogFooter>
-                <DialogClose asChild>
-                    <Button type="button" variant="ghost">Cancelar</Button>
-                </DialogClose>
-                <Button type="submit" disabled={loading}>
-                    {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Proceder al pago
-                </Button>
-                </DialogFooter>
-            </form>
-            </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input 
+                    id="email" 
+                    type="email" 
+                    value={formData.email} 
+                    onChange={handleChange} 
+                    placeholder="tu@email.com"
+                    className="w-full"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="more_info">Información adicional (opcional)</Label>
+                  <Textarea 
+                    id="more_info" 
+                    value={formData.more_info} 
+                    onChange={handleChange} 
+                    placeholder="Cuéntanos brevemente sobre tu situación o dudas específicas"
+                    className="w-full min-h-[80px]"
+                  />
+                </div>
+              </div>
+            </motion.div>
+          )}
         </div>
+
+        <DialogFooter className="flex flex-col sm:flex-row gap-2">
+          <div className="flex justify-between w-full">
+            {currentStep > 1 && (
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={prevStep}
+                className="flex-1 sm:flex-none"
+              >
+                Anterior
+              </Button>
+            )}
+            
+            {currentStep < 4 ? (
+              <Button 
+                type="button" 
+                onClick={nextStep}
+                disabled={!isStepValid(currentStep)}
+                className="flex-1 sm:flex-none ml-auto"
+              >
+                Siguiente
+              </Button>
+            ) : (
+              <Button 
+                type="button" 
+                onClick={handleSubmit}
+                disabled={loading || !isStepValid(currentStep)}
+                className="flex-1 sm:flex-none ml-auto"
+              >
+                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Proceder al pago
+              </Button>
+            )}
+          </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
@@ -207,7 +369,7 @@ const Consultoria = () => {
     <>
       <Helmet>
         <title>Consultoría - BSB Capital</title>
-        <meta name="description" content="Asesoramiento experto en planificación financiera, creación y optimización de carteras, y crypto/web3." />
+        <meta name="description" content="Asesoramiento experto en Onboarding Crypto, planificación financiera, creación y optimización de carteras, y crypto/web3." />
       </Helmet>
       <motion.div
         initial={{ opacity: 0, y: 20 }}

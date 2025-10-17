@@ -28,28 +28,30 @@ const MembresiasDB = () => {
   const [quizResult, setQuizResult] = useState(null);
   const [email, setEmail] = useState('');
   const [newsletterLoading, setNewsletterLoading] = useState(false);
+  const [billingCycle, setBillingCycle] = useState('monthly'); // 'monthly' o 'annual'
 
-  // Planes de fallback para cuando no se pueden cargar de la DB
+  // Planes de fallback con precios mensuales y anuales
   const fallbackPlans = [
     {
       id: 'fallback-1',
       name: 'Free Access',
-      price: 0,
+      price_monthly: 0,
+      price_annual: 0,
       currency: 'EUR',
-      duration_months: null,
       features: [
         'Newsletter gratuita con análisis y reflexiones financieras'
       ],
-      stripe_price_id: null,
+      stripe_price_id_monthly: null,
+      stripe_price_id_annual: null,
       highlight: false,
       description: 'Para empezar a conocernos'
     },
     {
       id: 'fallback-2',
       name: 'Trader Plan Pro',
-      price: 29.90,
+      price_monthly: 29.90,
+      price_annual: 299.00,
       currency: 'EUR',
-      duration_months: 1,
       features: [
         'Newsletter incluida',
         'Acceso anticipado a BSB Maker (IA copiloto para traders)',
@@ -57,16 +59,17 @@ const MembresiasDB = () => {
         '20% de descuento en consultorías',
         '1 consultoría de 30 min incluida en el plan anual'
       ],
-      stripe_price_id: 'price_1SDKO8JmSk3VG9oiCLuGoE4s',
+      stripe_price_id_monthly: 'price_1SDKO8JmSk3VG9oiCLuGoE4s',
+      stripe_price_id_annual: 'price_1SDKQZJmSk3VG9oiGudek18k',
       highlight: false,
-      description: 'o 299 €/año'
+      description: 'Para traders activos'
     },
     {
       id: 'fallback-3',
       name: 'Premium Investor',
-      price: 29.90,
+      price_monthly: 29.90,
+      price_annual: 299.00,
       currency: 'EUR',
-      duration_months: 1,
       features: [
         'Newsletter incluida',
         'Acceso a la Comunidad privada',
@@ -74,16 +77,17 @@ const MembresiasDB = () => {
         '20% de descuento en consultorías',
         '1 consultoría de 30 min incluida en el plan anual'
       ],
-      stripe_price_id: 'price_1SDKVXJmSk3VG9oiLEm9JOoD',
+      stripe_price_id_monthly: 'price_1SDKVXJmSk3VG9oiLEm9JOoD',
+      stripe_price_id_annual: 'price_1SDKVXJmSk3VG9oiLEm9JOoD_ANNUAL', // Necesitarás el ID anual real
       highlight: true,
-      description: 'o 299 €/año'
+      description: 'Más popular'
     },
     {
       id: 'fallback-4',
       name: 'Wealth Membership',
-      price: 2400,
+      price_monthly: 200.00,
+      price_annual: 2400.00,
       currency: 'EUR',
-      duration_months: 12,
       features: [
         '6 consultorías de 1h/año (valor: 1.800€)',
         'Revisión completa de cartera semestral',
@@ -91,7 +95,8 @@ const MembresiasDB = () => {
         'Canal privado prioritario + comunidad élite (networking + análisis exclusivos)',
         'Diseñada para clientes con patrimonio elevado que buscan claridad y continuidad sin ceder la gestión'
       ],
-      stripe_price_id: 'price_1SDKb2JmSk3VG9oiJr1unLZZ',
+      stripe_price_id_monthly: 'price_1SDKb2JmSk3VG9oiJr1unLZZ_MONTHLY', // Necesitarás el ID mensual real
+      stripe_price_id_annual: 'price_1SDKb2JmSk3VG9oiJr1unLZZ',
       highlight: false,
       description: 'Co-Gestión Patrimonial'
     }
@@ -287,6 +292,10 @@ const MembresiasDB = () => {
     const isLoading = loadingPlan === plan.id;
     const isSubscribed = userSubscription && userSubscription.subscription_plans?.name === plan.name;
     
+    // Calcular precio según billing cycle
+    const currentPrice = billingCycle === 'annual' ? plan.price_annual : plan.price_monthly;
+    const currentStripeId = billingCycle === 'annual' ? plan.stripe_price_id_annual : plan.stripe_price_id_monthly;
+    
     let buttonVariant = plan.highlight ? 'default' : 'outline';
     let buttonClassName = "w-full relative z-10";
 
@@ -305,10 +314,7 @@ const MembresiasDB = () => {
             {isSubscribed && <Badge className="ml-2 bg-green-500">Activa</Badge>}
           </CardTitle>
           <CardDescription className="text-brand-text-secondary">
-            {plan.description || 
-             (plan.duration_months === null ? 'Acceso de por vida' : 
-              plan.duration_months === 12 ? 'Pago anual' : 
-              plan.duration_months === 3 ? 'Pago trimestral' : 'Pago mensual')}
+            {plan.description}
           </CardDescription>
         </CardHeader>
         <CardContent className="flex-grow flex flex-col">
@@ -320,15 +326,21 @@ const MembresiasDB = () => {
               </li>
             ))}
           </ul>
-          <p className="text-4xl font-bold mt-6 text-brand-text-primary">
-            {plan.price === 0 ? 'Gratis' : `${plan.price} ${plan.currency}`}
-            {plan.price > 0 ? (
-              plan.duration_months === null ? '' : 
-              plan.duration_months === 1 ? '/mes' : 
-              plan.duration_months === 3 ? '/trimestre' :
-              plan.duration_months === 12 ? '/año' : ''
-            ) : ''}
-          </p>
+          <div className="mt-6">
+            <p className="text-4xl font-bold text-brand-text-primary">
+              {currentPrice === 0 ? 'Gratis' : `${currentPrice} ${plan.currency}`}
+              {currentPrice > 0 && (
+                <span className="text-lg font-normal">
+                  {billingCycle === 'annual' ? '/año' : '/mes'}
+                </span>
+              )}
+            </p>
+            {billingCycle === 'annual' && currentPrice > 0 && (
+              <p className="text-sm text-gray-500 mt-1">
+                Equivale a {(currentPrice / 12).toFixed(2)} €/mes
+              </p>
+            )}
+          </div>
         </CardContent>
         <CardFooter>
           <Button 
@@ -339,7 +351,14 @@ const MembresiasDB = () => {
               console.log('🔍 Button disabled state:', isLoading || isSubscribed);
               console.log('🔍 isLoading:', isLoading, 'isSubscribed:', isSubscribed);
               if (!isLoading && !isSubscribed) {
-                handleSelectPlan(plan);
+                // Crear objeto plan actualizado con precio y stripe_id actuales
+                const planWithCurrentPrice = {
+                  ...plan,
+                  price: currentPrice,
+                  stripe_price_id: currentStripeId,
+                  duration_months: billingCycle === 'annual' ? 12 : 1
+                };
+                handleSelectPlan(planWithCurrentPrice);
               } else {
                 console.log('❌ Button is disabled, not executing');
               }
@@ -352,7 +371,7 @@ const MembresiasDB = () => {
               <Loader2 className="h-4 w-4 animate-spin mr-2" />
             ) : isSubscribed ? (
               'Plan Activo'
-            ) : plan.price === 0 ? (
+            ) : currentPrice === 0 ? (
               'Suscribirme gratis'
             ) : (
               'Quiero este plan'
@@ -487,6 +506,36 @@ const MembresiasDB = () => {
           <p className="mt-6 text-lg text-brand-text-secondary">
             Tenemos un plan para cada tipo de inversor. Desde el que empieza a explorar hasta el que busca una gestión patrimonial de élite.
           </p>
+          
+          {/* Selector de Billing Cycle */}
+          <div className="mt-8 flex justify-center">
+            <div className="bg-gray-100 p-1 rounded-lg inline-flex">
+              <button
+                className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${
+                  billingCycle === 'monthly'
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+                onClick={() => setBillingCycle('monthly')}
+              >
+                Mensual
+              </button>
+              <button
+                className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${
+                  billingCycle === 'annual'
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+                onClick={() => setBillingCycle('annual')}
+              >
+                Anual
+                <span className="ml-1 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
+                  Ahorra 17%
+                </span>
+              </button>
+            </div>
+          </div>
+
           {plans.length > 0 && (
             <Button size="lg" className="mt-8" onClick={() => setShowQuiz(!showQuiz)}>
               {showQuiz ? 'Ocultar Guía' : 'Descubrir mi Membresía Ideal'}
