@@ -27,8 +27,8 @@ import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { supabase } from '@/lib/customSupabaseClient';
 import { useToast } from '@/components/ui/feedback/use-toast';
 
-// Cargar Stripe con clave de test para desarrollo (hardcoded temporalmente)
-const stripePromise = loadStripe('pk_test_51SD5YXJmSk3VG9oizOg5SRv8Vla8VEJQkKN9pMKVV2g7XZOdQG7YjnZ2fvOhHyO1HQAA0DyUWu0p7hT6qfhvVh6I00FQhV3mB0');
+// Usar la misma clave de Stripe que consultoría (producción)
+const stripePromise = loadStripe('pk_live_51Rne6CJmSk3VG9oipr5fPA32tndC3TFLYHWrENknJ8fcNvIq8A3Nq0KfLdvwkMAyFvgLOWECBpIuzE2THTX4Mb1s00zqHyg0op');
 
 const CheckoutPage = () => {
   const [searchParams] = useSearchParams();
@@ -161,9 +161,9 @@ const CheckoutPage = () => {
         price: selectedPrice.price
       });
 
-      // Usar la función create-stripe-checkout que ya funciona correctamente
+      // Usar exactamente el mismo patrón que consultoría
       const { data, error } = await supabase.functions.invoke('create-stripe-checkout', {
-        body: {
+        body: JSON.stringify({ 
           priceId: selectedPrice.stripeId,
           mode: 'subscription',
           email: formData.email,
@@ -177,42 +177,30 @@ const CheckoutPage = () => {
             country: formData.country,
             user_id: user.id
           }
-        }
+        }),
       });
 
-      if (error) {
-        console.error('Error creating checkout:', error);
-        toast({
-          title: "Error al procesar pago",
-          description: error.message,
-          variant: "destructive"
-        });
-        return;
-      }
+      if (error) throw new Error(error.message);
+      if (data.error) throw new Error(data.error);
 
-      if (data.sessionId) {
-        // Usar Stripe para redirigir al checkout
-        const stripe = await stripePromise;
-        const { error: stripeError } = await stripe.redirectToCheckout({
-          sessionId: data.sessionId,
-        });
-
-        if (stripeError) {
-          throw new Error(stripeError.message);
-        }
-      } else {
-        throw new Error('No se pudo crear la sesión de checkout');
-      }
-
-    } catch (error) {
-      console.error('Error procesando pago:', error);
-      toast({
-        title: "Error en el pago",
-        description: `Plan: ${billingCycle} - Precio: $${selectedPrice.price} - ${error.message || "Error desconocido"}`,
-        variant: "destructive"
+      const stripe = await stripePromise;
+      const { error: stripeError } = await stripe.redirectToCheckout({
+        sessionId: data.sessionId,
       });
+
+      if (stripeError) {
+        throw new Error(stripeError.message);
+      }
+
+    } catch(error) {
+       toast({
+        variant: "destructive",
+        title: "Error al procesar el pago",
+        description: "Hubo un problema al redirigirte a la pasarela de pago. Por favor, inténtalo de nuevo.",
+      });
+      console.error("Stripe checkout error:", error);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
   };
 

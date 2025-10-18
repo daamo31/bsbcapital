@@ -1,9 +1,35 @@
 RewriteEngine On
 
+# Configurar MIME types ANTES del rewrite (CRÍTICO)
+<IfModule mod_mime.c>
+    AddType text/css .css
+    AddType application/javascript .js
+    AddType application/javascript .mjs
+    AddType application/json .json
+    AddType font/woff .woff
+    AddType font/woff2 .woff2
+    AddType font/ttf .ttf
+    AddType application/font-woff .woff
+    AddType application/font-woff2 .woff2
+    AddType image/svg+xml .svg
+    AddType image/png .png
+    AddType image/jpeg .jpg .jpeg
+    AddType image/gif .gif
+    AddType image/webp .webp
+    AddType image/x-icon .ico
+    AddType application/pdf .pdf
+</IfModule>
+
 # Handle React Router (SPA routing)
+# IMPORTANTE: Solo redirigir a index.html si NO es un archivo estático
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+# Excluir completamente los assets de Vite
+RewriteCond %{REQUEST_URI} !^/assets/
+RewriteCond %{REQUEST_URI} !\.(css|js|mjs|json|woff|woff2|ttf|eot|svg|png|jpg|jpeg|gif|ico|webp|pdf)$ [NC]
 RewriteRule . /index.html [L]
+
+
 
 # CORS Headers for API calls
 <IfModule mod_headers.c>
@@ -20,6 +46,27 @@ RewriteRule . /index.html [L]
     # Performance: Remove server signature
     Header unset Server
     Header set X-Powered-By "BSB Capital"
+    
+    # FORZAR MIME types correctos para assets (CRÍTICO PARA PRODUCCIÓN)
+    <FilesMatch "\.(css)$">
+        Header always set Content-Type "text/css; charset=utf-8"
+        Header always unset X-Content-Type-Options
+        Header always set X-Content-Type-Options "nosniff"
+    </FilesMatch>
+    <FilesMatch "\.(js|mjs)$">
+        Header always set Content-Type "application/javascript; charset=utf-8"
+        Header always unset X-Content-Type-Options
+        Header always set X-Content-Type-Options "nosniff"
+    </FilesMatch>
+    <FilesMatch "\.(json)$">
+        Header always set Content-Type "application/json; charset=utf-8"
+    </FilesMatch>
+    <FilesMatch "\.(woff|woff2)$">
+        Header always set Content-Type "font/woff2"
+    </FilesMatch>
+    <FilesMatch "\.(ttf)$">
+        Header always set Content-Type "font/ttf"
+    </FilesMatch>
 </IfModule>
 
 # Enable Gzip Compression

@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState, useCallback, useMemo } from 'react';
 import { supabase } from '@/lib/customSupabaseClient';
 import { useToast } from '@/components/ui/feedback/use-toast';
+import { cleanCorruptedSupabaseTokens } from '@/utils/supabaseTokenCleaner';
 
 const AuthContext = createContext(undefined);
 
@@ -46,9 +47,28 @@ export const AuthProvider = ({ children }) => {
   }, [fetchProfile]);
 
   useEffect(() => {
-    const getSessionAndProfile = async () => {
-      const { data: { session: currentSession } } = await supabase.auth.getSession();
-      await handleSession(currentSession);
+        const getSessionAndProfile = async () => {
+      setLoading(true);
+      try {
+        const { data: { session: currentSession }, error } = await supabase.auth.getSession();
+        
+        // Si hay error 403 o JWT inválido, limpiar tokens
+        if (error && (error.status === 403 || error.message?.includes('JWT'))) {
+          console.warn('🚨 Error de autenticación detectado, limpiando tokens:', error);
+          cleanCorruptedSupabaseTokens();
+          return;
+        }
+        
+        await handleSession(currentSession);
+      } catch (error) {
+        console.error('Error en getSession:', error);
+        // Si hay cualquier error de sesión, limpiar y reintentar
+        if (error.message?.includes('JWT') || error.status === 403) {
+          cleanCorruptedSupabaseTokens();
+        } else {
+          await handleSession(null);
+        }
+      }
     };
 
     getSessionAndProfile();
