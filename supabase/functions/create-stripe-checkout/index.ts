@@ -44,9 +44,18 @@ serve(async (req) => {
     let consultation = null;
     
     if (mode !== 'subscription') {
+      // Verificar que metadata existe y tiene los campos necesarios
+      if (!metadata || !metadata.client_name) {
+        console.error('Missing metadata or client_name for consultation:', { metadata, mode })
+        return Response.json(
+          { error: 'Missing required consultation data (client_name)' }, 
+          { status: 400 }
+        )
+      }
+
       const consultationData = {
         client_name: metadata.client_name,
-        client_email: metadata.client_email,
+        client_email: metadata.client_email || email,
         service: metadata.consultation_type || metadata.service || 'general',
         booking_date: metadata.scheduled_at || metadata.booking_date,
         notes: metadata.description || metadata.notes,

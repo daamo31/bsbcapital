@@ -84,32 +84,70 @@ const BookingModal = () => {
       formData.duration === 'test' ? 'Prueba' : formData.duration
     })`;
 
+    // DEBUG: Log all data before sending
+    console.log('🔍 DEBUGGING CONSULTORIA CHECKOUT:', {
+      formData,
+      priceId,
+      bookingDateTime: bookingDateTime.toISOString(),
+      consultationPrices
+    });
+
+    // Validation before sending
+    if (!priceId) {
+      console.error('❌ Missing priceId for duration:', formData.duration);
+      toast({ 
+        variant: "destructive", 
+        title: "Error de configuración", 
+        description: `No se encontró precio para ${formData.duration}` 
+      });
+      setLoading(false);
+      return;
+    }
+
     try {
+      const checkoutData = { 
+        priceId,
+        mode: 'payment',
+        email: formData.email,
+        metadata: {
+          client_name: formData.name,
+          client_email: formData.email,
+          consultation_type: formData.service_interest,
+          scheduled_at: bookingDateTime.toISOString(),
+          duration_minutes: formData.duration === '30min' ? '30' : 
+                          formData.duration === '60min' ? '60' : 
+                          formData.duration === 'test' ? '5' : '30',
+          description: formData.more_info,
+          status: 'scheduled',
+          // Mantenemos campos originales para compatibilidad
+          service: serviceDescription,
+          booking_date: bookingDateTime.toISOString(),
+          notes: formData.more_info,
+        }
+      };
+
+      console.log('📤 Sending to create-stripe-checkout:', checkoutData);
+
       const { data, error } = await supabase.functions.invoke('create-stripe-checkout', {
-        body: JSON.stringify({ 
-          priceId,
-          mode: 'payment',
-          email: formData.email,
-          metadata: {
-            client_name: formData.name,
-            client_email: formData.email,
-            consultation_type: formData.service_interest,
-            scheduled_at: bookingDateTime.toISOString(),
-            duration_minutes: formData.duration === '30min' ? '30' : 
-                            formData.duration === '60min' ? '60' : 
-                            formData.duration === 'test' ? '5' : '30',
-            description: formData.more_info,
-            status: 'scheduled',
-            // Mantenemos campos originales para compatibilidad
-            service: serviceDescription,
-            booking_date: bookingDateTime.toISOString(),
-            notes: formData.more_info,
-          }
-        }),
+        body: JSON.stringify(checkoutData),
       });
 
-      if (error) throw new Error(error.message);
-      if (data.error) throw new Error(data.error);
+      console.log('📥 Response from create-stripe-checkout:', { data, error });
+
+      if (error) {
+        console.error('❌ Supabase function error:', error);
+        throw new Error(error.message);
+      }
+      if (data?.error) {
+        console.error('❌ Edge function returned error:', data.error);
+        throw new Error(data.error);
+      }
+      if (!data?.sessionId) {
+        console.error('❌ No sessionId received:', data);
+        throw new Error('No sessionId received from Stripe');
+      }
+
+      console.log('✅ Got sessionId:', data.sessionId);
 
       const stripe = await loadStripe(STRIPE_PUBLISHABLE_KEY);
       const { error: stripeError } = await stripe.redirectToCheckout({
@@ -117,16 +155,24 @@ const BookingModal = () => {
       });
 
       if (stripeError) {
+        console.error('❌ Stripe redirect error:', stripeError);
         throw new Error(stripeError.message);
       }
 
     } catch(error) {
-       toast({
-        variant: "destructive",
-        title: "Error al procesar el pago",
-        description: "Hubo un problema al redirigirte a la pasarela de pago. Por favor, inténtalo de nuevo.",
+      console.error('❌ STRIPE CHECKOUT ERROR:', {
+        error,
+        message: error.message,
+        formData,
+        priceId,
+        stack: error.stack
       });
-      console.error("Stripe checkout error:", error);
+      
+      toast({
+        variant: "destructive",
+        title: "Error al procesar el pago", 
+        description: `${error.message || "Hubo un problema al redirigirte a la pasarela de pago."} Revisa la consola para más detalles.`,
+      });
     } finally {
         setLoading(false);
     }
