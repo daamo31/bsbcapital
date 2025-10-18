@@ -47,6 +47,7 @@ RewriteRule . /index.html [L]
     Header unset Server
     Header set X-Powered-By "BSB Capital"
     
+    
     # FORZAR MIME types correctos para assets (CRÍTICO PARA PRODUCCIÓN)
     <FilesMatch "\.(css)$">
         Header always set Content-Type "text/css; charset=utf-8"

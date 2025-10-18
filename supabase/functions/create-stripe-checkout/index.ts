@@ -1,6 +1,6 @@
-import { serve } from "https://deno.land/std@0.177.0/http/server.ts"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-import Stripe from 'https://esm.sh/stripe@12.18.0?target=deno'
+import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import Stripe from 'https://esm.sh/stripe@12.18.0?target=deno';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -62,9 +62,9 @@ serve(async (req) => {
         status: 'pending_payment',
         title: `Consulta ${metadata.consultation_type || 'general'}`,
       }
-      
+
       console.log('Creating consultation with data:', consultationData)
-      
+
       const { data: consultationResult, error: consultationError } = await supabase
         .from('consultations')
         .insert(consultationData)
@@ -72,10 +72,18 @@ serve(async (req) => {
         .single()
 
       if (consultationError) {
-        console.error('Error creating consultation:', consultationError)
-        throw new Error(`Failed to create consultation record: ${consultationError.message}`)
+        console.error('❌ Error creating consultation:', {
+          error: consultationError,
+          dataSent: consultationData,
+          supabaseUrl,
+          table: 'consultations',
+        })
+        return Response.json(
+          { error: `Failed to create consultation record: ${consultationError.message}` },
+          { status: 500 }
+        )
       }
-      
+
       consultation = consultationResult;
       console.log('Consultation created successfully:', consultation.id)
     }    // Crear sesión de Stripe
