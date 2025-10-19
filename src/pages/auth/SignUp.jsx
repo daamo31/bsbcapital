@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import emailService from '@/lib/emailService';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -27,6 +28,16 @@ const SignUp = () => {
       },
     });
     if (!error) {
+      // Enviar email de bienvenida personalizado
+      try {
+        await emailService.sendWelcomeEmail({
+          name: fullName,
+          email
+        });
+      } catch (e) {
+        // No bloquear el flujo si falla el email
+        console.error('Error enviando email de bienvenida:', e);
+      }
       toast({
         title: "¡Registro exitoso!",
         description: "Hemos enviado un correo de confirmación. Por favor, verifica tu email para activar tu cuenta.",

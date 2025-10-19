@@ -1,9 +1,11 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
+import { serve } from "https://deno.land/std@0.210.0/http/server.ts" // Versión estable actualizada
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-function-secret',
 }
+
+// ⚠️ Esta función de Deno requiere los permisos: --allow-net --allow-env
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -28,27 +30,32 @@ serve(async (req) => {
     // Obtener configuración de variables de entorno
     let resendApiKey = Deno.env.get('RESEND_API_KEY')
     const defaultFrom = Deno.env.get('DEFAULT_FROM') || 'BSB Capital <onboarding@resend.dev>'
+    const adminEmail = Deno.env.get('ADMIN_EMAIL') // Nuevo: Email del administrador para notificaciones
     
-    // Fallback para desarrollo
+    // Fallback para desarrollo (mantener si es necesario, pero es mejor usar .env local)
     if (!resendApiKey) {
       console.log('⚠️ Usando API key de desarrollo')
       resendApiKey = 're_Te7ktzMc_Mc8vbmFez55QdgjnGhNMzW7M'
     }
     
-    // DEBUG: Mostrar qué API key se está usando (solo primeros caracteres por seguridad)
-    console.log(`🔑 API Key en uso: ${resendApiKey.substring(0, 12)}...`)
-    
+    // Eliminado: console.log de la API Key por seguridad
+
     if (!resendApiKey) {
       throw new Error('RESEND_API_KEY not configured')
     }
 
     // Validación de entrada
-    if (!to || !type) {
-      throw new Error('Missing required fields: to, type')
+    if (!to && type !== 'admin_consultation_notification') { // Si no es notificación de admin, 'to' es obligatorio
+        if (!to) throw new Error('Missing required field: to')
+    }
+    
+    // Validación específica para admin_consultation_notification
+    if (type === 'admin_consultation_notification' && !adminEmail) {
+        throw new Error('ADMIN_EMAIL environment variable not configured for admin notifications')
     }
 
     // Log para debugging
-    console.log(`📧 Email request - type: ${type}, to: ${to}`)
+    console.log(`📧 Email request - type: ${type}, to: ${to || 'Admin notification'}`)
 
     // Función para generar email base con estilo BSB Capital
     const generateEmailTemplate = (title, content, emoji = "💼") => `
@@ -162,7 +169,7 @@ serve(async (req) => {
         </p>
         
         <p style="color: #059669; font-size: 16px; margin-bottom: 25px; font-weight: 600;">
-          � Pronto te enviaremos los detalles de tu cita y un breve formulario previo para personalizar la sesión.
+          🚀 Pronto te enviaremos los detalles de tu cita y un breve formulario previo para personalizar la sesión.
         </p>
         
         <p style="color: #475569; font-size: 16px; margin-bottom: 10px;">
@@ -275,7 +282,7 @@ serve(async (req) => {
       `,
       "🚀"
     )
-
+    
     // Email de Premium Investor
     const generatePremiumInvestorEmail = (data) => generateEmailTemplate(
       "Tu membresía Premium Investor está activa",
@@ -337,6 +344,10 @@ serve(async (req) => {
         <p style="color: #1e293b; font-size: 16px; font-weight: 600;">
           El equipo de BSB Capital
         </p>
+      `, // <<< CORREGIDO: Cierre del template literal
+      "🏛️"
+    )
+
     // Email de notificación para administradores cuando se reserva una consultoría
     const generateAdminConsultationNotification = (data) => generateEmailTemplate(
       "Nueva Consultoría Reservada - BSB Capital",
@@ -364,7 +375,7 @@ serve(async (req) => {
         
         ${data.consultationGoals ? `
           <div style="background-color: #f8f9fa; padding: 25px; border-radius: 8px; margin-bottom: 25px;">
-            <h4 style="color: #1e293b; margin: 0 0 15px 0; font-size: 16px;">� Objetivos de la consultoría:</h4>
+            <h4 style="color: #1e293b; margin: 0 0 15px 0; font-size: 16px;">🎯 Objetivos de la consultoría:</h4>
             <p style="color: #475569; margin: 0; font-size: 16px;">${data.consultationGoals}</p>
           </div>
         ` : ''}
@@ -396,6 +407,7 @@ serve(async (req) => {
       `,
       "📧"
     )
+    
     const templates = {
       // Free Access - Confirmación de suscripción gratuita
       welcome: {
@@ -423,7 +435,7 @@ serve(async (req) => {
         html: generateAcademyEmail(data)
       },
       trader_plan_pro: {
-        subject: 'Tu suscripción a Trader Plan Pro está activa �',
+        subject: 'Tu suscripción a Trader Plan Pro está activa 🚀',
         html: generateTraderPlanProEmail(data)
       },
       premium_investor: {
@@ -455,7 +467,7 @@ serve(async (req) => {
             <h1 style="color: #1e40af;">🧪 Email de Prueba - BSB Capital</h1>
             <p>Este es un email de prueba desde BSB Capital.</p>
             <div style="background-color: #f3f4f6; padding: 15px; border-radius: 8px; margin: 20px 0;">
-              <p><strong>Enviado a:</strong> ${to}</p>
+              <p><strong>Enviado a:</strong> ${to || 'N/A'}</p>
               <p><strong>Tipo:</strong> ${type}</p>
               <p><strong>Hora:</strong> ${new Date().toLocaleString()}</p>
               <p><strong>Función:</strong> resend-email-secure</p>
@@ -471,24 +483,30 @@ serve(async (req) => {
     }
 
     const template = templates[type] || templates.test
-
-    // CONFIRMADO: Propietario real según dashboard de Resend (solo 1 email enviado a danieldelamo31)
-    const testingRecipients = [
-      'danieldelamo31@gmail.com'  // Propietario REAL confirmado por dashboard de Resend
-    ];
     
-    console.log(`📧 Enviando email tipo '${type}' - Original: ${to} → Destino: ${testingRecipients.join(', ')} (propietario confirmado)`);
+    let recipientTo = to // Destinatario por defecto es el del payload
+
+    // Ajustar el destinatario si es una notificación de administrador
+    if (type === 'admin_consultation_notification') {
+        // Enviar al email de administrador configurado
+        recipientTo = adminEmail
+        console.log(`📧 Enviando notificación de administrador a: ${recipientTo}`);
+    } else {
+        // Enviar al destinatario real
+        console.log(`📧 Enviando email tipo '${type}' - Destino real: ${recipientTo}`);
+    }
+
     console.log(`👤 Remitente configurado: ${defaultFrom}`);
 
     // Preparar datos del email
     const emailData = {
       from: defaultFrom,
-      to: testingRecipients[0], // Solo un destinatario para plan gratuito
+      to: recipientTo, // Usar el destinatario ajustado
       subject: template.subject,
       html: template.html
     }
 
-    console.log('📧 Datos del email:', JSON.stringify(emailData, null, 2))
+    console.log('📧 Datos del email (sin HTML completo):', JSON.stringify({ ...emailData, html: '...HTML Content...' }, null, 2))
 
     // Enviar email usando Resend
     const response = await fetch('https://api.resend.com/emails', {
@@ -509,24 +527,21 @@ serve(async (req) => {
       console.error('❌ Error de Resend:', {
         status: response.status,
         message: result.message,
-        recipients: testingRecipients,
         from: defaultFrom
       })
       throw new Error(`Resend API error: ${result.message || 'Unknown error'} | Status: ${response.status}`)
     }
 
     // Log exitoso
-    console.log(`✅ Email enviado exitosamente: ${result.id} | Original: ${to} → Enviado a: ${testingRecipients.join(', ')} | Desde: ${defaultFrom}`)
+    console.log(`✅ Email enviado exitosamente: ${result.id} | Destino: ${recipientTo} | Desde: ${defaultFrom}`)
 
     return new Response(
       JSON.stringify({ 
         success: true, 
         message: 'Email sent successfully',
         id: result.id,
-        originalRecipient: to,
-        actualRecipients: testingRecipients,
+        recipient: recipientTo,
         sender: defaultFrom,
-        testingMode: true,
         timestamp: new Date().toISOString()
       }),
       { 

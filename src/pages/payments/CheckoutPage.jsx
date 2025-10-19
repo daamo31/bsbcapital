@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { supabase } from '@/lib/customSupabaseClient';
+import emailService from '@/lib/emailService';
 import { useToast } from '@/components/ui/feedback/use-toast';
 
 // Usar la misma clave de Stripe que consultoría (producción)
@@ -190,6 +191,17 @@ const CheckoutPage = () => {
 
       if (stripeError) {
         throw new Error(stripeError.message);
+      }
+
+      // Enviar email de activación de membresía (no bloquear el flujo si falla)
+      try {
+        await emailService.sendSubscriptionActivated({
+          name: formData.name,
+          email: formData.email,
+          planName: planData?.name || 'Premium Plan'
+        });
+      } catch (e) {
+        console.error('Error enviando email de activación de membresía:', e);
       }
 
     } catch(error) {
