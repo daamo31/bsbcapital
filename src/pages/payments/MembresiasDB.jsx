@@ -75,13 +75,14 @@ const fallbackPlans = [
 const MembresiasDB = () => {
   console.log('MembresiasDB: Component rendering');
   
-  const { user } = useAuth();
+  const { user, loading: loadingAuth } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingPlan, setLoadingPlan] = useState(null);
+  const [loadingData, setLoadingData] = useState(false);
 
   const loadPlans = useCallback(async () => {
     try {
@@ -201,9 +202,14 @@ const MembresiasDB = () => {
   }, []);
 
   useEffect(() => {
-    console.log('MembresiasDB: useEffect triggered, calling loadPlans');
-    loadPlans();
-  }, [loadPlans]);
+    if (loadingAuth) return;
+    let isFetching = false;
+    if (!isFetching) {
+      isFetching = true;
+      loadPlans().finally(() => { isFetching = false; });
+    }
+    // No dependas de loadingData para evitar bucles
+  }, [loadPlans, loadingAuth]);
 
   const handleSelectPlan = useCallback((plan) => {
     if (!user) {

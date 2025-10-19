@@ -4,7 +4,7 @@ import { supabase } from '@/lib/customSupabaseClient';
 import { fetchWithTimeout } from '@/lib/fetchWithTimeout';
 
 export const useMembership = () => {
-  const { user } = useAuth();
+  const { user, loading: loadingAuth } = useAuth();
   const [membershipData, setMembershipData] = useState({
     isActive: false,
     tier: 'free',
@@ -14,12 +14,10 @@ export const useMembership = () => {
     error: null
   });
 
+  const [loadingData, setLoadingData] = useState(false);
   useEffect(() => {
-    let isMounted = true;
-    const abortController = new AbortController();
-    if (user) {
-      fetchMembershipData({ isMounted, signal: abortController.signal });
-    } else {
+    if (loadingAuth) return;
+    if (!user) {
       setMembershipData({
         isActive: false,
         tier: 'free',
@@ -28,12 +26,20 @@ export const useMembership = () => {
         loading: false,
         error: null
       });
+      return;
     }
+    if (loadingData) return;
+    let isMounted = true;
+    const abortController = new AbortController();
+    setLoadingData(true);
+    fetchMembershipData({ isMounted, signal: abortController.signal }).finally(() => {
+      if (isMounted) setLoadingData(false);
+    });
     return () => {
       isMounted = false;
       abortController.abort();
     };
-  }, [user]);
+  }, [user, loadingAuth]);
 
   const fetchMembershipData = async ({ isMounted = true, signal } = {}) => {
     try {

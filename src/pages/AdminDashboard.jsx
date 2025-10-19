@@ -23,9 +23,11 @@ import {
   DollarSign
 } from 'lucide-react';
 
+import { useAuth } from '@/contexts/SupabaseAuthContext';
+import { useNavigate } from 'react-router-dom';
+
 const AdminDashboard = () => {
-  const { signOut, user } = require('@/contexts/SupabaseAuthContext').useAuth();
-  const { useNavigate } = require('react-router-dom');
+  const { signOut, user } = useAuth();
   const navigate = useNavigate();
   const [metrics, setMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
