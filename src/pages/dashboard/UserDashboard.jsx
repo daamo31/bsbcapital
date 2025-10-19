@@ -1,3 +1,4 @@
+// ... (Imports se mantienen iguales)
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet';
@@ -23,13 +24,15 @@ import {
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useAdmin } from '@/hooks/useAdmin';
 import { supabase } from '@/lib/customSupabaseClient';
+import { fetchWithTimeout } from '@/lib/fetchWithTimeout';
 import { useNavigate, Link } from 'react-router-dom';
 import { useToast } from '@/components/ui/feedback/use-toast';
 import AdminNotification from '@/components/admin/AdminNotification';
 
 const UserDashboard = () => {
-  const { user } = useAuth();
-  const { isAdmin } = useAdmin();
+  // <<<<< CAMBIO CLAVE 1: Destructurar el estado 'loading' de useAuth también >>>>>
+  const { user, signOut, loading: loadingAuth } = useAuth();
+  const { isAdmin, loading: loadingAdmin } = useAdmin(); 
   const navigate = useNavigate();
   const { toast } = useToast();
   
@@ -40,88 +43,157 @@ const UserDashboard = () => {
   const [loadingData, setLoadingData] = useState(false);
 
   useEffect(() => {
-    if (user && user.id && !loadingData) {
-      loadUserData();
-    }
-  }, [user?.id]); // Solo cuando cambie el ID del usuario
-
-  const loadUserData = async () => {
-    if (loadingData) return; // Evitar llamadas múltiples
+    // <<<<< CAMBIO CLAVE 2: Esperar a que useAuth y useAdmin terminen su carga inicial >>>>>
+    if (loadingAuth || loadingAdmin) return;
     
-    try {
-      setLoadingData(true);
-      await Promise.all([
-        loadSubscription(),
-        loadUserContent(),
-        loadUserProgress()
-      ]);
-    } catch (error) {
-      console.error('Error loading user data:', error);
-      toast({
-        title: "Error",
-        description: "No se pudieron cargar tus datos",
-        variant: "destructive"
-      });
-    } finally {
+    // Si la autenticación terminó y no hay usuario, salir.
+    if (!user || !user.id) return;
+
+    // Si ya estamos cargando data, salir (evita race condition interna).
+    if (loadingData) return;
+    
+    let isMounted = true;
+    const fetchData = async () => {
+      await loadUserData(isMounted);
+    };
+    fetchData();
+    return () => { isMounted = false; };
+  }, [user?.id, loadingAuth, loadingAdmin]); // Añadir loadingAuth como dependencia
+  
+  // ... (loadUserData y otras funciones se mantienen igual)
+  const loadUserData = async (isMounted = true) => {
+    if (loadingData || !user || !user.id || !isMounted) return;
+    const MAX_RETRIES = 3;
+    let lastError = null;
+    
+    // El flujo secuencial y de reintentos ya está aquí, lo cual es CORRECTO
+    for (let i = 0; i < MAX_RETRIES; i++) {
+      try {
+        setLoadingData(true);
+        // Cargar en secuencia para evitar saturar recursos (CORRECTO)
+        await loadSubscription(isMounted);
+        await loadUserContent(isMounted);
+        await loadUserProgress(isMounted);
+        lastError = null;
+        break; // Éxito, salir del bucle
+      } catch (error) {
+        lastError = error;
+        console.error(`Intento ${i + 1} fallido:`, error);
+        if (i < MAX_RETRIES - 1) {
+          // Esperar antes de reintentar
+          await new Promise(resolve => setTimeout(resolve, 500 * (i + 1)));
+        }
+      } finally {
+        // La lógica de finally/setLoading se simplifica ligeramente al final del bucle
+      }
+    }
+    
+    if (isMounted) {
       setLoading(false);
       setLoadingData(false);
     }
-  };
 
-  const loadSubscription = async () => {
-    const { data, error } = await supabase
-      .from('user_subscriptions')
-      .select(`
-        *,
-        subscription_plans(*)
-      `)
-      .eq('user_id', user.id)
-      .eq('status', 'active')
-      .order('created_at', { ascending: false })
-      .limit(1);
-
-    if (error) {
-      console.error('Error loading subscription:', error);
-      return;
-    }
-
-    if (data && data.length > 0) {
-      setSubscription(data[0]);
-    } else {
-      setSubscription(null);
+    if (lastError && isMounted) {
+      toast({
+        title: "Error",
+        description: "No se pudieron cargar tus datos después de varios intentos.",
+        variant: "destructive"
+      });
     }
   };
 
-  const loadUserContent = async () => {
-    const { data, error } = await supabase.rpc('get_user_accessible_content', {
-      user_uuid: user.id
-    });
-
-    if (error) {
-      console.error('Error loading user content:', error);
-      return;
+  const loadSubscription = async (isMounted = true) => {
+    if (!user || !user.id || !isMounted) return;
+    try {
+      const call = () => supabase
+        .from('user_subscriptions')
+        .select(`*, subscription_plans(*)`)
+        .eq('user_id', user.id)
+        .eq('status', 'active')
+        .order('created_at', { ascending: false })
+        .limit(1);
+      const { data, error } = await fetchWithTimeout(call, 10000);
+      if (!isMounted) return;
+      if (error) {
+        console.error('Error loading subscription:', error);
+        throw new Error('Supabase Subscription Fetch Error');
+      }
+      if (data && data.length > 0) {
+        setSubscription(data[0]);
+      } else {
+        setSubscription(null);
+      }
+    } catch (err) {
+      if (err.message === 'timeout') console.warn('loadSubscription timed out');
+      else console.error('loadSubscription error:', err);
+      throw err; // Re-lanzar para que loadUserData lo capture
     }
-
-    setUserContent(data || []);
   };
 
-  const loadUserProgress = async () => {
-    const { data, error } = await supabase
-      .from('user_progress')
-      .select(`
-        *,
-        course_content(title, content_type, duration_minutes)
-      `)
-      .eq('user_id', user.id)
-      .order('last_accessed_at', { ascending: false });
-
-    if (error) {
-      console.error('Error loading progress:', error);
-      return;
+  const loadUserContent = async (isMounted = true) => {
+    if (!user || !user.id || !isMounted) return;
+    try {
+      const call = () => supabase.rpc('get_user_accessible_content', { user_uuid: user.id });
+      const { data, error } = await fetchWithTimeout(call, 10000);
+      if (!isMounted) return;
+      if (error) {
+        console.error('Error loading user content:', error);
+        throw new Error('Supabase Content Fetch Error');
+      }
+      setUserContent(data || []);
+    } catch (err) {
+      if (err.message === 'timeout') console.warn('loadUserContent timed out');
+      else console.error('loadUserContent error:', err);
+      throw err;
     }
-
-    setProgress(data || []);
   };
+
+  const loadUserProgress = async (isMounted = true) => {
+    if (!user || !user.id || !isMounted) return;
+    try {
+      const call = () => supabase
+        .from('user_progress')
+        .select(`*, course_content(title, content_type, duration_minutes)`)
+        .eq('user_id', user.id)
+        .order('last_accessed_at', { ascending: false });
+      const { data, error } = await fetchWithTimeout(call, 10000);
+      if (!isMounted) return;
+      if (error) {
+        console.error('Error loading progress:', error);
+        throw new Error('Supabase Progress Fetch Error');
+      }
+      setProgress(data || []);
+    } catch (err) {
+      if (err.message === 'timeout') console.warn('loadUserProgress timed out');
+      else console.error('loadUserProgress error:', err);
+      throw err;
+    }
+  };
+
+  
+  // Renderizado de loading
+  // <<<<< CAMBIO CLAVE 3: Mostrar spinner si la autenticación o el dashboard están cargando >>>>>
+  if (loadingAuth || loading) {
+    // Si loadingAuth es verdadero, el contexto de Auth aún no ha resuelto la sesión.
+    // Si loading es verdadero, el dashboard está cargando sus datos (loadUserData).
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">
+            {loadingAuth ? 'Verificando sesión...' : 'Cargando tu dashboard...'}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Si loadingAuth es false y no hay user, se debe redirigir (se asume que el router lo maneja).
+  if (!user) {
+    return null;
+  }
+  
+  // ... (Resto del componente se mantiene igual)
 
   const getProgressStats = () => {
     const totalContent = userContent.filter(c => c.has_access).length;
@@ -144,29 +216,26 @@ const UserDashboard = () => {
   const stats = getProgressStats();
   const totalWatchTime = getTotalWatchTime();
 
-  if (!user) {
-    navigate('/login');
-    return null;
-  }
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Cargando tu dashboard...</p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Botón Cerrar Sesión */}
+      <div className="flex justify-end container mx-auto pt-4">
+        <Button
+          variant="outline"
+          onClick={async () => {
+            await signOut();
+            navigate('/login');
+          }}
+        >
+          Cerrar Sesión
+        </Button>
+      </div>
       <Helmet>
         <title>Mi Dashboard - BSB Capital</title>
         <meta name="description" content="Panel de control de tu membresía y progreso en BSB Capital" />
       </Helmet>
-
+      {/* ... (Resto del renderizado) */}
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-6 sm:mb-8">

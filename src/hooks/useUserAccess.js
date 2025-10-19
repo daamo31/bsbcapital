@@ -1,96 +1,42 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { supabase } from '@/lib/customSupabaseClient';
+import { fetchWithTimeout } from '@/lib/fetchWithTimeout';
 import hotmartService from '@/lib/hotmartService';
 
 export const useUserAccess = (contentId = null) => {
+  const { user } = useAuth(); // Asume que user viene de useAuth
+  
   const [hasAccess, setHasAccess] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Estados adicionales para datos específicos
   const [userSubscription, setUserSubscription] = useState(null);
   const [hotmartData, setHotmartData] = useState(null);
-  const [contentData, setContentData] = useState(null);  // Datos del contenido de Hotmart
-  const [videoStreamURL, setVideoStreamURL] = useState(null);  // URL directa del video
-  const { user } = useAuth();
+  const [contentData, setContentData] = useState(null);
+  const [videoStreamURL, setVideoStreamURL] = useState(null);
 
-  const verifyAccess = async (forceRefresh = false) => {
-    if (!user) {
+  const verifyAccess = async ({ isMounted = true, signal }) => {
+    // Si no hay usuario, el acceso es denegado por defecto.
+    if (!user || !user.id) {
       setHasAccess(false);
       setIsLoading(false);
       return false;
     }
 
+    // Si la señal de aborto ya está activa, salir.
+    if (signal?.aborted || !isMounted) return false;
+
     try {
       setIsLoading(true);
       setError(null);
+      setHotmartData(null);
+      setContentData(null);
+      setVideoStreamURL(null);
 
-      // 🧪 MODO DE PRUEBA: Simular membresía premium automáticamente
-      const isTestMode = window.location.pathname.includes('/test') || 
-                        window.location.pathname.includes('/hotmart') ||
-                        import.meta.env.VITE_FORCE_PREMIUM_ACCESS === 'true';
-
-      if (isTestMode) {
-        // Simular suscripción premium para testing
-        const mockPremiumSubscription = {
-          id: 'mock-premium-sub',
-          user_id: user.id,
-          plan_id: 3,
-          status: 'active',
-          starts_at: new Date().toISOString(),
-          expires_at: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1 año
-          subscription_plans: {
-            id: 3,
-            name: 'Premium BSB Capital',
-            features: ['Acceso completo a academia', 'Todos los videos', 'Recursos descargables', 'Soporte prioritario'],
-            duration_months: 12
-          }
-        };
-
-        setUserSubscription(mockPremiumSubscription);
-        setHasAccess(true);
-
-        // Simular datos de contenido de Hotmart para testing
-        if (contentId) {
-          const mockContentData = {
-            videos: [
-              {
-                id: 'mock_video_1',
-                title: `Video principal - ${contentId}`,
-                duration: '25:30',
-                stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-              },
-              {
-                id: 'mock_video_2', 
-                title: 'Conceptos avanzados',
-                duration: '18:45',
-                stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'
-              }
-            ],
-            documents: [
-              { title: 'Manual del curso PDF', type: 'PDF', size: '2.5 MB', url: '/mock/manual.pdf' },
-              { title: 'Plantilla Excel', type: 'XLSX', size: '1.2 MB', url: '/mock/plantilla.xlsx' }
-            ],
-            audios: [
-              { title: 'Podcast bonus', duration: '18:30', url: '/mock/podcast.mp3' }
-            ]
-          };
-
-          setContentData(mockContentData);
-          setVideoStreamURL(mockContentData.videos[0].stream_url);
-          setHotmartData({ 
-            hasAccess: true, 
-            status: 'ACTIVE',
-            subscription: mockPremiumSubscription,
-            mockMode: true 
-          });
-        }
-
-        setIsLoading(false);
-        return true;
-      }
-
-      // Verificar suscripción local primero (para UI/UX rápido)
-      const { data: subscription, error: subError } = await supabase
+      // 1. Verificar suscripción local
+      const subscriptionCall = () => supabase
         .from('user_subscriptions')
         .select(`
           *,
@@ -106,62 +52,94 @@ export const useUserAccess = (contentId = null) => {
         .or('expires_at.is.null,expires_at.gt.now()')
         .order('created_at', { ascending: false })
         .limit(1);
+        
+      const { data: subscription, error: subError } = await fetchWithTimeout(subscriptionCall, 10000, signal);
+      
+      if (signal?.aborted || !isMounted) return false;
+      if (subError) throw subError;
 
       const hasLocalSubscription = subscription && subscription.length > 0;
       setUserSubscription(hasLocalSubscription ? subscription[0] : null);
 
-      // Si hay contentId específico, verificar con Hotmart
+      // 2. Verificar acceso a contenido específico con Hotmart (si contentId existe)
       if (contentId && user.email) {
         const hotmartProductId = hotmartService.getHotmartProductId(contentId);
-        
+        let currentAccessStatus = hasLocalSubscription; // Usar suscripción local como fallback inicial
+
         try {
           // Obtener datos completos del contenido desde Hotmart
           const contentResponse = await hotmartService.getContentData(hotmartProductId, user.email);
+          if (signal?.aborted || !isMounted) return false;
+          
           setHotmartData(contentResponse);
           
           if (contentResponse.hasAccess && contentResponse.contentData) {
             setContentData(contentResponse.contentData);
-            setHasAccess(true);
+            currentAccessStatus = true;
             
             // Si hay videos, obtener URL de streaming del primero
             if (contentResponse.contentData.videos && contentResponse.contentData.videos.length > 0) {
               const firstVideo = contentResponse.contentData.videos[0];
               const streamURL = await hotmartService.getVideoStreamURL(firstVideo.id, user.email);
+              if (signal?.aborted || !isMounted) return false;
               setVideoStreamURL(streamURL);
             }
           } else {
-            setHasAccess(false);
+            // Hotmart denegó el acceso (o no encontró el producto)
+            currentAccessStatus = false;
             setContentData(null);
             setVideoStreamURL(null);
           }
+          setHasAccess(currentAccessStatus);
         } catch (hotmartError) {
-          console.warn('Error obteniendo contenido de Hotmart, usando suscripción local:', hotmartError);
-          // Fallback a verificación local si Hotmart falla
+          if (signal?.aborted || !isMounted) return false;
+          console.warn('Error obteniendo contenido de Hotmart, confiando en suscripción local:', hotmartError);
+          // Fallback: Si Hotmart falla (por red o timeout), nos quedamos con el estado de la suscripción de Supabase.
           setHasAccess(hasLocalSubscription);
           setContentData(null);
+          setVideoStreamURL(null);
         }
       } else {
-        // Sin content_id específico, usar solo suscripción local
+        // 3. Sin content_id específico, usar solo suscripción local
         setHasAccess(hasLocalSubscription);
       }
 
       setIsLoading(false);
-      return hasAccess;
+      return hasAccess; // El valor final de hasAccess
 
     } catch (err) {
+      if (signal?.aborted || !isMounted) return false;
       console.error('Error verificando acceso:', err);
-      setError(err.message || 'Error verificando acceso');
+      setError(err.message || 'Error desconocido al verificar acceso');
       setHasAccess(false);
       setIsLoading(false);
       return false;
     }
   };
 
-  const refreshAccess = () => verifyAccess(true);
+  const refreshAccess = () => verifyAccess({ isMounted: true, signal: null });
 
+  // Uso de useEffect y AbortController (CORRECTO)
   useEffect(() => {
-    verifyAccess();
-  }, [user?.id, contentId]);
+    // 1. Evitar llamadas si no hay usuario o contentId necesario
+    if (!user || !user.id) {
+        setIsLoading(false);
+        setHasAccess(false);
+        return;
+    }
+    
+    let isMounted = true;
+    const abortController = new AbortController();
+    
+    // Llamada inicial
+    verifyAccess({ isMounted, signal: abortController.signal });
+
+    // Cleanup: se ejecuta al desmontar el componente o antes de re-ejecutar el effect
+    return () => {
+      isMounted = false;
+      abortController.abort(); // Aborta cualquier fetch pendiente
+    };
+  }, [user?.id, contentId]); // Dependencias: Solo re-ejecutar si el usuario o el contentId cambian.
 
   return {
     hasAccess,

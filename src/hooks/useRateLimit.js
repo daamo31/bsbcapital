@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { supabase } from '@/lib/customSupabaseClient';
+import { fetchWithTimeout } from '@/lib/fetchWithTimeout';
 
 // Get client IP (simple approach)
 const getClientIP = async () => {
@@ -22,9 +23,10 @@ export const useRateLimit = () => {
     try {
       const ip = await getClientIP();
       
-      const { data, error } = await supabase.functions.invoke('rate-limit', {
+      const call = () => supabase.functions.invoke('rate-limit', {
         body: { action, ip }
       });
+      const { data, error } = await fetchWithTimeout(call, 10000);
 
       if (error) {
         console.error('Rate limit check error:', error);

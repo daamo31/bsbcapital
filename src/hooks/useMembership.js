@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { supabase } from '@/lib/customSupabaseClient';
+import { fetchWithTimeout } from '@/lib/fetchWithTimeout';
 
 export const useMembership = () => {
   const { user } = useAuth();
@@ -14,8 +15,10 @@ export const useMembership = () => {
   });
 
   useEffect(() => {
+    let isMounted = true;
+    const abortController = new AbortController();
     if (user) {
-      fetchMembershipData();
+      fetchMembershipData({ isMounted, signal: abortController.signal });
     } else {
       setMembershipData({
         isActive: false,
@@ -26,13 +29,16 @@ export const useMembership = () => {
         error: null
       });
     }
+    return () => {
+      isMounted = false;
+      abortController.abort();
+    };
   }, [user]);
 
-  const fetchMembershipData = async () => {
+  const fetchMembershipData = async ({ isMounted = true, signal } = {}) => {
     try {
       setMembershipData(prev => ({ ...prev, loading: true, error: null }));
-
-      const { data, error } = await supabase
+      const call = () => supabase
         .from('profiles')
         .select(`
           subscription_status,
@@ -47,14 +53,13 @@ export const useMembership = () => {
         `)
         .eq('id', user.id)
         .single();
-
+      const { data, error } = await fetchWithTimeout(call, 10000, signal);
+      if (signal?.aborted || !isMounted) return;
       if (error) throw error;
-
       const isActive = data?.subscription_status === 'active' || 
                       data?.membership_tier === 'lifetime' ||
                       data?.membership_tier === 'premium' ||
                       data?.membership_tier === 'pro';
-
       setMembershipData({
         isActive,
         tier: data?.membership_tier || 'free',
@@ -64,9 +69,13 @@ export const useMembership = () => {
         loading: false,
         error: null
       });
-
     } catch (error) {
-      console.error('Error fetching membership data:', error);
+      if (signal?.aborted || !isMounted) return;
+      if (error.message === 'timeout') {
+        console.warn('fetchMembershipData aborted');
+      } else {
+        console.error('Error fetching membership data:', error);
+      }
       setMembershipData(prev => ({
         ...prev,
         loading: false,

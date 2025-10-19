@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/data-display/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/navigation/tabs';
 import { supabase } from '@/lib/customSupabaseClient';
+import { fetchWithTimeout } from '@/lib/fetchWithTimeout';
 import UserManagement from '@/components/admin/UserManagement';
 import AdminCalendar from '@/components/admin/AdminCalendar';
 import ConsultationManagement from '@/components/admin/ConsultationManagement';
@@ -23,48 +24,76 @@ import {
 } from 'lucide-react';
 
 const AdminDashboard = () => {
+  const { signOut, user } = require('@/contexts/SupabaseAuthContext').useAuth();
+  const { useNavigate } = require('react-router-dom');
+  const navigate = useNavigate();
   const [metrics, setMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
   const [recentActivity, setRecentActivity] = useState([]);
 
   useEffect(() => {
-    loadDashboardData();
-    
+    let isMounted = true;
+    if (!user || !user.id) {
+      setLoading(false);
+      return;
+    }
+    const fetchData = async () => {
+      await loadDashboardData(isMounted);
+    };
+    fetchData();
     // Listen for tab change events from admin dropdown
     const handleTabChange = (event) => {
       setActiveTab(event.detail);
     };
-    
     window.addEventListener('admin-tab-change', handleTabChange);
-    
     return () => {
+      isMounted = false;
       window.removeEventListener('admin-tab-change', handleTabChange);
     };
-  }, []);
+  }, [user?.id]);
 
-  const loadDashboardData = async () => {
-    try {
-      // Get dashboard metrics
-      const { data: metricsData, error: metricsError } = await supabase
-        .rpc('get_dashboard_metrics');
+  const loadDashboardData = async (isMounted = true) => {
+    if (!user || !user.id || !isMounted) return;
+    const MAX_RETRIES = 3;
+    let lastError = null;
+    for (let i = 0; i < MAX_RETRIES; i++) {
+      try {
+        // Get dashboard metrics
+        const callMetrics = () => supabase.rpc('get_dashboard_metrics');
+        const { data: metricsData, error: metricsError } = await fetchWithTimeout(callMetrics, 10000);
+        if (!isMounted) return;
+        if (metricsError) throw metricsError;
+        setMetrics(metricsData);
 
-      if (metricsError) throw metricsError;
-      
-      setMetrics(metricsData);
-
-      // Get recent activity
-      const { data: activityData } = await supabase
-        .from('admin_activity_log')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(10);
-
-      setRecentActivity(activityData || []);
-
-    } catch (error) {
-      console.error('Error loading dashboard data:', error);
-    } finally {
+        // Get recent activity
+        const callActivity = () => supabase
+          .from('admin_activity_log')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(10);
+        const { data: activityData, error: activityError } = await fetchWithTimeout(callActivity, 10000);
+        if (!isMounted) return;
+        if (activityError) throw activityError;
+        setRecentActivity(activityData || []);
+        lastError = null;
+        break;
+      } catch (error) {
+        lastError = error;
+        console.error(`Intento ${i + 1} fallido:`, error);
+        if (i < MAX_RETRIES - 1) {
+          await new Promise(resolve => setTimeout(resolve, 500 * (i + 1)));
+        }
+      } finally {
+        if (i === MAX_RETRIES - 1 && isMounted) {
+          setLoading(false);
+        }
+      }
+    }
+    if (lastError && isMounted) {
+      // Opcional: mostrar toast de error si tienes sistema de notificaciones
+      console.error('No se pudieron cargar los datos del dashboard después de varios intentos.');
+    } else if (isMounted) {
       setLoading(false);
     }
   };
@@ -105,6 +134,18 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Botón Cerrar Sesión */}
+      <div className="flex justify-end container mx-auto pt-4">
+        <Button
+          variant="outline"
+          onClick={async () => {
+            await signOut();
+            navigate('/login');
+          }}
+        >
+          Cerrar Sesión
+        </Button>
+      </div>
       {/* Header */}
       <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/customSupabaseClient';
+import { fetchWithTimeout } from '@/lib/fetchWithTimeout';
 
 export const useAdmin = () => {
   const [isAdmin, setIsAdmin] = useState(false);
@@ -8,19 +9,27 @@ export const useAdmin = () => {
   const [accessLevel, setAccessLevel] = useState(0);
   const [membershipTier, setMembershipTier] = useState('free');
   const [subscriptionStatus, setSubscriptionStatus] = useState('free');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // loading=true al inicio
   const [permissions, setPermissions] = useState({});
 
   useEffect(() => {
-    checkUserStatus();
+    let isMounted = true;
+    const abortController = new AbortController();
+    setLoading(true);
+    checkUserStatus({ isMounted, signal: abortController.signal });
+    return () => {
+      isMounted = false;
+      abortController.abort();
+    };
   }, []);
 
-  const checkUserStatus = async () => {
+  const checkUserStatus = async ({ isMounted = true, signal } = {}) => {
     try {
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      
+      // Intenta obtener el usuario, puede fallar si la sesión es antigua o inválida
+      const callAuth = () => supabase.auth.getUser();
+      const { data: { user }, error: userError } = await fetchWithTimeout(callAuth, 10000, signal);
+      if (signal?.aborted || !isMounted) return;
       if (userError) {
-        // Si hay error de JWT, limpiar la sesión corrupta
         if (userError.message?.includes('invalid claim') || userError.message?.includes('bad_jwt')) {
           console.log('JWT corrupto detectado, limpiando sesión...');
           await supabase.auth.signOut();
@@ -29,26 +38,24 @@ export const useAdmin = () => {
         resetUserStatus();
         return;
       }
-      
       if (!user) {
         resetUserStatus();
         return;
       }
-
       // Obtener datos completos del usuario
-      const { data: userData, error: dbError } = await supabase
+      const callUser = () => supabase
         .from('users')
         .select('role, access_level, membership_tier, subscription_status, permissions, is_active')
         .eq('id', user.id)
         .single();
-
+      const { data: userData, error: dbError } = await fetchWithTimeout(callUser, 10000, signal);
+      if (signal?.aborted || !isMounted) return;
       if (dbError) {
         console.error('Error checking user status:', dbError);
         resetUserStatus();
       } else if (userData) {
         const role = userData.role || 'user';
         const level = userData.access_level || 0;
-        
         setUserRole(role);
         setAccessLevel(level);
         setMembershipTier(userData.membership_tier || 'free');
@@ -58,9 +65,11 @@ export const useAdmin = () => {
         setIsSuperAdmin(role === 'super_admin' && userData.is_active);
       }
     } catch (error) {
+      if (signal?.aborted || !isMounted) return;
       console.error('Error in user status check:', error);
       resetUserStatus();
     } finally {
+      if (signal?.aborted || !isMounted) return;
       setLoading(false);
     }
   };
