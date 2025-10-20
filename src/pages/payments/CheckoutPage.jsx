@@ -184,15 +184,6 @@ const CheckoutPage = () => {
       if (error) throw new Error(error.message);
       if (data.error) throw new Error(data.error);
 
-      const stripe = await stripePromise;
-      const { error: stripeError } = await stripe.redirectToCheckout({
-        sessionId: data.sessionId,
-      });
-
-      if (stripeError) {
-        throw new Error(stripeError.message);
-      }
-
       // Enviar email de activación de membresía (no bloquear el flujo si falla)
       try {
         await emailService.sendSubscriptionActivated({
@@ -204,6 +195,15 @@ const CheckoutPage = () => {
         console.error('Error enviando email de activación de membresía:', e);
       }
 
+      // Redirigir al dashboard para refrescar datos tras la compra
+      navigate('/dashboard');
+
+      // Si quieres que el usuario vuelva manualmente, puedes mostrar un mensaje en vez de redirigir
+      // toast({
+      //   title: "¡Compra exitosa!",
+      //   description: "Tu membresía está activa. Refresca el panel para ver los cambios.",
+      //   variant: "success"
+      // });
     } catch(error) {
        toast({
         variant: "destructive",

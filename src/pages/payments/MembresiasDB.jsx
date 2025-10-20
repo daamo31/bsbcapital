@@ -56,19 +56,18 @@ const fallbackPlans = [
     {
       id: 'wealth-membership',
       name: 'Wealth Membership',
-      price_monthly: 197,
+      price_monthly: 2007, // Mostrar el precio anual
       currency: 'EUR',
       features: [
         'Todo lo anterior',
         'Consultoría 1-1 personalizada',
-        'Acceso VIP a eventos',
         'Portfolio management',
         'Soporte 24/7',
         'Acceso anticipado a nuevos productos'
       ],
       highlight: false,
-      description: 'Plan completo',
-      stripe_price_monthly: 'price_wealth_monthly'
+      description: 'Plan completo (anual)',
+      stripe_price_monthly: null // No hay mensual, solo anual
     }
 ];
 
@@ -323,15 +322,13 @@ const MembresiasDB = () => {
               <tbody>
                 {[
                   { name: 'Newsletter gratuita', free: true, trader: true, premium: true, wealth: true },
-                  { name: 'Acceso limitado al contenido', free: true, trader: true, premium: true, wealth: true },
-                  { name: 'Formación completa', free: false, trader: true, premium: true, wealth: true },
-                  { name: 'Comunidad privada', free: false, trader: true, premium: true, wealth: true },
-                  { name: 'Señales de trading', free: false, trader: true, premium: true, wealth: true },
-                  { name: 'Análisis de mercado diarios', free: false, trader: false, premium: true, wealth: true },
-                  { name: 'Webinars exclusivos', free: false, trader: false, premium: true, wealth: true },
+                  { name: 'BSB Marker', free: false, trader: true, premium: true, wealth: true },
+                  { name: 'Formación completa', free: false, trader: true, premium: false, wealth: true },
+                  { name: 'Comunidad privada', free: false, trader: false, premium: true, wealth: true },
+                  { name: 'Análisis de mercado', free: false, trader: false, premium: true, wealth: true },
+                  { name: 'Webinars exclusivos', free: false, trader: true, premium: true, wealth: true },
                   { name: 'Consultoría personalizada', free: false, trader: false, premium: false, wealth: true },
-                  { name: 'Acceso VIP a eventos', free: false, trader: false, premium: false, wealth: true },
-                  { name: 'Soporte 24/7', free: false, trader: false, premium: true, wealth: true }
+                  { name: 'Soporte 24/7', free: false, trader: false, premium: false, wealth: true }
                 ].map((feature, index) => (
                   <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
                     <td className="p-6 font-medium text-gray-900">{feature.name}</td>

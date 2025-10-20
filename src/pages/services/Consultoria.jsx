@@ -27,7 +27,8 @@ const availableTimeSlots = [
 const consultationPrices = {
   "30min": "price_1RtYGsJmSk3VG9oicAWmQ4sN",
   "60min": "price_1RtYFkJmSk3VG9oi8wUdMK5k",
-  "test": "price_1SIrIzJmSk3VG9oiTnMp1RfI", // PRUEBA PRODUCCIÓN: price_1SIrIzJmSk3VG9oiTnMp1RfI + prod_TFM1UHRowDlqKB
+  // Actualizado: IDs de Stripe para prueba en producción
+  "test": "price_1SKG4NJmSk3VG9oi6CjvmqLC", // prod_TGnf81ENbBkghj
 };
 
 const BookingModal = () => {

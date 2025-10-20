@@ -17,6 +17,7 @@ const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSignUp = async (e) => {
@@ -25,6 +26,7 @@ const SignUp = () => {
     const { error } = await signUp(email, password, {
       data: {
         full_name: fullName,
+        username: username,
       },
     });
     if (!error) {
@@ -43,6 +45,27 @@ const SignUp = () => {
         description: "Hemos enviado un correo de confirmación. Por favor, verifica tu email para activar tu cuenta.",
       });
       navigate('/login');
+    } else {
+      // Manejar error de username duplicado
+      if (error.message && error.message.toLowerCase().includes('username')) {
+        toast({
+          title: "Nombre de usuario en uso",
+          description: "El nombre de usuario elegido ya está registrado. Por favor, elige otro.",
+          variant: "destructive",
+        });
+      } else if (error.message && error.message.toLowerCase().includes('duplicate')) {
+        toast({
+          title: "Datos duplicados",
+          description: "El email o nombre de usuario ya están registrados.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error en el registro",
+          description: error.message || "No se pudo crear la cuenta. Intenta de nuevo.",
+          variant: "destructive",
+        });
+      }
     }
     setLoading(false);
   };
@@ -70,6 +93,19 @@ const SignUp = () => {
                   onChange={(e) => setFullName(e.target.value)}
                   required
                   placeholder="Tu nombre y apellidos"
+                />
+              </div>
+              <div>
+                <Label htmlFor="username">Nombre de usuario</Label>
+                <Input
+                  id="username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                  placeholder="Elige un nombre único (sin espacios)"
+                  minLength="3"
+                  pattern="^[a-zA-Z0-9_]+$"
                 />
               </div>
               <div>
