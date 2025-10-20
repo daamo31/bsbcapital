@@ -76,8 +76,7 @@ const ConsultationManagement = () => {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, full_name')
-        .eq('role', 'admin');
+        .select('id, full_name');
 
       if (error) throw error;
       setAdmins(data || []);

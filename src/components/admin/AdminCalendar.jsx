@@ -52,24 +52,13 @@ const DayDetailsPanel = ({
   // Combinar consultas y bloques en una lista de eventos
   const allEvents = [
     ...(events.consultations || []).map(consultation => ({
-      id: consultation.id,
+      id: consultation.user_id || consultation.id,
       type: 'consultation',
-      title: consultation.title || 'Consultoría',
-      time: format(new Date(consultation.start_time), 'HH:mm'),
       client: consultation.client_name,
-      admin: consultation.admin_name,
-      status: consultation.status,
-      originalData: consultation
-    })),
-    ...(events.blocks || []).map(block => ({
-      id: block.id,
-      type: 'block',
-      title: `Tiempo Bloqueado - ${block.reason}`,
-      time: format(new Date(block.start_time), 'HH:mm'),
-      admin: block.admin_name,
-      originalData: block
+      booking_date: consultation.booking_date,
+      title: consultation.title
     }))
-  ].sort((a, b) => a.time.localeCompare(b.time));
+  ];
 
   return (
     <div className="fixed inset-0 lg:relative lg:inset-auto bg-white lg:bg-transparent border-0 lg:border lg:border-gray-200 lg:rounded-lg lg:shadow-lg p-4 lg:p-4 z-50 lg:z-auto overflow-y-auto lg:overflow-visible">
@@ -87,56 +76,17 @@ const DayDetailsPanel = ({
         {allEvents.length === 0 ? (
           <p className="text-gray-500 text-sm text-center py-4">No hay eventos programados</p>
         ) : (
-          allEvents.map((event) => (
-            <div key={`${event.type}-${event.id}`} className="bg-gray-50 p-3 rounded-lg">
+          allEvents.map((event, idx) => (
+            <div key={event.id || `${event.booking_date}-${event.client}-${idx}`} className="bg-gray-50 p-3 rounded-lg">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
                 <div className="flex-1 min-w-0">
-                  <div className="font-medium text-sm sm:text-base">{event.title}</div>
+                  <div className="font-medium text-sm sm:text-base">{event.client}</div>
                   <div className="text-xs sm:text-sm text-gray-600 flex flex-wrap items-center gap-2 mt-1">
                     <span className="flex items-center gap-1">
                       <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
-                      {event.time}
+                      {event.booking_date ? new Date(event.booking_date).toLocaleString('es-ES') : ''}
                     </span>
-                    {event.client && (
-                      <span className="flex items-center gap-1">
-                        <User className="w-3 h-3 sm:w-4 sm:h-4" />
-                        <span className="truncate max-w-32 sm:max-w-none">{event.client}</span>
-                      </span>
-                    )}
-                    {event.admin && (
-                      <Badge variant="outline" className="text-xs">
-                        {event.admin}
-                      </Badge>
-                    )}
-                    {event.status && (
-                      <Badge className={`${getStatusColor(event.status)} text-xs`}>
-                        {event.status}
-                      </Badge>
-                    )}
                   </div>
-                </div>
-                <div className="flex gap-1 self-end sm:self-start">
-                  {event.type === 'consultation' && (
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={() => onEditConsultation(event.originalData)}
-                      className="p-2"
-                    >
-                      <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
-                    </Button>
-                  )}
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => event.type === 'consultation' ? 
-                      onDeleteConsultation(event.id) : 
-                      onDeleteTimeBlock(event.id)
-                    }
-                    className="p-2"
-                  >
-                    <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
-                  </Button>
                 </div>
               </div>
             </div>
@@ -208,62 +158,23 @@ const AdminCalendar = () => {
   const loadCalendarData = async () => {
     try {
       setLoading(true);
-      
       const startDate = format(startOfMonth(currentDate), 'yyyy-MM-dd');
       const endDate = format(endOfMonth(currentDate), 'yyyy-MM-dd');
-      
-      // Intentar cargar datos reales primero
-      try {
-        const { data, error } = await supabase.rpc('get_calendar_data', {
-          start_date: startDate,
-          end_date: endDate,
-          admin_filter: selectedAdmin
-        });
 
-        if (!error && data) {
-          setCalendarData(data);
-          return;
-        }
-      } catch (realDataError) {
-        console.log('Datos reales no disponibles, usando datos mock');
-      }
-      
-      // Fallback a datos mock si no hay datos reales
-      const mockData = {
-        consultations: [
-          {
-            id: '550e8400-e29b-41d4-a716-446655440001',
-            title: 'Consultoría de Inversión',
-            description: 'Revisión de cartera',
-            start_time: '2025-10-07T10:00:00Z',
-            end_time: '2025-10-07T11:00:00Z',
-            status: 'confirmed',
-            type: 'consultation',
-            client_name: 'Juan Pérez',
-            client_email: 'juan@example.com',
-            admin_name: 'Daniel',
-            admin_id: '550e8400-e29b-41d4-a716-446655440002'
-          }
-        ],
-        time_blocks: [
-          {
-            id: '550e8400-e29b-41d4-a716-446655440003',
-            start_time: '2025-10-08T14:00:00Z',
-            end_time: '2025-10-08T15:00:00Z',
-            reason: 'No disponible',
-            block_type: 'unavailable',
-            admin_name: 'Daniel'
-          }
-        ],
-        admins: [
-          { id: '550e8400-e29b-41d4-a716-446655440002', name: 'Daniel', email: 'danieldelamo31@gmail.com' },
-          { id: '550e8400-e29b-41d4-a716-446655440004', name: 'J. Salgado', email: 'jsalgado@bsbcapital.io' },
-          { id: '550e8400-e29b-41d4-a716-446655440005', name: 'M. Pérez', email: 'mperez@bsbcapital.io' }
-        ]
-      };
-      
-      setCalendarData(mockData);
-      
+      // Cargar solo cliente, fecha y hora desde la vista
+      const { data, error } = await supabase
+        .from('consultations_dashboard')
+        .select('client_name, booking_date, title, user_id')
+        .gte('booking_date', startDate)
+        .lte('booking_date', endDate);
+
+      if (error) throw error;
+
+      setCalendarData({
+        consultations: data || [],
+        time_blocks: [], // Si tienes otra vista para bloques, agrégala aquí
+        admins: [] // Si necesitas admins, agrégalo aquí
+      });
     } catch (error) {
       console.error('Error loading calendar data:', error);
     } finally {
@@ -273,15 +184,16 @@ const AdminCalendar = () => {
 
   const getEventsForDate = (date) => {
     if (!calendarData) return { consultations: [], blocks: [] };
-    
-    const consultations = (calendarData.consultations || []).filter(consultation =>
-      isSameDay(new Date(consultation.start_time), date)
-    );
-    
-    const blocks = (calendarData.time_blocks || []).filter(block =>
-      isSameDay(new Date(block.start_time), date)
-    );
-    
+    const consultations = (calendarData.consultations || []).filter(consultation => {
+      if (!consultation.booking_date) return false;
+      // booking_date puede ser string o Date
+      const bookingDate = new Date(consultation.booking_date);
+      return isSameDay(bookingDate, date);
+    });
+    const blocks = (calendarData.time_blocks || []).filter(block => {
+      if (!block.start_time) return false;
+      return isSameDay(new Date(block.start_time), date);
+    });
     return { consultations, blocks };
   };
 
@@ -428,14 +340,14 @@ const AdminCalendar = () => {
               </div>
               
               <div className="space-y-0.5 sm:space-y-1">
-                {consultations.slice(0, window.innerWidth < 640 ? 1 : 2).map(consultation => (
+                {consultations.slice(0, window.innerWidth < 640 ? 1 : 2).map((consultation, idx) => (
                   <div
-                    key={consultation.id}
-                    className={`text-xs p-0.5 sm:p-1 rounded border ${getStatusColor(consultation.status)}`}
+                    key={consultation.id || `${consultation.booking_date}-${consultation.client_name || consultation.client}-${idx}`}
+                    className="text-xs p-0.5 sm:p-1 rounded border bg-blue-100 text-blue-800 border-blue-200"
                   >
-                    <div className="font-medium truncate text-xs">{consultation.title}</div>
+                    <div className="font-medium truncate text-xs">{consultation.client_name || consultation.client}</div>
                     <div className="text-xs opacity-75 hidden sm:block">
-                      {format(new Date(consultation.start_time), 'HH:mm')}
+                      {consultation.booking_date ? new Date(consultation.booking_date).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : ''}
                     </div>
                   </div>
                 ))}
