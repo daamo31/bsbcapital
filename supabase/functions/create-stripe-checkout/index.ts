@@ -1,140 +1,88 @@
-import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import Stripe from 'https://esm.sh/stripe@12.18.0?target=deno';
+import { corsHeaders } from "../_shared/cors.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY")!;
+const STRIPE_API = "https://api.stripe.com/v1";
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
   }
 
   try {
-    const { priceId, mode, email, metadata } = await req.json()
-    
-    console.log('Request data:', { priceId, mode, email, metadata })
+    const { priceId, mode = "subscription", userId, email } = await req.json();
 
-    // Verificar variables de entorno
-    const stripeSecretKey = Deno.env.get('STRIPE_SECRET_KEY')
-    const supabaseUrl = Deno.env.get('SUPABASE_URL')
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
-    
-    if (!stripeSecretKey) {
-      throw new Error('STRIPE_SECRET_KEY not configured. Please set this environment variable in Supabase Dashboard > Settings > Edge Functions > Environment Variables')
-    }
-    if (!supabaseUrl) {
-      throw new Error('SUPABASE_URL not configured')
-    }
-    if (!supabaseServiceKey) {
-      throw new Error('SUPABASE_SERVICE_ROLE_KEY not configured')
+    if (!priceId || !userId || !email) {
+      return new Response(
+        JSON.stringify({ error: "priceId, userId, and email are required." }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 },
+      );
     }
 
-    // Inicializar Stripe
-    const stripe = new Stripe(stripeSecretKey, {
-      apiVersion: '2023-10-16',
-    })
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
-    // Inicializar Supabase
-    const supabase = createClient(supabaseUrl, supabaseServiceKey)
+    // Buscar o crear cliente Stripe
+    const searchParams = new URLSearchParams({ email, limit: "1" });
+    const customersRes = await fetch(`https://api.stripe.com/v1/customers?${searchParams}`, {
+      headers: { Authorization: `Bearer ${STRIPE_SECRET_KEY}` },
+    });
+    const customers = await customersRes.json();
 
-    // Solo crear consulta si es un pago único (no suscripción)
-    let consultation = null;
-    
-    if (mode !== 'subscription') {
-      // Verificar que metadata existe y tiene los campos necesarios
-      if (!metadata || !metadata.client_name) {
-        console.error('Missing metadata or client_name for consultation:', { metadata, mode })
-        return Response.json(
-          { error: 'Missing required consultation data (client_name)' }, 
-          { status: 400 }
-        )
-      }
-
-      const consultationData = {
-        client_name: metadata.client_name,
-        client_email: metadata.client_email || email,
-        service: metadata.consultation_type || metadata.service || 'general',
-        booking_date: metadata.scheduled_at || metadata.booking_date,
-        notes: metadata.description || metadata.notes,
-        status: 'pending_payment',
-        title: `Consulta ${metadata.consultation_type || 'general'}`,
-      }
-
-      console.log('Creating consultation with data:', consultationData)
-
-      const { data: consultationResult, error: consultationError } = await supabase
-        .from('consultations')
-        .insert(consultationData)
-        .select()
-        .single()
-
-      if (consultationError) {
-        console.error('❌ Error creating consultation:', {
-          error: consultationError,
-          dataSent: consultationData,
-          supabaseUrl,
-          table: 'consultations',
-        })
-        return Response.json(
-          { error: `Failed to create consultation record: ${consultationError.message}` },
-          { status: 500 }
-        )
-      }
-
-      consultation = consultationResult;
-      console.log('Consultation created successfully:', consultation.id)
-    }    // Crear sesión de Stripe
-    console.log('Creating Stripe session for mode:', mode, consultation ? `consultation: ${consultation.id}` : 'subscription')
-    console.log('Stripe session data:', { priceId, mode, email, origin: req.headers.get('origin') })
-    
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
+    let customerId: string;
+    if (customers.data?.length > 0) {
+      customerId = customers.data[0].id;
+    } else {
+      const createRes = await fetch("https://api.stripe.com/v1/customers", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${STRIPE_SECRET_KEY}`,
+          "Content-Type": "application/x-www-form-urlencoded",
         },
-      ],
-      mode: mode || 'payment',
-      customer_email: email,
-      success_url: mode === 'subscription' 
-        ? `${req.headers.get('origin') || 'https://localhost:5173'}/compra-exitosa?session_id={CHECKOUT_SESSION_ID}`
-        : `${req.headers.get('origin') || 'https://localhost:5173'}/consultation-post-payment?session_id={CHECKOUT_SESSION_ID}&consultation_id=${consultation?.id}`,
-      cancel_url: mode === 'subscription'
-        ? `${req.headers.get('origin') || 'https://localhost:5173'}/membresias`
-        : `${req.headers.get('origin') || 'https://localhost:5173'}/consultoria`,
-      metadata: {
-        ...metadata,
-        ...(consultation && { consultation_id: consultation.id }),
-      },
-    })
-    
-    console.log('Stripe session created successfully:', session.id)
-
-    // Actualizar la consulta con el session_id de Stripe (solo si existe)
-    if (consultation) {
-      await supabase
-        .from('consultations')
-        .update({ stripe_session_id: session.id })
-        .eq('id', consultation.id)
+        body: new URLSearchParams({
+          email,
+          [`metadata[supabase_user_id]`]: userId,
+        }),
+      });
+      const customer = await createRes.json();
+      customerId = customer.id;
     }
+
+    const siteUrl = new URL(SUPABASE_URL).origin;
+
+    // Crear sesión de checkout
+    const params = new URLSearchParams({
+      mode,
+      customer: customerId,
+      success_url: `${siteUrl}/academia/gracias?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${siteUrl}/academia`,
+      [`line_items[0][price]`]: priceId,
+      [`line_items[0][quantity]`]: "1",
+      [`metadata[supabase_user_id]`]: userId,
+      [`metadata[access_type]`]: mode === "subscription" ? "membership" : "one_time",
+    });
+
+    const sessionRes = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${STRIPE_SECRET_KEY}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: params,
+    });
+
+    const session = await sessionRes.json();
 
     return new Response(
       JSON.stringify({ sessionId: session.id }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    )
-
+      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 },
+    );
   } catch (error) {
-    console.error('Error:', error)
+    console.error("Stripe session creation failed:", error);
     return new Response(
       JSON.stringify({ error: error.message }),
-      { 
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      }
-    )
+      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 },
+    );
   }
-})
+});
