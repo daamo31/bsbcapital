@@ -39,6 +39,17 @@ const ConsultationManagement = () => {
   useEffect(() => {
     loadConsultations();
     loadAdmins();
+
+    // Suscripción en tiempo real a cambios en la tabla consultations
+    const channel = supabase.channel('consultations_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'consultations' }, (payload) => {
+        loadConsultations();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   useEffect(() => {
@@ -48,20 +59,9 @@ const ConsultationManagement = () => {
   const loadConsultations = async () => {
     try {
       const { data, error } = await supabase
-        .from('consultations')
-        .select(`
-          *,
-          profiles:user_id (
-            email,
-            name,
-            avatar_url
-          ),
-          admin_profiles:consultant_id (
-            name,
-            email
-          )
-        `)
-        .order('scheduled_at', { ascending: false });
+        .from('consultations_dashboard')
+        .select('*')
+        .order('booking_date', { ascending: false });
 
       if (error) throw error;
       setConsultations(data || []);
@@ -76,7 +76,7 @@ const ConsultationManagement = () => {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, name, email')
+        .select('id, full_name')
         .eq('role', 'admin');
 
       if (error) throw error;
@@ -200,100 +200,7 @@ const ConsultationManagement = () => {
         </Button>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center">
-              <Clock className="h-8 w-8 text-blue-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-500">Programadas</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {consultations.filter(c => c.status === 'scheduled').length}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center">
-              <CheckCircle className="h-8 w-8 text-green-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-500">Confirmadas</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {consultations.filter(c => c.status === 'confirmed').length}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center">
-              <FileText className="h-8 w-8 text-purple-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-500">Con Formulario</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {consultations.filter(c => c.form_completed_at).length}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center">
-              <AlertCircle className="h-8 w-8 text-orange-600" />
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-500">Pend. Pago</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {consultations.filter(c => c.status === 'pending_payment').length}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Filters */}
-      <Card>
-        <CardContent className="p-4">
-          <div className="flex flex-col sm:flex-row gap-4">
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  placeholder="Buscar por cliente, email, tipo..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-            <div className="sm:w-48">
-              <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Filtrar por estado" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Todos los estados</SelectItem>
-                  <SelectItem value="scheduled">Programadas</SelectItem>
-                  <SelectItem value="confirmed">Confirmadas</SelectItem>
-                  <SelectItem value="completed">Completadas</SelectItem>
-                  <SelectItem value="cancelled">Canceladas</SelectItem>
-                  <SelectItem value="pending_payment">Pendiente pago</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Consultations Table */}
+      {/* Tabla simplificada solo con los campos de la vista */}
       <Card>
         <CardHeader>
           <CardTitle>Consultorías ({filteredConsultations.length})</CardTitle>
@@ -309,11 +216,9 @@ const ConsultationManagement = () => {
                 No hay consultorías
               </h3>
               <p className="text-gray-600 mb-4">
-                {searchTerm || statusFilter !== 'all' 
-                  ? 'No se encontraron consultorías con los filtros aplicados.'
-                  : 'Aún no hay consultorías registradas.'}
+                {searchTerm ? 'No se encontraron consultorías con los filtros aplicados.' : 'Aún no hay consultorías registradas.'}
               </p>
-              {!searchTerm && statusFilter === 'all' && (
+              {!searchTerm && (
                 <Button onClick={handleNewConsultation}>
                   <Plus className="h-4 w-4 mr-2" />
                   Crear primera consultoría
@@ -325,103 +230,25 @@ const ConsultationManagement = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead>User ID</TableHead>
                     <TableHead>Cliente</TableHead>
-                    <TableHead>Consultoría</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Servicio</TableHead>
                     <TableHead>Fecha</TableHead>
-                    <TableHead>Estado</TableHead>
-                    <TableHead>Formulario</TableHead>
-                    <TableHead>Acciones</TableHead>
+                    <TableHead>Notas</TableHead>
+                    <TableHead>Título</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredConsultations.map((consultation) => (
-                    <TableRow key={consultation.id}>
-                      <TableCell>
-                        <div className="flex items-center space-x-3">
-                          <div className="flex-shrink-0">
-                            {consultation.profiles?.avatar_url ? (
-                              <img
-                                className="h-8 w-8 rounded-full"
-                                src={consultation.profiles.avatar_url}
-                                alt=""
-                              />
-                            ) : (
-                              <div className="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center">
-                                <User className="h-4 w-4 text-gray-600" />
-                              </div>
-                            )}
-                          </div>
-                          <div>
-                            <div className="font-medium text-gray-900">
-                              {consultation.profiles?.name || consultation.client_name || 'Sin nombre'}
-                            </div>
-                            <div className="text-sm text-gray-500">
-                              {consultation.client_email || consultation.profiles?.email}
-                            </div>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div>
-                          <div className="font-medium text-gray-900">
-                            {consultation.title}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            {consultation.consultation_type}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="text-sm">
-                          <div className="font-medium">
-                            {new Date(consultation.scheduled_at).toLocaleDateString('es-ES')}
-                          </div>
-                          <div className="text-gray-500">
-                            {new Date(consultation.scheduled_at).toLocaleTimeString('es-ES', {
-                              hour: '2-digit',
-                              minute: '2-digit'
-                            })}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          {getStatusIcon(consultation.status)}
-                          {getStatusBadge(consultation.status)}
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {consultation.form_completed_at ? (
-                          <div className="flex items-center text-green-600">
-                            <CheckCircle className="h-4 w-4 mr-1" />
-                            <span className="text-sm">Completado</span>
-                          </div>
-                        ) : (
-                          <div className="flex items-center text-gray-400">
-                            <XCircle className="h-4 w-4 mr-1" />
-                            <span className="text-sm">Pendiente</span>
-                          </div>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleEditConsultation(consultation)}
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleDeleteConsultation(consultation.id)}
-                            className="text-red-600 hover:text-red-700"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
+                  {filteredConsultations.map((consultation, idx) => (
+                    <TableRow key={consultation.user_id || idx}>
+                      <TableCell>{consultation.user_id}</TableCell>
+                      <TableCell>{consultation.client_name}</TableCell>
+                      <TableCell>{consultation.client_email}</TableCell>
+                      <TableCell>{consultation.service}</TableCell>
+                      <TableCell>{consultation.booking_date ? new Date(consultation.booking_date).toLocaleString('es-ES') : ''}</TableCell>
+                      <TableCell>{consultation.notes}</TableCell>
+                      <TableCell>{consultation.title}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

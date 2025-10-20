@@ -36,7 +36,7 @@ import React, { useState, useEffect } from 'react';
       const { user } = useAuth();
       const navigate = useNavigate();
       const [services, setServices] = useState({});
-      const [loading, setLoading] = useState(true);
+        const [loading, setLoading] = useState(true);
       const [error, setError] = useState(null);
 
       useEffect(() => {
@@ -70,6 +70,16 @@ import React, { useState, useEffect } from 'react';
         };
 
         fetchUserServices();
+          // Suscripción en tiempo real a cambios en la tabla user_services
+          const channel = supabase.channel('user_services_changes')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'user_services' }, (payload) => {
+              fetchUserServices();
+            })
+            .subscribe();
+
+          return () => {
+            supabase.removeChannel(channel);
+          };
       }, [user, navigate]);
 
       if (loading) {

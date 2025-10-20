@@ -120,9 +120,20 @@ const ConsultationCalendar = ({
     }
   };
 
-  // Cargar slots cuando cambia la fecha
+  // Cargar slots cuando cambia la fecha o hay cambios en la tabla consultations
   useEffect(() => {
     loadAvailableSlots(selectedDate);
+
+    // Suscripción en tiempo real a cambios en la tabla consultations
+    const channel = supabase.channel('calendar_consultations_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'consultations' }, (payload) => {
+        loadAvailableSlots(selectedDate);
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [selectedDate, selectedDuration]);
 
   // Verificar si un slot está disponible

@@ -42,6 +42,17 @@ const AcademiaAdmin = () => {
 
   useEffect(() => {
     fetchContent();
+
+    // Suscripción en tiempo real a cambios en la tabla academy_content
+    const channel = supabase.channel('academy_content_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'academy_content' }, (payload) => {
+        fetchContent();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   const resetForm = () => {

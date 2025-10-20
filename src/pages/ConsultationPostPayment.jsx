@@ -115,6 +115,17 @@ const ConsultationPostPayment = () => {
     };
 
     loadConsultationData();
+
+    // Suscripción en tiempo real a cambios en la tabla consultations
+    const channel = supabase.channel('consultations_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'consultations' }, (payload) => {
+        loadConsultationData();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [searchParams, user, navigate, toast]);
 
   const handleChange = (e) => {

@@ -39,6 +39,17 @@ const UserManagement = () => {
 
   useEffect(() => {
     loadUsers();
+
+    // Suscripción en tiempo real a cambios en la tabla users
+    const channel = supabase.channel('users_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, (payload) => {
+        loadUsers();
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   useEffect(() => {
@@ -47,34 +58,22 @@ const UserManagement = () => {
 
   const loadUsers = async () => {
     try {
-      // Primero intentar cargar usuarios básicos
+      // Consultar la vista real_users en vez de la tabla users
       const { data, error } = await supabase
-        .from('users')
+        .from('real_users')
         .select('*')
         .order('created_at', { ascending: false });
 
       if (error) {
-        console.error('Error loading users:', error);
+        console.error('Error loading real_users:', error);
         throw error;
       }
 
-      console.log('✅ Usuarios cargados:', data?.length || 0);
+      console.log('✅ Usuarios reales cargados:', data?.length || 0);
       setUsers(data || []);
     } catch (error) {
-      console.error('Error loading users:', error);
-      // Fallback: intentar con consulta más simple
-      try {
-        const { data: fallbackData, error: fallbackError } = await supabase
-          .from('users')
-          .select('id, email, full_name, role, membership_tier, subscription_status, created_at, is_active');
-        
-        if (!fallbackError) {
-          console.log('✅ Usuarios cargados (fallback):', fallbackData?.length || 0);
-          setUsers(fallbackData || []);
-        }
-      } catch (fallbackErr) {
-        console.error('Error en fallback:', fallbackErr);
-      }
+      console.error('Error loading real_users:', error);
+      setUsers([]);
     } finally {
       setLoading(false);
     }

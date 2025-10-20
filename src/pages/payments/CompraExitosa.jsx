@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import DetailedConsultationForm from '@/components/consultations/DetailedConsultationForm';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -11,6 +12,10 @@ const CompraExitosa = () => {
   const [searchParams] = useSearchParams();
   const [user, setUser] = useState(null);
   const [redirectCountdown, setRedirectCountdown] = useState(10);
+  // Nuevo: extraer tipo de consultoría desde los parámetros
+  const consultationTypeParam = searchParams.get('consultation_type') || 'planificacion';
+  // Opcional: duración si se pasa
+  const durationParam = parseInt(searchParams.get('duration_minutes'), 10) || 60;
 
   useEffect(() => {
     checkUserAndSetup();
@@ -148,6 +153,14 @@ const CompraExitosa = () => {
               </div>
             </motion.div>
 
+            {/* Formulario de consultoría detallada mostrado automáticamente tras el pago */}
+            <div className="mt-8 mb-8">
+              <DetailedConsultationForm 
+                consultation={{ consultation_type: consultationTypeParam, duration_minutes: durationParam }} 
+                onSubmit={(data) => { console.log('Formulario enviado:', data); }} 
+                loading={false}
+              />
+            </div>
             {/* Botones de acción */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
