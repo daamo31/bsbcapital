@@ -1,10 +1,11 @@
 import { corsHeaders } from "../_shared/cors.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY")!;
+const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY");
 const STRIPE_API = "https://api.stripe.com/v1";
-const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
-const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+const SITE_URL = Deno.env.get("SITE_URL");
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -12,7 +13,17 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const { priceId, mode = "subscription", userId, email } = await req.json();
+  const { priceId, mode = "subscription", userId, email } = await req.json();
+
+  // Debug: log the incoming payload (no secrets)
+  console.log('create-stripe-checkout request received', { priceId, mode, userId, email });
+    if (!STRIPE_SECRET_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY || !SITE_URL) {
+      console.error('Missing one of required env vars:', { STRIPE_SECRET_KEY: !!STRIPE_SECRET_KEY, SUPABASE_URL: !!SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY: !!SUPABASE_SERVICE_ROLE_KEY, SITE_URL: !!SITE_URL });
+      return new Response(
+        JSON.stringify({ error: 'Server misconfiguration: missing environment variables.' }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 },
+      );
+    }
 
     if (!priceId || !userId || !email) {
       return new Response(
@@ -49,7 +60,7 @@ Deno.serve(async (req) => {
       customerId = customer.id;
     }
 
-    const siteUrl = new URL(SUPABASE_URL).origin;
+  const siteUrl = SITE_URL || new URL(SUPABASE_URL!).origin;
 
     // Crear sesión de checkout
     const params = new URLSearchParams({
@@ -73,6 +84,15 @@ Deno.serve(async (req) => {
     });
 
     const session = await sessionRes.json();
+
+    // Si Stripe devolvió un error, loguearlo para diagnosticar desde el Dashboard
+    if (session?.error || !session?.id) {
+      console.error('Stripe API returned error when creating checkout session', { status: sessionRes.status, body: session });
+      return new Response(JSON.stringify(session), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
+    }
 
     return new Response(
       JSON.stringify({ sessionId: session.id }),

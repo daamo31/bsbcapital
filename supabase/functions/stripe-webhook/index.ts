@@ -1,35 +1,11 @@
 import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
 import { corsHeaders } from "../_shared/cors.ts";
+import Stripe from "https://esm.sh/stripe@12.11.0";
 
-async function verifyStripeSignature(payload: string, sigHeader: string, secret: string): Promise<boolean> {
-  try {
-    const [timestampPart, v1Part] = sigHeader.split(",").map((s) => s.trim());
-    const timestamp = timestampPart.split("=")[1];
-    const signature = v1Part.split("=")[1];
-    const signedPayload = `${timestamp}.${payload}`;
-
-    const key = new TextEncoder().encode(secret);
-    const data = new TextEncoder().encode(signedPayload);
-
-    const cryptoKey = await crypto.subtle.importKey(
-      "raw",
-      key,
-      { name: "HMAC", hash: "SHA-256" },
-      false,
-      ["sign"],
-    );
-
-    const sigBuffer = await crypto.subtle.sign("HMAC", cryptoKey, data);
-    const expected = Array.from(new Uint8Array(sigBuffer))
-      .map((b) => b.toString(16).padStart(2, "0"))
-      .join("");
-
-    return expected === signature;
-  } catch (err) {
-    console.error("Signature verification error:", err);
-    return false;
-  }
-}
+const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
+  apiVersion: "2025-06-30.basil",
+});
+const endpointSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET")!;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -38,50 +14,56 @@ serve(async (req) => {
 
   try {
     const signature = req.headers.get("stripe-signature");
-    const webhookSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET")!;
     const body = await req.text();
 
-    if (!signature) throw new Error("No Stripe signature found");
+    let event;
+    try {
+      event = stripe.webhooks.constructEvent(body, signature!, endpointSecret);
+    } catch (err) {
+      console.error("⚠️ Invalid Stripe signature:", err.message);
+      return new Response(JSON.stringify({ error: err.message }), { status: 400 });
+    }
 
-    const isValid = await verifyStripeSignature(body, signature, webhookSecret);
-    if (!isValid) throw new Error("Invalid Stripe signature");
+    if (event.type === "checkout.session.completed") {
+      const session = event.data.object as any;
+      console.log("✅ Checkout completed:", session.id);
 
-    const event = JSON.parse(body);
+      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+      const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-    switch (event.type) {
-      case "checkout.session.completed": {
-        const session = event.data.object as any;
-
-        if (session.metadata?.consultation_id) {
-          const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-          const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-          const consultationId = session.metadata.consultation_id;
-
-          const response = await fetch(`${supabaseUrl}/rest/v1/consultations?id=eq.${consultationId}`, {
-            method: "PATCH",
-            headers: {
-              apikey: supabaseServiceKey,
-              Authorization: `Bearer ${supabaseServiceKey}`,
-              "Content-Type": "application/json",
-              Prefer: "return=representation",
-            },
-            body: JSON.stringify({
-              status: "confirmed",
-              stripe_session_id: session.id,
-            }),
-          });
-
-          if (!response.ok) {
-            const errorText = await response.text();
-            console.error("Supabase REST API error:", errorText);
-            throw new Error("Database update failed");
-          }
-        }
-        break;
+      if (session.metadata?.consultation_id) {
+        await fetch(`${supabaseUrl}/rest/v1/consultations?id=eq.${session.metadata.consultation_id}`, {
+          method: "PATCH",
+          headers: {
+            apikey: supabaseServiceKey,
+            Authorization: `Bearer ${supabaseServiceKey}`,
+            "Content-Type": "application/json",
+            Prefer: "return=representation",
+          },
+          body: JSON.stringify({
+            status: "confirmed",
+            stripe_session_id: session.id,
+          }),
+        });
+      } else if (session.metadata?.supabase_user_id) {
+        await fetch(`${supabaseUrl}/rest/v1/user_payments`, {
+          method: "POST",
+          headers: {
+            apikey: supabaseServiceKey,
+            Authorization: `Bearer ${supabaseServiceKey}`,
+            "Content-Type": "application/json",
+            Prefer: "return=representation",
+          },
+          body: JSON.stringify({
+            user_id: session.metadata.supabase_user_id,
+            stripe_session_id: session.id,
+            amount: session.amount_total / 100,
+            currency: session.currency,
+            status: session.payment_status,
+            access_type: session.metadata.access_type,
+          }),
+        });
       }
-
-      default:
-        console.log(`Unhandled event type: ${event.type}`);
     }
 
     return new Response(JSON.stringify({ received: true }), {
@@ -89,9 +71,9 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error("Webhook error:", error);
-    return new Response(
-      JSON.stringify({ error: error.message }),
-      { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } },
-    );
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 400,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    });
   }
 });

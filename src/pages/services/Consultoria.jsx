@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/customSupabaseClient';
 import { Loader2, Clock, BarChart3, Briefcase, Globe, Rocket, Quote, ArrowRight } from 'lucide-react';
 import { useToast } from "@/components/ui/feedback/use-toast";
@@ -17,6 +17,7 @@ import { Label } from "@/components/ui/forms/label";
 import { Textarea } from "@/components/ui/forms/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/forms/select";
 import { loadStripe } from '@stripe/stripe-js';
+import { useAuth } from '@/contexts/SupabaseAuthContext';
 
 const STRIPE_PUBLISHABLE_KEY = 'pk_live_51Rne6CJmSk3VG9oipr5fPA32tndC3TFLYHWrENknJ8fcNvIq8A3Nq0KfLdvwkMAyFvgLOWECBpIuzE2THTX4Mb1s00zqHyg0op';
 
@@ -33,6 +34,8 @@ const consultationPrices = {
 
 const BookingModal = () => {
   const { toast } = useToast();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -105,11 +108,26 @@ const BookingModal = () => {
       return;
     }
 
+    // Asegurarnos de que el usuario esté autenticado y tenga un id
+    if (!user?.id) {
+      console.error('❌ Intento de checkout sin usuario autenticado');
+      toast({
+        variant: 'destructive',
+        title: 'Debes iniciar sesión',
+        description: 'Inicia sesión para completar la reserva.'
+      });
+      setLoading(false);
+      // Esperar un momento para que el usuario vea el toast, luego redirigir al login
+      setTimeout(() => navigate('/auth/login'), 1200);
+      return;
+    }
+
     try {
       const checkoutData = { 
         priceId,
         mode: 'payment',
         email: formData.email,
+        userId: user?.id, // <-- Agregamos el userId aquí
         metadata: {
           client_name: formData.name,
           client_email: formData.email,
