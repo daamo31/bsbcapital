@@ -108,21 +108,21 @@ Deno.serve(async (req) => {
     // Crear pre-reserva de consulta si es un checkout de consultoría (mode === 'payment')
     let consultationId: string | undefined;
     if (mode === "payment") {
-      const allowedConsultationTypes = new Set(["investment", "portfolio", "strategy", "technical", "general"]);
+      const allowedConsultationTypes = new Set(["investment", "portfolio", "strategy", "technical", "general", "financial_planning", "onboarding_crypto"]);
       const incomingType = (metadata as any).consultation_type as string | undefined;
       const normalizedType = incomingType && allowedConsultationTypes.has(incomingType) ? incomingType : "general";
 
       const consultationPayload = {
         user_id: resolvedUserId,
-        scheduled_at: (metadata as any).scheduled_at || (metadata as any).booking_date,
-        duration_minutes: Number((metadata as any).duration_minutes || (metadata as any).consultation_duration) || 30,
+        service: normalizedType, // Usar el tipo normalizado basado en la selección del usuario
+        duration: Number((metadata as any).duration || (metadata as any).consultation_duration) || 30,
         status: "scheduled",
         client_name: (metadata as any).client_name || null,
         client_email: (metadata as any).client_email || resolvedEmail || null,
-        consultation_type: normalizedType,
-        description: (metadata as any).description || (metadata as any).notes || null,
+        notes: (metadata as any).description || (metadata as any).notes || null,
         title: "Consulta general",
-        stripe_session_id: null, // Inicialmente nulo, se actualizará después
+        stripe_session_id: null,
+        booking_date: (metadata as any).scheduled_at || new Date().toISOString(),
       } as Record<string, unknown>;
 
       // Remover campos undefined para evitar errores de PostgREST
@@ -237,7 +237,7 @@ Deno.serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ url: session.url }),
+      JSON.stringify({ url: session.url, sessionId: session.id }), // Incluye sessionId en la respuesta
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 },
     );
   } catch (error) {
