@@ -33,7 +33,7 @@ serve(async (req: Request) => {
     const { type, to, data, subject, html } = (await req.json()) as EmailRequest;
 
     const resendApiKey = Deno.env.get("RESEND_API_KEY");
-    const defaultFrom = Deno.env.get("DEFAULT_FROM") || "BSB Capital <onboarding@resend.dev>";
+    const defaultFrom = Deno.env.get("DEFAULT_FROM") || "BSB Capital <info@bsbcapital.com>";
     const adminEmail = Deno.env.get("ADMIN_EMAIL");
 
     if (!resendApiKey) {

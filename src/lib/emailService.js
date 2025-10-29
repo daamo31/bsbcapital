@@ -6,6 +6,263 @@ class EmailService {
     this.functionName = 'resend-email-secure'; // Solo usar la función segura
   }
 
+  // Plantillas de correos personalizados
+  getTemplates() {
+    return {
+      consultation_financial: {
+        subject: "Tu consultoría en BSB Capital está confirmada 🗓️",
+        html: `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirmación de Consultoría</title>
+</head>
+<body style="margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; background-color:#f5f5f5;">
+  <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px; background-color:#ffffff;">
+    <tr>
+      <td align="center" style="padding:40px 20px 20px;">
+        <img
+          src="https://srv1511-files.hstgr.io/55400bd7ca2acb6b/files/public_html/Logo_negro.png"
+          alt="BSB Capital"
+          width="110"
+          style="display:block; margin:auto;"
+        />
+      </td>
+    </tr>
+
+    <tr>
+      <td align="center" style="padding:10px 30px;">
+        <h2 style="color:#0b1f14; font-weight:600; margin:0;">Tu consultoría está confirmada</h2>
+        <p style="font-size:16px; color:#37493f; line-height:1.6; margin-top:18px; margin-bottom:28px;">
+          Hola [Nombre],<br><br>
+          Gracias por confiar en BSB Capital. Tu consultoría personalizada ha sido confirmada con éxito.<br><br>
+          En esta sesión trabajaremos contigo para analizar tu situación financiera y diseñar una estrategia clara, realista y adaptada a tus objetivos.<br><br>
+          Durante la reunión:<br>
+          ● Revisaremos tu situación actual y tus prioridades.<br>
+          ● Estableceremos una hoja de ruta personalizada.<br>
+          ● Recibirás un resumen detallado con las conclusiones y próximos pasos.<br>
+          📅 En breve recibirás un correo con los detalles de la cita y el enlace de acceso.<br><br>
+          Gracias por permitirnos acompañarte en tu crecimiento financiero.<br>
+          El equipo de BSB Capital
+        </p>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="padding-top:20px; border-bottom:1px solid #e6ece8;"></td>
+    </tr>
+
+    <tr>
+      <td align="center" style="padding:25px 20px 35px 20px; font-size:12px; color:#6a756f; line-height:1.6;">
+        <p style="margin:0;">© BSB Capital · <a href="mailto:info@bsbcapital.io" style="color:#C5A019; text-decoration:none;">info@bsbcapital.io</a></p>
+        <p style="margin:5px 0 0 0;">Este es un correo automático de confirmación de consultoría.</p>
+        <p style="margin:0;">No respondas a este mensaje.</p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
+      },
+      consultation_crypto_advanced: {
+        subject: "Tu consultoría avanzada de Crypto & Web3 ha sido confirmada 🚀",
+        html: `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirmación de Consultoría Avanzada</title>
+</head>
+<body style="margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; background-color:#f5f5f5;">
+  <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px; background-color:#ffffff;">
+    <tr>
+      <td align="center" style="padding:40px 20px 20px;">
+        <img
+          src="https://srv1511-files.hstgr.io/55400bd7ca2acb6b/files/public_html/Logo_negro.png"
+          alt="BSB Capital"
+          width="110"
+          style="display:block; margin:auto;"
+        />
+      </td>
+    </tr>
+
+    <tr>
+      <td align="center" style="padding:10px 30px;">
+        <h2 style="color:#0b1f14; font-weight:600; margin:0;">Tu consultoría avanzada está confirmada</h2>
+        <p style="font-size:16px; color:#37493f; line-height:1.6; margin-top:18px; margin-bottom:28px;">
+          Hola [Nombre],<br><br>
+          Tu consultoría estratégica de Crypto & Web3 con BSB Capital está confirmada.<br><br>
+          Durante la sesión, trabajaremos contigo para analizar tu exposición actual al ecosistema cripto, revisar tus estrategias y definir un plan de acción claro y alineado con tus objetivos.<br><br>
+          Ya sea para optimizar tu cartera, integrar activos digitales o entender nuevas oportunidades de inversión, recibirás una visión técnica, práctica y profesional.<br><br>
+          📅 Pronto te enviaremos los detalles de tu cita y un breve formulario previo para personalizar la sesión.<br><br>
+          Gracias por apostar por el futuro de la inversión.<br>
+          El equipo de BSB Capital
+        </p>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="padding-top:20px; border-bottom:1px solid #e6ece8;"></td>
+    </tr>
+
+    <tr>
+      <td align="center" style="padding:25px 20px 35px 20px; font-size:12px; color:#6a756f; line-height:1.6;">
+        <p style="margin:0;">© BSB Capital · <a href="mailto:info@bsbcapital.io" style="color:#C5A019; text-decoration:none;">info@bsbcapital.io</a></p>
+        <p style="margin:5px 0 0 0;">Este es un correo automático de confirmación de consultoría avanzada.</p>
+        <p style="margin:0;">No respondas a este mensaje.</p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
+      },
+      consultation_confirmation: {
+        subject: "Confirmación de tu consulta en BSB Capital",
+        html: `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirmación de tu consulta</title>
+</head>
+<body style="margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; background-color:#f5f5f5;">
+  <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px; background-color:#ffffff;">
+    <tr>
+      <td align="center" style="padding:40px 20px 20px;">
+        <img
+          src="https://srv1511-files.hstgr.io/55400bd7ca2acb6b/files/public_html/Logo_negro.png"
+          alt="BSB Capital"
+          width="110"
+          style="display:block; margin:auto;"
+        />
+      </td>
+    </tr>
+
+    <tr>
+      <td align="center" style="padding:10px 30px;">
+        <h2 style="color:#0b1f14; font-weight:600; margin:0;">Confirmación de tu consulta</h2>
+        <p style="font-size:16px; color:#37493f; line-height:1.6; margin-top:18px; margin-bottom:28px;">
+          Hola [Nombre],<br><br>
+          Gracias por confiar en BSB Capital. Tu consulta ha sido confirmada con éxito.<br><br>
+          Detalles de la consulta:<br>
+          ● Fecha: [Fecha]<br>
+          ● Tipo: [Tipo]<br>
+          ● Monto: [Monto] [Moneda]<br><br>
+          Nos vemos pronto.<br>
+          El equipo de BSB Capital
+        </p>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="padding-top:20px; border-bottom:1px solid #e6ece8;"></td>
+    </tr>
+
+    <tr>
+      <td align="center" style="padding:25px 20px 35px 20px; font-size:12px; color:#6a756f; line-height:1.6;">
+        <p style="margin:0;">© BSB Capital · <a href="mailto:info@bsbcapital.io" style="color:#C5A019; text-decoration:none;">info@bsbcapital.io</a></p>
+        <p style="margin:5px 0 0 0;">Este es un correo automático de confirmación de consulta.</p>
+        <p style="margin:0;">No respondas a este mensaje.</p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
+      },
+      consultation_reminder: {
+        subject: "Recordatorio: Consulta programada en BSB Capital",
+        html: `Hola [Nombre],<br><br>
+        Este es un recordatorio de tu consulta programada con BSB Capital.<br><br>
+        Detalles de la consulta:<br>
+        ● Fecha: [Fecha]<br>
+        ● Tipo: [Tipo]<br>
+        ● Monto: [Monto] [Moneda]<br><br>
+        Gracias por confiar en nosotros.<br>
+        El equipo de BSB Capital`
+      },
+      consultation_completed: {
+        subject: "Seguimiento: Consulta completada en BSB Capital",
+        html: `Hola [Nombre],<br><br>
+        Gracias por asistir a tu consulta con BSB Capital.<br><br>
+        Esperamos que la sesión haya sido útil y te invitamos a contactarnos si tienes más preguntas o necesitas apoyo adicional.<br><br>
+        El equipo de BSB Capital`
+      },
+      onboarding_crypto: {
+        subject: "Bienvenido al mundo cripto con BSB Capital 🌍",
+        html: `Hola [Nombre],<br><br>
+        Tu consultoría de Onboarding Crypto & Web3 está confirmada.<br><br>
+        En esta sesión te guiaremos paso a paso para entender cómo funciona el ecosistema cripto, invertir con seguridad y comenzar con una estrategia sólida y sencilla.<br><br>
+        Verás que no hace falta experiencia previa: te acompañaremos en todo momento para que empieces con confianza y claridad.<br><br>
+        📅 En breve recibirás los detalles de tu cita y el acceso al formulario previo.<br><br>
+        Bienvenido a una nueva forma de entender las finanzas.<br>
+        El equipo de BSB Capital`
+      },
+      academia_bsb: {
+        subject: "Tu acceso a la Academia BSB está activo 🎓",
+        html: `Hola [Nombre],<br><br>
+        ¡Bienvenido a la Academia BSB!<br>
+        Tu inscripción se ha completado con éxito.<br><br>
+        A partir de ahora tendrás acceso a:<br><br>
+        ● Píldoras formativas para dominar los fundamentos.<br>
+        ● Masterclass exclusivas con estrategias y análisis avanzados.<br>
+        ● Recursos descargables y materiales de apoyo.<br>
+        📚 En los próximos días recibirás un correo con tus credenciales y una guía para sacar el máximo partido a tu formación.<br><br>
+        Gracias por apostar por tu educación financiera.<br>
+        El equipo de BSB Capital`
+      },
+      free_access: {
+        subject: "Tu acceso gratuito a BSB Capital ya está activo 💼",
+        html: `Hola [Nombre],<br><br>
+        Gracias por unirte a la comunidad de BSB Capital.<br>
+        Tu plan Free Access ya está activo y a partir de hoy recibirás nuestra newsletter exclusiva, con análisis, reflexiones financieras y contenido para ayudarte a tomar decisiones más inteligentes con tu dinero.<br><br>
+        Aprovecha esta oportunidad para conocer nuestra forma de entender las finanzas: profesional, transparente y centrada en el crecimiento real.<br><br>
+        Bienvenido a la nueva forma de invertir.<br>
+        El equipo de BSB Capital`
+      },
+      trader_plan_pro: {
+        subject: "Tu suscripción a Trader Plan Pro está activa 🚀",
+        html: `Hola [Nombre],<br><br>
+        Bienvenido a Trader Plan Pro.<br>
+        Tu membresía ya está activa y con ella desbloqueas acceso a las herramientas y conocimientos que te ayudarán a llevar tu trading al siguiente nivel.<br><br>
+        A partir de ahora podrás disfrutar de:<br><br>
+        ● Acceso anticipado a BSB Maker, tu copiloto de trading con IA.<br>
+        ● Acceso completo a la formación (píldoras + masterclass).<br>
+        ● 20% de descuento en consultorías personalizadas.<br>
+        ● 1 consultoría de 30 minutos incluida en tu plan anual.<br><br>
+        Prepárate para optimizar tus operaciones y entender los mercados con otra perspectiva.<br><br>
+        Gracias por confiar en BSB Capital.<br>
+        El equipo de BSB Capital`
+      },
+      premium_investor: {
+        subject: "Tu membresía Premium Investor está activa 💎",
+        html: `Hola [Nombre],<br><br>
+        Tu suscripción a Premium Investor está confirmada.<br>
+        A partir de hoy formas parte de una comunidad exclusiva de inversores que buscan claridad, estrategia y crecimiento sostenible.<br><br>
+        Con tu membresía tienes acceso a:<br><br>
+        ● Comunidad privada de inversores BSB.<br>
+        ● Acceso completo a la formación avanzada (cursos temáticos + masterclass).<br>
+        ● 20% de descuento en consultorías.<br>
+        ● 1 consultoría personalizada de 30 minutos incluida en tu plan anual.<br><br>
+        Explora, aprende y crece junto a nosotros.<br>
+        El equipo de BSB Capital está contigo en cada paso.`
+      },
+      wealth_membership: {
+        subject: "Bienvenido a Wealth Membership — Tu gestión patrimonial personalizada ya está activa 🏛️",
+        html: `Hola [Nombre],<br><br>
+        Gracias por confiar en BSB Capital para acompañarte en la gestión de tu patrimonio.<br>
+        Tu membresía Wealth Membership ha sido activada con éxito.<br><br>
+        A partir de ahora contarás con un acompañamiento exclusivo y continuo que incluye:<br><br>
+        ● 6 consultorías personalizadas de 1h/año (valoradas en 1.800 €).<br>
+        ● Revisión completa de cartera semestral.<br>
+        ● Plan estratégico anual con propuestas de optimización.<br>
+        ● Acceso a un canal privado prioritario y comunidad élite con análisis exclusivos y oportunidades de networking.<br><br>
+        Este plan está diseñado para ofrecerte claridad, continuidad y control sobre tu estrategia patrimonial, sin ceder la gestión.<br><br>
+        Tu consultor asignado se pondrá en contacto contigo en las próximas 24 h para programar la primera sesión.<br><br>
+        El equipo de BSB Capital`
+      }
+    };
+  }
+
   /**
    * Envía un email de bienvenida cuando un usuario se registra
    */
@@ -163,10 +420,19 @@ class EmailService {
    */
   async sendCustomEmail(type, to, data) {
     try {
+      const templates = this.getTemplates();
+      const template = templates[type];
+
+      if (!template) {
+        throw new Error(`No se encontró una plantilla para el tipo: ${type}`);
+      }
+
       const { data: result, error } = await supabase.functions.invoke(this.functionName, {
         body: JSON.stringify({
           type,
           to,
+          subject: template.subject,
+          html: template.html.replace('[Nombre]', data.name),
           data
         })
       });
@@ -204,7 +470,7 @@ class EmailService {
    * Envía confirmación de onboarding crypto
    */
   async sendConsultationCryptoOnboarding(data) {
-    return this.sendCustomEmail('consultation_crypto_onboarding', data.email, data);
+    return this.sendCustomEmail('onboarding_crypto', data.email, data);
   }
 
   /**
