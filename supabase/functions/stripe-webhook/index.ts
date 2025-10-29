@@ -31,7 +31,18 @@ serve(async (req) => {
       const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
       const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
+      // Ensure the user is logged in before processing
+      if (!session.metadata?.supabase_user_id) {
+        console.error("Unauthorized access: No user ID found in session metadata.");
+        return new Response(JSON.stringify({ error: "User must be logged in to complete this action." }), {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      // Handle consultation updates or payments
       if (session.metadata?.consultation_id) {
+        console.log(`Updating consultation with ID: ${session.metadata.consultation_id}`);
         await fetch(`${supabaseUrl}/rest/v1/consultations?id=eq.${session.metadata.consultation_id}`, {
           method: "PATCH",
           headers: {
@@ -43,26 +54,13 @@ serve(async (req) => {
           body: JSON.stringify({
             status: "confirmed",
             stripe_session_id: session.id,
-          }),
-        });
-      } else if (session.metadata?.supabase_user_id) {
-        await fetch(`${supabaseUrl}/rest/v1/user_payments`, {
-          method: "POST",
-          headers: {
-            apikey: supabaseServiceKey,
-            Authorization: `Bearer ${supabaseServiceKey}`,
-            "Content-Type": "application/json",
-            Prefer: "return=representation",
-          },
-          body: JSON.stringify({
-            user_id: session.metadata.supabase_user_id,
-            stripe_session_id: session.id,
             amount: session.amount_total / 100,
             currency: session.currency,
-            status: session.payment_status,
-            access_type: session.metadata.access_type,
+            payment_status: session.payment_status,
           }),
         });
+      } else {
+        console.warn("No consultation_id found in session metadata.");
       }
     }
 
