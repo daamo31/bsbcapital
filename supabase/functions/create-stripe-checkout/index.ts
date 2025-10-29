@@ -1,4 +1,4 @@
-import { corsHeaders } from "../_shared/cors.ts";
+import { corsHeaders } from "../shared/cors.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY");
@@ -114,13 +114,13 @@ Deno.serve(async (req) => {
 
       const consultationPayload = {
         user_id: resolvedUserId,
-        service: normalizedType, // Usar el tipo normalizado basado en la selección del usuario
+        service: normalizedType, // Asegurar que el valor del desplegable se guarde correctamente
         duration: Number((metadata as any).duration || (metadata as any).consultation_duration) || 30,
         status: "scheduled",
         client_name: (metadata as any).client_name || null,
         client_email: (metadata as any).client_email || resolvedEmail || null,
         notes: (metadata as any).description || (metadata as any).notes || null,
-        title: "Consulta general",
+        title: `Consulta: ${normalizedType}`, // Reflejar el tipo de consulta en el título
         stripe_session_id: null,
         booking_date: (metadata as any).scheduled_at || new Date().toISOString(),
       } as Record<string, unknown>;
