@@ -144,6 +144,7 @@ Deno.serve(async (req) => {
         );
       }
       consultationId = consultationRow?.id;
+      console.log("Generated consultationId:", consultationId); // Log para verificar el ID generado
     }
 
     // Buscar o crear cliente Stripe
@@ -197,7 +198,7 @@ Deno.serve(async (req) => {
     }
 
     // Log final Stripe payload
-    console.log("Stripe checkout session payload:", Object.fromEntries(params));
+    console.log("Stripe session metadata:", Object.fromEntries(params)); // Log para verificar los metadatos
 
     const sessionRes = await fetch("https://api.stripe.com/v1/checkout/sessions", {
       method: "POST",
@@ -229,20 +230,21 @@ Deno.serve(async (req) => {
       if (updateError) {
         console.error("Failed to update consultation with stripe_session_id:", updateError);
         return new Response(
-          JSON.stringify({ error: "Failed to update consultation with Stripe session ID" }),
-          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 },
+          JSON.stringify({ error: "Failed to update consultation" }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 },
         );
       }
     }
 
     return new Response(
-      JSON.stringify({ sessionId: session.id }),
+      JSON.stringify({ url: session.url }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 },
     );
   } catch (error) {
-    console.error("Stripe session creation failed:", error);
+    console.error("Error processing request:", error);
+
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: "Internal server error." }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 },
     );
   }

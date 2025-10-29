@@ -18,7 +18,8 @@ serve(async (req) => {
 
     let event;
     try {
-      event = stripe.webhooks.constructEvent(body, signature!, endpointSecret);
+      // Use constructEventAsync instead of constructEvent
+      event = await stripe.webhooks.constructEventAsync(body, signature!, endpointSecret);
     } catch (err) {
       console.error("⚠️ Invalid Stripe signature:", err.message);
       return new Response(JSON.stringify({ error: err.message }), { status: 400 });
