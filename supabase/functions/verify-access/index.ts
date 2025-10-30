@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.177.0/http/server.ts"
+import { serve } from "https://deno.land/std@0.210.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
@@ -12,7 +12,7 @@ interface VerifyAccessRequest {
   userEmail: string
 }
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -87,7 +87,7 @@ serve(async (req) => {
     
     // Verificar si hay al menos una suscripción activa
     const hasActiveSubscription = subscriptionData.items && 
-      subscriptionData.items.some(sub => 
+      subscriptionData.items.some((sub: { status: string }) => 
         sub.status === 'ACTIVE' || sub.status === 'OVERDUE'
       )
 
@@ -122,11 +122,21 @@ serve(async (req) => {
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
 
-  } catch (error) {
-    console.error('Error en verify-access:', error)
+  } catch (error: unknown) {
+    console.error('Unexpected error:', error);
+
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
     return new Response(
-      JSON.stringify({ error: 'Internal server error', hasAccess: false }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    )
+      JSON.stringify({ 
+        error: 'Internal server error', 
+        details: errorMessage,
+        has_access: false 
+      }),
+      { 
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
+      }
+    );
   }
 })

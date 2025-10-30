@@ -1,15 +1,27 @@
-import { serve } from "https://deno.land/std@0.224.0/http/server.ts";
-import { corsHeaders } from "../shared/cors.ts";
+import { serve } from "https://deno.land/std@0.210.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@12.11.0";
 
-const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY")!, {
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-function-secret",
+};
+
+// 🔐 Cargar variables de entorno
+const stripeSecretKey = Deno.env.get("STRIPE_SECRET_KEY");
+const endpointSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET");
+const supabaseUrl = Deno.env.get("SUPABASE_URL");
+const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+
+if (!stripeSecretKey || !endpointSecret || !supabaseUrl || !serviceRoleKey) {
+  console.error("❌ Faltan variables de entorno necesarias para Stripe o Supabase.");
+}
+
+const stripe = new Stripe(stripeSecretKey!, {
   apiVersion: "2025-06-30.basil",
 });
 
-const endpointSecret = Deno.env.get("STRIPE_WEBHOOK_SECRET")!;
-
-serve(async (req: Request): Promise<Response> => {
-  // ✅ Permitir preflight CORS
+serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
@@ -18,120 +30,122 @@ serve(async (req: Request): Promise<Response> => {
     const signature = req.headers.get("stripe-signature");
     const body = await req.text();
 
-    let event: Stripe.Event;
-
-    try {
-      // ⚙️ Validamos firma del webhook
-      event = await stripe.webhooks.constructEventAsync(
-        body,
-        signature!,
-        endpointSecret
-      );
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : "Invalid Stripe signature";
-      console.error("⚠️ Invalid Stripe signature:", message);
-
-      return new Response(JSON.stringify({ error: message }), {
+    if (!signature) {
+      return new Response(JSON.stringify({ error: "Missing Stripe signature" }), {
         status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: corsHeaders,
       });
     }
 
-    // ✅ Procesar evento “checkout.session.completed”
+    let event;
+    try {
+      event = await stripe.webhooks.constructEventAsync(body, signature, endpointSecret!);
+    } catch (err) {
+      console.error("⚠️ Error verificando firma de Stripe:", (err as Error).message);
+      return new Response(JSON.stringify({ error: "Invalid Stripe signature" }), {
+        status: 400,
+        headers: corsHeaders,
+      });
+    }
+
+    // 🎯 Solo manejamos checkout completado
     if (event.type === "checkout.session.completed") {
-      const session = event.data.object as Stripe.Checkout.Session;
-      console.log("✅ Checkout completed:", session.id);
+      const session = event.data.object as any;
 
-      const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
-      const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+      console.log("✅ Pago completado en Stripe:", session.id);
 
-      // 🚫 Validar que haya usuario
-      if (!session.metadata?.supabase_user_id) {
-        console.error(
-          "Unauthorized access: No user ID found in session metadata."
-        );
-        return new Response(
-          JSON.stringify({
-            error: "User must be logged in to complete this action.",
-          }),
-          {
-            status: 401,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          }
-        );
+      const userId = session.metadata?.supabase_user_id;
+      const consultationId = session.metadata?.consultation_id;
+      const clientEmail = session.metadata?.client_email;
+
+      if (!userId || !consultationId) {
+        console.warn("⚠️ Sesión sin metadatos requeridos.");
+        return new Response(JSON.stringify({ error: "Missing metadata" }), {
+          status: 400,
+          headers: corsHeaders,
+        });
       }
 
-      // 🧩 Actualizar reservas o registrar pagos
-      if (session.metadata?.consultation_id) {
-        console.log(
-          `🔄 Updating consultation with ID: ${session.metadata.consultation_id}`
-        );
+      // 🧾 Actualizar la reserva en Supabase
+      const updateRes = await fetch(`${supabaseUrl}/rest/v1/consultations?id=eq.${consultationId}`, {
+        method: "PATCH",
+        headers: {
+          apikey: serviceRoleKey!, // 👈 CORREGIDO: todo en minúsculas
+          Authorization: `Bearer ${serviceRoleKey!}`,
+          "Content-Type": "application/json",
+          Prefer: "return=representation",
+        },
+        body: JSON.stringify({
+          status: "confirmed",
+          stripe_session_id: session.id,
+          amount: session.amount_total / 100,
+          currency: session.currency,
+          payment_status: session.payment_status,
+        }),
+      });
 
-        await fetch(
-          `${supabaseUrl}/rest/v1/consultations?id=eq.${session.metadata.consultation_id}`,
-          {
-            method: "PATCH",
-            headers: {
-              apikey: supabaseServiceKey,
-              Authorization: `Bearer ${supabaseServiceKey}`,
-              "Content-Type": "application/json",
-              Prefer: "return=representation",
-            },
-            body: JSON.stringify({
-              status: "confirmed",
-              stripe_session_id: session.id,
-              amount: (session.amount_total ?? 0) / 100,
-              currency: session.currency,
-              payment_status: session.payment_status,
-            }),
-          }
-        );
-
-        // ✉️ Enviar email de confirmación si existe correo
-        if (session.metadata?.client_email) {
-          const emailServiceUrl = `${supabaseUrl}/functions/v1/resend-email-secure`;
-          const emailPayload = {
-            type: "consultation_confirmation",
-            to: session.metadata.client_email,
-            data: {
-              clientName: session.metadata.client_name,
-              consultationType: session.metadata.consultation_type,
-              consultationDate: session.metadata.scheduled_at,
-              amount: (session.amount_total ?? 0) / 100,
-              currency: session.currency,
-            },
-          };
-
-          try {
-            const emailResponse = await fetch(emailServiceUrl, {
-              method: "POST",
-              headers: {
-                apikey: supabaseServiceKey,
-                Authorization: `Bearer ${supabaseServiceKey}`,
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(emailPayload),
-            });
-
-            if (!emailResponse.ok) {
-              console.error(
-                "❌ Failed to send confirmation email:",
-                await emailResponse.text()
-              );
-            } else {
-              console.log("✅ Confirmation email sent successfully.");
-            }
-          } catch (emailError) {
-            const emailMessage =
-              emailError instanceof Error
-                ? emailError.message
-                : "Unknown email error";
-            console.error("Error sending confirmation email:", emailMessage);
-          }
-        }
+      if (!updateRes.ok) {
+        console.error("❌ Error actualizando consulta en Supabase:", await updateRes.text());
       } else {
-        console.warn("⚠️ No consultation_id found in session metadata.");
+        console.log("✅ Consulta actualizada correctamente en Supabase.");
+      }
+
+      // 📨 Enviar correos
+      if (clientEmail) {
+        console.log("📧 Enviando correos vía resend-email-secure...");
+
+        // Cliente
+        const clientRes = await fetch(`${supabaseUrl}/functions/v1/resend-email-secure`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${serviceRoleKey!}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            type: session.metadata?.consultation_type || "consultation_confirmation",
+            to: clientEmail,
+            data: {
+              clientName: session.metadata?.client_name,
+              consultationType: session.metadata?.consultation_type,
+              consultationDate: session.metadata?.scheduled_at,
+              amount: session.amount_total / 100,
+              currency: session.currency,
+            },
+          }),
+        });
+
+        if (!clientRes.ok) {
+          console.error("❌ Error enviando correo al cliente:", await clientRes.text());
+        } else {
+          console.log("✅ Correo al cliente enviado correctamente.");
+        }
+
+        // Administradores
+        const adminRes = await fetch(`${supabaseUrl}/functions/v1/resend-email-secure`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${serviceRoleKey!}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            type: "admin_consultation_notification",
+            to: "info@bsbcapital.io",
+            data: {
+              clientName: session.metadata?.client_name,
+              clientEmail,
+              consultationType: session.metadata?.consultation_type,
+              consultationDate: session.metadata?.scheduled_at,
+              amount: session.amount_total / 100,
+              currency: session.currency,
+            },
+          }),
+        });
+
+        if (!adminRes.ok) {
+          console.error("❌ Error enviando correo a admin:", await adminRes.text());
+        } else {
+          console.log("✅ Correo a admin enviado correctamente.");
+        }
       }
     }
 
@@ -139,13 +153,13 @@ serve(async (req: Request): Promise<Response> => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Unknown webhook error";
-    console.error("Webhook error:", message);
-
-    return new Response(JSON.stringify({ error: message }), {
-      status: 400,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    console.error("❌ Error en Stripe Webhook:", error);
+    return new Response(
+      JSON.stringify({ error: error instanceof Error ? error.message : String(error) }),
+      {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
+    );
   }
 });

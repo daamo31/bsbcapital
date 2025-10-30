@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.177.0/http/server.ts"
+import { serve } from "https://deno.land/std@0.210.0/http/server.ts"
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
@@ -145,13 +145,15 @@ serve(async (req) => {
     )
 
   } catch (error) {
-    console.error('Unexpected error:', error)
+    if (error instanceof Error) {
+      return new Response(
+        JSON.stringify({ error: 'Internal server error', details: error.message }),
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
+      )
+    }
     return new Response(
-      JSON.stringify({ error: 'Internal server error', details: error.message }),
-      { 
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      }
+      JSON.stringify({ error: 'Unknown error occurred' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
     )
   }
 })

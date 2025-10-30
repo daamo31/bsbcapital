@@ -1,5 +1,5 @@
 // Servicio para envío de emails usando Supabase Edge Functions + Resend
-import { supabase } from './customSupabaseClient';
+import { supabase } from './customSupabaseClient.js';
 
 class EmailService {
   constructor() {

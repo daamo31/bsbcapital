@@ -1,4 +1,4 @@
-import { serve } from "https://deno.land/std@0.177.0/http/server.ts"
+import { serve } from "https://deno.land/std@0.210.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
 const corsHeaders = {
@@ -12,7 +12,7 @@ interface VerifyAccessRequest {
   userEmail: string
 }
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -20,7 +20,7 @@ serve(async (req) => {
   try {
     console.log('Verify access test called')
     
-    const { userId, productId, userEmail }: VerifyAccessRequest = await req.json()
+    const { userId, productId, userEmail }: VerifyAccessRequest = await req.json();
 
     console.log('Request data:', { userId, productId, userEmail })
 
@@ -63,10 +63,10 @@ serve(async (req) => {
       .eq('user_id', userId)
       .eq('product_id', productId)
       .eq('status', 'active')
-      .single()
+      .single();
 
     if (accessError) {
-      console.log('No access found in user_access table:', accessError.message)
+      console.log('No access found in user_access table:', accessError.message);
     }
 
     if (accessData) {
@@ -77,7 +77,7 @@ serve(async (req) => {
           access_type: accessData.access_type,
           product_id: productId,
           user_id: userId,
-          expires_at: accessData.expires_at
+          expires_at: accessData.expires_at,
         }),
         { 
           status: 200,
@@ -130,18 +130,21 @@ serve(async (req) => {
       }
     )
 
-  } catch (error) {
-    console.error('Unexpected error:', error)
+  } catch (error: unknown) {
+    console.error('Unexpected error:', error);
+
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+
     return new Response(
       JSON.stringify({ 
         error: 'Internal server error', 
-        details: error.message,
+        details: errorMessage,
         has_access: false 
       }),
       { 
         status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
       }
-    )
+    );
   }
 })

@@ -25,7 +25,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { supabase } from '@/lib/customSupabaseClient';
-import emailService from '@/lib/emailService';
+import emailService from '../../lib/emailService';
 import { useToast } from '@/components/ui/feedback/use-toast';
 
 // Usar la misma clave de Stripe que consultoría (producción)
