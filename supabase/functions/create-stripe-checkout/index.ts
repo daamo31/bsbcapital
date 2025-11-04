@@ -184,7 +184,20 @@ Deno.serve({ port: 8000 }, async (req) => {
     if (mode === "payment") {
       const allowedConsultationTypes = new Set(["investment", "portfolio", "strategy", "technical", "general", "financial_planning", "onboarding_crypto"]);
       const incomingType = (metadata as any).consultation_type as string | undefined;
-      const normalizedType = incomingType && allowedConsultationTypes.has(incomingType) ? incomingType : "general";
+      
+      // Mapear los valores del frontend a los valores de la base de datos
+      const typeMapping: Record<string, string> = {
+        "Onboarding Crypto": "onboarding_crypto",
+        "Planificación financiera": "financial_planning", 
+        "Creación y optimización de carteras": "portfolio",
+        "Crypto/Web3": "strategy"
+      };
+      
+      const normalizedType = incomingType && typeMapping[incomingType] 
+        ? typeMapping[incomingType]
+        : (incomingType && allowedConsultationTypes.has(incomingType) ? incomingType : "general");
+
+      console.log(`📋 Tipo de consulta: "${incomingType}" → "${normalizedType}"`);
 
       const consultationPayload = {
         user_id: resolvedUserId,

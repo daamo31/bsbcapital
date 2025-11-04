@@ -18,8 +18,6 @@ import {
   Calendar, 
   Clock, 
   User, 
-  Phone, 
-  Building, 
   TrendingUp,
   Target,
   AlertCircle
@@ -61,8 +59,6 @@ const ConsultationPostPayment = () => {
   const [formData, setFormData] = useState({
     client_name: '',
     client_email: user?.email || '',
-    client_phone: '',
-    company_name: '',
     investment_experience: '',
     portfolio_size: '',
     consultation_goals: '',
@@ -117,7 +113,6 @@ const ConsultationPostPayment = () => {
             ...prev,
             client_name: consultationData.client_name || '',
             client_email: consultationData.client_email || user?.email || '',
-            client_phone: consultationData.client_phone || '',
             company_name: consultationData.company_name || '',
             investment_experience: consultationData.investment_experience || '',
             portfolio_size: consultationData.portfolio_size || '',
@@ -231,33 +226,24 @@ const ConsultationPostPayment = () => {
       const { error: updateError } = await supabase
         .from('consultations')
         .update({
-          // Usar estructura alineada con admin
+          // Campos básicos que existen en la tabla
           client_name: formData.client_name,
           client_email: formData.client_email,
-          client_phone: formData.client_phone,
-          company_name: formData.company_name,
-          investment_experience: formData.investment_experience,
-          portfolio_size: formData.portfolio_size,
-          consultation_goals: formData.consultation_goals,
-          current_investments: formData.current_investments,
-          specific_questions: formData.specific_questions,
-          preferred_communication: formData.preferred_communication,
-          pre_consultation_comments: formData.additional_notes,
-          description: `${formData.additional_notes}\n\nInversiones actuales: ${formData.current_investments}\nPreguntas específicas: ${formData.specific_questions}\nPreferencia de comunicación: ${formData.preferred_communication}`,
-          status: 'confirmed', // Confirmar la consulta después del pago
-          form_completed_at: new Date().toISOString()
+          description: `Objetivos: ${formData.consultation_goals}\n\nInversiones actuales: ${formData.current_investments}\n\nPreguntas específicas: ${formData.specific_questions}\n\nPreferencia de comunicación: ${formData.preferred_communication}\n\nComentarios adicionales: ${formData.additional_notes}`,
+          status: 'confirmed' // Confirmar la consulta después del pago
         })
         .eq('id', consultation.id);
 
       if (updateError) throw updateError;
 
-      // Enviar email de confirmación de consulta
+      // Enviar email de confirmación de consulta según el tipo
       try {
-        await emailService.sendConsultationAdvancedCrypto({
+        const consultationType = consultation.service || 'general';
+        const emailData = {
           name: formData.client_name,
           email: formData.client_email,
-          consultationType: consultation.service || consultation.title || 'Consultoría Crypto Avanzada',
-          preferredDate: formatDate(consultation.scheduled_at, {
+          consultationType: consultation.service || consultation.title || 'Consultoría General',
+          scheduledDate: formatDate(consultation.scheduled_at, {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
@@ -270,7 +256,23 @@ const ConsultationPostPayment = () => {
           duration: `${consultation.duration_minutes} minutos`,
           consultationGoals: formData.consultation_goals,
           meetingUrl: consultation.meeting_url || 'Se proporcionará antes de la consulta'
-        });
+        };
+
+        // Enviar email específico según el tipo de consultoría
+        switch (consultationType) {
+          case 'financial_planning':
+            await emailService.sendConsultationFinancial(emailData);
+            break;
+          case 'strategy':
+          case 'portfolio':
+            await emailService.sendConsultationCryptoAdvanced(emailData);
+            break;
+          case 'onboarding_crypto':
+            await emailService.sendConsultationCryptoOnboarding(emailData);
+            break;
+          default:
+            await emailService.sendConsultationConfirmation(emailData);
+        }
       } catch (emailError) {
         console.error('Error sending confirmation email:', emailError);
         // No bloquear el flujo si falla el email
@@ -281,7 +283,6 @@ const ConsultationPostPayment = () => {
         await emailService.sendAdminConsultationNotification({
           clientName: formData.client_name,
           clientEmail: formData.client_email,
-          clientPhone: formData.client_phone,
           consultationType: consultation.title,
           preferredDate: formatDate(consultation.scheduled_at, {
             weekday: 'long',
@@ -479,24 +480,6 @@ const ConsultationPostPayment = () => {
                         value={formData.client_email}
                         onChange={handleChange}
                         required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="client_phone">Teléfono</Label>
-                      <Input
-                        id="client_phone"
-                        value={formData.client_phone}
-                        onChange={handleChange}
-                        icon={<Phone className="h-4 w-4" />}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="company_name">Empresa/Organización</Label>
-                      <Input
-                        id="company_name"
-                        value={formData.company_name}
-                        onChange={handleChange}
-                        icon={<Building className="h-4 w-4" />}
                       />
                     </div>
                   </div>
