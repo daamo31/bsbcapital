@@ -49,6 +49,8 @@
     "https://esm.sh/side-channel@^1.1.0?target=denonext": "https://esm.sh/side-channel@1.1.0?target=denonext"
   },
   "remote": {
+    "https://deno.land/std@0.210.0/async/delay.ts": "d414b6ff5b597a3b8a90b1b860b675062a106ad0e311816256f4696aa40ec1a1",
+    "https://deno.land/std@0.210.0/http/server.ts": "59a47779624ff748a058c6959d75fc5ca9f334d32b327344a2eec20561880b58",
     "https://deno.land/std@0.224.0/async/delay.ts": "f90dd685b97c2f142b8069082993e437b1602b8e2561134827eeb7c12b95c499",
     "https://deno.land/std@0.224.0/http/server.ts": "f9313804bf6467a1704f45f76cb6cd0a3396a3b31c316035e6a4c2035d1ea514",
     "https://esm.sh/async-function@1.0.0/denonext/async-function.mjs": "9a68a79494e7318827f19367915e5e8c902d81d395a2a429114371d8f506afd8",

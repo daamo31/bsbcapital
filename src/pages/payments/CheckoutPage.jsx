@@ -162,6 +162,22 @@ const CheckoutPage = () => {
         price: selectedPrice.price
       });
 
+      console.log('📤 Enviando datos a create-stripe-checkout:', {
+        priceId: selectedPrice.stripeId,
+        mode: 'subscription',
+        email: formData.email,
+        metadata: {
+          client_name: formData.name,
+          client_email: formData.email,
+          plan_type: billingCycle,
+          plan_name: planData?.name || 'Premium Plan',
+          billing_cycle: billingCycle,
+          phone: formData.phone,
+          country: formData.country,
+          user_id: user.id
+        }
+      });
+
       // Usar exactamente el mismo patrón que consultoría
       const { data, error } = await supabase.functions.invoke('create-stripe-checkout', {
         body: JSON.stringify({ 
@@ -181,38 +197,79 @@ const CheckoutPage = () => {
         }),
       });
 
+      console.log('📥 Respuesta completa de Supabase:', { data, error });
+
       if (error) throw new Error(error.message);
       if (data.error) throw new Error(data.error);
 
-      // Enviar email de activación de membresía (no bloquear el flujo si falla)
-      try {
-        await emailService.sendSubscriptionActivated({
-          name: formData.name,
-          email: formData.email,
-          planName: planData?.name || 'Premium Plan'
-        });
-      } catch (e) {
-        console.error('Error enviando email de activación de membresía:', e);
+      console.log('✅ Respuesta de create-stripe-checkout:', data);
+
+      // ✅ VERIFICAR QUE LA SESIÓN SE CREÓ CORRECTAMENTE
+      if (!data.sessionId && !data.url) {
+        console.error('❌ Error: No se recibió sessionId ni URL:', data);
+        throw new Error('No se recibió sessionId ni URL de la sesión de Stripe');
       }
 
-      // Redirigir al dashboard para refrescar datos tras la compra
-      navigate('/dashboard');
+      console.log('🔧 Cargando Stripe...');
+      // ✅ REDIRIGIR A STRIPE CHECKOUT
+      const stripe = await stripePromise;
+      if (!stripe) {
+        throw new Error('Error al cargar Stripe');
+      }
 
-      // Si quieres que el usuario vuelva manualmente, puedes mostrar un mensaje en vez de redirigir
-      // toast({
-      //   title: "¡Compra exitosa!",
-      //   description: "Tu membresía está activa. Refresca el panel para ver los cambios.",
-      //   variant: "success"
-      // });
+      console.log('✅ Stripe cargado correctamente');
+
+      // Si tenemos sessionId, usar redirectToCheckout
+      if (data.sessionId) {
+        console.log('🔄 Redirigiendo a Stripe con sessionId:', data.sessionId);
+        
+        try {
+          const { error: stripeError } = await stripe.redirectToCheckout({
+            sessionId: data.sessionId
+          });
+          
+          if (stripeError) {
+            console.error('❌ Error de redirección de Stripe:', stripeError);
+            throw new Error(`Error de Stripe: ${stripeError.message}`);
+          }
+          
+          console.log('✅ Redirección iniciada correctamente');
+          // Si llegamos aquí sin error, la redirección debería estar en progreso
+          return; // Importante: salir de la función
+        } catch (redirectError) {
+          console.error('❌ Error durante redirectToCheckout:', redirectError);
+          throw redirectError;
+        }
+      } 
+      // Si tenemos URL directa, redirigir a ella
+      else if (data.url) {
+        console.log('🔄 Redirigiendo a URL de Stripe:', data.url);
+        try {
+          window.location.href = data.url;
+          return; // Importante: salir de la función
+        } catch (urlError) {
+          console.error('❌ Error durante redirección por URL:', urlError);
+          throw urlError;
+        }
+      } else {
+        console.error('❌ No se recibió ni sessionId ni URL:', data);
+        throw new Error('Respuesta inválida del servidor: sin sessionId ni URL');
+      }
+
+      // ⚠️ NO enviar email de activación aquí - se enviará después del pago exitoso
+      // El email se envía desde el webhook cuando el pago se confirma
+
     } catch(error) {
-       toast({
+      console.error("❌ Error completo en handleCheckout:", error);
+      console.error("❌ Stack trace:", error.stack);
+      
+      toast({
         variant: "destructive",
         title: "Error al procesar el pago",
-        description: "Hubo un problema al redirigirte a la pasarela de pago. Por favor, inténtalo de nuevo.",
+        description: `Error: ${error.message || 'Problema desconocido al redirigir a Stripe'}`,
       });
-      console.error("Stripe checkout error:", error);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 

@@ -7,12 +7,32 @@ const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 const SITE_URL = Deno.env.get("SITE_URL");
 
-Deno.serve(async (req) => {
+Deno.serve({ port: 8000 }, async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
 
   try {
+    // Inicializar Supabase client para obtener usuario autenticado
+    const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
+    
+    // Obtener token de autenticación del header
+    const authHeader = req.headers.get("Authorization");
+    let authenticatedUser = null;
+    
+    if (authHeader && authHeader.startsWith("Bearer ")) {
+      const token = authHeader.substring(7);
+      try {
+        const { data: { user }, error } = await supabase.auth.getUser(token);
+        if (!error && user) {
+          authenticatedUser = user;
+          console.log("✅ Usuario autenticado obtenido:", { id: user.id, email: user.email });
+        }
+      } catch (error) {
+        console.log("⚠️ Error obteniendo usuario del token:", error);
+      }
+    }
+
     // Parse body safely once (supports JSON, double-encoded JSON, and form-encoded)
     const rawBody = await req.text();
     const contentType = req.headers.get("content-type") || "";
@@ -53,13 +73,67 @@ Deno.serve(async (req) => {
     const mode = (requestBody?.mode as string | undefined) ?? "subscription";
     const userId = (requestBody?.userId || requestBody?.user_id) as string | undefined;
     const email = (requestBody?.email || (metadata as any)?.email || (metadata as any)?.client_email) as string | undefined;
+    
+    console.log("🔍 Field extraction debug:", {
+      'requestBody.priceId': requestBody?.priceId,
+      'requestBody.price_id': requestBody?.price_id,
+      'requestBody.price': requestBody?.price,
+      'resolved priceId': priceId,
+      'requestBody keys': Object.keys(requestBody || {}),
+    });
 
-    // Resolver fallbacks desde metadata
-    const resolvedUserId = userId || (metadata as any).user_id || (metadata as any).supabase_user_id;
-    const resolvedEmail = email || (metadata as any).client_email;
+    // ✅ RESOLVER AUTOMÁTICAMENTE DESDE USUARIO AUTENTICADO
+    const resolvedUserId = userId || (metadata as any).user_id || (metadata as any).supabase_user_id || authenticatedUser?.id;
+    const resolvedEmail = email || (metadata as any).client_email || authenticatedUser?.email;
+
+    console.log("🔍 Valores resueltos:", {
+      authenticatedUser: authenticatedUser ? { id: authenticatedUser.id, email: authenticatedUser.email } : null,
+      originalUserId: userId,
+      resolvedUserId,
+      originalEmail: email,
+      resolvedEmail,
+      metadata,
+      requestHeaders: Object.fromEntries(req.headers.entries()),
+      requestBody: JSON.stringify(requestBody)
+    });
 
     console.log("create-stripe-checkout request received", { priceId, mode, userId, email, contentType, rawLength: rawBody?.length || 0 });
     console.log("Payload recibido en create-stripe-checkout:", requestBody);
+
+    // ✅ VALIDAR PRICEID PARA SUSCRIPCIONES
+    if (mode === "subscription") {
+      console.log("🔍 Validando priceId para suscripción:", priceId);
+      
+      // Verificar que el priceId existe en Stripe y es recurrente
+      const priceRes = await fetch(`https://api.stripe.com/v1/prices/${priceId}`, {
+        headers: { Authorization: `Bearer ${STRIPE_SECRET_KEY}` },
+      });
+      const priceData = await priceRes.json();
+      
+      if (!priceRes.ok) {
+        console.error("❌ Error obteniendo precio de Stripe:", priceData);
+        return new Response(
+          JSON.stringify({ error: "Invalid priceId" }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 },
+        );
+      }
+      
+      console.log("💰 Datos del precio:", {
+        id: priceData.id,
+        type: priceData.type,
+        recurring: priceData.recurring,
+        unit_amount: priceData.unit_amount,
+        currency: priceData.currency
+      });
+      
+      if (priceData.type !== "recurring") {
+        console.error("❌ El priceId no es recurrente:", priceData.type);
+        return new Response(
+          JSON.stringify({ error: "PriceId must be recurring for subscriptions" }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 },
+        );
+      }
+    }
 
     // Registrar información adicional para depuración
     console.log("Método HTTP:", req.method);
@@ -79,8 +153,10 @@ Deno.serve(async (req) => {
     }
 
     // Validar parámetros obligatorios y registrar valores
+    console.log("🧪 Validating parameters:", { priceId, resolvedUserId, resolvedEmail });
+    
     if (!priceId) {
-      console.error("Missing priceId in request payload.", { priceId });
+      console.error("❌ Missing priceId in request payload.", { priceId });
       return new Response(
         JSON.stringify({ error: "priceId is required." }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 },
@@ -88,7 +164,7 @@ Deno.serve(async (req) => {
     }
 
     if (!resolvedUserId) {
-      console.error("Missing userId in request payload or metadata.", { userId, metadata });
+      console.error("❌ Missing userId in request payload or metadata.", { userId, metadata, authenticatedUser: authenticatedUser?.id });
       return new Response(
         JSON.stringify({ error: "userId is required." }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 },
@@ -96,14 +172,12 @@ Deno.serve(async (req) => {
     }
 
     if (!resolvedEmail) {
-      console.error("Missing email in request payload or metadata.", { email, metadata });
+      console.error("❌ Missing email in request payload or metadata.", { email, metadata, authenticatedUser: authenticatedUser?.email });
       return new Response(
         JSON.stringify({ error: "email is required." }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 },
       );
     }
-
-    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
     // Crear pre-reserva de consulta si es un checkout de consultoría (mode === 'payment')
     let consultationId: string | undefined;
@@ -114,7 +188,8 @@ Deno.serve(async (req) => {
 
       const consultationPayload = {
         user_id: resolvedUserId,
-        service: normalizedType, // Asegurar que el valor del desplegable se guarde correctamente
+        service: normalizedType // Asegurar que el valor del desplegable se guarde correctamente
+        ,
         duration: Number((metadata as any).duration || (metadata as any).consultation_duration) || 30,
         status: "scheduled",
         client_name: (metadata as any).client_name || null,
@@ -137,7 +212,10 @@ Deno.serve(async (req) => {
         .single();
 
       if (consultationError) {
-        console.error("Failed to create consultation pre-booking:", consultationError);
+        console.error("Failed to create consultation pre-booking:", {
+          error: consultationError,
+          payload: consultationPayload
+        });
         return new Response(
           JSON.stringify({ error: "Failed to create consultation" }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 },
@@ -146,6 +224,36 @@ Deno.serve(async (req) => {
       consultationId = consultationRow?.id;
       console.log("Generated consultationId:", consultationId); // Log para verificar el ID generado
     }
+
+    console.log("🔍 Validando configuración del precio en Stripe...");
+    
+    // Obtener información del precio de Stripe para validación
+    const priceResponse = await fetch(`https://api.stripe.com/v1/prices/${priceId}`, {
+      headers: {
+        Authorization: `Bearer ${STRIPE_SECRET_KEY}`,
+      },
+    });
+    
+    const priceInfo = await priceResponse.json();
+    console.log("📋 Información del precio de Stripe:", priceInfo);
+    
+    if (priceInfo.error) {
+      throw new Error(`Precio no válido en Stripe: ${priceInfo.error.message}`);
+    }
+    
+    // ✅ VALIDACIÓN CRÍTICA: Para suscripciones, el precio DEBE ser recurring
+    if (mode === "subscription" && priceInfo.type !== "recurring") {
+      throw new Error(`❌ PRECIO INCORRECTO: Para modo 'subscription', el precio debe ser de tipo 'recurring', pero es '${priceInfo.type}'. 
+        PriceId: ${priceId}. 
+        Debes crear un precio recurrente en Stripe Dashboard.`);
+    }
+    
+    // Para pagos únicos, el precio debe ser one_time
+    if (mode === "payment" && priceInfo.type !== "one_time") {
+      console.warn(`⚠️ ADVERTENCIA: Para modo 'payment', se recomienda usar precio 'one_time', pero es '${priceInfo.type}'`);
+    }
+    
+    console.log(`✅ Precio validado: ${priceInfo.type} - ${priceInfo.unit_amount / 100} ${priceInfo.currency}`);
 
     // Buscar o crear cliente Stripe
     const searchParams = new URLSearchParams({ email: resolvedEmail, limit: "1" });
@@ -176,30 +284,51 @@ Deno.serve(async (req) => {
     const siteUrl = SITE_URL || new URL(SUPABASE_URL!).origin;
 
     // Crear sesión de checkout
-    const params = new URLSearchParams({
-      mode,
-      customer: customerId,
-      success_url: `${siteUrl}/academia/gracias?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${siteUrl}/academia`,
-      [`line_items[0][price]`]: priceId,
-      [`line_items[0][quantity]`]: "1",
-      [`metadata[access_type]`]: mode === "subscription" ? "membership" : "one_time",
-    });
-
+    const params = new URLSearchParams();
+    
+    // Configuración base común
+    params.set("mode", mode);
+    params.set("customer", customerId);
+    params.set("success_url", `${siteUrl}/academia/gracias?session_id={CHECKOUT_SESSION_ID}`);
+    params.set("cancel_url", `${siteUrl}/academia`);
+    params.set("metadata[access_type]", mode === "subscription" ? "membership" : "one_time");
+    
     if (resolvedUserId) {
       params.set("metadata[supabase_user_id]", resolvedUserId);
     }
 
-    // Adjuntar consultation_id si existe
-    if (consultationId) {
-      params.set("metadata[consultation_id]", consultationId);
+    // ✅ CONFIGURACIÓN ESPECÍFICA PARA SUSCRIPCIONES
+    if (mode === "subscription") {
+      console.log("🔧 Configurando sesión para suscripción recurrente...");
+      
+      // Para suscripciones, SOLO necesitamos line_items con precio recurrente
+      params.set("line_items[0][price]", priceId);
+      params.set("line_items[0][quantity]", "1");
+      
+      // Configuración específica de suscripción
+      params.set("payment_method_collection", "always");
+      params.set("billing_address_collection", "auto");
+      
+      console.log("✅ Suscripción configurada con priceId recurrente:", priceId);
     } else {
-      console.warn("Consultation ID is missing, Stripe metadata may be incomplete.");
+      // ✅ CONFIGURACIÓN PARA PAGOS ÚNICOS (CONSULTAS)
+      console.log("🔧 Configurando sesión para pago único...");
+      
+      params.set("line_items[0][price]", priceId);
+      params.set("line_items[0][quantity]", "1");
+      
+      // Adjuntar consultation_id solo si el modo es "payment"
+      if (consultationId) {
+        params.set("metadata[consultation_id]", consultationId);
+        console.log("Consultation ID added to Stripe metadata:", consultationId);
+      }
     }
 
-    // Log final Stripe payload
-    console.log("Stripe session metadata:", Object.fromEntries(params)); // Log para verificar los metadatos
+    // Log adicional para verificar los parámetros enviados a Stripe
+    console.log("Enviando parámetros a Stripe para crear la sesión:", Object.fromEntries(params));
 
+    console.log("Iniciando creación de sesión de Stripe...");
+    const stripeStart = Date.now();
     const sessionRes = await fetch("https://api.stripe.com/v1/checkout/sessions", {
       method: "POST",
       headers: {
@@ -208,10 +337,13 @@ Deno.serve(async (req) => {
       },
       body: params,
     });
+    console.log("Respuesta de Stripe recibida en:", Date.now() - stripeStart, "ms");
 
     const session = await sessionRes.json();
 
-    // Si Stripe devolvió un error, loguearlo para diagnosticar desde el Dashboard
+    // Log adicional para verificar la respuesta de Stripe
+    console.log("Respuesta de Stripe al crear la sesión:", session);
+
     if (session?.error || !session?.id) {
       console.error('Stripe API returned error when creating checkout session', { status: sessionRes.status, body: session });
       return new Response(JSON.stringify(session), {
@@ -219,6 +351,8 @@ Deno.serve(async (req) => {
         status: 400,
       });
     }
+
+    console.log("Sesión de Stripe creada exitosamente:", session.id);
 
     // Actualizar la consulta con el stripe_session_id
     if (consultationId) {
@@ -236,8 +370,15 @@ Deno.serve(async (req) => {
       }
     }
 
+    // ✅ Sesión creada exitosamente - LOG PARA DEBUGGING
+    console.log("Sesión de Stripe creada exitosamente:", session.id);
+
+    // ✅ IMPORTANTE: NO crear registros de suscripción aquí
+    // El webhook manejará la creación de registros después del pago exitoso
+    
+    // ✅ Retornar URL de la sesión para redirección a Stripe
     return new Response(
-      JSON.stringify({ url: session.url, sessionId: session.id }), // Incluye sessionId en la respuesta
+      JSON.stringify({ url: session.url, sessionId: session.id }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 },
     );
   } catch (error) {

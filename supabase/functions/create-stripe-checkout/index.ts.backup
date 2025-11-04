@@ -1,0 +1,462 @@
+import { corsHeaders } from "../shared/cors.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const STRIPE_SECRET_KEY = Deno.env.get("STRIPE_SECRET_KEY");
+const STRIPE_API = "https://api.stripe.com/v1";
+const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
+const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+const SITE_URL = Deno.env.get("SITE_URL");
+
+Deno.serve({ port: 8000 }, async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
+  try {
+    // Parse body safely once (supports JSON, double-encoded JSON, and form-encoded)
+    const rawBody = await req.text();
+    const contentType = req.headers.get("content-type") || "";
+    let requestBody: any = {};
+    if (rawBody) {
+      if (contentType.includes("application/x-www-form-urlencoded")) {
+        const form = new URLSearchParams(rawBody);
+        requestBody = Object.fromEntries(form.entries());
+        // Try to parse known nested objects
+        if (typeof requestBody.metadata === "string") {
+          try { requestBody.metadata = JSON.parse(requestBody.metadata); } catch (_) { /* ignore */ }
+        }
+      } else {
+        try {
+          requestBody = JSON.parse(rawBody);
+          if (typeof requestBody === "string") {
+            requestBody = JSON.parse(requestBody);
+          }
+        } catch (_) {
+          requestBody = {};
+        }
+      }
+    }
+
+    // Also accept query params as a last resort
+    const url = new URL(req.url);
+    const queryParams = Object.fromEntries(url.searchParams.entries());
+    if (Object.keys(queryParams).length > 0) {
+      requestBody = { ...queryParams, ...requestBody };
+      if (typeof requestBody.metadata === "string") {
+        try { requestBody.metadata = JSON.parse(requestBody.metadata); } catch (_) { /* ignore */ }
+      }
+    }
+
+    // Normalize/alias common field names coming from different callers
+    const metadata = (requestBody?.metadata as Record<string, unknown> | undefined) ?? {};
+    const priceId = (requestBody?.priceId || requestBody?.price_id || requestBody?.price) as string | undefined;
+    const mode = (requestBody?.mode as string | undefined) ?? "subscription";
+    const userId = (requestBody?.userId || requestBody?.user_id) as string | undefined;
+    const email = (requestBody?.email || (metadata as any)?.email || (metadata as any)?.client_email) as string | undefined;
+
+    // Resolver fallbacks desde metadata
+    const resolvedUserId = userId || (metadata as any).user_id || (metadata as any).supabase_user_id;
+    const resolvedEmail = email || (metadata as any).client_email;
+
+    console.log("🔍 Valores resueltos:", {
+      originalUserId: userId,
+      resolvedUserId,
+      originalEmail: email,
+      resolvedEmail,
+      metadata
+    });
+
+    console.log("create-stripe-checkout request received", { priceId, mode, userId, email, contentType, rawLength: rawBody?.length || 0 });
+    console.log("Payload recibido en create-stripe-checkout:", requestBody);
+
+    // ✅ VALIDAR PRICEID PARA SUSCRIPCIONES
+    if (mode === "subscription") {
+      console.log("🔍 Validando priceId para suscripción:", priceId);
+      
+      // Verificar que el priceId existe en Stripe y es recurrente
+      const priceRes = await fetch(`https://api.stripe.com/v1/prices/${priceId}`, {
+        headers: { Authorization: `Bearer ${STRIPE_SECRET_KEY}` },
+      });
+      const priceData = await priceRes.json();
+      
+      if (!priceRes.ok) {
+        console.error("❌ Error obteniendo precio de Stripe:", priceData);
+        return new Response(
+          JSON.stringify({ error: "Invalid priceId" }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 },
+        );
+      }
+      
+      console.log("💰 Datos del precio:", {
+        id: priceData.id,
+        type: priceData.type,
+        recurring: priceData.recurring,
+        unit_amount: priceData.unit_amount,
+        currency: priceData.currency
+      });
+      
+      if (priceData.type !== "recurring") {
+        console.error("❌ El priceId no es recurrente:", priceData.type);
+        return new Response(
+          JSON.stringify({ error: "PriceId must be recurring for subscriptions" }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 },
+        );
+      }
+    }
+
+    // Registrar información adicional para depuración
+    console.log("Método HTTP:", req.method);
+    console.log("Encabezados de la solicitud:", Object.fromEntries(req.headers));
+    console.log("Cuerpo completo recibido:", requestBody);
+
+    // Registrar valores desestructurados
+    console.log("Valores desestructurados:", { priceId, mode, userId, email });
+
+    // SITE_URL es opcional (tenemos fallback)
+    if (!STRIPE_SECRET_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+      console.error('Missing one of required env vars:', { STRIPE_SECRET_KEY: !!STRIPE_SECRET_KEY, SUPABASE_URL: !!SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY: !!SUPABASE_SERVICE_ROLE_KEY, SITE_URL: !!SITE_URL });
+      return new Response(
+        JSON.stringify({ error: 'Server misconfiguration: missing environment variables.' }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 },
+      );
+    }
+
+    // Validar parámetros obligatorios y registrar valores
+    if (!priceId) {
+      console.error("Missing priceId in request payload.", { priceId });
+      return new Response(
+        JSON.stringify({ error: "priceId is required." }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 },
+      );
+    }
+
+    if (!resolvedUserId) {
+      console.error("Missing userId in request payload or metadata.", { userId, metadata });
+      return new Response(
+        JSON.stringify({ error: "userId is required." }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 },
+      );
+    }
+
+    if (!resolvedEmail) {
+      console.error("Missing email in request payload or metadata.", { email, metadata });
+      return new Response(
+        JSON.stringify({ error: "email is required." }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 },
+      );
+    }
+
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
+    // Crear pre-reserva de consulta si es un checkout de consultoría (mode === 'payment')
+    let consultationId: string | undefined;
+    if (mode === "payment") {
+      const allowedConsultationTypes = new Set(["investment", "portfolio", "strategy", "technical", "general", "financial_planning", "onboarding_crypto"]);
+      const incomingType = (metadata as any).consultation_type as string | undefined;
+      const normalizedType = incomingType && allowedConsultationTypes.has(incomingType) ? incomingType : "general";
+
+      const consultationPayload = {
+        user_id: resolvedUserId,
+        service: normalizedType // Asegurar que el valor del desplegable se guarde correctamente
+        ,
+        duration: Number((metadata as any).duration || (metadata as any).consultation_duration) || 30,
+        status: "scheduled",
+        client_name: (metadata as any).client_name || null,
+        client_email: (metadata as any).client_email || resolvedEmail || null,
+        notes: (metadata as any).description || (metadata as any).notes || null,
+        title: `Consulta: ${normalizedType}`, // Reflejar el tipo de consulta en el título
+        stripe_session_id: null,
+        booking_date: (metadata as any).scheduled_at || new Date().toISOString(),
+      } as Record<string, unknown>;
+
+      // Remover campos undefined para evitar errores de PostgREST
+      Object.keys(consultationPayload).forEach((k) => {
+        if (consultationPayload[k] === undefined) delete consultationPayload[k];
+      });
+
+      const { data: consultationRow, error: consultationError } = await supabase
+        .from("consultations")
+        .insert(consultationPayload)
+        .select("id")
+        .single();
+
+      if (consultationError) {
+        console.error("Failed to create consultation pre-booking:", {
+          error: consultationError,
+          payload: consultationPayload
+        });
+        return new Response(
+          JSON.stringify({ error: "Failed to create consultation" }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 },
+        );
+      }
+      consultationId = consultationRow?.id;
+      console.log("Generated consultationId:", consultationId); // Log para verificar el ID generado
+    }
+
+    console.log("🔍 Validando configuración del precio en Stripe...");
+    
+    // Obtener información del precio de Stripe para validación
+    const priceResponse = await fetch(`https://api.stripe.com/v1/prices/${priceId}`, {
+      headers: {
+        Authorization: `Bearer ${STRIPE_SECRET_KEY}`,
+      },
+    });
+    
+    const priceInfo = await priceResponse.json();
+    console.log("📋 Información del precio de Stripe:", priceInfo);
+    
+    if (priceInfo.error) {
+      throw new Error(`Precio no válido en Stripe: ${priceInfo.error.message}`);
+    }
+    
+    // ✅ VALIDACIÓN CRÍTICA: Para suscripciones, el precio DEBE ser recurring
+    if (mode === "subscription" && priceInfo.type !== "recurring") {
+      throw new Error(`❌ PRECIO INCORRECTO: Para modo 'subscription', el precio debe ser de tipo 'recurring', pero es '${priceInfo.type}'. 
+        PriceId: ${priceId}. 
+        Debes crear un precio recurrente en Stripe Dashboard.`);
+    }
+    
+    // Para pagos únicos, el precio debe ser one_time
+    if (mode === "payment" && priceInfo.type !== "one_time") {
+      console.warn(`⚠️ ADVERTENCIA: Para modo 'payment', se recomienda usar precio 'one_time', pero es '${priceInfo.type}'`);
+    }
+    
+    console.log(`✅ Precio validado: ${priceInfo.type} - ${priceInfo.unit_amount / 100} ${priceInfo.currency}`);
+
+    // Buscar o crear cliente Stripe
+    const searchParams = new URLSearchParams({ email: resolvedEmail, limit: "1" });
+    const customersRes = await fetch(`https://api.stripe.com/v1/customers?${searchParams}`, {
+      headers: { Authorization: `Bearer ${STRIPE_SECRET_KEY}` },
+    });
+    const customers = await customersRes.json();
+
+    let customerId: string;
+    if (customers.data?.length > 0) {
+      customerId = customers.data[0].id;
+    } else {
+      const createRes = await fetch("https://api.stripe.com/v1/customers", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${STRIPE_SECRET_KEY}`,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          email: resolvedEmail,
+          ...(resolvedUserId ? { ["metadata[supabase_user_id]"]: resolvedUserId } : {} as any),
+        }),
+      });
+      const customer = await createRes.json();
+      customerId = customer.id;
+    }
+
+    const siteUrl = SITE_URL || new URL(SUPABASE_URL!).origin;
+
+    // Crear sesión de checkout
+    const params = new URLSearchParams();
+    
+    // Configuración base común
+    params.set("mode", mode);
+    params.set("customer", customerId);
+    params.set("success_url", `${siteUrl}/academia/gracias?session_id={CHECKOUT_SESSION_ID}`);
+    params.set("cancel_url", `${siteUrl}/academia`);
+    params.set("metadata[access_type]", mode === "subscription" ? "membership" : "one_time");
+    
+    if (resolvedUserId) {
+      params.set("metadata[supabase_user_id]", resolvedUserId);
+    }
+
+    // ✅ CONFIGURACIÓN ESPECÍFICA PARA SUSCRIPCIONES
+    if (mode === "subscription") {
+      console.log("🔧 Configurando sesión para suscripción recurrente...");
+      
+      // Para suscripciones, SOLO necesitamos line_items con precio recurrente
+      params.set("line_items[0][price]", priceId);
+      params.set("line_items[0][quantity]", "1");
+      
+      // Configuración específica de suscripción
+      params.set("payment_method_collection", "always");
+      params.set("billing_address_collection", "auto");
+      
+      console.log("✅ Suscripción configurada con priceId recurrente:", priceId);
+    } else {
+      // ✅ CONFIGURACIÓN PARA PAGOS ÚNICOS (CONSULTAS)
+      console.log("🔧 Configurando sesión para pago único...");
+      
+      params.set("line_items[0][price]", priceId);
+      params.set("line_items[0][quantity]", "1");
+      
+      // Adjuntar consultation_id solo si el modo es "payment"
+      if (consultationId) {
+        params.set("metadata[consultation_id]", consultationId);
+        console.log("Consultation ID added to Stripe metadata:", consultationId);
+      }
+    }
+
+    // Log adicional para verificar los parámetros enviados a Stripe
+    console.log("Enviando parámetros a Stripe para crear la sesión:", Object.fromEntries(params));
+
+    console.log("Iniciando creación de sesión de Stripe...");
+    const stripeStart = Date.now();
+    const sessionRes = await fetch("https://api.stripe.com/v1/checkout/sessions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${STRIPE_SECRET_KEY}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: params,
+    });
+    console.log("Respuesta de Stripe recibida en:", Date.now() - stripeStart, "ms");
+
+    const session = await sessionRes.json();
+
+    // Log adicional para verificar la respuesta de Stripe
+    console.log("Respuesta de Stripe al crear la sesión:", session);
+
+    if (session?.error || !session?.id) {
+      console.error('Stripe API returned error when creating checkout session', { status: sessionRes.status, body: session });
+      return new Response(JSON.stringify(session), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
+    }
+
+    console.log("Sesión de Stripe creada exitosamente:", session.id);
+
+    // Actualizar la consulta con el stripe_session_id
+    if (consultationId) {
+      const { error: updateError } = await supabase
+        .from("consultations")
+        .update({ stripe_session_id: session.id })
+        .eq("id", consultationId);
+
+      if (updateError) {
+        console.error("Failed to update consultation with stripe_session_id:", updateError);
+        return new Response(
+          JSON.stringify({ error: "Failed to update consultation" }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 },
+        );
+      }
+    }
+
+    // Actualizar o crear registro en user_subscription para membresías
+    if (mode === "subscription") {
+      // Verificar si el user_id existe en la tabla user
+      const { data: userExists, error: userError } = await supabase
+        .from("users") // Cambiar a la tabla correcta
+        .select("id")
+        .eq("id", resolvedUserId)
+        .single();
+
+      if (userError || !userExists) {
+        console.error("User ID does not exist or could not be verified:", { userId: resolvedUserId, error: userError });
+        return new Response(
+          JSON.stringify({ error: "Invalid user ID." }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 },
+        );
+      }
+
+      // Mapeo entre priceId de Stripe y plan_id en la tabla subscription_plans
+      const priceToPlanMap: Record<string, string> = {
+        "price_1SDKO8JmSk3VG9oiCLuGoE4s": "4f27f890-55ea-4f61-b6f9-3b02b3a358fa",
+        "price_1SDKQZJmSk3VG9oiGudek18k": "9e38bc9e-7f4f-424c-87fe-6b4e453301d7",
+        "price_1SDKVXJmSk3VG9oiLEm9JOoD": "a9097647-e0bc-424c-bacb-7ccbae7a0853",
+        "price_1SDKb2JmSk3VG9oiJr1unLZZ": "d7435ab7-d543-4bdc-9cc4-6874d286aa48",
+      };
+
+      // Resolver plan_id a partir del priceId
+      const planId = priceToPlanMap[priceId];
+      if (!planId) {
+        console.error("Invalid priceId. No matching plan found:", { priceId });
+        return new Response(
+          JSON.stringify({ error: "Invalid priceId. No matching plan found." }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 },
+        );
+      }
+
+      // Verificar si el plan_id existe en la tabla subscription_plans
+      const { data: planExists, error: planError } = await supabase
+        .from("subscription_plans")
+        .select("id")
+        .eq("id", planId)
+        .single();
+
+      // Log adicional para depuración
+      console.log("Resultado de la consulta a subscription_plans:", { planId, planExists, planError });
+
+      if (planError || !planExists) {
+        console.error("Plan ID does not exist or could not be verified:", { planId, error: planError });
+        return new Response(
+          JSON.stringify({ error: "Invalid plan ID." }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 },
+        );
+      }
+
+      const subscriptionPayload = {
+        user_id: resolvedUserId,
+        plan_id: planId, // Usar el UUID mapeado en lugar del priceId
+        stripe_subscription_id: null, // Se actualizará después del webhook
+        stripe_customer_id: customerId,
+        status: "active", // Cambiar a un valor permitido por la restricción
+        started_at: new Date().toISOString(),
+        expired_at: null, // Se calculará según el plan
+        auto_renew: true, // Asumimos renovación automática
+        metadata: metadata || {}, // Guardar metadatos adicionales
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        current_period_start: new Date().toISOString(), // Valor predeterminado
+        current_period_end: null, // Se calculará después
+        cancel_at_period_end: false, // Valor predeterminado
+        trial_start: null, // Opcional
+        trial_end: null, // Opcional
+      };
+
+      // Registrar el esquema de la tabla user_subscriptions para depuración
+      const { data: tableSchema, error: schemaError } = await supabase
+        .from("user_subscriptions")
+        .select("*")
+        .limit(1);
+
+      if (schemaError) {
+        console.error("Failed to fetch user_subscriptions schema:", schemaError);
+      } else {
+        console.log("Schema of user_subscriptions table:", tableSchema);
+      }
+
+      // Validar el payload antes de la inserción
+      console.log("Validando payload para user_subscriptions:", subscriptionPayload);
+
+      // Intentar insertar el registro en la tabla user_subscriptions
+      const { data: subscriptionRow, error: subscriptionError } = await supabase
+        .from("user_subscriptions")
+        .insert(subscriptionPayload)
+        .select("id")
+        .single();
+
+      if (subscriptionError) {
+        console.error("Failed to create subscription record:", {
+          error: subscriptionError, // Registrar el error completo
+          payload: subscriptionPayload
+        });
+        return new Response(
+          JSON.stringify({ error: "Failed to create subscription record", details: subscriptionError }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 400 },
+        );
+      }
+      console.log("Generated subscription record:", subscriptionRow?.id);
+    }
+
+    // ✅ Retornar URL de la sesión para todos los casos exitosos
+    return new Response(
+      JSON.stringify({ url: session.url, sessionId: session.id }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 },
+    );
+  } catch (error) {
+    console.error("Error processing request:", error);
+
+    return new Response(
+      JSON.stringify({ error: "Internal server error." }),
+      { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 },
+    );
+  }
+});

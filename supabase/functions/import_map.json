@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "@supabase/": "https://esm.sh/@supabase/",
+    "stripe": "https://esm.sh/stripe@12.11.0"
+  }
+}
