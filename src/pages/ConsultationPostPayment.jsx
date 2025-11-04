@@ -26,6 +26,29 @@ import {
 } from 'lucide-react';
 import emailService from '@/lib/emailService';
 
+// Helper para formatear fechas de forma segura
+const formatDate = (dateString, options) => {
+  if (!dateString) return 'Pendiente de programar';
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Pendiente de programar';
+    return date.toLocaleDateString('es-ES', options);
+  } catch {
+    return 'Pendiente de programar';
+  }
+};
+
+const formatTime = (dateString, options) => {
+  if (!dateString) return 'Por confirmar';
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Por confirmar';
+    return date.toLocaleTimeString('es-ES', options);
+  } catch {
+    return 'Por confirmar';
+  }
+};
+
 const ConsultationPostPayment = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -216,10 +239,13 @@ const ConsultationPostPayment = () => {
           investment_experience: formData.investment_experience,
           portfolio_size: formData.portfolio_size,
           consultation_goals: formData.consultation_goals,
+          current_investments: formData.current_investments,
+          specific_questions: formData.specific_questions,
+          preferred_communication: formData.preferred_communication,
+          pre_consultation_comments: formData.additional_notes,
           description: `${formData.additional_notes}\n\nInversiones actuales: ${formData.current_investments}\nPreguntas específicas: ${formData.specific_questions}\nPreferencia de comunicación: ${formData.preferred_communication}`,
           status: 'confirmed', // Confirmar la consulta después del pago
-          // Mantener campos originales para compatibilidad
-          additional_notes: `${formData.additional_notes}\n\nInversiones actuales: ${formData.current_investments}\nPreguntas específicas: ${formData.specific_questions}\nPreferencia de comunicación: ${formData.preferred_communication}`
+          form_completed_at: new Date().toISOString()
         })
         .eq('id', consultation.id);
 
@@ -227,17 +253,17 @@ const ConsultationPostPayment = () => {
 
       // Enviar email de confirmación de consulta
       try {
-        await emailService.sendConsultationConfirmation({
+        await emailService.sendConsultationAdvancedCrypto({
           name: formData.client_name,
           email: formData.client_email,
-          consultationType: consultation.title,
-          scheduledDate: new Date(consultation.scheduled_at).toLocaleDateString('es-ES', {
+          consultationType: consultation.service || consultation.title || 'Consultoría Crypto Avanzada',
+          preferredDate: formatDate(consultation.scheduled_at, {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
             day: 'numeric'
           }),
-          scheduledTime: new Date(consultation.scheduled_at).toLocaleTimeString('es-ES', {
+          scheduledTime: formatTime(consultation.scheduled_at, {
             hour: '2-digit',
             minute: '2-digit'
           }),
@@ -257,13 +283,13 @@ const ConsultationPostPayment = () => {
           clientEmail: formData.client_email,
           clientPhone: formData.client_phone,
           consultationType: consultation.title,
-          preferredDate: new Date(consultation.scheduled_at).toLocaleDateString('es-ES', {
+          preferredDate: formatDate(consultation.scheduled_at, {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
             day: 'numeric'
           }),
-          preferredTime: new Date(consultation.scheduled_at).toLocaleTimeString('es-ES', {
+          preferredTime: formatTime(consultation.scheduled_at, {
             hour: '2-digit',
             minute: '2-digit'
           }),
@@ -354,7 +380,7 @@ const ConsultationPostPayment = () => {
                     <Target className="h-5 w-5 text-gray-400 mr-2" />
                     <div>
                       <p className="text-sm text-gray-500">Tipo</p>
-                      <p className="font-medium">{consultation.title}</p>
+                      <p className="font-medium">{consultation.service || consultation.title || 'Consultoría General'}</p>
                     </div>
                   </div>
                   <div className="flex items-center">
@@ -362,7 +388,7 @@ const ConsultationPostPayment = () => {
                     <div>
                       <p className="text-sm text-gray-500">Fecha</p>
                       <p className="font-medium">
-                        {new Date(consultation.scheduled_at).toLocaleDateString('es-ES', {
+                        {formatDate(consultation.scheduled_at, {
                           weekday: 'long',
                           year: 'numeric',
                           month: 'long',
@@ -376,10 +402,10 @@ const ConsultationPostPayment = () => {
                     <div>
                       <p className="text-sm text-gray-500">Hora y Duración</p>
                       <p className="font-medium">
-                        {new Date(consultation.scheduled_at).toLocaleTimeString('es-ES', {
+                        {formatTime(consultation.scheduled_at, {
                           hour: '2-digit',
                           minute: '2-digit'
-                        })} ({consultation.duration_minutes} min)
+                        })} - {consultation.duration_minutes} min
                       </p>
                     </div>
                   </div>

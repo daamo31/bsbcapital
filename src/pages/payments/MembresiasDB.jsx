@@ -32,10 +32,11 @@ const fallbackPlans = [
       price_annual: 299.99,
       currency: 'EUR',
       features: [
-        'Formación completa',
-        'Comunidad privada',
-        'Señales básicas',
-        'Soporte por email'
+        'Newsletter incluida',
+        'Acceso anticipado a BSB Maker (IA copiloto para traders)',
+        'Acceso completo a la formación (cursos temáticos + masterclass)',
+        '20% de descuento en consultorías',
+        '1 consultoría de 30 min incluida en el plan anual'
       ],
       highlight: false,
       description: 'Plan básico',
@@ -45,15 +46,15 @@ const fallbackPlans = [
     {
       id: 'premium-investor',
       name: 'Premium Investor',
-      price_monthly: 97,
-      price_annual: 999.99,
+      price_monthly: 29.99,
+      price_annual: 299.99,
       currency: 'EUR',
       features: [
-        'Todo lo anterior',
-        'Análisis de mercado diarios',
-        'Señales premium',
-        'Webinars exclusivos',
-        'Soporte prioritario'
+        'Newsletter incluida',
+        'Acceso a la Comunidad privada',
+        'Acceso completo a la formación (cursos temáticos + masterclass)',
+        '20% de descuento en consultorías',
+        '1 consultoría de 30 min incluida en el plan anual'
       ],
       highlight: true,
       description: 'Plan popular',
@@ -64,17 +65,17 @@ const fallbackPlans = [
       id: 'wealth-membership',
       name: 'Wealth Membership',
       price_monthly: null, // No hay mensual
-      price_annual: 2007,
+      price_annual: 2400,
       currency: 'EUR',
       features: [
-        'Todo lo anterior',
-        'Consultoría 1-1 personalizada',
-        'Portfolio management',
-        'Soporte 24/7',
-        'Acceso anticipado a nuevos productos'
+        '6 consultorías de 1h/año (valor: 1.800€)',
+        'Revisión completa de cartera semestral',
+        'Plan estratégico anual con propuestas de optimización',
+        'Canal privado prioritario + comunidad élite (networking + análisis exclusivos)',
+        'Diseñada para clientes con patrimonio elevado que buscan claridad y continuidad sin ceder la gestión'
       ],
       highlight: false,
-      description: 'Plan completo (solo anual)',
+      description: 'Co-Gestión Patrimonial (solo anual)',
       stripe_price_id: null,
       stripe_price_id_annual: 'price_1SDKb2JmSk3VG9oiJr1unLZZ'
     }
@@ -415,14 +416,16 @@ const MembresiasDB = () => {
               </thead>
               <tbody>
                 {[
-                  { name: 'Newsletter gratuita', free: true, trader: true, premium: true, wealth: true },
-                  { name: 'BSB Marker', free: false, trader: true, premium: true, wealth: true },
-                  { name: 'Formación completa', free: false, trader: true, premium: false, wealth: true },
+                  { name: 'Newsletter incluida', free: false, trader: true, premium: true, wealth: true },
+                  { name: 'BSB Maker (IA copiloto)', free: false, trader: true, premium: false, wealth: true },
+                  { name: 'Acceso completo a la formación', free: false, trader: true, premium: true, wealth: true },
                   { name: 'Comunidad privada', free: false, trader: false, premium: true, wealth: true },
-                  { name: 'Análisis de mercado', free: false, trader: false, premium: true, wealth: true },
-                  { name: 'Webinars exclusivos', free: false, trader: true, premium: true, wealth: true },
-                  { name: 'Consultoría personalizada', free: false, trader: false, premium: false, wealth: true },
-                  { name: 'Soporte 24/7', free: false, trader: false, premium: false, wealth: true }
+                  { name: '20% descuento consultorías', free: false, trader: true, premium: true, wealth: false },
+                  { name: '1 consultoría 30 min incluida (anual)', free: false, trader: true, premium: true, wealth: false },
+                  { name: '6 consultorías 1h/año (valor: 1.800€)', free: false, trader: false, premium: false, wealth: true },
+                  { name: 'Revisión de cartera semestral', free: false, trader: false, premium: false, wealth: true },
+                  { name: 'Plan estratégico anual', free: false, trader: false, premium: false, wealth: true },
+                  { name: 'Canal privado prioritario', free: false, trader: false, premium: false, wealth: true }
                 ].map((feature, index) => (
                   <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
                     <td className="p-6 font-medium text-gray-900">{feature.name}</td>

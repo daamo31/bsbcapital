@@ -42,6 +42,7 @@ import AccessPanel from '@/pages/admin/AccessPanel.jsx';
 
 // Demo/Testing
 import ConsultationFormDemo from '@/pages/ConsultationFormDemo.jsx';
+import ConsultationPostPayment from '@/pages/ConsultationPostPayment.jsx';
 import AdminDashboard from '@/pages/AdminDashboard.jsx';
 import ResponsiveTest from '@/pages/ResponsiveTest.jsx';
 
@@ -94,6 +95,7 @@ function App() {
                 <Route path="/bsb-maker" element={<BsbMaker />} />
                 <Route path="/consultoria" element={<Consultoria />} />
                 <Route path="/consultoria/precios" element={<ConsultationPricing />} />
+                <Route path="/consultation-post-payment" element={<ConsultationPostPayment />} />
                 <Route path="/membresias" element={<MembresiasDB />} />
                 <Route path="/dashboard" element={
                   <ProtectedRoute>

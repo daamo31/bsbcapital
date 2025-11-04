@@ -199,66 +199,229 @@ class EmailService {
       },
       academia_bsb: {
         subject: "Tu acceso a la Academia BSB está activo 🎓",
-        html: `Hola [Nombre],<br><br>
-        ¡Bienvenido a la Academia BSB!<br>
-        Tu inscripción se ha completado con éxito.<br><br>
-        A partir de ahora tendrás acceso a:<br><br>
-        ● Píldoras formativas para dominar los fundamentos.<br>
-        ● Masterclass exclusivas con estrategias y análisis avanzados.<br>
-        ● Recursos descargables y materiales de apoyo.<br>
-        📚 En los próximos días recibirás un correo con tus credenciales y una guía para sacar el máximo partido a tu formación.<br><br>
-        Gracias por apostar por tu educación financiera.<br>
-        El equipo de BSB Capital`
-      },
-      free_access: {
-        subject: "Tu acceso gratuito a BSB Capital ya está activo 💼",
-        html: `Hola [Nombre],<br><br>
-        Gracias por unirte a la comunidad de BSB Capital.<br>
-        Tu plan Free Access ya está activo y a partir de hoy recibirás nuestra newsletter exclusiva, con análisis, reflexiones financieras y contenido para ayudarte a tomar decisiones más inteligentes con tu dinero.<br><br>
-        Aprovecha esta oportunidad para conocer nuestra forma de entender las finanzas: profesional, transparente y centrada en el crecimiento real.<br><br>
-        Bienvenido a la nueva forma de invertir.<br>
-        El equipo de BSB Capital`
+        html: `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Academia BSB Activada</title>
+</head>
+<body style="margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; background-color:#f5f5f5;">
+  <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px; background-color:#ffffff;">
+    <tr>
+      <td align="center" style="padding:40px 20px 20px;">
+        <img
+          src="https://srv1511-files.hstgr.io/55400bd7ca2acb6b/files/public_html/Logo_negro.png"
+          alt="BSB Capital"
+          width="110"
+          style="display:block; margin:auto;"
+        />
+      </td>
+    </tr>
+
+    <tr>
+      <td align="center" style="padding:10px 30px;">
+        <h2 style="color:#0b1f14; font-weight:600; margin:0;">¡Bienvenido a la Academia BSB! 🎓</h2>
+        <p style="font-size:16px; color:#37493f; line-height:1.6; margin-top:18px; margin-bottom:28px;">
+          Hola [Nombre],<br><br>
+          Tu acceso a la Academia BSB Capital está activo.<br>
+          Ya puedes comenzar tu formación en inversión, fiscalidad y crypto con nuestro método práctico y directo.<br><br>
+          Con tu acceso obtienes:<br><br>
+          ● Acceso completo al contenido de la academia<br>
+          ● 4 módulos completos de formación<br>
+          ● Plantillas y checklists descargables<br>
+          ● Soporte prioritario por email<br>
+          ● Actualizaciones gratuitas<br>
+          ● Comunidad privada de alumnos<br><br>
+          ✅ <a href="https://bsbcapital.io/academia" style="color:#C5A019; text-decoration:none;">Acceder a la Academia ahora</a><br><br>
+          Gracias por invertir en tu formación financiera.<br>
+          El equipo de BSB Capital
+        </p>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="padding-top:20px; border-bottom:1px solid #e6ece8;"></td>
+    </tr>
+
+    <tr>
+      <td align="center" style="padding:25px 20px 35px 20px; font-size:12px; color:#6a756f; line-height:1.6;">
+        <p style="margin:0;">© BSB Capital · <a href="mailto:info@bsbcapital.io" style="color:#C5A019; text-decoration:none;">info@bsbcapital.io</a></p>
+        <p style="margin:5px 0 0 0;">Tu acceso a la Academia BSB está confirmado.</p>
+        <p style="margin:0;">No respondas a este mensaje.</p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
       },
       trader_plan_pro: {
-        subject: "Tu suscripción a Trader Plan Pro está activa 🚀",
-        html: `Hola [Nombre],<br><br>
-        Bienvenido a Trader Plan Pro.<br>
-        Tu membresía ya está activa y con ella desbloqueas acceso a las herramientas y conocimientos que te ayudarán a llevar tu trading al siguiente nivel.<br><br>
-        A partir de ahora podrás disfrutar de:<br><br>
-        ● Acceso anticipado a BSB Maker, tu copiloto de trading con IA.<br>
-        ● Acceso completo a la formación (píldoras + masterclass).<br>
-        ● 20% de descuento en consultorías personalizadas.<br>
-        ● 1 consultoría de 30 minutos incluida en tu plan anual.<br><br>
-        Prepárate para optimizar tus operaciones y entender los mercados con otra perspectiva.<br><br>
-        Gracias por confiar en BSB Capital.<br>
-        El equipo de BSB Capital`
+        subject: "Tu membresía Trader Plan Pro está activa 📈",
+        html: `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trader Plan Pro Activo</title>
+</head>
+<body style="margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; background-color:#f5f5f5;">
+  <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px; background-color:#ffffff;">
+    <tr>
+      <td align="center" style="padding:40px 20px 20px;">
+        <img
+          src="https://srv1511-files.hstgr.io/55400bd7ca2acb6b/files/public_html/Logo_negro.png"
+          alt="BSB Capital"
+          width="110"
+          style="display:block; margin:auto;"
+        />
+      </td>
+    </tr>
+
+    <tr>
+      <td align="center" style="padding:10px 30px;">
+        <h2 style="color:#0b1f14; font-weight:600; margin:0;">¡Tu membresía Trader Plan Pro está activa! 📈</h2>
+        <p style="font-size:16px; color:#37493f; line-height:1.6; margin-top:18px; margin-bottom:28px;">
+          Hola [Nombre],<br><br>
+          Bienvenido a Trader Plan Pro.<br>
+          Tu membresía ya está activa y con ella desbloqueas acceso a las herramientas y conocimientos que te ayudarán a llevar tu trading al siguiente nivel.<br><br>
+          A partir de ahora podrás disfrutar de:<br><br>
+          ● Acceso anticipado a BSB Maker, tu copiloto de trading con IA<br>
+          ● Acceso completo a la formación (píldoras + masterclass)<br>
+          ● 20% de descuento en consultorías personalizadas<br>
+          ● 1 consultoría de 30 minutos incluida en tu plan anual<br><br>
+          ✅ <a href="https://bsbcapital.io/bsb-maker" style="color:#C5A019; text-decoration:none;">Explorar BSB Maker</a><br>
+          ✅ <a href="https://bsbcapital.io/academia" style="color:#C5A019; text-decoration:none;">Acceder a la formación</a><br><br>
+          Prepárate para optimizar tus operaciones y entender los mercados con otra perspectiva.<br><br>
+          Gracias por confiar en BSB Capital.<br>
+          El equipo de BSB Capital
+        </p>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="padding-top:20px; border-bottom:1px solid #e6ece8;"></td>
+    </tr>
+
+    <tr>
+      <td align="center" style="padding:25px 20px 35px 20px; font-size:12px; color:#6a756f; line-height:1.6;">
+        <p style="margin:0;">© BSB Capital · <a href="mailto:info@bsbcapital.io" style="color:#C5A019; text-decoration:none;">info@bsbcapital.io</a></p>
+        <p style="margin:5px 0 0 0;">Tu membresía Trader Plan Pro está confirmada.</p>
+        <p style="margin:0;">No respondas a este mensaje.</p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
       },
       premium_investor: {
         subject: "Tu membresía Premium Investor está activa 💎",
-        html: `Hola [Nombre],<br><br>
-        Tu suscripción a Premium Investor está confirmada.<br>
-        A partir de hoy formas parte de una comunidad exclusiva de inversores que buscan claridad, estrategia y crecimiento sostenible.<br><br>
-        Con tu membresía tienes acceso a:<br><br>
-        ● Comunidad privada de inversores BSB.<br>
-        ● Acceso completo a la formación avanzada (cursos temáticos + masterclass).<br>
-        ● 20% de descuento en consultorías.<br>
-        ● 1 consultoría personalizada de 30 minutos incluida en tu plan anual.<br><br>
-        Explora, aprende y crece junto a nosotros.<br>
-        El equipo de BSB Capital está contigo en cada paso.`
+        html: `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Premium Investor Activo</title>
+</head>
+<body style="margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; background-color:#f5f5f5;">
+  <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px; background-color:#ffffff;">
+    <tr>
+      <td align="center" style="padding:40px 20px 20px;">
+        <img
+          src="https://srv1511-files.hstgr.io/55400bd7ca2acb6b/files/public_html/Logo_negro.png"
+          alt="BSB Capital"
+          width="110"
+          style="display:block; margin:auto;"
+        />
+      </td>
+    </tr>
+
+    <tr>
+      <td align="center" style="padding:10px 30px;">
+        <h2 style="color:#0b1f14; font-weight:600; margin:0;">¡Tu membresía Premium Investor está activa! 💎</h2>
+        <p style="font-size:16px; color:#37493f; line-height:1.6; margin-top:18px; margin-bottom:28px;">
+          Hola [Nombre],<br><br>
+          Tu suscripción a Premium Investor está confirmada.<br>
+          A partir de hoy formas parte de una comunidad exclusiva de inversores que buscan claridad, estrategia y crecimiento sostenible.<br><br>
+          Con tu membresía tienes acceso a:<br><br>
+          ● Comunidad privada de inversores BSB<br>
+          ● Acceso completo a la formación avanzada (cursos temáticos + masterclass)<br>
+          ● 20% de descuento en consultorías<br>
+          ● 1 consultoría personalizada de 30 minutos incluida en tu plan anual<br><br>
+          ✅ <a href="https://bsbcapital.io/comunidad" style="color:#C5A019; text-decoration:none;">Acceder a la comunidad</a><br>
+          ✅ <a href="https://bsbcapital.io/consultoria" style="color:#C5A019; text-decoration:none;">Reservar consultoría</a><br><br>
+          Explora, aprende y crece junto a nosotros.<br>
+          El equipo de BSB Capital está contigo en cada paso.
+        </p>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="padding-top:20px; border-bottom:1px solid #e6ece8;"></td>
+    </tr>
+
+    <tr>
+      <td align="center" style="padding:25px 20px 35px 20px; font-size:12px; color:#6a756f; line-height:1.6;">
+        <p style="margin:0;">© BSB Capital · <a href="mailto:info@bsbcapital.io" style="color:#C5A019; text-decoration:none;">info@bsbcapital.io</a></p>
+        <p style="margin:5px 0 0 0;">Tu membresía Premium Investor está confirmada.</p>
+        <p style="margin:0;">No respondas a este mensaje.</p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
       },
       wealth_membership: {
         subject: "Bienvenido a Wealth Membership — Tu gestión patrimonial personalizada ya está activa 🏛️",
-        html: `Hola [Nombre],<br><br>
-        Gracias por confiar en BSB Capital para acompañarte en la gestión de tu patrimonio.<br>
-        Tu membresía Wealth Membership ha sido activada con éxito.<br><br>
-        A partir de ahora contarás con un acompañamiento exclusivo y continuo que incluye:<br><br>
-        ● 6 consultorías personalizadas de 1h/año (valoradas en 1.800 €).<br>
-        ● Revisión completa de cartera semestral.<br>
-        ● Plan estratégico anual con propuestas de optimización.<br>
-        ● Acceso a un canal privado prioritario y comunidad élite con análisis exclusivos y oportunidades de networking.<br><br>
-        Este plan está diseñado para ofrecerte claridad, continuidad y control sobre tu estrategia patrimonial, sin ceder la gestión.<br><br>
-        Tu consultor asignado se pondrá en contacto contigo en las próximas 24 h para programar la primera sesión.<br><br>
-        El equipo de BSB Capital`
+        html: `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wealth Membership Activo</title>
+</head>
+<body style="margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; background-color:#f5f5f5;">
+  <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px; background-color:#ffffff;">
+    <tr>
+      <td align="center" style="padding:40px 20px 20px;">
+        <img
+          src="https://srv1511-files.hstgr.io/55400bd7ca2acb6b/files/public_html/Logo_negro.png"
+          alt="BSB Capital"
+          width="110"
+          style="display:block; margin:auto;"
+        />
+      </td>
+    </tr>
+
+    <tr>
+      <td align="center" style="padding:10px 30px;">
+        <h2 style="color:#0b1f14; font-weight:600; margin:0;">¡Bienvenido a Wealth Membership! 🏛️</h2>
+        <p style="font-size:16px; color:#37493f; line-height:1.6; margin-top:18px; margin-bottom:28px;">
+          Hola [Nombre],<br><br>
+          Gracias por confiar en BSB Capital para acompañarte en la gestión de tu patrimonio.<br>
+          Tu membresía Wealth Membership ha sido activada con éxito.<br><br>
+          A partir de ahora contarás con un acompañamiento exclusivo y continuo que incluye:<br><br>
+          ● 6 consultorías personalizadas de 1h/año (valoradas en 1.800 €)<br>
+          ● Revisión completa de cartera semestral<br>
+          ● Plan estratégico anual con propuestas de optimización<br>
+          ● Acceso a un canal privado prioritario y comunidad élite con análisis exclusivos y oportunidades de networking<br><br>
+          Este plan está diseñado para ofrecerte claridad, continuidad y control sobre tu estrategia patrimonial, sin ceder la gestión.<br><br>
+          ✅ <a href="https://bsbcapital.io/consultoria" style="color:#C5A019; text-decoration:none;">Reservar primera consultoría</a><br><br>
+          Tu consultor asignado se pondrá en contacto contigo en las próximas 24 h para programar la primera sesión.<br><br>
+          El equipo de BSB Capital
+        </p>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="padding-top:20px; border-bottom:1px solid #e6ece8;"></td>
+    </tr>
+
+    <tr>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
       }
     };
   }

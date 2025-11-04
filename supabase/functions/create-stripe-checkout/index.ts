@@ -289,7 +289,16 @@ Deno.serve({ port: 8000 }, async (req) => {
     // Configuración base común
     params.set("mode", mode);
     params.set("customer", customerId);
-    params.set("success_url", `${siteUrl}/academia/gracias?session_id={CHECKOUT_SESSION_ID}`);
+    
+    // 🎯 URL de éxito diferente para consultorias vs membresías
+    if (mode === "payment" && consultationId) {
+      // Para consultorias: redirigir al formulario post-pago
+      params.set("success_url", `${siteUrl}/consultation-post-payment?session_id={CHECKOUT_SESSION_ID}&consultation_id=${consultationId}`);
+    } else {
+      // Para membresías: redirigir a página de gracias estándar
+      params.set("success_url", `${siteUrl}/academia/gracias?session_id={CHECKOUT_SESSION_ID}`);
+    }
+    
     params.set("cancel_url", `${siteUrl}/academia`);
     params.set("metadata[access_type]", mode === "subscription" ? "membership" : "one_time");
     

@@ -278,6 +278,54 @@ serve(async (req: Request) => {
             } else {
               const createdSubscription = await createSubscriptionRes.json();
               console.log("✅ Suscripción creada correctamente en Supabase:", createdSubscription);
+              
+              // ✉️ ENVIAR EMAIL DE CONFIRMACIÓN DE MEMBRESÍA
+              if (createdSubscription && createdSubscription.length > 0) {
+                const subscription = createdSubscription[0];
+                const clientEmail = session.metadata?.client_email || session.customer_details?.email;
+                const clientName = session.metadata?.client_name || "Usuario";
+                const planName = session.metadata?.plan_name || "Membresía";
+                const billingCycle = session.metadata?.billing_cycle || "monthly";
+                
+                console.log("📧 Enviando email de confirmación de membresía a:", clientEmail);
+                
+                // Determinar el tipo de email según el plan
+                let emailType = "academia_bsb"; // por defecto
+                if (planName.toLowerCase().includes("trader") || planName.toLowerCase().includes("pro")) {
+                  emailType = "trader_plan_pro";
+                } else if (planName.toLowerCase().includes("premium") || planName.toLowerCase().includes("investor")) {
+                  emailType = "premium_investor";
+                } else if (planName.toLowerCase().includes("wealth")) {
+                  emailType = "wealth_membership";
+                }
+                
+                const emailRes = await fetch(`${supabaseUrl}/functions/v1/resend-email-secure`, {
+                  method: "POST",
+                  headers: {
+                    Authorization: `Bearer ${serviceRoleKey!}`,
+                    "Content-Type": "application/json",
+                  },
+                  body: JSON.stringify({
+                    type: emailType,
+                    to: clientEmail,
+                    data: {
+                      name: clientName,
+                      email: clientEmail,
+                      planName: planName,
+                      billingCycle: billingCycle,
+                      amount: session.amount_total / 100,
+                      currency: session.currency,
+                      subscriptionId: latestSubscription.id,
+                    },
+                  }),
+                });
+
+                if (!emailRes.ok) {
+                  console.error("❌ Error enviando email de confirmación de membresía:", await emailRes.text());
+                } else {
+                  console.log("✅ Email de confirmación de membresía enviado correctamente.");
+                }
+              }
             }
           } else {
             console.warn("⚠️ No se encontraron suscripciones para el customer. Esto puede ser normal si el pago aún se está procesando.");
@@ -373,6 +421,51 @@ serve(async (req: Request) => {
           console.error("❌ Error actualizando suscripción en Supabase:", errorText);
         } else {
           console.log("✅ Suscripción actualizada correctamente en Supabase.");
+          
+          // ✉️ ENVIAR EMAIL DE CONFIRMACIÓN DE MEMBRESÍA
+          const clientEmail = session.metadata?.client_email || session.customer_details?.email;
+          const clientName = session.metadata?.client_name || "Usuario";
+          const planName = session.metadata?.plan_name || "Membresía";
+          const billingCycle = session.metadata?.billing_cycle || "monthly";
+          
+          console.log("📧 Enviando email de confirmación de membresía a:", clientEmail);
+          
+          // Determinar el tipo de email según el plan
+          let emailType = "academia_bsb"; // por defecto
+          if (planName.toLowerCase().includes("trader") || planName.toLowerCase().includes("pro")) {
+            emailType = "trader_plan_pro";
+          } else if (planName.toLowerCase().includes("premium") || planName.toLowerCase().includes("investor")) {
+            emailType = "premium_investor";
+          } else if (planName.toLowerCase().includes("wealth")) {
+            emailType = "wealth_membership";
+          }
+          
+          const emailRes = await fetch(`${supabaseUrl}/functions/v1/resend-email-secure`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${serviceRoleKey!}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              type: emailType,
+              to: clientEmail,
+              data: {
+                name: clientName,
+                email: clientEmail,
+                planName: planName,
+                billingCycle: billingCycle,
+                amount: session.amount_total / 100,
+                currency: session.currency,
+                subscriptionId: subscriptionId,
+              },
+            }),
+          });
+
+          if (!emailRes.ok) {
+            console.error("❌ Error enviando email de confirmación de membresía:", await emailRes.text());
+          } else {
+            console.log("✅ Email de confirmación de membresía enviado correctamente.");
+          }
           
           // También actualizar el perfil del usuario
           const updateProfileRes = await fetch(`${supabaseUrl}/rest/v1/profiles?id=eq.${userId}`, {
