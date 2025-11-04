@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { Badge } from '@/components/ui/data-display/badge';
-import { User, MapPin, Calendar, TrendingUp, Target, PieChart, DollarSign } from 'lucide-react';
+import { User, MapPin, Calendar, TrendingUp, Target, PieChart, DollarSign, FileText } from 'lucide-react';
 
 const ConsultationDetailsView = ({ consultation }) => {
   if (!consultation) return null;
@@ -256,6 +256,82 @@ const ConsultationDetailsView = ({ consultation }) => {
     );
   };
 
+  const renderPostPaymentForm = () => {
+    // Extraer información del campo description que ahora contiene los datos del formulario post-pago
+    const description = consultation.description || '';
+    
+    if (!description || consultation.status !== 'confirmed') return null;
+
+    // Parsear la información del description
+    const parseDescription = (desc) => {
+      const sections = {};
+      const lines = desc.split('\n');
+      
+      lines.forEach(line => {
+        if (line.includes('Objetivos:')) sections.goals = line.replace('Objetivos:', '').trim();
+        if (line.includes('Inversiones actuales:')) sections.investments = line.replace('Inversiones actuales:', '').trim();
+        if (line.includes('Preguntas específicas:')) sections.questions = line.replace('Preguntas específicas:', '').trim();
+        if (line.includes('Preferencia de comunicación:')) sections.communication = line.replace('Preferencia de comunicación:', '').trim();
+        if (line.includes('Comentarios adicionales:')) sections.comments = line.replace('Comentarios adicionales:', '').trim();
+      });
+      
+      return sections;
+    };
+
+    const formData = parseDescription(description);
+
+    // Solo mostrar si hay datos del formulario
+    if (!formData.goals && !formData.investments && !formData.questions) return null;
+
+    return (
+      <Card className="border-l-4 border-l-green-500">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <FileText className="h-5 w-5 text-green-600" />
+            Formulario Post-Pago Completado
+          </CardTitle>
+          <CardDescription>
+            Información adicional proporcionada por el cliente después del pago
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <div className="space-y-4">
+            {formData.goals && (
+              <div>
+                <span className="text-sm font-medium text-gray-600">Objetivos de la consultoría:</span>
+                <p className="mt-1 p-3 bg-green-50 rounded-md border border-green-200">{formData.goals}</p>
+              </div>
+            )}
+            {formData.investments && (
+              <div>
+                <span className="text-sm font-medium text-gray-600">Inversiones actuales:</span>
+                <p className="mt-1 p-3 bg-blue-50 rounded-md border border-blue-200">{formData.investments}</p>
+              </div>
+            )}
+            {formData.questions && (
+              <div>
+                <span className="text-sm font-medium text-gray-600">Preguntas específicas:</span>
+                <p className="mt-1 p-3 bg-yellow-50 rounded-md border border-yellow-200">{formData.questions}</p>
+              </div>
+            )}
+            {formData.communication && (
+              <div>
+                <span className="text-sm font-medium text-gray-600">Preferencia de comunicación:</span>
+                <p className="mt-1">{formData.communication}</p>
+              </div>
+            )}
+            {formData.comments && (
+              <div>
+                <span className="text-sm font-medium text-gray-600">Comentarios adicionales:</span>
+                <p className="mt-1 p-3 bg-gray-50 rounded-md">{formData.comments}</p>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+
   const renderMetadata = () => (
     <Card>
       <CardHeader className="pb-3">
@@ -304,6 +380,7 @@ const ConsultationDetailsView = ({ consultation }) => {
       {renderGoalsAndObjectives()}
       {renderPortfolioInfo()}
       {renderExpectationsAndComments()}
+      {renderPostPaymentForm()}
       {renderMetadata()}
     </div>
   );

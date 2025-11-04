@@ -229,27 +229,64 @@ const ConsultationManagement = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>User ID</TableHead>
                     <TableHead>Cliente</TableHead>
                     <TableHead>Email</TableHead>
                     <TableHead>Servicio</TableHead>
                     <TableHead>Fecha</TableHead>
-                    <TableHead>Notas</TableHead>
-                    <TableHead>Título</TableHead>
+                    <TableHead>Estado</TableHead>
+                    <TableHead>Post-Pago</TableHead>
+                    <TableHead>Acciones</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredConsultations.map((consultation, idx) => (
-                    <TableRow key={consultation.user_id || idx}>
-                      <TableCell>{consultation.user_id}</TableCell>
-                      <TableCell>{consultation.client_name}</TableCell>
-                      <TableCell>{consultation.client_email}</TableCell>
-                      <TableCell>{consultation.service}</TableCell>
-                      <TableCell>{consultation.booking_date ? new Date(consultation.booking_date).toLocaleString('es-ES') : ''}</TableCell>
-                      <TableCell>{consultation.notes}</TableCell>
-                      <TableCell>{consultation.title}</TableCell>
-                    </TableRow>
-                  ))}
+                  {filteredConsultations.map((consultation, idx) => {
+                    const hasPostPaymentForm = consultation.status === 'confirmed' && consultation.description;
+                    
+                    return (
+                      <TableRow key={consultation.id || idx}>
+                        <TableCell className="font-medium">{consultation.client_name || 'Sin nombre'}</TableCell>
+                        <TableCell>{consultation.client_email}</TableCell>
+                        <TableCell>
+                          <Badge variant="outline">{consultation.service || 'General'}</Badge>
+                        </TableCell>
+                        <TableCell>
+                          {consultation.booking_date ? new Date(consultation.booking_date).toLocaleDateString('es-ES') : 'No programada'}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            {getStatusIcon(consultation.status)}
+                            {getStatusBadge(consultation.status)}
+                          </div>
+                        </TableCell>
+                        <TableCell>
+                          {hasPostPaymentForm ? (
+                            <Badge className="bg-green-100 text-green-800">
+                              <FileText className="h-3 w-3 mr-1" />
+                              Completado
+                            </Badge>
+                          ) : (
+                            <Badge variant="outline" className="text-gray-500">
+                              Pendiente
+                            </Badge>
+                          )}
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedConsultation(consultation);
+                              setShowModal(true);
+                            }}
+                            className="flex items-center gap-1"
+                          >
+                            <Eye className="h-4 w-4" />
+                            Ver
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
                 </TableBody>
               </Table>
             </div>
