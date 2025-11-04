@@ -222,15 +222,23 @@ const ConsultationPostPayment = () => {
     setLoading(true);
 
     try {
-      // Actualizar la consulta con los datos adicionales
+      // Actualizar la consulta con los datos adicionales en las columnas específicas
       const { error: updateError } = await supabase
         .from('consultations')
         .update({
-          // Campos básicos que existen en la tabla
+          // Campos básicos
           client_name: formData.client_name,
           client_email: formData.client_email,
-          description: `Objetivos: ${formData.consultation_goals}\n\nInversiones actuales: ${formData.current_investments}\n\nPreguntas específicas: ${formData.specific_questions}\n\nPreferencia de comunicación: ${formData.preferred_communication}\n\nComentarios adicionales: ${formData.additional_notes}`,
-          status: 'confirmed' // Confirmar la consulta después del pago
+          // Campos específicos del formulario que existen en la tabla
+          investment_experience: formData.investment_experience,
+          portfolio_value: formData.portfolio_size, // Mapear portfolio_size a portfolio_value
+          consultation_main_goal: formData.consultation_goals,
+          consultation_expectations: formData.specific_questions,
+          pre_consultation_comments: formData.additional_notes,
+          // Información adicional en description como respaldo
+          description: `Inversiones actuales: ${formData.current_investments}\nPreferencia de comunicación: ${formData.preferred_communication}`,
+          status: 'confirmed', // Confirmar la consulta después del pago
+          form_completed_at: new Date().toISOString()
         })
         .eq('id', consultation.id);
 

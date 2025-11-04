@@ -53,20 +53,20 @@ const ConsultationDetailsView = ({ consultation }) => {
       <CardContent className="pt-0">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <span className="text-sm font-medium text-gray-600">País:</span>
-            <p className="mt-1">{formatValue(consultation.country)}</p>
-          </div>
-          <div>
-            <span className="text-sm font-medium text-gray-600">Edad:</span>
-            <p className="mt-1">{formatValue(consultation.age_range)}</p>
+            <span className="text-sm font-medium text-gray-600">Nombre:</span>
+            <p className="mt-1">{formatValue(consultation.client_name)}</p>
           </div>
           <div>
             <span className="text-sm font-medium text-gray-600">Email:</span>
             <p className="mt-1">{formatValue(consultation.client_email)}</p>
           </div>
           <div>
-            <span className="text-sm font-medium text-gray-600">Teléfono:</span>
-            <p className="mt-1">{formatValue(consultation.client_phone)}</p>
+            <span className="text-sm font-medium text-gray-600">País:</span>
+            <p className="mt-1">{formatValue(consultation.country)}</p>
+          </div>
+          <div>
+            <span className="text-sm font-medium text-gray-600">Edad:</span>
+            <p className="mt-1">{formatValue(consultation.age_range)}</p>
           </div>
         </div>
       </CardContent>
@@ -124,7 +124,7 @@ const ConsultationDetailsView = ({ consultation }) => {
             {consultation.consultation_main_goal && (
               <div>
                 <span className="text-sm font-medium text-gray-600">Objetivo principal:</span>
-                <p className="mt-1">{formatValue(consultation.consultation_main_goal)}</p>
+                <p className="mt-1 p-3 bg-green-50 rounded-md border border-green-200">{consultation.consultation_main_goal}</p>
               </div>
             )}
             
@@ -160,7 +160,7 @@ const ConsultationDetailsView = ({ consultation }) => {
   };
 
   const renderPortfolioInfo = () => {
-    if (!consultation.portfolio_value && !consultation.current_distribution && !consultation.main_broker) {
+    if (!consultation.portfolio_value && !consultation.current_distribution && !consultation.main_broker && !consultation.investment_experience) {
       return null;
     }
 
@@ -177,7 +177,14 @@ const ConsultationDetailsView = ({ consultation }) => {
             {consultation.portfolio_value && (
               <div>
                 <span className="text-sm font-medium text-gray-600">Valor de cartera:</span>
-                <p className="mt-1 font-medium">{formatValue(consultation.portfolio_value)}</p>
+                <Badge variant="secondary" className="ml-2">{consultation.portfolio_value}</Badge>
+              </div>
+            )}
+            
+            {consultation.investment_experience && (
+              <div>
+                <span className="text-sm font-medium text-gray-600">Experiencia en inversión:</span>
+                <Badge variant="outline" className="ml-2">{consultation.investment_experience}</Badge>
               </div>
             )}
             
@@ -194,21 +201,12 @@ const ConsultationDetailsView = ({ consultation }) => {
               </div>
             )}
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {consultation.main_broker && (
-                <div>
-                  <span className="text-sm font-medium text-gray-600">Broker principal:</span>
-                  <p className="mt-1">{formatValue(consultation.main_broker)}</p>
-                </div>
-              )}
-              
-              {consultation.investment_experience && (
-                <div>
-                  <span className="text-sm font-medium text-gray-600">Experiencia:</span>
-                  <p className="mt-1">{formatValue(consultation.investment_experience)}</p>
-                </div>
-              )}
-            </div>
+            {consultation.main_broker && (
+              <div>
+                <span className="text-sm font-medium text-gray-600">Broker principal:</span>
+                <p className="mt-1">{consultation.main_broker}</p>
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -232,8 +230,8 @@ const ConsultationDetailsView = ({ consultation }) => {
           <div className="space-y-4">
             {consultation.consultation_expectations && (
               <div>
-                <span className="text-sm font-medium text-gray-600">Expectativas de la consultoría:</span>
-                <p className="mt-1 p-3 bg-gray-50 rounded-md">{consultation.consultation_expectations}</p>
+                <span className="text-sm font-medium text-gray-600">Preguntas específicas:</span>
+                <p className="mt-1 p-3 bg-yellow-50 rounded-md border border-yellow-200">{consultation.consultation_expectations}</p>
               </div>
             )}
             
@@ -247,7 +245,7 @@ const ConsultationDetailsView = ({ consultation }) => {
             {consultation.specific_challenges && (
               <div>
                 <span className="text-sm font-medium text-gray-600">Retos específicos:</span>
-                <p className="mt-1 p-3 bg-gray-50 rounded-md">{consultation.specific_challenges}</p>
+                <p className="mt-1 p-3 bg-blue-50 rounded-md border border-blue-200">{consultation.specific_challenges}</p>
               </div>
             )}
           </div>
@@ -257,32 +255,12 @@ const ConsultationDetailsView = ({ consultation }) => {
   };
 
   const renderPostPaymentForm = () => {
-    // Extraer información del campo description que ahora contiene los datos del formulario post-pago
-    const description = consultation.description || '';
+    // Solo mostrar si el formulario post-pago fue completado
+    if (!consultation.form_completed_at) return null;
+
+    // Mostrar información adicional del campo description si existe
+    const additionalInfo = consultation.description || '';
     
-    if (!description || consultation.status !== 'confirmed') return null;
-
-    // Parsear la información del description
-    const parseDescription = (desc) => {
-      const sections = {};
-      const lines = desc.split('\n');
-      
-      lines.forEach(line => {
-        if (line.includes('Objetivos:')) sections.goals = line.replace('Objetivos:', '').trim();
-        if (line.includes('Inversiones actuales:')) sections.investments = line.replace('Inversiones actuales:', '').trim();
-        if (line.includes('Preguntas específicas:')) sections.questions = line.replace('Preguntas específicas:', '').trim();
-        if (line.includes('Preferencia de comunicación:')) sections.communication = line.replace('Preferencia de comunicación:', '').trim();
-        if (line.includes('Comentarios adicionales:')) sections.comments = line.replace('Comentarios adicionales:', '').trim();
-      });
-      
-      return sections;
-    };
-
-    const formData = parseDescription(description);
-
-    // Solo mostrar si hay datos del formulario
-    if (!formData.goals && !formData.investments && !formData.questions) return null;
-
     return (
       <Card className="border-l-4 border-l-green-500">
         <CardHeader className="pb-3">
@@ -291,41 +269,21 @@ const ConsultationDetailsView = ({ consultation }) => {
             Formulario Post-Pago Completado
           </CardTitle>
           <CardDescription>
-            Información adicional proporcionada por el cliente después del pago
+            Formulario completado el {new Date(consultation.form_completed_at).toLocaleString('es-ES')}
           </CardDescription>
         </CardHeader>
         <CardContent className="pt-0">
           <div className="space-y-4">
-            {formData.goals && (
+            {additionalInfo && (
               <div>
-                <span className="text-sm font-medium text-gray-600">Objetivos de la consultoría:</span>
-                <p className="mt-1 p-3 bg-green-50 rounded-md border border-green-200">{formData.goals}</p>
+                <span className="text-sm font-medium text-gray-600">Información adicional:</span>
+                <p className="mt-1 p-3 bg-gray-50 rounded-md">{additionalInfo}</p>
               </div>
             )}
-            {formData.investments && (
-              <div>
-                <span className="text-sm font-medium text-gray-600">Inversiones actuales:</span>
-                <p className="mt-1 p-3 bg-blue-50 rounded-md border border-blue-200">{formData.investments}</p>
-              </div>
-            )}
-            {formData.questions && (
-              <div>
-                <span className="text-sm font-medium text-gray-600">Preguntas específicas:</span>
-                <p className="mt-1 p-3 bg-yellow-50 rounded-md border border-yellow-200">{formData.questions}</p>
-              </div>
-            )}
-            {formData.communication && (
-              <div>
-                <span className="text-sm font-medium text-gray-600">Preferencia de comunicación:</span>
-                <p className="mt-1">{formData.communication}</p>
-              </div>
-            )}
-            {formData.comments && (
-              <div>
-                <span className="text-sm font-medium text-gray-600">Comentarios adicionales:</span>
-                <p className="mt-1 p-3 bg-gray-50 rounded-md">{formData.comments}</p>
-              </div>
-            )}
+            
+            <div className="text-sm text-green-600 font-medium">
+              ✓ El cliente completó el formulario post-pago con todos los datos requeridos
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -344,7 +302,7 @@ const ConsultationDetailsView = ({ consultation }) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <span className="text-sm font-medium text-gray-600">Tipo:</span>
-            <p className="mt-1">{formatValue(consultation.consultation_type)}</p>
+            <p className="mt-1">{formatValue(consultation.service || consultation.title)}</p>
           </div>
           <div>
             <span className="text-sm font-medium text-gray-600">Estado:</span>
@@ -356,16 +314,20 @@ const ConsultationDetailsView = ({ consultation }) => {
             <span className="text-sm font-medium text-gray-600">Duración:</span>
             <p className="mt-1">{consultation.duration_minutes} minutos</p>
           </div>
+          <div>
+            <span className="text-sm font-medium text-gray-600">Precio:</span>
+            <p className="mt-1">{consultation.price ? `€${consultation.price}` : 'No especificado'}</p>
+          </div>
+          {consultation.scheduled_at && (
+            <div>
+              <span className="text-sm font-medium text-gray-600">Fecha programada:</span>
+              <p className="mt-1">{new Date(consultation.scheduled_at).toLocaleDateString('es-ES')}</p>
+            </div>
+          )}
           {consultation.form_completed_at && (
             <div>
               <span className="text-sm font-medium text-gray-600">Formulario completado:</span>
               <p className="mt-1">{new Date(consultation.form_completed_at).toLocaleDateString('es-ES')}</p>
-            </div>
-          )}
-          {consultation.wants_follow_up && (
-            <div>
-              <span className="text-sm font-medium text-gray-600">Seguimiento:</span>
-              <p className="mt-1">{formatValue(consultation.follow_up_frequency)}</p>
             </div>
           )}
         </div>

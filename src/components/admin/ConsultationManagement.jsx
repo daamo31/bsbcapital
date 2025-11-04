@@ -240,7 +240,8 @@ const ConsultationManagement = () => {
                 </TableHeader>
                 <TableBody>
                   {filteredConsultations.map((consultation, idx) => {
-                    const hasPostPaymentForm = consultation.status === 'confirmed' && consultation.description;
+                    // El formulario post-pago está completado si existe form_completed_at
+                    const hasPostPaymentForm = !!consultation.form_completed_at;
                     
                     return (
                       <TableRow key={consultation.id || idx}>
