@@ -32,6 +32,7 @@ const ConsultationManagement = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [adminFilter, setAdminFilter] = useState('all');
   const [selectedConsultation, setSelectedConsultation] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [admins, setAdmins] = useState([]);
@@ -54,7 +55,7 @@ const ConsultationManagement = () => {
 
   useEffect(() => {
     filterConsultations();
-  }, [consultations, searchTerm, statusFilter]);
+  }, [consultations, searchTerm, statusFilter, adminFilter]);
 
   const loadConsultations = async () => {
     try {
@@ -101,6 +102,13 @@ const ConsultationManagement = () => {
     // Filter by status
     if (statusFilter !== 'all') {
       filtered = filtered.filter(consultation => consultation.status === statusFilter);
+    }
+
+    // Filter by admin assignment
+    if (adminFilter === 'unassigned') {
+      filtered = filtered.filter(consultation => !consultation.admin_id);
+    } else if (adminFilter !== 'all') {
+      filtered = filtered.filter(consultation => consultation.admin_id === adminFilter);
     }
 
     setFilteredConsultations(filtered);
@@ -199,6 +207,60 @@ const ConsultationManagement = () => {
         </Button>
       </div>
 
+      {/* Filtros y estadísticas */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+          <label className="text-sm font-medium text-gray-700 mb-2 block">Buscar</label>
+          <Input
+            placeholder="Buscar por cliente, email, servicio..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium text-gray-700 mb-2 block">Estado</label>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos los estados</SelectItem>
+              <SelectItem value="scheduled">Programada</SelectItem>
+              <SelectItem value="confirmed">Confirmada</SelectItem>
+              <SelectItem value="completed">Completada</SelectItem>
+              <SelectItem value="cancelled">Cancelada</SelectItem>
+              <SelectItem value="no_show">No se presentó</SelectItem>
+              <SelectItem value="pending_payment">Pendiente pago</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <label className="text-sm font-medium text-gray-700 mb-2 block">Administrador</label>
+          <Select value={adminFilter} onValueChange={setAdminFilter}>
+            <SelectTrigger>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Todos</SelectItem>
+              <SelectItem value="unassigned">Sin asignar</SelectItem>
+              <SelectItem value="admin-daniel">Daniel García</SelectItem>
+              <SelectItem value="admin-maria">María López</SelectItem>
+              <SelectItem value="admin-carlos">Carlos Rodríguez</SelectItem>
+              <SelectItem value="admin-ana">Ana Martínez</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div>
+          <label className="text-sm font-medium text-gray-700 mb-2 block">Sin asignar</label>
+          <div className="bg-orange-50 border border-orange-200 rounded-lg p-3">
+            <span className="text-2xl font-bold text-orange-600">
+              {consultations.filter(c => !c.admin_id).length}
+            </span>
+            <p className="text-sm text-orange-700">Consultorías pendientes</p>
+          </div>
+        </div>
+      </div>
+
       {/* Tabla simplificada solo con los campos de la vista */}
       <Card>
         <CardHeader>
@@ -234,6 +296,7 @@ const ConsultationManagement = () => {
                     <TableHead>Servicio</TableHead>
                     <TableHead>Fecha</TableHead>
                     <TableHead>Estado</TableHead>
+                    <TableHead>Administrador</TableHead>
                     <TableHead>Post-Pago</TableHead>
                     <TableHead>Acciones</TableHead>
                   </TableRow>
@@ -242,6 +305,20 @@ const ConsultationManagement = () => {
                   {filteredConsultations.map((consultation, idx) => {
                     // El formulario post-pago está completado si existe form_completed_at
                     const hasPostPaymentForm = !!consultation.form_completed_at;
+                    
+                    // Lista de administradores disponibles
+                    const administrators = [
+                      { id: 'admin-daniel', name: 'Daniel García' },
+                      { id: 'admin-maria', name: 'María López' },
+                      { id: 'admin-carlos', name: 'Carlos Rodríguez' },
+                      { id: 'admin-ana', name: 'Ana Martínez' },
+                    ];
+                    
+                    const getAdminName = (adminId) => {
+                      if (!adminId) return 'Sin asignar';
+                      const admin = administrators.find(a => a.id === adminId);
+                      return admin ? admin.name : 'Desconocido';
+                    };
                     
                     return (
                       <TableRow key={consultation.id || idx}>
@@ -258,6 +335,11 @@ const ConsultationManagement = () => {
                             {getStatusIcon(consultation.status)}
                             {getStatusBadge(consultation.status)}
                           </div>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={consultation.admin_id ? "default" : "outline"}>
+                            {getAdminName(consultation.admin_id)}
+                          </Badge>
                         </TableCell>
                         <TableCell>
                           {hasPostPaymentForm ? (

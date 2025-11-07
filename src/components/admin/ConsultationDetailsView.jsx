@@ -1,9 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { Badge } from '@/components/ui/data-display/badge';
-import { User, MapPin, Calendar, TrendingUp, Target, PieChart, DollarSign, FileText } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/forms/select';
+import { User, MapPin, Calendar, TrendingUp, Target, PieChart, DollarSign, FileText, UserCheck, Save } from 'lucide-react';
+import { supabase } from '@/lib/customSupabaseClient';
+import { useToast } from '@/components/ui/feedback/use-toast';
 
-const ConsultationDetailsView = ({ consultation }) => {
+const ConsultationDetailsView = ({ consultation, onUpdate }) => {
+  const { toast } = useToast();
+  const [selectedAdmin, setSelectedAdmin] = useState(consultation?.admin_id || '');
+  const [isUpdatingAdmin, setIsUpdatingAdmin] = useState(false);
+
+  // Lista de administradores disponibles
+  const administrators = [
+    { id: 'admin-daniel', name: 'Daniel García', email: 'daniel@bsbcapital.com' },
+    { id: 'admin-maria', name: 'María López', email: 'maria@bsbcapital.com' },
+    { id: 'admin-carlos', name: 'Carlos Rodríguez', email: 'carlos@bsbcapital.com' },
+    { id: 'admin-ana', name: 'Ana Martínez', email: 'ana@bsbcapital.com' },
+  ];
+
   if (!consultation) return null;
 
   const formatValue = (value, type = 'text') => {
@@ -41,6 +57,99 @@ const ConsultationDetailsView = ({ consultation }) => {
         return value;
     }
   };
+
+  const handleAdminAssignment = async () => {
+    if (!selectedAdmin || selectedAdmin === consultation.admin_id) return;
+
+    setIsUpdatingAdmin(true);
+    try {
+      const { error } = await supabase
+        .from('consultations')
+        .update({ admin_id: selectedAdmin === 'unassigned' ? null : selectedAdmin })
+        .eq('id', consultation.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Administrador asignado",
+        description: selectedAdmin === 'unassigned' 
+          ? "La consultoría ha sido desasignada" 
+          : "La consultoría ha sido asignada correctamente"
+      });
+
+      // Notificar al componente padre que hubo una actualización
+      if (onUpdate) onUpdate();
+
+    } catch (error) {
+      console.error('Error updating admin assignment:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "No se pudo asignar el administrador"
+      });
+    } finally {
+      setIsUpdatingAdmin(false);
+    }
+  };
+
+  const getAdminName = (adminId) => {
+    if (!adminId) return 'Sin asignar';
+    const admin = administrators.find(a => a.id === adminId);
+    return admin ? admin.name : 'Administrador desconocido';
+  };
+
+  const renderAdminAssignment = () => (
+    <Card className="mb-4 border-l-4 border-l-blue-500">
+      <CardHeader className="pb-3">
+        <CardTitle className="text-lg flex items-center gap-2">
+          <UserCheck className="h-5 w-5 text-blue-600" />
+          Administrador Asignado
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="pt-0">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <span className="text-sm font-medium text-gray-600">Administrador actual:</span>
+            <div className="mt-1">
+              <Badge variant={consultation.admin_id ? "default" : "secondary"}>
+                {getAdminName(consultation.admin_id)}
+              </Badge>
+            </div>
+          </div>
+          <div>
+            <span className="text-sm font-medium text-gray-600">Asignar/Cambiar administrador:</span>
+            <div className="mt-1 flex gap-2">
+              <Select 
+                value={selectedAdmin || 'unassigned'} 
+                onValueChange={setSelectedAdmin}
+                disabled={isUpdatingAdmin}
+              >
+                <SelectTrigger className="flex-1">
+                  <SelectValue placeholder="Seleccionar administrador" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="unassigned">Sin asignar</SelectItem>
+                  {administrators.map((admin) => (
+                    <SelectItem key={admin.id} value={admin.id}>
+                      {admin.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <Button 
+                onClick={handleAdminAssignment}
+                disabled={isUpdatingAdmin || selectedAdmin === (consultation.admin_id || 'unassigned')}
+                size="sm"
+                className="px-3"
+              >
+                <Save className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
 
   const renderPersonalInfo = () => (
     <Card className="mb-4">
@@ -337,6 +446,7 @@ const ConsultationDetailsView = ({ consultation }) => {
 
   return (
     <div className="space-y-4">
+      {renderAdminAssignment()}
       {renderPersonalInfo()}
       {renderFinancialSituation()}
       {renderGoalsAndObjectives()}

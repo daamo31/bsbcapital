@@ -44,14 +44,32 @@ const AdminDashboard = () => {
       await loadDashboardData(isMounted);
     };
     fetchData();
+    
     // Listen for tab change events from admin dropdown
     const handleTabChange = (event) => {
       setActiveTab(event.detail);
     };
     window.addEventListener('admin-tab-change', handleTabChange);
+
+    // Suscripción en tiempo real a cambios en consultations para actualizar métricas
+    const consultationsSubscription = supabase
+      .channel('consultations_metrics_updates')
+      .on('postgres_changes', { 
+        event: '*', 
+        schema: 'public', 
+        table: 'consultations' 
+      }, (payload) => {
+        // Recargar métricas cuando hay cambios en consultations
+        if (isMounted) {
+          loadDashboardData(isMounted);
+        }
+      })
+      .subscribe();
+
     return () => {
       isMounted = false;
       window.removeEventListener('admin-tab-change', handleTabChange);
+      supabase.removeChannel(consultationsSubscription);
     };
   }, [user?.id]);
 
@@ -66,7 +84,22 @@ const AdminDashboard = () => {
         const { data: metricsData, error: metricsError } = await fetchWithTimeout(callMetrics, 10000);
         if (!isMounted) return;
         if (metricsError) throw metricsError;
-        setMetrics(metricsData);
+
+        // Get unassigned consultations count
+        const { data: unassignedCount, error: unassignedError } = await supabase
+          .from('consultations')
+          .select('id', { count: 'exact', head: true })
+          .is('admin_id', null);
+
+        if (unassignedError) throw unassignedError;
+
+        // Merge metrics with unassigned count
+        const finalMetrics = {
+          ...metricsData,
+          pending_consultations: unassignedCount || 0
+        };
+
+        setMetrics(finalMetrics);
 
         // Get recent activity
         const callActivity = () => supabase
@@ -193,10 +226,10 @@ const AdminDashboard = () => {
                 description="Usuarios activos en la plataforma"
               />
               <MetricCard
-                title="Consultas Pendientes"
+                title="Consultas Sin Asignar"
                 value={metrics?.pending_consultations || 0}
                 icon={Calendar}
-                description="Consultas por confirmar"
+                description="Consultas sin administrador asignado"
               />
               <MetricCard
                 title="Contenido Publicado"

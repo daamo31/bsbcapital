@@ -426,7 +426,13 @@ const ConsultationModal = ({
                     ✅ Formulario completado el {new Date(consultation.form_completed_at).toLocaleDateString('es-ES')}
                   </p>
                 </div>
-                <ConsultationDetailsView consultation={consultation} />
+                <ConsultationDetailsView 
+                  consultation={consultation} 
+                  onUpdate={() => {
+                    // Recargar datos cuando se actualice el administrador
+                    if (onSave) onSave();
+                  }}
+                />
               </div>
             ) : consultation ? (
               <div className="p-8 text-center text-gray-500">
