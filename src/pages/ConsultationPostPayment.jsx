@@ -442,7 +442,7 @@ const ConsultationPostPayment = () => {
         has_debts: formData.has_debts,
         time_horizon: formData.time_horizon,
         risk_tolerance: formData.risk_tolerance,
-        priorities: Array.isArray(formData.priorities) ? formData.priorities.join(', ') : formData.priorities,
+        priorities: formData.priorities, // 🔧 Mantener como array para PostgreSQL
         previous_advisor_experience: formData.previous_advisor_experience,
         
         // Campos específicos de crypto
