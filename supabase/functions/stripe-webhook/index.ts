@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.210.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@12.11.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -21,16 +22,24 @@ const stripe = new Stripe(stripeSecretKey!, {
   apiVersion: "2025-06-30.basil",
 });
 
+// 🔧 Configurar cliente de Supabase con service role
+const supabase = createClient(supabaseUrl!, serviceRoleKey!);
+
 serve(async (req: Request) => {
+  // Manejar CORS para todas las requests
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
 
   try {
+    // Log detallado para debugging
     console.log("📨 Webhook request received:", {
       method: req.method,
-      headers: Object.fromEntries(req.headers),
-      url: req.url
+      url: req.url,
+      hasAuthHeader: req.headers.has("authorization"),
+      hasStripeSignature: req.headers.has("stripe-signature"),
+      userAgent: req.headers.get("user-agent"),
+      contentType: req.headers.get("content-type")
     });
     
     const signature = req.headers.get("stripe-signature");
@@ -98,27 +107,22 @@ serve(async (req: Request) => {
 
         // Actualizar la consulta en Supabase solo si tenemos consultationId
         if (consultationId) {
-          const updateRes = await fetch(`${supabaseUrl}/rest/v1/consultations?id=eq.${consultationId}`, {
-            method: "PATCH",
-            headers: {
-              apikey: serviceRoleKey!,
-              Authorization: `Bearer ${serviceRoleKey!}`,
-              "Content-Type": "application/json",
-              Prefer: "return=representation",
-            },
-            body: JSON.stringify({
+          const { data, error } = await supabase
+            .from("consultations")
+            .update({
               status: "confirmed",
               stripe_session_id: session.id,
               amount: session.amount_total / 100,
               currency: session.currency,
               payment_status: session.payment_status,
-            }),
-          });
+            })
+            .eq("id", consultationId)
+            .select();
 
-          if (!updateRes.ok) {
-            console.error("❌ Error actualizando consulta en Supabase:", await updateRes.text());
+          if (error) {
+            console.error("❌ Error actualizando consulta en Supabase:", error);
           } else {
-            console.log("✅ Consulta actualizada correctamente en Supabase.");
+            console.log("✅ Consulta actualizada correctamente en Supabase:", data);
           }
         } else {
           console.warn("⚠️ Pago único sin consultation_id, pero procesando de todas formas para compatibilidad.");
@@ -261,22 +265,14 @@ serve(async (req: Request) => {
 
             console.log("📋 Creando registro de suscripción:", subscriptionPayload);
 
-            const createSubscriptionRes = await fetch(`${supabaseUrl}/rest/v1/user_subscriptions`, {
-              method: "POST",
-              headers: {
-                apikey: serviceRoleKey!,
-                Authorization: `Bearer ${serviceRoleKey!}`,
-                "Content-Type": "application/json",
-                Prefer: "return=representation",
-              },
-              body: JSON.stringify(subscriptionPayload),
-            });
+            const { data: createdSubscription, error: subscriptionError } = await supabase
+              .from("user_subscriptions")
+              .insert(subscriptionPayload)
+              .select();
 
-            if (!createSubscriptionRes.ok) {
-              const errorText = await createSubscriptionRes.text();
-              console.error("❌ Error creando suscripción en Supabase:", errorText);
+            if (subscriptionError) {
+              console.error("❌ Error creando suscripción en Supabase:", subscriptionError);
             } else {
-              const createdSubscription = await createSubscriptionRes.json();
               console.log("✅ Suscripción creada correctamente en Supabase:", createdSubscription);
               
               // ✉️ ENVIAR EMAIL DE CONFIRMACIÓN DE MEMBRESÍA
@@ -330,42 +326,32 @@ serve(async (req: Request) => {
           } else {
             console.warn("⚠️ No se encontraron suscripciones para el customer. Esto puede ser normal si el pago aún se está procesando.");
             // Actualizar solo el estado sin subscription_id
-            const updateSubscriptionRes = await fetch(`${supabaseUrl}/rest/v1/user_subscriptions?stripe_customer_id=eq.${session.customer}&user_id=eq.${userId}`, {
-              method: "PATCH",
-              headers: {
-                apikey: serviceRoleKey!,
-                Authorization: `Bearer ${serviceRoleKey!}`,
-                "Content-Type": "application/json",
-                Prefer: "return=representation",
-              },
-              body: JSON.stringify({
+            const { error: updateError } = await supabase
+              .from("user_subscriptions")
+              .update({
                 status: "pending", // Estado temporal hasta que se confirme
                 updated_at: new Date().toISOString(),
-              }),
-            });
+              })
+              .eq("stripe_customer_id", session.customer)
+              .eq("user_id", userId);
 
-            if (!updateSubscriptionRes.ok) {
-              console.error("❌ Error actualizando estado temporal:", await updateSubscriptionRes.text());
+            if (updateError) {
+              console.error("❌ Error actualizando estado temporal:", updateError);
             }
           }
           
           // Actualizar perfil del usuario
-          const updateProfileRes = await fetch(`${supabaseUrl}/rest/v1/profiles?id=eq.${userId}`, {
-            method: "PATCH",
-            headers: {
-              apikey: serviceRoleKey!,
-              Authorization: `Bearer ${serviceRoleKey!}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
+          const { error: profileError } = await supabase
+            .from("profiles")
+            .update({
               subscription_status: "active",
               membership_tier: "premium", // Ajustar según el plan
               updated_at: new Date().toISOString(),
-            }),
-          });
+            })
+            .eq("id", userId);
 
-          if (!updateProfileRes.ok) {
-            console.error("❌ Error actualizando perfil:", await updateProfileRes.text());
+          if (profileError) {
+            console.error("❌ Error actualizando perfil:", profileError);
           } else {
             console.log("✅ Perfil actualizado correctamente.");
           }
@@ -398,29 +384,24 @@ serve(async (req: Request) => {
         });
 
         // Actualizar el registro en user_subscriptions con el stripe_subscription_id
-        const updateSubscriptionRes = await fetch(`${supabaseUrl}/rest/v1/user_subscriptions?stripe_customer_id=eq.${session.customer}&user_id=eq.${userId}`, {
-          method: "PATCH",
-          headers: {
-            apikey: serviceRoleKey!,
-            Authorization: `Bearer ${serviceRoleKey!}`,
-            "Content-Type": "application/json",
-            Prefer: "return=representation",
-          },
-          body: JSON.stringify({
+        const { data: updatedSubscription, error: updateError } = await supabase
+          .from("user_subscriptions")
+          .update({
             stripe_subscription_id: subscriptionId,
             status: "active",
             started_at: new Date().toISOString(),
             current_period_start: new Date(subscriptionData.current_period_start * 1000).toISOString(),
             current_period_end: new Date(subscriptionData.current_period_end * 1000).toISOString(),
             updated_at: new Date().toISOString(),
-          }),
-        });
+          })
+          .eq("stripe_customer_id", session.customer)
+          .eq("user_id", userId)
+          .select();
 
-        if (!updateSubscriptionRes.ok) {
-          const errorText = await updateSubscriptionRes.text();
-          console.error("❌ Error actualizando suscripción en Supabase:", errorText);
+        if (updateError) {
+          console.error("❌ Error actualizando suscripción en Supabase:", updateError);
         } else {
-          console.log("✅ Suscripción actualizada correctamente en Supabase.");
+          console.log("✅ Suscripción actualizada correctamente en Supabase:", updatedSubscription);
           
           // ✉️ ENVIAR EMAIL DE CONFIRMACIÓN DE MEMBRESÍA
           const clientEmail = session.metadata?.client_email || session.customer_details?.email;
@@ -468,22 +449,17 @@ serve(async (req: Request) => {
           }
           
           // También actualizar el perfil del usuario
-          const updateProfileRes = await fetch(`${supabaseUrl}/rest/v1/profiles?id=eq.${userId}`, {
-            method: "PATCH",
-            headers: {
-              apikey: serviceRoleKey!,
-              Authorization: `Bearer ${serviceRoleKey!}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
+          const { error: profileError } = await supabase
+            .from("profiles")
+            .update({
               subscription_status: "active",
               membership_tier: "premium", // Ajustar según el plan
               updated_at: new Date().toISOString(),
-            }),
-          });
+            })
+            .eq("id", userId);
 
-          if (!updateProfileRes.ok) {
-            console.error("❌ Error actualizando perfil:", await updateProfileRes.text());
+          if (profileError) {
+            console.error("❌ Error actualizando perfil:", profileError);
           } else {
             console.log("✅ Perfil actualizado correctamente.");
           }
@@ -507,47 +483,36 @@ serve(async (req: Request) => {
       const subscriptionId = invoice.subscription;
 
       // 🧾 Renovar la suscripción en Supabase
-      const updateRes = await fetch(`${supabaseUrl}/rest/v1/user_subscriptions?stripe_subscription_id=eq.${subscriptionId}`, {
-        method: "PATCH",
-        headers: {
-          apikey: serviceRoleKey!,
-          Authorization: `Bearer ${serviceRoleKey!}`,
-          "Content-Type": "application/json",
-          Prefer: "return=representation",
-        },
-        body: JSON.stringify({
+      const { data: renewedSubscription, error: renewError } = await supabase
+        .from("user_subscriptions")
+        .update({
           current_period_end: new Date(invoice.period_end * 1000).toISOString(),
           status: "active",
           updated_at: new Date().toISOString(),
-        }),
-      });
+        })
+        .eq("stripe_subscription_id", subscriptionId)
+        .select();
 
-      if (!updateRes.ok) {
-        console.error("❌ Error renovando suscripción en Supabase:", await updateRes.text());
+      if (renewError) {
+        console.error("❌ Error renovando suscripción en Supabase:", renewError);
       } else {
-        console.log("✅ Suscripción renovada correctamente en Supabase.");
+        console.log("✅ Suscripción renovada correctamente en Supabase:", renewedSubscription);
         
         // También actualizar el perfil del usuario para mantener consistencia
-        const subscriptionData = await updateRes.json();
-        if (subscriptionData && subscriptionData.length > 0) {
-          const userId = subscriptionData[0].user_id;
+        if (renewedSubscription && renewedSubscription.length > 0) {
+          const userId = renewedSubscription[0].user_id;
           
-          const updateProfileRes = await fetch(`${supabaseUrl}/rest/v1/profiles?id=eq.${userId}`, {
-            method: "PATCH",
-            headers: {
-              apikey: serviceRoleKey!,
-              Authorization: `Bearer ${serviceRoleKey!}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
+          const { error: profileError } = await supabase
+            .from("profiles")
+            .update({
               subscription_status: "active",
               subscription_expires_at: new Date(invoice.period_end * 1000).toISOString(),
               updated_at: new Date().toISOString(),
-            }),
-          });
+            })
+            .eq("id", userId);
 
-          if (!updateProfileRes.ok) {
-            console.error("❌ Error actualizando perfil en renovación:", await updateProfileRes.text());
+          if (profileError) {
+            console.error("❌ Error actualizando perfil en renovación:", profileError);
           } else {
             console.log("✅ Perfil actualizado en renovación.");
           }
@@ -558,45 +523,34 @@ serve(async (req: Request) => {
       console.log("❌ Suscripción cancelada:", subscription.id);
 
       // 🧾 Cancelar la suscripción en Supabase
-      const updateRes = await fetch(`${supabaseUrl}/rest/v1/user_subscriptions?stripe_subscription_id=eq.${subscription.id}`, {
-        method: "PATCH",
-        headers: {
-          apikey: serviceRoleKey!,
-          Authorization: `Bearer ${serviceRoleKey!}`,
-          "Content-Type": "application/json",
-          Prefer: "return=representation",
-        },
-        body: JSON.stringify({
+      const { data: cancelledSubscription, error: cancelError } = await supabase
+        .from("user_subscriptions")
+        .update({
           status: "cancelled",
           updated_at: new Date().toISOString(),
-        }),
-      });
+        })
+        .eq("stripe_subscription_id", subscription.id)
+        .select();
 
-      if (!updateRes.ok) {
-        console.error("❌ Error cancelando suscripción en Supabase:", await updateRes.text());
+      if (cancelError) {
+        console.error("❌ Error cancelando suscripción en Supabase:", cancelError);
       } else {
-        console.log("✅ Suscripción cancelada correctamente en Supabase.");
+        console.log("✅ Suscripción cancelada correctamente en Supabase:", cancelledSubscription);
         
         // También actualizar el perfil del usuario
-        const subscriptionData = await updateRes.json();
-        if (subscriptionData && subscriptionData.length > 0) {
-          const userId = subscriptionData[0].user_id;
+        if (cancelledSubscription && cancelledSubscription.length > 0) {
+          const userId = cancelledSubscription[0].user_id;
           
-          const updateProfileRes = await fetch(`${supabaseUrl}/rest/v1/profiles?id=eq.${userId}`, {
-            method: "PATCH",
-            headers: {
-              apikey: serviceRoleKey!,
-              Authorization: `Bearer ${serviceRoleKey!}`,
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
+          const { error: profileError } = await supabase
+            .from("profiles")
+            .update({
               subscription_status: "cancelled",
               updated_at: new Date().toISOString(),
-            }),
-          });
+            })
+            .eq("id", userId);
 
-          if (!updateProfileRes.ok) {
-            console.error("❌ Error actualizando perfil en cancelación:", await updateProfileRes.text());
+          if (profileError) {
+            console.error("❌ Error actualizando perfil en cancelación:", profileError);
           } else {
             console.log("✅ Perfil actualizado en cancelación.");
           }

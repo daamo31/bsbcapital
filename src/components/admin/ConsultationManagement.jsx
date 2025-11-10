@@ -60,9 +60,9 @@ const ConsultationManagement = () => {
   const loadConsultations = async () => {
     try {
       const { data, error } = await supabase
-        .from('consultations_dashboard')
+        .from('consultations')
         .select('*')
-        .order('booking_date', { ascending: false });
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
       setConsultations(data || []);

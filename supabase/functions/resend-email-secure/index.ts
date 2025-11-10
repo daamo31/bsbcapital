@@ -218,7 +218,7 @@ const getEmailTemplates = () => {
     },
     // Template para NOTIFICACIONES A ADMINISTRADORES
     admin_consultation_notification: {
-      subject: "🔔 Nueva consultoría reservada - BSB Capital",
+      subject: "🔔 Nueva consultoría reservada con formulario completado - BSB Capital",
       html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -242,18 +242,39 @@ const getEmailTemplates = () => {
       <td align="center" style="padding:10px 30px;">
         <h2 style="color:#0b1f14; font-weight:600; margin:0;">🔔 Nueva consultoría reservada</h2>
         <p style="font-size:16px; color:#37493f; line-height:1.6; margin-top:18px; margin-bottom:28px;">
-          <strong>DETALLES DE LA RESERVA:</strong><br><br>
+          <strong>INFORMACIÓN DEL CLIENTE:</strong><br>
+          • <strong>Nombre:</strong> {clientName}<br>
+          • <strong>Email:</strong> {clientEmail}<br><br>
           
-          <strong>Cliente:</strong> {clientName}<br>
-          <strong>Email:</strong> {clientEmail}<br>
-          <strong>Tipo de consultoría:</strong> {consultationType}<br>
-          <strong>Fecha programada:</strong> {consultationDate}<br>
-          <strong>Importe pagado:</strong> {amount}€ {currency}<br><br>
+          <strong>DETALLES DE LA CONSULTA:</strong><br>
+          • <strong>Tipo:</strong> {consultationType}<br>
+          • <strong>Fecha:</strong> {preferredDate}<br>
+          • <strong>Hora:</strong> {preferredTime}<br>
+          • <strong>Duración:</strong> {duration}<br>
+          • <strong>Precio:</strong> {price}<br>
+          • <strong>ID Consulta:</strong> {consultationId}<br><br>
           
-          <strong>Estado:</strong> ✅ Pago confirmado<br>
-          <strong>Notificación:</strong> Cliente ha recibido email de confirmación<br><br>
+          <strong>PERFIL FINANCIERO:</strong><br>
+          • <strong>Experiencia:</strong> {investmentExperience}<br>
+          • <strong>Tamaño cartera:</strong> {portfolioSize}<br><br>
           
-          <em>Puedes gestionar esta consultoría desde el panel de administración.</em>
+          <strong>OBJETIVOS:</strong><br>
+          {consultationGoals}<br><br>
+          
+          <strong>INVERSIONES ACTUALES:</strong><br>
+          {currentInvestments}<br><br>
+          
+          <strong>PREGUNTAS ESPECÍFICAS:</strong><br>
+          {specificQuestions}<br><br>
+          
+          <strong>COMUNICACIÓN PREFERIDA:</strong> {preferredCommunication}<br><br>
+          
+          {additionalInfo}<br><br>
+          
+          <strong>Estado:</strong> ✅ Pago confirmado y formulario completado<br>
+          <strong>Acción requerida:</strong> Asignar administrador y confirmar reunión<br><br>
+          
+          <em>Gestiona esta consultoría desde el panel de administración.</em>
         </p>
       </td>
     </tr>
@@ -263,7 +284,7 @@ const getEmailTemplates = () => {
     <tr>
       <td align="center" style="padding:25px 20px 35px 20px; font-size:12px; color:#6a756f; line-height:1.6;">
         <p style="margin:0;">© BSB Capital · Sistema de notificaciones automáticas</p>
-        <p style="margin:5px 0 0 0;">Panel de administración: <a href="https://tudominio.com/admin" style="color:#C5A019; text-decoration:none;">Acceder al dashboard</a></p>
+        <p style="margin:5px 0 0 0;">Panel: <a href="https://bsbcapital.io/admin" style="color:#C5A019; text-decoration:none;">Dashboard Admin</a></p>
       </td>
     </tr>
   </table>
@@ -516,6 +537,8 @@ serve(async (req: Request) => {
       Deno.env.get("DEFAULT_FROM") || "BSB Capital <info@bsbcapital.io>";
     const adminEmail = Deno.env.get("ADMIN_EMAIL") || "info@bsbcapital.io";
 
+    console.log(`🔧 Config - Admin Email: ${adminEmail}, Default From: ${defaultFrom}`);
+
     if (!resendApiKey) {
       throw new Error("Missing RESEND_API_KEY in environment");
     }
@@ -524,9 +547,22 @@ serve(async (req: Request) => {
       throw new Error("Missing 'to' field in email request");
     }
 
-    // 📨 Lógica especial: notificación a administradores
+    // � Validar formato del email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(to)) {
+      throw new Error(`Invalid email format: ${to}`);
+    }
+
+    // �📨 Lógica especial: notificación a administradores
     const recipient =
       type === "admin_consultation_notification" ? adminEmail : to;
+
+    // 🔍 Validar email del destinatario final
+    if (!emailRegex.test(recipient)) {
+      throw new Error(`Invalid recipient email format: ${recipient}`);
+    }
+
+    console.log(`📧 Enviando email de tipo '${type}' a: ${recipient}`);
 
     // 🎨 Obtener template HTML si existe para este tipo
     const templates = getEmailTemplates();
@@ -543,6 +579,18 @@ serve(async (req: Request) => {
         .replace(/\{clientEmail\}/g, data?.clientEmail || "No especificado") 
         .replace(/\{consultationType\}/g, data?.consultationType || "No especificado")
         .replace(/\{consultationDate\}/g, data?.consultationDate || "Pendiente de programar")
+        .replace(/\{preferredDate\}/g, data?.preferredDate || "Pendiente de programar")
+        .replace(/\{preferredTime\}/g, data?.preferredTime || "Por confirmar")
+        .replace(/\{duration\}/g, data?.duration || "No especificado")
+        .replace(/\{price\}/g, data?.price || "No especificado")
+        .replace(/\{consultationId\}/g, data?.consultationId || "No especificado")
+        .replace(/\{investmentExperience\}/g, data?.investmentExperience || "No especificado")
+        .replace(/\{portfolioSize\}/g, data?.portfolioSize || "No especificado")
+        .replace(/\{consultationGoals\}/g, data?.consultationGoals || "No especificado")
+        .replace(/\{currentInvestments\}/g, data?.currentInvestments || "No especificado")
+        .replace(/\{specificQuestions\}/g, data?.specificQuestions || "No especificado")
+        .replace(/\{preferredCommunication\}/g, data?.preferredCommunication || "No especificado")
+        .replace(/\{additionalInfo\}/g, data?.additionalInfo ? `<strong>COMENTARIOS ADICIONALES:</strong><br>${data.additionalInfo}` : "")
         .replace(/\{amount\}/g, data?.amount?.toString() || "0")
         .replace(/\{currency\}/g, data?.currency || "EUR");
       emailSubject = subject || template.subject;

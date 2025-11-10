@@ -13,32 +13,54 @@ Deno.serve({ port: 8000 }, async (req) => {
   }
 
   try {
+    console.log("🚀 === INICIO CREATE-STRIPE-CHECKOUT ===");
+    console.log("🔍 Método:", req.method);
+    console.log("🔍 URL:", req.url);
+    
     // Inicializar Supabase client para obtener usuario autenticado
+    console.log("📡 Inicializando cliente Supabase...");
     const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
     
     // Obtener token de autenticación del header
+    console.log("🔐 Obteniendo token de autenticación...");
     const authHeader = req.headers.get("Authorization");
+    console.log("🔐 Authorization header presente:", !!authHeader);
+    
     let authenticatedUser = null;
     
     if (authHeader && authHeader.startsWith("Bearer ")) {
+      console.log("🔐 Procesando token Bearer...");
       const token = authHeader.substring(7);
       try {
+        console.log("🔐 Validando token con Supabase...");
         const { data: { user }, error } = await supabase.auth.getUser(token);
         if (!error && user) {
           authenticatedUser = user;
           console.log("✅ Usuario autenticado obtenido:", { id: user.id, email: user.email });
+        } else {
+          console.log("⚠️ Error o usuario no encontrado:", error);
         }
       } catch (error) {
-        console.log("⚠️ Error obteniendo usuario del token:", error);
+        console.log("❌ Excepción obteniendo usuario del token:", error);
       }
+    } else {
+      console.log("⚠️ No hay Authorization header o no es Bearer");
     }
 
     // Parse body safely once (supports JSON, double-encoded JSON, and form-encoded)
+    console.log("📝 Parseando cuerpo de la request...");
     const rawBody = await req.text();
+    console.log("📝 Raw body length:", rawBody.length);
+    console.log("📝 Raw body preview:", rawBody.substring(0, 200) + (rawBody.length > 200 ? "..." : ""));
+    
     const contentType = req.headers.get("content-type") || "";
+    console.log("📝 Content-Type:", contentType);
+    
     let requestBody: any = {};
     if (rawBody) {
+      console.log("📝 Procesando body...");
       if (contentType.includes("application/x-www-form-urlencoded")) {
+        console.log("📝 Parsing como form-urlencoded...");
         const form = new URLSearchParams(rawBody);
         requestBody = Object.fromEntries(form.entries());
         // Try to parse known nested objects
@@ -46,15 +68,20 @@ Deno.serve({ port: 8000 }, async (req) => {
           try { requestBody.metadata = JSON.parse(requestBody.metadata); } catch (_) { /* ignore */ }
         }
       } else {
+        console.log("📝 Parsing como JSON...");
         try {
           requestBody = JSON.parse(rawBody);
           if (typeof requestBody === "string") {
             requestBody = JSON.parse(requestBody);
           }
-        } catch (_) {
+          console.log("✅ JSON parseado correctamente");
+        } catch (parseError) {
+          console.log("❌ Error parseando JSON:", parseError);
           requestBody = {};
         }
       }
+    } else {
+      console.log("⚠️ Body vacío");
     }
 
     // Also accept query params as a last resort
@@ -404,10 +431,24 @@ Deno.serve({ port: 8000 }, async (req) => {
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 },
     );
   } catch (error) {
-    console.error("Error processing request:", error);
+    console.error("❌ DETAILED ERROR in create-stripe-checkout:", {
+      message: error.message,
+      stack: error.stack,
+      name: error.name,
+      cause: error.cause
+    });
+    
+    console.error("❌ Error processing request:", error);
+
+    // Provide more detailed error response for debugging
+    const errorResponse = {
+      error: "Internal server error.",
+      details: error.message || "Unknown error occurred",
+      timestamp: new Date().toISOString()
+    };
 
     return new Response(
-      JSON.stringify({ error: "Internal server error." }),
+      JSON.stringify(errorResponse),
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 500 },
     );
   }
