@@ -1,6 +1,6 @@
 'use client';;
 import * as React from 'react';
-import { motion } from 'motion/react';
+import { motion } from 'framer-motion';
 
 import { useIsInView } from '@/hooks/use-is-in-view';
 import { getStrictContext } from '@/lib/get-strict-context';

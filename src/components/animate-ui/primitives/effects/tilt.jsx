@@ -1,6 +1,6 @@
 'use client';;
 import * as React from 'react';
-import { motion, useMotionValue, useSpring } from 'motion/react';
+import { motion, useMotionValue, useSpring } from 'framer-motion';
 
 import { Slot } from '@/components/animate-ui/primitives/animate/slot';
 import { getStrictContext } from '@/lib/get-strict-context';

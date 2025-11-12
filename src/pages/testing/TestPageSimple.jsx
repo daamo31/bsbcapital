@@ -281,7 +281,7 @@ export default function TestPage() {
               <Button 
                 onClick={() => testCheckout(true)} 
                 disabled={loading.checkout || !user}
-                className="w-full bg-green-600 hover:bg-green-700"
+                className="w-full bg-yellow-600 hover:bg-yellow-700 text-white"
               >
                 {loading.checkout ? 'Creando...' : '✅ Crear Checkout (Funciona Perfectamente)'}
               </Button>

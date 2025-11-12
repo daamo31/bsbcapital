@@ -6,85 +6,102 @@
 
     @layer base {
       :root {
-        --background: 0 0% 100%; /* #FAFAFA */
-        --foreground: 0 0% 3.9%; /* #111111 */
+        --background: 160 30% 97%; /* #F5F8F6 - fondo muy claro verdoso */
+        --foreground: 160 50% 8%; /* #0A1A10 - texto principal oscuro */
 
-        --card: 0 0% 100%;
-        --card-foreground: 0 0% 3.9%;
+        --card: 160 40% 94%; /* #EBEEF0 - tarjetas con toque verdoso */
+        --card-foreground: 160 50% 8%; /* #0A1A10 */
     
-        --popover: 0 0% 100%;
-        --popover-foreground: 0 0% 3.9%;
+        --popover: 160 40% 94%;
+        --popover-foreground: 160 50% 8%;
     
-        --primary: 0 0% 9%; /* #C9A227 */
-        --primary-foreground: 0 0% 98%; /* #111111 */
+        --primary: 45 100% 55%; /* #FFD700 - dorado brillante para botones */
+        --primary-foreground: 0 0% 20%; /* #333333 - gris más oscuro para mejor contraste */
     
-        --secondary: 0 0% 96.1%; /* #1A6653 approx from #1E6F5C */
-        --secondary-foreground: 0 0% 9%; /* #FFFFFF */
+        --secondary: 160 50% 85%; /* #C8D5CC - verde suave secundario */
+        --secondary-foreground: 160 50% 15%; /* #1A4427 */
     
-        --muted: 0 0% 96.1%;
-        --muted-foreground: 0 0% 45.1%;
+        --muted: 160 30% 90%;
+        --muted-foreground: 160 30% 35%;
     
-        --accent: 0 0% 96.1%; /* #1E6F5C */
-        --accent-foreground: 0 0% 9%;
+        --accent: 45 100% 65%; /* #FFE55C - dorado brillante complementario */
+        --accent-foreground: 0 0% 100%; /* texto blanco */
     
         --destructive: 0 84.2% 60.2%;
         --destructive-foreground: 0 0% 98%;
 
-        --border: 0 0% 89.8%; /* #E6E6E6 */
-        --input: 0 0% 89.8%;
-        --ring: 0 0% 3.9%;
+        --border: 160 40% 85%; /* #C8D5CC - bordes suaves verdosos */
+        --input: 160 40% 92%; /* #DDE4DF */
+        --ring: 45 100% 55%; /* matching primary - dorado brillante */
     
-        --radius: 0.5rem;
+        --radius: 0.75rem; /* radio más elegante */
 
-        /* Custom Theme Colors */
-        --brand-green-900: 165 48% 11%; /* #0E2A1F */
-        --brand-green-600: 165 60% 25%; /* #1E6F5C */
-        --brand-green-100: 164 38% 93%; /* #E7F1EC */
-        --brand-gold-600: 43 74% 49%; /* #C9A227 */
-        --brand-gold-700: 43 100% 35%; /* #B38B00 */
-        --brand-gold-100: 45 100% 94%; /* #FFF7E0 */
+        /* Paleta Verde Elegante y de Lujo */
+        --brand-green-50: 160 40% 98%; /* #F9FBF9 - casi blanco */
+        --brand-green-100: 160 50% 94%; /* #EBEEF0 - muy claro */
+        --brand-green-200: 160 40% 85%; /* #C8D5CC - claro */
+        --brand-green-300: 160 50% 70%; /* #8FB798 - medio claro */
+        --brand-green-400: 160 60% 55%; /* #5A9B6B - medio */
+        --brand-green-500: 160 70% 40%; /* #2D8A4F - medio oscuro */
+        --brand-green-600: 160 70% 30%; /* #1E7A43 - oscuro elegante */
+        --brand-green-700: 160 80% 20%; /* #146B3A - muy oscuro */
+        --brand-green-800: 160 90% 15%; /* #0F4A28 - ultra oscuro */
+        --brand-green-900: 160 100% 8%; /* #072817 - negro verdoso */
         
-        --bg: 240 100% 99%; /* #FAFAFA */
-        --text: 0 0% 7%; /* #111111 */
-        --text-2: 0 0% 20%; /* #333333 */ --chart-1: 12 76% 61%; --chart-2: 173 58% 39%; --chart-3: 197 37% 24%; --chart-4: 43 74% 66%; --chart-5: 27 87% 67%;
+        /* Acentos dorados complementarios */
+        --brand-gold-100: 45 60% 92%; /* #FDF4DC - dorado muy claro y brillante */
+        --brand-gold-400: 45 100% 65%; /* #FFE55C - dorado brillante medio */
+        --brand-gold-600: 45 100% 55%; /* #FFD700 - dorado brillante */
+        
+        --bg: 160 30% 97%;
+        --text: 160 50% 8%;
+        --text-2: 160 40% 25%;
+        
+        --chart-1: 160 70% 40%;
+        --chart-2: 160 60% 55%;
+        --chart-3: 160 50% 70%;
+        --chart-4: 43 80% 60%;
+        --chart-5: 43 90% 45%;
       }
     
       .dark {
-        --background: 0 0% 3.9%;
-        --foreground: 0 0% 98%;
-        --card: 0 0% 3.9%;
-        --card-foreground: 0 0% 98%;
-        --popover: 0 0% 3.9%;
-        --popover-foreground: 0 0% 98%;
-        --primary: 0 0% 98%;
-        --primary-foreground: 0 0% 9%;
-        --secondary: 0 0% 14.9%;
-        --secondary-foreground: 0 0% 98%;
-        --muted: 0 0% 14.9%;
-        --muted-foreground: 0 0% 63.9%;
-        --accent: 0 0% 14.9%;
-        --accent-foreground: 0 0% 98%;
+        --background: 160 100% 4%; /* #051208 */
+        --foreground: 160 40% 94%; /* #EBEEF0 */
+        
+        --card: 160 90% 8%; /* #0F2917 */
+        --card-foreground: 160 40% 94%;
+        
+        --popover: 160 90% 8%;
+        --popover-foreground: 160 40% 94%;
+        
+        --primary: 160 60% 55%; /* #5A9B6B */
+        --primary-foreground: 160 100% 8%;
+        
+        --secondary: 160 80% 15%; /* #0F4A28 */
+        --secondary-foreground: 160 40% 94%;
+        
+        --muted: 160 80% 15%;
+        --muted-foreground: 160 30% 70%;
+        
+        --accent: 160 70% 40%; /* #2D8A4F */
+        --accent-foreground: 160 100% 8%;
+        
         --destructive: 0 62.8% 30.6%;
         --destructive-foreground: 0 0% 98%;
-        --border: 0 0% 14.9%;
-        --input: 0 0% 14.9%;
-        --ring: 0 0% 83.1%;
+        
+        --border: 160 80% 15%;
+        --input: 160 80% 15%;
+        --ring: 160 60% 55%;
 
-        /* Custom Dark Theme Colors */
-        --brand-green-900: 165 48% 11%;
-        --brand-green-600: 165 60% 25%;
-        --brand-green-100: 164 38% 93%;
-        --brand-gold-600: 43 74% 49%;
-        --brand-gold-700: 43 100% 35%;
-        --brand-gold-100: 45 100% 94%;
-        --bg: 165 48% 11%;
-        --text: 164 38% 93%;
-        --text-2: 164 38% 80%;
-        --chart-1: 220 70% 50%;
-        --chart-2: 160 60% 45%;
-        --chart-3: 30 80% 55%;
-        --chart-4: 280 65% 60%;
-        --chart-5: 340 75% 55%;
+        --bg: 160 100% 4%;
+        --text: 160 40% 94%;
+        --text-2: 160 30% 80%;
+        
+        --chart-1: 160 60% 55%;
+        --chart-2: 160 70% 40%;
+        --chart-3: 160 50% 70%;
+        --chart-4: 43 80% 60%;
+        --chart-5: 43 90% 45%;
       }
     }
     
@@ -98,22 +115,105 @@
         -moz-osx-font-smoothing: grayscale;
       }
       h1, h2, h3, h4, h5, h6 {
-        @apply font-sans font-extrabold tracking-tight text-text-primary;
+        @apply font-sans font-extrabold tracking-tight text-foreground;
       }
       p, li, span, div {
-        @apply text-text-secondary;
+        @apply text-muted-foreground;
+      }
+      
+      /* Estilos de selección de texto mejorados */
+      ::selection {
+        background-color: hsl(var(--primary) / 0.2);
+        color: hsl(var(--primary));
+      }
+      
+      ::-moz-selection {
+        background-color: hsl(var(--primary) / 0.2);
+        color: hsl(var(--primary));
       }
     }
 
+    /* Componentes personalizados elegantes */
+    .glass-card {
+      @apply bg-card/80 backdrop-blur-md border border-border shadow-lg;
+    }
+    
+    .luxury-button {
+      @apply bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 border border-primary/20;
+    }
+    
+    .elegant-input {
+      @apply bg-card border-border text-foreground placeholder:text-muted-foreground focus:ring-primary focus:border-primary;
+    }
+    
+    /* Selección de texto mejorada para diferentes contextos */
+    .aurora-background ::selection {
+      background-color: hsl(var(--primary) / 0.3);
+      color: hsl(var(--primary));
+    }
+    
+    .aurora-background ::-moz-selection {
+      background-color: hsl(var(--primary) / 0.3);
+      color: hsl(var(--primary));
+    }
+    
+    /* Selección en títulos con gradiente */
+    .main-gradient-text::selection {
+      background-color: hsl(var(--primary) / 0.15);
+      color: hsl(var(--primary));
+      -webkit-text-fill-color: hsl(var(--primary));
+    }
+    
+    .main-gradient-text::-moz-selection {
+      background-color: hsl(var(--primary) / 0.15);
+      color: hsl(var(--primary));
+    }
+    
+    /* Selección en texto con accent */
+    .accent-gradient-text::selection {
+      background-color: hsl(var(--brand-gold-400) / 0.2);
+      color: hsl(var(--brand-gold-600));
+      -webkit-text-fill-color: hsl(var(--brand-gold-600));
+    }
+    
+    .accent-gradient-text::-moz-selection {
+      background-color: hsl(var(--brand-gold-400) / 0.2);
+      color: hsl(var(--brand-gold-600));
+    }
+    
+    /* Selección en botones y enlaces */
+    button ::selection,
+    a ::selection {
+      background-color: rgba(255, 255, 255, 0.3);
+      color: inherit;
+    }
+    
+    button ::-moz-selection,
+    a ::-moz-selection {
+      background-color: rgba(255, 255, 255, 0.3);
+      color: inherit;
+    }
+    
+    /* Selección mejorada para tarjetas */
+    .bg-card ::selection {
+      background-color: hsl(var(--primary) / 0.15);
+      color: hsl(var(--primary));
+    }
+    
+    .bg-card ::-moz-selection {
+      background-color: hsl(var(--primary) / 0.15);
+      color: hsl(var(--primary));
+    }
+
     .main-gradient-text {
-        background: linear-gradient(90deg, hsl(var(--brand-green-900)) 0%, hsl(var(--brand-green-600)) 100%);
+        background: linear-gradient(135deg, hsl(var(--brand-green-700)) 0%, hsl(var(--brand-green-500)) 50%, hsl(var(--brand-green-600)) 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
     }
 
     .accent-gradient-text {
-        background: linear-gradient(90deg, hsl(var(--brand-gold-600)), hsl(var(--brand-gold-700)));
+        background: linear-gradient(135deg, hsl(var(--brand-gold-600)) 0%, hsl(var(--brand-gold-400)) 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -122,7 +222,7 @@
     .aurora-background {
       position: relative;
       overflow: hidden;
-      background-color: hsl(var(--brand-green-100));
+      background: linear-gradient(135deg, hsl(var(--brand-green-50)) 0%, hsl(var(--brand-green-100)) 100%);
     }
     
     .aurora-background::before {
@@ -130,7 +230,7 @@
       position: absolute;
       inset: -100px;
       z-index: 0;
-      --aurora: conic-gradient(from 90deg at 50% 50%, hsl(var(--brand-green-600) / 0.1) 0%, hsl(var(--brand-gold-600) / 0.1) 25%, transparent 50%, transparent 100%);
+      --aurora: conic-gradient(from 90deg at 50% 50%, hsl(var(--brand-green-600) / 0.1) 0%, hsl(var(--brand-gold-400) / 0.1) 25%, transparent 50%, transparent 100%);
       background-image: var(--aurora), var(--aurora);
       background-size: 200% 200%, 100% 100%;
       background-position: 50% 50%;

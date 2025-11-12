@@ -1,6 +1,6 @@
 'use client';;
 import * as React from 'react';
-import { useSpring, useTransform, motion, useMotionValue } from 'motion/react';
+import { useSpring, useTransform, motion, useMotionValue } from 'framer-motion';
 import useMeasure from 'react-use-measure';
 
 import { useIsInView } from '@/hooks/use-is-in-view';

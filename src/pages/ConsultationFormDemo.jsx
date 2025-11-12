@@ -189,9 +189,9 @@ const ConsultationFormDemo = () => {
             <p className="text-green-700 mb-4">
               Formulario completado. Ahora ve a la pestaña "Vista Administrador" para ver cómo aparecen estos datos.
             </p>
-            <Button onClick={() => setDemoStep('admin')} className="bg-green-700 hover:bg-green-800">
-              <Shield className="h-4 w-4 mr-2" />
-              Ver como administrador
+            <Button onClick={() => setDemoStep('admin')} className="bg-yellow-600 hover:bg-yellow-700 text-white">
+              <Shield className="mr-2 h-4 w-4" />
+              Ver como Administrador
             </Button>
           </CardContent>
         </Card>

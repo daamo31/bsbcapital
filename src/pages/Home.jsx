@@ -12,6 +12,7 @@ import React from 'react';
     import { Particles, ParticlesEffect } from '@/components/animate-ui/primitives/effects/particles';
     import { Magnetic } from '@/components/animate-ui/primitives/effects/magnetic';
     import { ShimmeringText } from '@/components/animate-ui/primitives/texts/shimmering';
+    import { Tilt, TiltContent } from '@/components/animate-ui/primitives/effects/tilt';
 
     const containerVariants = {
       hidden: { opacity: 0 },
@@ -38,54 +39,58 @@ import React from 'react';
     };
 
     const ServiceCard = ({ icon, title, description, href, details, buttonText = "Saber más" }) => (
-      <Magnetic strength={0.2} range={80} onlyOnHover>
-        <motion.div 
-          variants={itemVariants} 
-          className="bg-card p-4 sm:p-6 lg:p-8 rounded-xl shadow-lg border hover:shadow-primary/10 hover:border-primary/30 transition-all duration-300 flex flex-col group h-full"
-        >
-          <div className="flex-shrink-0 text-brand-accent">{React.cloneElement(icon, { className: "h-8 w-8 sm:h-10 sm:w-10" })}</div>
-          <h3 className="mt-4 sm:mt-6 text-xl sm:text-2xl font-bold text-brand-text-primary">{title}</h3>
-          <p className="mt-3 text-brand-text-secondary flex-grow">{description}</p>
-          {details && (
-            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-              <h4 className="font-semibold text-brand-text-primary mb-2">Además, con nuestra membresía exclusiva tendrás acceso a:</h4>
-              <div className="text-sm text-brand-text-secondary whitespace-pre-line">
-                {details}
-              </div>
-            </div>
-          )}
-          <Button asChild variant="link" className="mt-6 p-0 text-brand-accent hover:text-brand-accent/80 self-start">
-            <Link to={href}>
-              {buttonText} <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-            </Link>
-          </Button>
-        </motion.div>
-      </Magnetic>
+      <Tilt maxTilt={5} perspective={1000}>
+        <TiltContent>
+          <Magnetic strength={0.2} range={80} onlyOnHover>
+            <motion.div 
+              variants={itemVariants} 
+              className="bg-card p-4 sm:p-6 lg:p-8 rounded-xl shadow-lg border border-border hover:shadow-xl hover:border-primary/30 transition-all duration-300 flex flex-col group h-full backdrop-blur-sm"
+            >
+              <div className="flex-shrink-0 text-primary">{React.cloneElement(icon, { className: "h-8 w-8 sm:h-10 sm:w-10" })}</div>
+              <h3 className="mt-4 sm:mt-6 text-xl sm:text-2xl font-bold text-foreground">{title}</h3>
+              <p className="mt-3 text-muted-foreground flex-grow">{description}</p>
+              {details && (
+                <div className="mt-4 p-4 bg-primary/5 rounded-lg border border-primary/10">
+                  <h4 className="font-semibold text-foreground mb-2">Además, con nuestra membresía exclusiva tendrás acceso a:</h4>
+                  <div className="text-sm text-muted-foreground whitespace-pre-line">
+                    {details}
+                  </div>
+                </div>
+              )}
+              <Button asChild variant="link" className="mt-6 p-0 text-primary hover:text-primary/80 self-start font-medium">
+                <Link to={href}>
+                  {buttonText} <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </Button>
+            </motion.div>
+          </Magnetic>
+        </TiltContent>
+      </Tilt>
     );
 
     const services = [
       {
         icon: <Briefcase />,
-        title: '💼 Consultoría Crypto',
+        title: ' Consultoría Crypto',
         description: 'Asesoramiento profesional diseñado para el nuevo entorno financiero. Te ayudamos a gestionar, optimizar y estructurar tu cartera, construir estrategias sostenibles y reducir riesgos en tus operaciones con criptoactivos.',
         href: '/consultoria',
       },
       {
         icon: <BookOpen />,
-        title: '📚 Academia Crypto & Finanzas Digitales',
+        title: ' Academia Crypto & Finanzas Digitales',
         description: 'Aprende a invertir con autonomía y criterio. Nuestra formación combina píldoras rápidas, masterclasses especializadas y contenido actualizado para que desarrolles una mentalidad financiera sólida y entiendas realmente cómo funciona el ecosistema crypto.',
         href: '/academia',
       },
       {
         icon: <Bot />,
-        title: '🤖 BSB Maker — Tu Asistente de Inversión con IA',
+        title: 'BSB Maker — Tu Asistente de Inversión con IA',
         description: 'Lleva tus decisiones al siguiente nivel con nuestra herramienta de Inteligencia Artificial diseñada para inversores crypto. Analiza, compara y optimiza tus estrategias: backtesting de estrategias, señales e insights personalizados, simulación de escenarios y gestión de riesgo, y mucho más.',
         href: '/bsb-maker',
         buttonText: 'Explorar BSB Maker'
       },
       {
         icon: <Star />,
-        title: '🌐 Paquetes y Membresía',
+        title: ' Paquetes y Membresía',
         description: 'Descubre nuestros paquetes diseñados para tu perfil, combinando consultoría, formación y herramientas con IA según tus necesidades: ya seas empresa, inversor o asesor financiero.',
         details: '• Descuentos especiales en servicios y formación.\n• Eventos y masterclasses con expertos en crypto y finanzas digitales.\n• Comunidad privada de inversores y profesionales del sector.',
         href: '/membresias',
@@ -108,9 +113,9 @@ import React from 'react';
 
         return (
             <form onSubmit={handleSubmit} className="space-y-6">
-                <Input name="subject" placeholder="Asunto" required className="bg-white text-brand-text-primary" />
-                <Textarea name="message" placeholder="Tu mensaje..." rows={5} required className="bg-white text-brand-text-primary" />
-                <Button type="submit" className="w-full" size="lg">
+                <Input name="subject" placeholder="Asunto" required className="bg-card border-border text-foreground placeholder:text-muted-foreground" />
+                <Textarea name="message" placeholder="Tu mensaje..." rows={5} required className="bg-card border-border text-foreground placeholder:text-muted-foreground" />
+                <Button type="submit" className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-800 shadow-lg" size="lg">
                     Enviar Mensaje <Mail className="ml-2 h-4 w-4" />
                 </Button>
             </form>
@@ -130,7 +135,7 @@ import React from 'react';
           
           {/* Barra de notificación para administradores */}
           {isAdmin && (
-            <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white py-2 sm:py-3 shadow-lg">
+            <div className="bg-gradient-to-r from-primary to-accent text-primary-foreground py-2 sm:py-3 shadow-lg">
               <div className="container mx-auto px-4 sm:px-6">
                 <div className="flex items-center justify-center gap-2 sm:gap-3 text-xs sm:text-sm font-medium">
                   <Shield className="h-4 w-4" />
@@ -139,7 +144,7 @@ import React from 'react';
                     asChild 
                     size="sm" 
                     variant="secondary" 
-                    className="ml-4 bg-white/10 hover:bg-white/20 text-white border-white/20"
+                    className="ml-4 bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-500 border-yellow-400/20"
                   >
                     <Link to="/admin" className="flex items-center gap-2">
                       <Settings className="h-3 w-3" />
@@ -158,28 +163,21 @@ import React from 'react';
             transition={{ duration: 0.5 }}
           >
             {/* Hero Section */}
-            <section className="relative aurora-background text-brand-text-primary overflow-hidden">
+            <section className="relative aurora-background text-foreground overflow-hidden">
               <Particles inView>
-                <div className="container mx-auto px-4 sm:px-6 text-center relative z-10 py-16 sm:py-28 md:py-48">
+                <div className="container mx-auto px-4 sm:px-6 text-center relative z-10 pt-4 pb-8 sm:pt-6 sm:pb-12 md:pt-8 md:pb-16">
                   <motion.div variants={containerVariants} initial="hidden" animate="visible">
                     <motion.h1 variants={itemVariants} className="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl font-extrabold leading-tight">
-                      <span className="main-gradient-text">
-                        <ShimmeringText 
-                          text="Transformamos tu forma" 
-                          duration={2}
-                          shimmeringColor="rgba(34, 197, 94, 0.8)"
-                          color="var(--color-primary)"
-                        />
-                      </span><br/> 
-                      <span className="text-brand-text-primary">de invertir en crypto</span>
+                      <span className="main-gradient-text">Transformamos tu forma</span><br/> 
+                      <span className="text-foreground">de invertir en crypto</span>
                     </motion.h1>
-                    <motion.p variants={itemVariants} className="mt-4 sm:mt-6 max-w-3xl mx-auto text-base sm:text-lg text-brand-text-secondary">
+                    <motion.p variants={itemVariants} className="mt-4 sm:mt-6 max-w-3xl mx-auto text-base sm:text-lg text-muted-foreground">
                       En BSB Capital transformamos la forma en que personas y empresas se relacionan con el mundo crypto. 
                       Unimos consultoría estratégica, formación práctica y herramientas con IA para que tomes decisiones con claridad, confianza y visión de futuro.
                     </motion.p>
                     <motion.div variants={itemVariants} className="mt-6 sm:mt-10">
                       <Magnetic strength={0.3} range={100}>
-                        <Button asChild size="lg" className="bg-green-900 hover:bg-green-800 text-white px-8 py-4">
+                        <Button asChild size="lg" className="bg-yellow-400 hover:bg-yellow-500 text-gray-800 px-8 py-4 shadow-lg">
                           <Link to="/guia-inversion">
                             Descubrir mi Servicio Ideal <ArrowRight className="ml-2 h-5 w-5" />
                           </Link>
@@ -194,7 +192,7 @@ import React from 'react';
                   count={8} 
                   radius={50} 
                   duration={1.2}
-                  className="w-2 h-2 bg-green-400 rounded-full opacity-60"
+                  className="w-2 h-2 bg-primary/60 rounded-full opacity-60"
                 />
                 <ParticlesEffect 
                   side="bottom" 
@@ -202,7 +200,7 @@ import React from 'react';
                   count={6} 
                   radius={40} 
                   delay={0.5}
-                  className="w-1.5 h-1.5 bg-blue-400 rounded-full opacity-70"
+                  className="w-1.5 h-1.5 bg-accent/70 rounded-full opacity-70"
                 />
               </Particles>
             </section>
@@ -211,8 +209,8 @@ import React from 'react';
             <section className="py-12 sm:py-20 md:py-28 bg-background">
                 <div className="container mx-auto px-4 sm:px-6">
                     <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
-                        <motion.h2 variants={itemVariants} className="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-brand-text-primary">Soluciones de Inversión que <span className="main-gradient-text">Multiplican tu Potencial</span></motion.h2>
-                        <motion.p variants={itemVariants} className="mt-4 text-center text-base sm:text-lg text-brand-text-secondary max-w-4xl mx-auto">Tanto si estás dando tus primeros pasos en el mundo crypto, como si ya operas y quieres llevar tu gestión al siguiente nivel, en BSB Capital encontrarás las herramientas y el acompañamiento que necesitas.</motion.p>
+                        <motion.h2 variants={itemVariants} className="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-foreground">Soluciones de Inversión que <span className="main-gradient-text">Multiplican tu Potencial</span></motion.h2>
+                        <motion.p variants={itemVariants} className="mt-4 text-center text-base sm:text-lg text-muted-foreground max-w-4xl mx-auto">Tanto si estás dando tus primeros pasos en el mundo crypto, como si ya operas y quieres llevar tu gestión al siguiente nivel, en BSB Capital encontrarás las herramientas y el acompañamiento que necesitas.</motion.p>
                         <div className="mt-8 sm:mt-16 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
                             {services.map((service) => (
                                 <ServiceCard key={service.title} {...service} />
@@ -223,22 +221,22 @@ import React from 'react';
             </section>
 
             {/* Social Proof */}
-            <section className="py-12 sm:py-20 md:py-28 bg-brand-green-100">
+            <section className="py-12 sm:py-20 md:py-28 bg-primary/5 backdrop-blur-sm">
               <div className="container mx-auto px-4 sm:px-6">
                 <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
-                  <motion.h2 variants={itemVariants} className="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-brand-text-primary">Confianza y <span className="main-gradient-text">Resultados Comprobados</span></motion.h2>
+                  <motion.h2 variants={itemVariants} className="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-foreground">Confianza y <span className="main-gradient-text">Resultados Comprobados</span></motion.h2>
                   <div className="mt-8 sm:mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 text-center">
                     <motion.div variants={itemVariants}>
                       <p className="text-3xl sm:text-4xl lg:text-5xl font-bold main-gradient-text">+4 años</p>
-                      <p className="text-brand-text-secondary mt-2">de experiencia en el ecosistema crypto y blockchain</p>
+                      <p className="text-muted-foreground mt-2">de experiencia en el ecosistema crypto y blockchain</p>
                     </motion.div>
                     <motion.div variants={itemVariants}>
                       <p className="text-3xl sm:text-4xl lg:text-5xl font-bold main-gradient-text">95%</p>
-                      <p className="text-brand-text-secondary mt-2">de satisfacción de clientes</p>
+                      <p className="text-muted-foreground mt-2">de satisfacción de clientes</p>
                     </motion.div>
                     <motion.div variants={itemVariants}>
                       <p className="text-3xl sm:text-4xl lg:text-5xl font-bold main-gradient-text">+10K</p>
-                      <p className="text-brand-text-secondary mt-2">operaciones analizadas por IA</p>
+                      <p className="text-muted-foreground mt-2">operaciones analizadas por IA</p>
                     </motion.div>
                   </div>
                 </motion.div>
@@ -255,10 +253,10 @@ import React from 'react';
                         viewport={{ once: true, amount: 0.2 }}
                         className="max-w-2xl mx-auto text-center"
                     >
-                        <motion.h2 variants={itemVariants} className="text-3xl sm:text-4xl md:text-5xl font-bold text-brand-text-primary">
+                        <motion.h2 variants={itemVariants} className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground">
                             ¿Listo para <span className="main-gradient-text">Empezar</span>?
                         </motion.h2>
-                        <motion.p variants={itemVariants} className="mt-4 text-base sm:text-lg text-brand-text-secondary">
+                        <motion.p variants={itemVariants} className="mt-4 text-base sm:text-lg text-muted-foreground">
                             Ponte en contacto con nosotros y empieza a construir una estrategia financiera adaptada al futuro digital.
                         </motion.p>
                         <motion.div variants={itemVariants} className="mt-6 sm:mt-10 max-w-lg mx-auto">

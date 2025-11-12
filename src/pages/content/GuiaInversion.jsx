@@ -156,7 +156,7 @@ import React, { useState } from 'react';
                                 </div>
                               </div>
                             )}
-                            <Button asChild className="mt-6">
+                            <Button asChild className="mt-6 bg-yellow-400 hover:bg-yellow-500 text-gray-900">
                                 <Link to={serviceInfo[result].link}>
                                     Saber más <ArrowRight className="ml-2 h-4 w-4" />
                                 </Link>
@@ -177,7 +177,7 @@ import React, { useState } from 'react';
                               key={index}
                               variant="outline"
                               size="lg"
-                              className="w-full justify-start text-left h-auto py-4 text-brand-text-primary hover:bg-brand-primary/10"
+                              className="w-full justify-start text-left h-auto py-4 text-brand-text-primary border-yellow-400 hover:bg-yellow-400 hover:text-gray-900"
                               onClick={() => handleAnswer(option)}
                             >
                               {option.text}

@@ -431,11 +431,14 @@ Deno.serve({ port: 8000 }, async (req) => {
       { headers: { ...corsHeaders, "Content-Type": "application/json" }, status: 200 },
     );
   } catch (error) {
+    // Type guard para asegurar que error es un Error
+    const errorObj = error instanceof Error ? error : new Error(String(error));
+    
     console.error("❌ DETAILED ERROR in create-stripe-checkout:", {
-      message: error.message,
-      stack: error.stack,
-      name: error.name,
-      cause: error.cause
+      message: errorObj.message,
+      stack: errorObj.stack,
+      name: errorObj.name,
+      cause: errorObj.cause
     });
     
     console.error("❌ Error processing request:", error);
@@ -443,7 +446,7 @@ Deno.serve({ port: 8000 }, async (req) => {
     // Provide more detailed error response for debugging
     const errorResponse = {
       error: "Internal server error.",
-      details: error.message || "Unknown error occurred",
+      details: errorObj.message || "Unknown error occurred",
       timestamp: new Date().toISOString()
     };
 

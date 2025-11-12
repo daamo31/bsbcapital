@@ -1,6 +1,6 @@
 'use client';;
 import * as React from 'react';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, motion } from 'framer-motion';
 
 import { useIsInView } from '@/hooks/use-is-in-view';
 

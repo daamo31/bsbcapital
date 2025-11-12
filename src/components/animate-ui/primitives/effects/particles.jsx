@@ -1,6 +1,6 @@
 'use client';;
 import * as React from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import { Slot } from '@/components/animate-ui/primitives/animate/slot';
 import { useIsInView } from '@/hooks/use-is-in-view';

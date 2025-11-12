@@ -60,7 +60,7 @@ import React, { useState, useEffect } from 'react';
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-12">
               <div className="lg:col-span-1">
                 <Link to="/" className="flex items-center gap-3">
-                  <img alt="Logotipo de BSB Capital" className="h-13 w-auto" src="https://horizons-cdn.hostinger.com/817ad863-5db3-450e-8aa2-198248142884/b6e16d0690a67f5cbf9123ef9d9129e7.png" />
+                  <img alt="Logotipo de BSB Capital" className="h-13 w-auto" src="/images/white_logo.jpeg" />
                   <span className="font-bold text-xl text-white">BSB Capital</span>
                 </Link>
                 <p className="mt-4 text-sm text-brand-green-100/70">
@@ -99,7 +99,7 @@ import React, { useState, useEffect } from 'react';
                       onChange={(e) => setEmail(e.target.value)}
                       disabled={loading}
                     />
-                    <Button type="submit" variant="default" disabled={loading}>
+                    <Button type="submit" variant="default" disabled={loading} className="bg-yellow-400 hover:bg-yellow-500 text-gray-800">
                       {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
                     </Button>
                   </form>
@@ -145,23 +145,23 @@ import React, { useState, useEffect } from 'react';
         <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
           <div className="container mx-auto px-4 sm:px-6 h-16 sm:h-20 flex justify-between items-center">
             <Link to="/" className="flex items-center gap-3" onClick={closeMenu}>
-              <img alt="Logotipo de BSB Capital" className="h-13 w-auto" src="https://horizons-cdn.hostinger.com/817ad863-5db3-450e-8aa2-198248142884/b6e16d0690a67f5cbf9123ef9d9129e7.png" />
+              <img alt="Logotipo de BSB Capital" className="h-13 w-auto" src="/images/black_logo.jpeg" />
             </Link>
             <nav className="hidden lg:flex items-center gap-8">
               {navLinks.map((link) => (
-                <Link key={link.name} to={link.href} className="text-sm font-semibold text-text-secondary hover:text-primary transition-colors">
+                <Link key={link.name} to={link.href} className="text-base lg:text-lg font-semibold text-text-secondary hover:text-primary transition-colors">
                   {link.name}
                 </Link>
               ))}
             </nav>
             <div className="hidden lg:flex items-center gap-4">
-               <Button asChild variant="outline">
+               <Button asChild variant="outline" className="border-brand-green-600 text-gray-700 hover:bg-brand-green-600 hover:text-white">
                   <Link to="/contacto">Contactar</Link>
                 </Button>
                 {user ? (
                   <>
                     {isAdmin && <AdminDropdown />}
-                    <Button asChild>
+                    <Button asChild className="bg-yellow-400 hover:bg-yellow-500 text-gray-800">
                       <Link to="/dashboard">
                         <User className="mr-2 h-4 w-4" />
                         Mi Cuenta
@@ -169,7 +169,7 @@ import React, { useState, useEffect } from 'react';
                     </Button>
                   </>
                 ) : (
-                  <Button asChild>
+                  <Button asChild className="bg-yellow-400 hover:bg-yellow-500 text-gray-800">
                     <Link to="/login">
                       <LogIn className="mr-2 h-4 w-4" />
                       Iniciar Sesión
@@ -193,7 +193,7 @@ import React, { useState, useEffect } from 'react';
                   </Link>
                 ))}
                 <div className="border-t pt-6 mt-4 flex flex-col gap-4">
-                  <Button asChild className="w-full" variant="outline" onClick={closeMenu}>
+                  <Button asChild className="w-full border-brand-green-600 text-gray-700 hover:bg-brand-green-600 hover:text-white" variant="outline" onClick={closeMenu}>
                     <Link to="/contacto">Contactar</Link>
                   </Button>
                   {user ? (
@@ -206,7 +206,7 @@ import React, { useState, useEffect } from 'react';
                           </Link>
                         </Button>
                       )}
-                      <Button asChild className="w-full" onClick={closeMenu}>
+                      <Button asChild className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-800" onClick={closeMenu}>
                         <Link to="/dashboard">
                           <User className="mr-2 h-4 w-4" />
                           Mi Cuenta
@@ -214,7 +214,7 @@ import React, { useState, useEffect } from 'react';
                       </Button>
                     </>
                   ) : (
-                    <Button asChild className="w-full" onClick={closeMenu}>
+                    <Button asChild className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-800" onClick={closeMenu}>
                       <Link to="/login">
                         <LogIn className="mr-2 h-4 w-4" />
                         Iniciar Sesión

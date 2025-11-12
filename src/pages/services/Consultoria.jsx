@@ -18,6 +18,9 @@ import { Textarea } from "@/components/ui/forms/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/forms/select";
 import { loadStripe } from '@stripe/stripe-js';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
+import { Particles, ParticlesEffect } from '@/components/animate-ui/primitives/effects/particles';
+import { Magnetic } from '@/components/animate-ui/primitives/effects/magnetic';
+import { ShimmeringText } from '@/components/animate-ui/primitives/texts/shimmering';
 
 const STRIPE_PUBLISHABLE_KEY = 'pk_live_51Rne6CJmSk3VG9oipr5fPA32tndC3TFLYHWrENknJ8fcNvIq8A3Nq0KfLdvwkMAyFvgLOWECBpIuzE2THTX4Mb1s00zqHyg0op';
 
@@ -203,7 +206,7 @@ const BookingModal = () => {
       if (!isOpen) resetForm();
     }}>
       <DialogTrigger asChild>
-        <Button size="lg">
+        <Button size="lg" className="bg-yellow-400 hover:bg-yellow-500 text-gray-900">
           Agendar una llamada <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
       </DialogTrigger>
@@ -255,7 +258,7 @@ const BookingModal = () => {
                     type="button"
                     variant={formData.duration === "30min" ? "default" : "outline"}
                     onClick={() => handleSelectChange('duration', '30min')}
-                    className="h-16 flex flex-col"
+                    className={`h-16 flex flex-col ${formData.duration === "30min" ? "bg-yellow-400 hover:bg-yellow-500 text-gray-900" : ""}`}
                   >
                     <span className="font-semibold">30 min</span>
                     <span className="text-xs opacity-70">Consulta rápida</span>
@@ -264,7 +267,7 @@ const BookingModal = () => {
                     type="button"
                     variant={formData.duration === "60min" ? "default" : "outline"}
                     onClick={() => handleSelectChange('duration', '60min')}
-                    className="h-16 flex flex-col"
+                    className={`h-16 flex flex-col ${formData.duration === "60min" ? "bg-yellow-400 hover:bg-yellow-500 text-gray-900" : ""}`}
                   >
                     <span className="font-semibold">60 min</span>
                     <span className="text-xs opacity-70">Consulta completa</span>
@@ -273,7 +276,7 @@ const BookingModal = () => {
                     type="button"
                     variant={formData.duration === "test" ? "default" : "outline"}
                     onClick={() => handleSelectChange('duration', 'test')}
-                    className="h-16 flex flex-col bg-yellow-50 border-yellow-200 hover:bg-yellow-100"
+                    className={`h-16 flex flex-col ${formData.duration === "test" ? "bg-yellow-400 hover:bg-yellow-500 text-gray-900" : "bg-yellow-50 border-yellow-200 hover:bg-yellow-100"}`}
                   >
                     <span className="font-semibold text-xs">Prueba</span>
                     <span className="text-xs opacity-70">Test producción</span>
@@ -558,37 +561,55 @@ const Consultoria = () => {
         className="min-h-screen bg-background"
       >
         {/* Hero Section */}
-        <header className="py-12 md:py-32 text-center aurora-background">
-          <div className="container mx-auto px-4 sm:px-6 relative z-10">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-              className="text-4xl md:text-5xl font-bold main-gradient-text"
-            >
-              <span className="text-brand-gold-100">BSB Consulting</span>
-            </motion.h1>
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
-              className="text-2xl md:text-3xl font-semibold text-brand-text-primary mt-4"
-            >
-              Consultoría Financiera Especializada en Crypto y Activos digitales
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              className="mt-6 text-lg text-text-2 max-w-4xl mx-auto"
-            >
-              El mundo cripto se mueve rápido: nuevas oportunidades, nuevas tecnologías y riesgos que cambian cada día. En BSB Capital, te ayudamos a navegar este universo con seguridad, confianza y control, evitando errores comunes y aprovechando las oportunidades.
-            </motion.p>
-            
-            <div className="mt-8">
-              <BookingModal />
+        <header className="py-12 md:py-32 text-center aurora-background relative overflow-hidden">
+          <Particles inView>
+            <div className="container mx-auto px-4 sm:px-6 relative z-10">
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="text-4xl md:text-5xl font-bold main-gradient-text"
+              >
+                <span className="accent-gradient-text">BSB Consulting</span>
+              </motion.h1>
+              <motion.h2
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+                className="text-2xl md:text-3xl font-semibold text-foreground mt-4"
+              >
+                Consultoría Financiera Especializada en Crypto y Activos digitales
+              </motion.h2>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                className="mt-6 text-lg text-muted-foreground max-w-4xl mx-auto"
+              >
+                El mundo cripto se mueve rápido: nuevas oportunidades, nuevas tecnologías y riesgos que cambian cada día. En BSB Capital, te ayudamos a navegar este universo con seguridad, confianza y control, evitando errores comunes y aprovechando las oportunidades.
+              </motion.p>
+              
+              <div className="mt-8">
+                <BookingModal />
+              </div>
             </div>
-          </div>
+            <ParticlesEffect 
+              side="top" 
+              align="start" 
+              count={6} 
+              radius={35} 
+              duration={1.5}
+              className="w-2 h-2 bg-accent/50 rounded-full opacity-50"
+            />
+            <ParticlesEffect 
+              side="bottom" 
+              align="center" 
+              count={8} 
+              radius={45} 
+              delay={0.3}
+              className="w-1.5 h-1.5 bg-primary/60 rounded-full opacity-60"
+            />
+          </Particles>
         </header>
 
         {/* Storytelling Section */}
@@ -676,31 +697,31 @@ const Consultoria = () => {
         </div>
 
         {/* Benefits Section */}
-        <section className="py-12 sm:py-20 md:py-32 aurora-background">
+        <section className="py-12 sm:py-20 md:py-32 bg-primary/5">
           <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <h2 className="text-3xl md:text-4xl font-bold text-center main-gradient-text mb-12">
               Nuestros servicios
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 max-w-6xl mx-auto">
-              <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:bg-white">
-                <BarChart3 className="h-12 w-12 text-brand-green-600 mb-4" />
-                <h3 className="text-xl font-bold text-brand-green-900 mb-3">💼 Optimización de cartera</h3>
-                <p className="text-brand-green-800">Optimizamos tus activos digitales para equilibrar rentabilidad y seguridad, integrando cripto de forma estratégica.</p>
+              <div className="bg-card backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border border-border hover:shadow-xl transition-all duration-300 hover:border-primary/30">
+                <BarChart3 className="h-12 w-12 text-primary mb-4" />
+                <h3 className="text-xl font-bold text-foreground mb-3">💼 Optimización de cartera</h3>
+                <p className="text-muted-foreground">Optimizamos tus activos digitales para equilibrar rentabilidad y seguridad, integrando cripto de forma estratégica.</p>
               </div>
-              <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:bg-white">
-                <Globe className="h-12 w-12 text-brand-green-600 mb-4" />
-                <h3 className="text-xl font-bold text-brand-green-900 mb-3">🪙 Estrategias Crypto & Web3</h3>
-                <p className="text-brand-green-800">Te guiamos para aprovechar oportunidades con fundamentos sólidos y control del riesgo.</p>
+              <div className="bg-card backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border border-border hover:shadow-xl transition-all duration-300 hover:border-primary/30">
+                <Globe className="h-12 w-12 text-primary mb-4" />
+                <h3 className="text-xl font-bold text-foreground mb-3">🪙 Estrategias Crypto & Web3</h3>
+                <p className="text-muted-foreground">Te guiamos para aprovechar oportunidades con fundamentos sólidos y control del riesgo.</p>
               </div>
-              <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:bg-white">
-                <Rocket className="h-12 w-12 text-brand-green-600 mb-4" />
-                <h3 className="text-xl font-bold text-brand-green-900 mb-3">🚀 Onboarding cripto</h3>
-                <p className="text-brand-green-800">Tu puerta de entrada segura al universo crypto. Te acompañamos paso a paso para invertir de forma consciente y segura.</p>
+              <div className="bg-card backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border border-border hover:shadow-xl transition-all duration-300 hover:border-primary/30">
+                <Rocket className="h-12 w-12 text-primary mb-4" />
+                <h3 className="text-xl font-bold text-foreground mb-3">🚀 Onboarding cripto</h3>
+                <p className="text-muted-foreground">Tu puerta de entrada segura al universo crypto. Te acompañamos paso a paso para invertir de forma consciente y segura.</p>
               </div>
-              <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:bg-white">
-                <Briefcase className="h-12 w-12 text-brand-green-600 mb-4" />
-                <h3 className="text-xl font-bold text-brand-green-900 mb-3">🧮 Gestión de tesorería cripto para empresas</h3>
-                <p className="text-brand-green-800">Pensado para empresas que ya operan o quieren empezar a operar con activos digitales, este servicio ofrece una gestión profesional para optimizar rendimientos, liquidez y control operativo.</p>
+              <div className="bg-card backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border border-border hover:shadow-xl transition-all duration-300 hover:border-primary/30">
+                <Briefcase className="h-12 w-12 text-primary mb-4" />
+                <h3 className="text-xl font-bold text-foreground mb-3">🧮 Gestión de tesorería cripto para empresas</h3>
+                <p className="text-muted-foreground">Pensado para empresas que ya operan o quieren empezar a operar con activos digitales, este servicio ofrece una gestión profesional para optimizar rendimientos, liquidez y control operativo.</p>
               </div>
             </div>
 
