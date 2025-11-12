@@ -7,13 +7,13 @@ const BASE_URL = "https://bsbcapital.io";
 
 const LOGO_URLS = {
   // Logo dorado para emails premium
-  gold: `${BASE_URL}/public/images/gold_logo.jpeg`,
+  gold: `${BASE_URL}/images/gold_logo.jpeg`,
   // Logo negro para emails estándar  
-  black: `${BASE_URL}/public/images/black_logo.jpeg`,
+  black: `${BASE_URL}/images/black_logo.jpeg`,
   // Logo blanco para fondos oscuros
-  white: `${BASE_URL}/public/images/white_logo.jpeg`,
+  white: `${BASE_URL}/images/white_logo.jpeg`,
   // Logo por defecto (usaremos el dorado)
-  default: `${BASE_URL}/public/images/gold_logo.jpeg`
+  default: `${BASE_URL}/images/gold_logo.jpeg`
 };
 
 const corsHeaders = {

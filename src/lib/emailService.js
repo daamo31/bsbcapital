@@ -695,6 +695,15 @@ class EmailService {
             price: consultationData.price,
             consultationGoals: consultationData.consultationGoals || consultationData.goals,
             additionalInfo: consultationData.additionalInfo || consultationData.message,
+            // 🔧 CAMPOS ADICIONALES que estaban faltando
+            investmentExperience: consultationData.investmentExperience,
+            portfolioSize: consultationData.portfolioSize,
+            currentInvestments: consultationData.currentInvestments,
+            specificQuestions: consultationData.specificQuestions,
+            preferredCommunication: consultationData.preferredCommunication,
+            // 📋 Datos completos del formulario
+            clientResponses: consultationData.clientResponses,
+            formDataJson: consultationData.formDataJson,
             timestamp: new Date().toISOString()
           }
         })
