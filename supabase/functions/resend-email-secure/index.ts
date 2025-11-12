@@ -1,6 +1,21 @@
 import { serve } from "https://deno.land/std@0.210.0/http/server.ts";
 import "https://deno.land/std@0.210.0/dotenv/load.ts";
 
+// 🎨 CONFIGURACIÓN DE LOGOS
+// URL base determinada automáticamente
+const BASE_URL = "https://bsbcapital.io";
+
+const LOGO_URLS = {
+  // Logo dorado para emails premium
+  gold: `${BASE_URL}/public/images/gold_logo.jpeg`,
+  // Logo negro para emails estándar  
+  black: `${BASE_URL}/public/images/black_logo.jpeg`,
+  // Logo blanco para fondos oscuros
+  white: `${BASE_URL}/public/images/white_logo.jpeg`,
+  // Logo por defecto (usaremos el dorado)
+  default: `${BASE_URL}/public/images/gold_logo.jpeg`
+};
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
@@ -34,7 +49,7 @@ const getEmailTemplates = () => {
     <tr>
       <td align="center" style="padding:40px 20px 20px;">
         <img
-          src="https://srv1511-files.hstgr.io/55400bd7ca2acb6b/files/public_html/Logo_negro.png"
+          src="${LOGO_URLS.default}"
           alt="BSB Capital"
           width="110"
           style="display:block; margin:auto;"
@@ -86,7 +101,7 @@ const getEmailTemplates = () => {
     <tr>
       <td align="center" style="padding:40px 20px 20px;">
         <img
-          src="https://srv1511-files.hstgr.io/55400bd7ca2acb6b/files/public_html/Logo_negro.png"
+          src="${LOGO_URLS.default}"
           alt="BSB Capital"
           width="110"
           style="display:block; margin:auto;"
@@ -135,7 +150,7 @@ const getEmailTemplates = () => {
     <tr>
       <td align="center" style="padding:40px 20px 20px;">
         <img
-          src="https://srv1511-files.hstgr.io/55400bd7ca2acb6b/files/public_html/Logo_negro.png"
+          src="${LOGO_URLS.default}"
           alt="BSB Capital"
           width="110"
           style="display:block; margin:auto;"
@@ -144,7 +159,7 @@ const getEmailTemplates = () => {
     </tr>
     <tr>
       <td align="center" style="padding:10px 30px;">
-        <h2 style="color:#0b1f14; font-weight:600; margin:0;">Confirmación de tu consulta</h2>
+        <h2 style="color:#0b1f14; font-weight:600; margin:0;">¡Planificación financiera en marcha! 📊</h2>
         <p style="font-size:16px; color:#37493f; line-height:1.6; margin-top:18px; margin-bottom:28px;">
           Hola [Nombre],<br><br>
           Gracias por confiar en BSB Capital. Tu consulta ha sido confirmada con éxito.<br><br>
@@ -182,7 +197,7 @@ const getEmailTemplates = () => {
     <tr>
       <td align="center" style="padding:40px 20px 20px;">
         <img
-          src="https://srv1511-files.hstgr.io/55400bd7ca2acb6b/files/public_html/Logo_negro.png"
+          src="${LOGO_URLS.default}"
           alt="BSB Capital"
           width="110"
           style="display:block; margin:auto;"
@@ -232,7 +247,7 @@ const getEmailTemplates = () => {
     <tr>
       <td align="center" style="padding:40px 20px 20px;">
         <img
-          src="https://srv1511-files.hstgr.io/55400bd7ca2acb6b/files/public_html/Logo_negro.png"
+          src="${LOGO_URLS.default}"
           alt="BSB Capital"
           width="110"
           style="display:block; margin:auto;"
@@ -254,27 +269,42 @@ const getEmailTemplates = () => {
           • <strong>Hora preferida:</strong> {preferredTime}<br>
           • <strong>Duración:</strong> {duration}<br>
           • <strong>Precio pagado:</strong> {price}<br>
-          • <strong>ID Stripe:</strong> {paymentId}<br><br>
+          • <strong>ID Pago:</strong> {paymentId}<br>
+          • <strong>ID Consulta:</strong> {consultationId}<br><br>
           
-          <strong style="color:#C5A019;">PERFIL FINANCIERO:</strong><br>
-          • <strong>Experiencia inversión:</strong> {investmentExperience}<br>
-          • <strong>Tamaño cartera:</strong> {portfolioSize}<br>
-          • <strong>Perfil riesgo:</strong> {riskTolerance}<br><br>
-          
-          <strong style="color:#C5A019;">OBJETIVOS Y NECESIDADES:</strong><br>
-          <strong>Objetivos principales:</strong><br>
-          {consultationGoals}<br><br>
-          
-          <strong>Inversiones actuales:</strong><br>
-          {currentInvestments}<br><br>
-          
-          <strong>Preguntas específicas:</strong><br>
-          {specificQuestions}<br><br>
-          
-          <strong>Comunicación preferida:</strong> {preferredCommunication}<br>
-          <strong>Horario disponible:</strong> {availability}<br><br>
-          
-          {additionalInfo}
+          <div style="background:#fff3cd; padding:15px; border-radius:6px; border-left:4px solid #ffc107; margin:15px 0;">
+            <strong style="color:#856404;">📋 RESPUESTAS DEL CLIENTE:</strong><br><br>
+            
+            <strong>🎯 ¿Qué espera conseguir con la consultoría?</strong><br>
+            <em style="color:#495057;">{consultationGoals}</em><br><br>
+            
+            <strong>📊 Experiencia en inversiones:</strong><br>
+            <em style="color:#495057;">{investmentExperience}</em><br><br>
+            
+            <strong>💰 Tamaño de cartera aproximado:</strong><br>
+            <em style="color:#495057;">{portfolioSize}</em><br><br>
+            
+            <strong>📈 Inversiones actuales:</strong><br>
+            <em style="color:#495057;">{currentInvestments}</em><br><br>
+            
+            <strong>❓ Preguntas específicas:</strong><br>
+            <em style="color:#495057;">{specificQuestions}</em><br><br>
+            
+            <strong>📞 Comunicación preferida:</strong><br>
+            <em style="color:#495057;">{preferredCommunication}</em><br><br>
+            
+            <strong>💭 Información adicional:</strong><br>
+            <em style="color:#495057;">{additionalInfo}</em><br><br>
+            
+            <small style="color:#6c757d;">🕒 Formulario completado: {timestamp}</small>
+          </div>
+
+          <div style="background:#e8f4fd; padding:15px; border-radius:6px; border-left:4px solid #0984e3; margin:15px 0;">
+            <strong style="color:#2d3436;">📋 DATOS COMPLETOS DEL FORMULARIO:</strong><br><br>
+            <div style="font-family:monospace; background:#f8f9fa; padding:10px; border-radius:4px; font-size:12px; color:#495057; white-space:pre-wrap; max-height:300px; overflow-y:auto;">
+{formDataJson}
+            </div>
+          </div>
           
           <div style="background:#f8f9fa; padding:15px; border-left:4px solid #C5A019; margin:20px 0;">
             <strong style="color:#0b1f14;">🎯 ESTADO ACTUAL:</strong><br>
@@ -320,7 +350,7 @@ const getEmailTemplates = () => {
     <tr>
       <td align="center" style="padding:40px 20px 20px;">
         <img
-          src="https://srv1511-files.hstgr.io/55400bd7ca2acb6b/files/public_html/Logo_negro.png"
+          src="${LOGO_URLS.default}"
           alt="BSB Capital"
           width="110"
           style="display:block; margin:auto;"
@@ -375,7 +405,7 @@ const getEmailTemplates = () => {
     <tr>
       <td align="center" style="padding:40px 20px 20px;">
         <img
-          src="https://srv1511-files.hstgr.io/55400bd7ca2acb6b/files/public_html/Logo_negro.png"
+          src="${LOGO_URLS.default}"
           alt="BSB Capital"
           width="110"
           style="display:block; margin:auto;"
@@ -430,7 +460,7 @@ const getEmailTemplates = () => {
     <tr>
       <td align="center" style="padding:40px 20px 20px;">
         <img
-          src="https://srv1511-files.hstgr.io/55400bd7ca2acb6b/files/public_html/Logo_negro.png"
+          src="${LOGO_URLS.default}"
           alt="BSB Capital"
           width="110"
           style="display:block; margin:auto;"
@@ -484,7 +514,7 @@ const getEmailTemplates = () => {
     <tr>
       <td align="center" style="padding:40px 20px 20px;">
         <img
-          src="https://srv1511-files.hstgr.io/55400bd7ca2acb6b/files/public_html/Logo_negro.png"
+          src="${LOGO_URLS.default}"
           alt="BSB Capital"
           width="110"
           style="display:block; margin:auto;"
@@ -753,13 +783,14 @@ serve(async (req: Request) => {
         .replace(/\{investmentExperience\}/g, data?.investmentExperience || "No especificado")
         .replace(/\{portfolioSize\}/g, data?.portfolioSize || "No especificado")
         .replace(/\{riskTolerance\}/g, data?.riskTolerance || "No especificado")
-        .replace(/\{consultationGoals\}/g, data?.consultationGoals || data?.goals || "Por definir en la consulta")
-        .replace(/\{currentInvestments\}/g, data?.currentInvestments || "Por revisar en la consulta")
-        .replace(/\{specificQuestions\}/g, data?.specificQuestions || data?.questions || "Por definir en la consulta")
-        .replace(/\{preferredCommunication\}/g, data?.preferredCommunication || "Videollamada (por defecto)")
-        .replace(/\{availability\}/g, data?.availability || "Por coordinar")
+        .replace(/\{consultationGoals\}/g, data?.consultationGoals || data?.goals || "📝 Por definir durante la consulta")
+        .replace(/\{currentInvestments\}/g, data?.currentInvestments || "📊 Por revisar en la consulta")
+        .replace(/\{specificQuestions\}/g, data?.specificQuestions || data?.questions || "❓ Por definir durante la consulta")
+        .replace(/\{preferredCommunication\}/g, data?.preferredCommunication || "📞 Videollamada (recomendado)")
+        .replace(/\{availability\}/g, data?.availability || "⏰ Por coordinar")
+        .replace(/\{timestamp\}/g, data?.timestamp || new Date().toISOString())
         .replace(/\{additionalInfo\}/g, data?.additionalInfo ? 
-          `<strong style="color:#C5A019;">COMENTARIOS ADICIONALES:</strong><br>${data.additionalInfo}<br><br>` : "")
+          `💭 ${data.additionalInfo}` : "Sin comentarios adicionales")
         .replace(/\{amount\}/g, data?.amount?.toString() || "0")
         .replace(/\{currency\}/g, data?.currency || "EUR");
       emailSubject = subject || template.subject;

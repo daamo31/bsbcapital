@@ -4,6 +4,18 @@ import { supabase } from './customSupabaseClient.js';
 class EmailService {
   constructor() {
     this.functionName = 'resend-email-secure'; // Solo usar la función segura
+    
+    // Configuración de URLs para logos
+    this.BASE_URL = typeof window !== 'undefined' 
+      ? window.location.origin 
+      : 'https://horizons-ten.vercel.app';
+    
+    this.LOGO_URLS = {
+      gold: `${this.BASE_URL}/public/images/gold_logo.jpeg`,
+      black: `${this.BASE_URL}/public/images/black_logo.jpeg`,
+      white: `${this.BASE_URL}/public/images/white_logo.jpeg`,
+      default: `${this.BASE_URL}/public/images/gold_logo.jpeg`
+    };
   }
 
   // Plantillas de correos personalizados
@@ -23,7 +35,7 @@ class EmailService {
     <tr>
       <td align="center" style="padding:40px 20px 20px;">
         <img
-          src="https://srv1511-files.hstgr.io/55400bd7ca2acb6b/files/public_html/Logo_negro.png"
+          src="${this.LOGO_URLS.default}"
           alt="BSB Capital"
           width="110"
           style="display:block; margin:auto;"
@@ -78,7 +90,7 @@ class EmailService {
     <tr>
       <td align="center" style="padding:40px 20px 20px;">
         <img
-          src="https://srv1511-files.hstgr.io/55400bd7ca2acb6b/files/public_html/Logo_negro.png"
+          src="${this.LOGO_URLS.default}"
           alt="BSB Capital"
           width="110"
           style="display:block; margin:auto;"
@@ -130,7 +142,7 @@ class EmailService {
     <tr>
       <td align="center" style="padding:40px 20px 20px;">
         <img
-          src="https://srv1511-files.hstgr.io/55400bd7ca2acb6b/files/public_html/Logo_negro.png"
+          src="${this.LOGO_URLS.default}"
           alt="BSB Capital"
           width="110"
           style="display:block; margin:auto;"
@@ -211,7 +223,7 @@ class EmailService {
     <tr>
       <td align="center" style="padding:40px 20px 20px;">
         <img
-          src="https://srv1511-files.hstgr.io/55400bd7ca2acb6b/files/public_html/Logo_negro.png"
+          src="${this.LOGO_URLS.default}"
           alt="BSB Capital"
           width="110"
           style="display:block; margin:auto;"
@@ -269,7 +281,7 @@ class EmailService {
     <tr>
       <td align="center" style="padding:40px 20px 20px;">
         <img
-          src="https://srv1511-files.hstgr.io/55400bd7ca2acb6b/files/public_html/Logo_negro.png"
+          src="${this.LOGO_URLS.default}"
           alt="BSB Capital"
           width="110"
           style="display:block; margin:auto;"
@@ -327,7 +339,7 @@ class EmailService {
     <tr>
       <td align="center" style="padding:40px 20px 20px;">
         <img
-          src="https://srv1511-files.hstgr.io/55400bd7ca2acb6b/files/public_html/Logo_negro.png"
+          src="${this.LOGO_URLS.default}"
           alt="BSB Capital"
           width="110"
           style="display:block; margin:auto;"
@@ -384,7 +396,7 @@ class EmailService {
     <tr>
       <td align="center" style="padding:40px 20px 20px;">
         <img
-          src="https://srv1511-files.hstgr.io/55400bd7ca2acb6b/files/public_html/Logo_negro.png"
+          src="${this.LOGO_URLS.default}"
           alt="BSB Capital"
           width="110"
           style="display:block; margin:auto;"

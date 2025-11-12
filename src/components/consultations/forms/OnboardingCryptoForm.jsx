@@ -42,6 +42,17 @@ const OnboardingCryptoForm = ({ formData, setFormData }) => {
             </Select>
           </div>
         </div>
+
+        <div>
+          <Label htmlFor="telephone">Teléfono de contacto</Label>
+          <Input
+            id="telephone"
+            type="tel"
+            value={formData.telephone || ''}
+            onChange={(e) => handleChange('telephone', e.target.value)}
+            placeholder="Ej: +34 600 123 456"
+          />
+        </div>
       </div>
 
       {/* 🔹 Conocimiento y experiencia actual */}

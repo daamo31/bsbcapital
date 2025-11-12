@@ -11,6 +11,18 @@ const GenericConsultationForm = ({ formData, setFormData }) => {
 
   return (
     <div className="space-y-6">
+      {/* Campo de teléfono */}
+      <div>
+        <Label htmlFor="telephone">Teléfono de contacto</Label>
+        <Input
+          id="telephone"
+          type="tel"
+          value={formData.telephone || ''}
+          onChange={(e) => handleChange('telephone', e.target.value)}
+          placeholder="Ej: +34 600 123 456"
+        />
+      </div>
+
       {/* Campos básicos para cualquier tipo de consulta */}
       <div>
         <Label htmlFor="consultation_main_goal">Objetivos de la Consultoría *</Label>

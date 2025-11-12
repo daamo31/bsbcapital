@@ -212,19 +212,46 @@ const ConsultationPostPayment = () => {
             description: consultationData.description
           });
           
-          // Pre-rellenar formulario con datos existentes
+          // Pre-rellenar formulario con datos existentes (TODOS los campos de TODOS los tipos de formularios)
           const prefilledData = {
+            // Campos básicos
             client_name: consultationData.client_name || '',
             client_email: consultationData.client_email || user?.email || '',
+            telephone: consultationData.telephone || '', // Nueva columna
+            
+            // Campos del formulario genérico
             investment_experience: consultationData.investment_experience || '',
             portfolio_size: consultationData.portfolio_value || '', // portfolio_value en BD
             consultation_goals: consultationData.consultation_main_goal || '', // consultation_main_goal en BD
+            consultation_main_goal: consultationData.consultation_main_goal || '', // También directo
             current_investments: consultationData.description?.includes('Inversiones actuales:') ? 
               consultationData.description.split('Inversiones actuales: ')[1]?.split('\n')[0] || '' : '',
             specific_questions: consultationData.consultation_expectations || '', // consultation_expectations en BD
+            consultation_expectations: consultationData.consultation_expectations || '', // También directo
             preferred_communication: consultationData.description?.includes('Preferencia de comunicación:') ?
               consultationData.description.split('Preferencia de comunicación: ')[1]?.split('\n')[0] || 'email' : 'email',
-            additional_notes: consultationData.pre_consultation_comments || '' // pre_consultation_comments en BD
+            additional_notes: consultationData.pre_consultation_comments || '', // pre_consultation_comments en BD
+            pre_consultation_comments: consultationData.pre_consultation_comments || '', // También directo
+            
+            // Campos específicos de Financial Planning
+            country: consultationData.country || '',
+            age_range: consultationData.age_range || '',
+            monthly_income_range: consultationData.monthly_income_range || '',
+            savings_percentage: consultationData.savings_percentage || '',
+            has_debts: consultationData.has_debts || '',
+            time_horizon: consultationData.time_horizon || '',
+            risk_tolerance: consultationData.risk_tolerance || '',
+            priorities: consultationData.priorities || [],
+            previous_advisor_experience: consultationData.previous_advisor_experience || '',
+            
+            // Campos específicos de Crypto Onboarding
+            crypto_experience_level: consultationData.crypto_experience_level || '',
+            crypto_knowledge_level: consultationData.crypto_knowledge_level || '',
+            initial_crypto_capital: consultationData.initial_crypto_capital || '',
+            crypto_interest_motivation: consultationData.crypto_interest_motivation || '',
+            
+            // Campos adicionales
+            portfolio_value: consultationData.portfolio_value || ''
           };
 
           console.log('📝 Datos pre-rellenados del formulario:', prefilledData);
@@ -351,11 +378,12 @@ const ConsultationPostPayment = () => {
     console.log('🎯 ID de consulta:', consultation?.id);
     
     // Validación de campos requeridos
-    if (!formData.client_name || !formData.client_email || !formData.consultation_goals) {
+    if (!formData.client_name || !formData.client_email || (!formData.consultation_goals && !formData.consultation_main_goal)) {
       console.log('❌ Validación fallida - campos requeridos:', {
         client_name: formData.client_name,
         client_email: formData.client_email,
-        consultation_goals: formData.consultation_goals
+        consultation_goals: formData.consultation_goals,
+        consultation_main_goal: formData.consultation_main_goal
       });
       
       toast({
@@ -421,11 +449,88 @@ const ConsultationPostPayment = () => {
     console.log('Email del usuario:', user?.email);
 
     try {
+      // �️ MAPEO DINÁMICO DE TODOS LOS CAMPOS DE LA TABLA (PRIMERO)
+      const fieldLabels = {
+        // Información básica
+        client_name: 'Nombre del cliente',
+        client_email: 'Email del cliente',
+        telephone: 'Teléfono',
+        client_phone: 'Teléfono (legacy)', // Mantener compatibilidad
+        country: 'País de residencia',
+        age_range: 'Rango de edad',
+        
+        // Objetivos y consultoría
+        consultation_main_goal: 'Objetivo principal de la consultoría',
+        consultation_expectations: 'Expectativas de la consultoría',
+        pre_consultation_comments: 'Comentarios adicionales',
+        
+        // Experiencia financiera
+        investment_experience: 'Experiencia en inversiones',
+        portfolio_value: 'Valor aproximado de la cartera',
+        monthly_income_range: 'Rango de ingresos mensuales',
+        savings_percentage: 'Porcentaje destinado a ahorro',
+        has_debts: 'Deudas relevantes',
+        previous_advisor_experience: 'Experiencia previa con asesores',
+        
+        // Planificación financiera
+        time_horizon: 'Horizonte temporal',
+        risk_tolerance: 'Tolerancia al riesgo',
+        priorities: 'Prioridades financieras',
+        
+        // Crypto específico
+        crypto_experience_level: 'Experiencia en criptomonedas',
+        crypto_knowledge_level: 'Nivel de conocimiento cripto',
+        initial_crypto_capital: 'Capital inicial para cripto',
+        crypto_interest_motivation: 'Motivación por el mundo cripto',
+        
+        // Comunicación
+        preferred_communication: 'Preferencia de comunicación',
+        
+        // Campos del formulario genérico (fallbacks)
+        consultation_goals: 'Objetivos de la consultoría',
+        portfolio_size: 'Tamaño de cartera',
+        current_investments: 'Inversiones actuales',
+        specific_questions: 'Preguntas específicas',
+        additional_notes: 'Notas adicionales'
+      };
+
+      // 📋 RECOPILAR TODOS LOS DATOS CON VALORES
+      const allClientData = {};
+      
+      // Mapear todos los campos del formData
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value && value !== '' && value !== 'No especificado') {
+          const label = fieldLabels[key] || key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+          
+          // Formatear arrays y objetos
+          if (Array.isArray(value)) {
+            allClientData[label] = value.join(', ');
+          } else if (typeof value === 'object') {
+            allClientData[label] = JSON.stringify(value, null, 2);
+          } else {
+            allClientData[label] = value;
+          }
+        }
+      });
+
+      // 📄 CREAR JSON COMPLETO PARA GUARDAR Y ENVIAR
+      const formDataJson = {
+        timestamp: new Date().toISOString(),
+        consultation_id: consultation.id,
+        consultation_type: consultation.service,
+        form_data: formData,
+        client_responses: allClientData
+      };
+
+      console.log('📋 DATOS DINÁMICOS RECOPILADOS:', allClientData);
+      console.log('📄 JSON COMPLETO creado:', formDataJson);
+
       // Preparar datos para actualizar con mapeo completo
       const updateData = {
         // Campos básicos
         client_name: formData.client_name,
         client_email: formData.client_email,
+        telephone: formData.telephone, // Nueva columna
         
         // Campos específicos según el formulario usado
         investment_experience: formData.investment_experience,
@@ -451,7 +556,10 @@ const ConsultationPostPayment = () => {
         initial_crypto_capital: formData.initial_crypto_capital,
         crypto_interest_motivation: formData.crypto_interest_motivation,
         
-        // Campos que van a description como respaldo
+        // ✅ NUEVA COLUMNA JSON ESTRUCTURADA
+        form_data_json: formDataJson,
+        
+        // Campos que van a description como respaldo (más limpio ahora)
         description: `Inversiones actuales: ${formData.current_investments || 'No especificado'}\nPreferencia de comunicación: ${formData.preferred_communication || 'Email'}${formData.crypto_interest_motivation ? '\nMotivación cripto: ' + formData.crypto_interest_motivation : ''}`,
         
         // Metadatos de completado
@@ -700,12 +808,88 @@ const ConsultationPostPayment = () => {
         console.log('=== ENVIANDO EMAIL AL ADMIN ===');
         console.log('Email admin destino: info@bsbcapital.io');
         console.log('Consultation object:', consultation);
-        console.log('Consultation.service:', consultation.service);
-        console.log('Consultation.title:', consultation.title);
+        console.log('📊 FormData COMPLETO al enviar admin email:', formData);
+        
+        // �️ MAPEO DINÁMICO DE TODOS LOS CAMPOS DE LA TABLA
+        const fieldLabels = {
+          // Información básica
+          client_name: 'Nombre del cliente',
+          client_email: 'Email del cliente',
+          telephone: 'Teléfono',
+          client_phone: 'Teléfono (legacy)', // Mantener compatibilidad
+          country: 'País de residencia',
+          age_range: 'Rango de edad',
+          
+          // Objetivos y consultoría
+          consultation_main_goal: 'Objetivo principal de la consultoría',
+          consultation_expectations: 'Expectativas de la consultoría',
+          pre_consultation_comments: 'Comentarios adicionales',
+          
+          // Experiencia financiera
+          investment_experience: 'Experiencia en inversiones',
+          portfolio_value: 'Valor aproximado de la cartera',
+          monthly_income_range: 'Rango de ingresos mensuales',
+          savings_percentage: 'Porcentaje destinado a ahorro',
+          has_debts: 'Deudas relevantes',
+          previous_advisor_experience: 'Experiencia previa con asesores',
+          
+          // Planificación financiera
+          time_horizon: 'Horizonte temporal',
+          risk_tolerance: 'Tolerancia al riesgo',
+          priorities: 'Prioridades financieras',
+          
+          // Crypto específico
+          crypto_experience_level: 'Experiencia en criptomonedas',
+          crypto_knowledge_level: 'Nivel de conocimiento cripto',
+          initial_crypto_capital: 'Capital inicial para cripto',
+          crypto_interest_motivation: 'Motivación por el mundo cripto',
+          
+          // Comunicación
+          preferred_communication: 'Preferencia de comunicación',
+          
+          // Campos del formulario genérico (fallbacks)
+          consultation_goals: 'Objetivos de la consultoría',
+          portfolio_size: 'Tamaño de cartera',
+          current_investments: 'Inversiones actuales',
+          specific_questions: 'Preguntas específicas',
+          additional_notes: 'Notas adicionales'
+        };
+
+        // 📋 RECOPILAR TODOS LOS DATOS CON VALORES
+        const allClientData = {};
+        
+        // Mapear todos los campos del formData
+        Object.entries(formData).forEach(([key, value]) => {
+          if (value && value !== '' && value !== 'No especificado') {
+            const label = fieldLabels[key] || key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            
+            // Formatear arrays y objetos
+            if (Array.isArray(value)) {
+              allClientData[label] = value.join(', ');
+            } else if (typeof value === 'object') {
+              allClientData[label] = JSON.stringify(value, null, 2);
+            } else {
+              allClientData[label] = value;
+            }
+          }
+        });
+
+        // 📄 CREAR JSON COMPLETO PARA GUARDAR Y ENVIAR
+        const formDataJson = {
+          timestamp: new Date().toISOString(),
+          consultation_id: consultation.id,
+          consultation_type: consultation.service,
+          form_data: formData,
+          client_responses: allClientData
+        };
+
+        console.log('📋 DATOS DINÁMICOS RECOPILADOS:', allClientData);
+        console.log('📄 JSON COMPLETO:', formDataJson);
         
         const adminEmailData = {
           clientName: formData.client_name || 'No especificado',
           clientEmail: formData.client_email || 'No especificado',
+          phone: formData.telephone || formData.client_phone || 'No especificado',
           consultationType: consultation.service || consultation.title || 'Consultoría General',
           preferredDate: consultation.scheduled_at ? formatDate(consultation.scheduled_at, {
             weekday: 'long',
@@ -717,19 +901,48 @@ const ConsultationPostPayment = () => {
             hour: '2-digit',
             minute: '2-digit'
           }) : 'Por confirmar',
+          duration: consultation.duration_minutes ? `${consultation.duration_minutes} minutos` : 'No especificado',
           price: consultation.amount ? `€${consultation.amount}` : `€${consultation.duration_minutes === 30 ? '97' : '167'}`,
-          consultationGoals: formData.consultation_goals || 'No especificado',
-          investmentExperience: formData.investment_experience || 'No especificado',
-          portfolioSize: formData.portfolio_size || 'No especificado',
-          currentInvestments: formData.current_investments || 'No especificado',
-          specificQuestions: formData.specific_questions || 'No especificado',
-          preferredCommunication: formData.preferred_communication || 'No especificado',
-          additionalInfo: formData.additional_notes || '',
+          paymentId: consultation.stripe_payment_intent_id || 'No especificado',
           consultationId: consultation.id || 'No especificado',
-          duration: consultation.duration_minutes ? `${consultation.duration_minutes} minutos` : 'No especificado'
+          
+          // ✅ DATOS DINÁMICOS - Todos los campos con valores
+          clientResponses: allClientData,
+          formDataJson: JSON.stringify(formDataJson, null, 2),
+          
+          // ✅ Campos específicos para compatibilidad con template actual (fallbacks inteligentes)
+          consultationGoals: allClientData['Objetivo principal de la consultoría'] || 
+                             allClientData['Objetivos de la consultoría'] || 'No especificado',
+          investmentExperience: allClientData['Experiencia en inversiones'] || 
+                               allClientData['Experiencia en criptomonedas'] || 
+                               allClientData['Experiencia previa con asesores'] || 'No especificado',
+          portfolioSize: allClientData['Valor aproximado de la cartera'] || 
+                        allClientData['Capital inicial para cripto'] || 
+                        allClientData['Rango de ingresos mensuales'] ||
+                        allClientData['Tamaño de cartera'] || 'No especificado',
+          currentInvestments: allClientData['Inversiones actuales'] || 
+                             allClientData['Nivel de conocimiento cripto'] || 
+                             allClientData['Porcentaje destinado a ahorro'] || 'No especificado',
+          specificQuestions: allClientData['Expectativas de la consultoría'] || 
+                            allClientData['Preguntas específicas'] ||
+                            allClientData['Motivación por el mundo cripto'] || 'No especificado',
+          preferredCommunication: allClientData['Preferencia de comunicación'] || 'Email',
+          additionalInfo: [
+            allClientData['Comentarios adicionales'],
+            allClientData['Notas adicionales'],
+            allClientData['Prioridades financieras'],
+            allClientData['Horizonte temporal'],
+            allClientData['Tolerancia al riesgo'],
+            allClientData['País de residencia'],
+            allClientData['Rango de edad']
+          ].filter(Boolean).join(' | ') || '',
+          
+          // ✅ Metadatos
+          timestamp: new Date().toISOString(),
+          source: 'Formulario post-pago'
         };
 
-        console.log('Datos del email al admin (FINALES):', adminEmailData);
+        console.log('📧 Datos del email al admin (FINALES):', adminEmailData);
 
         const adminEmailResult = await emailService.sendAdminConsultationNotification(adminEmailData);
         

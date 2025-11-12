@@ -59,13 +59,51 @@ const ConsultationManagement = () => {
 
   const loadConsultations = async () => {
     try {
-      const { data, error } = await supabase
-        .from('consultations')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
+      console.log('🔍 Cargando consultas en admin dashboard...');
+      
+      // ✅ INTENTAR FUNCIÓN RPC PRIMERO, LUEGO QUERY DIRECTA
+      console.log('🚀 Intentando función RPC get_all_consultations_admin...');
+      
+      let data, error;
+      
+      // Intentar RPC primero
+      const rpcResult = await supabase.rpc('get_all_consultations_admin');
+      
+      if (rpcResult.error) {
+        console.log('🔄 RPC falló, usando consulta directa como fallback...');
+        
+        // Fallback: consulta directa
+        const directResult = await supabase
+          .from('consultations')
+          .select('*')
+          .order('created_at', { ascending: false });
+          
+        data = directResult.data;
+        error = directResult.error;
+        
+        console.log('📊 Resultado consulta directa:', { 
+          success: !error,
+          count: data?.length,
+          error: error?.message
+        });
+      } else {
+        data = rpcResult.data;
+        error = null;
+        
+        console.log('📊 Resultado RPC exitoso:', { 
+          success: true,
+          count: data?.length
+        });
+      }
+      
+      if (error) {
+        console.error('❌ Error cargando consultas:', error);
+        throw error;
+      }
+      
+      console.log('✅ Consultas cargadas:', data?.length || 0);
       setConsultations(data || []);
+      
     } catch (error) {
       console.error('Error loading consultations:', error);
     } finally {
