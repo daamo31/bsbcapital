@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/customSupabaseClient';
-import { Loader2, Clock, BarChart3, Briefcase, Globe, Rocket, Quote, ArrowRight } from 'lucide-react';
+import { Loader2, Clock, BarChart3, Briefcase, Globe, Rocket, Quote, ArrowRight, ChevronDown, ChevronUp, Mail } from 'lucide-react';
 import { useToast } from "@/components/ui/feedback/use-toast";
 import { Button } from '@/components/ui/button';
 import { Calendar } from "@/components/ui/data-display/calendar";
@@ -240,10 +240,10 @@ const BookingModal = () => {
                     <SelectValue placeholder="Selecciona un tema" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Onboarding Crypto">Onboarding Crypto (Primera consultoría)</SelectItem>
-                    <SelectItem value="Planificación financiera">Planificación financiera</SelectItem>
-                    <SelectItem value="Creación y optimización de carteras">Creación y optimización de carteras</SelectItem>
-                    <SelectItem value="Crypto/Web3">Crypto/Web3</SelectItem>
+                    <SelectItem value="Optimización de cartera">Optimización de cartera</SelectItem>
+                    <SelectItem value="Onboarding cripto">Onboarding cripto</SelectItem>
+                    <SelectItem value="Estrategias Crypto & Web3">Estrategias Crypto & Web3</SelectItem>
+                    <SelectItem value="Gestión de tesorería cripto para empresas">Gestión de tesorería cripto para empresas</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -471,12 +471,84 @@ const BookingModal = () => {
   );
 }
 
+const FAQSection = () => {
+  const [openFAQ, setOpenFAQ] = useState(null);
+
+  const faqs = [
+    {
+      question: "¿Quién puede beneficiarse de la consultoría?",
+      answer: "Cualquier persona o empresa interesada en invertir en cripto de forma segura."
+    },
+    {
+      question: "¿Cómo se realiza la consultoría?",
+      answer: "Las sesiones son 1:1 online, con duración adaptada a tu necesidad (tenemos dos modalidades: 30 y 60 minutos)."
+    },
+    {
+      question: "¿Puedo contratar solo el Onboarding cripto?",
+      answer: "Sí, cada servicio puede contratarse de manera independiente o integrado en una estrategia global."
+    },
+    {
+      question: "¿Qué tipo de soporte incluye?",
+      answer: "Soporte por email para resolver dudas sobre el contenido de la consultoría y seguimiento de tu plan. Escríbenos a info@bsbcapital.io."
+    },
+    {
+      question: "¿Cómo protegen mi información?",
+      answer: "Todos los datos compartidos son confidenciales y gestionados bajo protocolos de seguridad estrictos."
+    }
+  ];
+
+  return (
+    <section className="py-12 sm:py-20 bg-brand-green-50">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-center main-gradient-text mb-12">
+            Preguntas frecuentes
+          </h2>
+          <div className="space-y-4">
+            {faqs.map((faq, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                className="bg-white rounded-lg shadow-sm border"
+              >
+                <button
+                  onClick={() => setOpenFAQ(openFAQ === index ? null : index)}
+                  className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors"
+                >
+                  <h3 className="text-lg font-semibold text-brand-text-primary">{faq.question}</h3>
+                  {openFAQ === index ? (
+                    <ChevronUp className="h-5 w-5 text-brand-primary" />
+                  ) : (
+                    <ChevronDown className="h-5 w-5 text-brand-primary" />
+                  )}
+                </button>
+                {openFAQ === index && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    className="px-6 pb-4"
+                  >
+                    <p className="text-brand-text-secondary">{faq.answer}</p>
+                  </motion.div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const Consultoria = () => {
   return (
     <>
       <Helmet>
-        <title>Consultoría - BSB Capital</title>
-        <meta name="description" content="Asesoramiento experto en Onboarding Crypto, planificación financiera, creación y optimización de carteras, y crypto/web3." />
+        <title>BSB Consulting - Consultoría Financiera Especializada en Crypto</title>
+        <meta name="description" content="Consultoría financiera especializada en crypto y activos digitales. Navega el mundo crypto con seguridad y aprovecha las oportunidades con BSB Capital." />
       </Helmet>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -494,15 +566,23 @@ const Consultoria = () => {
               transition={{ duration: 0.8, ease: "easeOut" }}
               className="text-4xl md:text-5xl font-bold main-gradient-text"
             >
-              Consultoría Financiera <span className="text-brand-gold-100">Estratégica y Personalizada</span>
+              <span className="text-brand-gold-100">BSB Consulting</span>
             </motion.h1>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+              className="text-2xl md:text-3xl font-semibold text-brand-text-primary mt-4"
+            >
+              Consultoría Financiera Especializada en Crypto y Activos digitales
+            </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              className="mt-6 text-lg text-text-2 max-w-3xl mx-auto"
+              className="mt-6 text-lg text-text-2 max-w-4xl mx-auto"
             >
-              En un mercado donde la información se multiplica y la volatilidad marca el pulso, tener un plan no es opcional: es la diferencia entre reaccionar tarde o adelantarse a las oportunidades.
+              El mundo cripto se mueve rápido: nuevas oportunidades, nuevas tecnologías y riesgos que cambian cada día. En BSB Capital, te ayudamos a navegar este universo con seguridad, confianza y control, evitando errores comunes y aprovechando las oportunidades.
             </motion.p>
             
             <div className="mt-8">
@@ -516,9 +596,80 @@ const Consultoria = () => {
           <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-4xl mx-auto">
               <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-8 rounded-xl shadow-lg border border-brand-green-200">
-                <p className="text-xl text-brand-green-900 leading-relaxed">
-                  Imagina que tu cartera es un barco. Algunos navegan sin brújula y esperan que el viento les lleve; otros confían en que la tormenta amaine. En BSB Capital trazamos la ruta contigo: analizamos tus activos, identificamos los riesgos invisibles y diseñamos un plan de acción que te permita avanzar con seguridad, ya sea en los mercados tradicionales o en el ecosistema cripto y Web3.
+                <h3 className="text-2xl font-bold text-brand-green-900 mb-6">Navega el mundo crypto con seguridad</h3>
+                <p className="text-xl text-brand-green-900 leading-relaxed mb-4">
+                  Imagina que tu cartera es un barco.
                 </p>
+                <p className="text-lg text-brand-green-800 leading-relaxed mb-4">
+                  Algunos confían en el viento; otros esperan a que pase la tormenta.
+                </p>
+                <p className="text-lg text-brand-green-800 leading-relaxed">
+                  En BSB Capital, trazamos la ruta contigo: analizamos tus activos, identificamos riesgos invisibles y diseñamos un plan de acción para que avances con seguridad en el ecosistema cripto y Web3.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Metodología Section */}
+        <div className="py-12 sm:py-20 bg-background">
+          <div className="container mx-auto px-4 sm:px-6">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold text-center main-gradient-text mb-12">
+                Nuestro enfoque y metodología
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  className="bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300"
+                >
+                  <div className="flex items-center mb-4">
+                    <div className="w-8 h-8 bg-brand-primary text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">1</div>
+                    <h3 className="text-lg font-bold text-brand-text-primary">Completa tu formulario de diagnóstico</h3>
+                  </div>
+                  <p className="text-brand-text-secondary">Con esta información, en BSB Consulting diseñamos un plan personalizado que te permita avanzar con seguridad en tus inversiones y decisiones financieras.</p>
+                </motion.div>
+                
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300"
+                >
+                  <div className="flex items-center mb-4">
+                    <div className="w-8 h-8 bg-brand-primary text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">2</div>
+                    <h3 className="text-lg font-bold text-brand-text-primary">Análisis personalizado de activos y riesgos</h3>
+                  </div>
+                  <p className="text-brand-text-secondary">Identificamos oportunidades y amenazas invisibles en tu cartera.</p>
+                </motion.div>
+                
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                  className="bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300"
+                >
+                  <div className="flex items-center mb-4">
+                    <div className="w-8 h-8 bg-brand-primary text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">3</div>
+                    <h3 className="text-lg font-bold text-brand-text-primary">Diseño del plan de acción</h3>
+                  </div>
+                  <p className="text-brand-text-secondary">Estrategias concretas desde wallets y exchanges hasta inversiones en DeFi, NFTs y proyectos Web3.</p>
+                </motion.div>
+                
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  className="bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300"
+                >
+                  <div className="flex items-center mb-4">
+                    <div className="w-8 h-8 bg-brand-primary text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">4</div>
+                    <h3 className="text-lg font-bold text-brand-text-primary">Seguimiento y ajustes</h3>
+                  </div>
+                  <p className="text-brand-text-secondary">Revisiones periódicas para adaptarte a cambios de mercado y nuevas oportunidades.</p>
+                </motion.div>
               </div>
             </div>
           </div>
@@ -527,26 +678,115 @@ const Consultoria = () => {
         {/* Benefits Section */}
         <section className="py-12 sm:py-20 md:py-32 aurora-background">
           <div className="container mx-auto px-4 sm:px-6 relative z-10">
+            <h2 className="text-3xl md:text-4xl font-bold text-center main-gradient-text mb-12">
+              Nuestros servicios
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 max-w-6xl mx-auto">
               <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:bg-white">
                 <BarChart3 className="h-12 w-12 text-brand-green-600 mb-4" />
-                <h3 className="text-xl font-bold text-brand-green-900 mb-3">Planificación Financiera</h3>
-                <p className="text-brand-green-800">Estrategias claras para optimizar ingresos, gastos e impuestos.</p>
-              </div>
-              <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:bg-white">
-                <Briefcase className="h-12 w-12 text-brand-green-600 mb-4" />
-                <h3 className="text-xl font-bold text-brand-green-900 mb-3">Optimización de Carteras</h3>
-                <p className="text-brand-green-800">Ajustamos tu portafolio para reducir riesgos sin perder rentabilidad.</p>
+                <h3 className="text-xl font-bold text-brand-green-900 mb-3">💼 Optimización de cartera</h3>
+                <p className="text-brand-green-800">Optimizamos tus activos digitales para equilibrar rentabilidad y seguridad, integrando cripto de forma estratégica.</p>
               </div>
               <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:bg-white">
                 <Globe className="h-12 w-12 text-brand-green-600 mb-4" />
-                <h3 className="text-xl font-bold text-brand-green-900 mb-3">Crypto & Web3</h3>
-                <p className="text-brand-green-800">Te guiamos para aprovechar nuevas oportunidades con fundamentos sólidos y control del riesgo.</p>
+                <h3 className="text-xl font-bold text-brand-green-900 mb-3">🪙 Estrategias Crypto & Web3</h3>
+                <p className="text-brand-green-800">Te guiamos para aprovechar oportunidades con fundamentos sólidos y control del riesgo.</p>
               </div>
               <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:bg-white">
                 <Rocket className="h-12 w-12 text-brand-green-600 mb-4" />
-                <h3 className="text-xl font-bold text-brand-green-900 mb-3">Onboarding Crypto</h3>
-                <p className="text-brand-green-800">Has oído hablar de las rentabilidades de las criptomonedas, pero no sabes cómo empezar. Este servicio es tu puerta de entrada, acompañándote paso a paso para invertir de forma segura y consciente.</p>
+                <h3 className="text-xl font-bold text-brand-green-900 mb-3">🚀 Onboarding cripto</h3>
+                <p className="text-brand-green-800">Tu puerta de entrada segura al universo crypto. Te acompañamos paso a paso para invertir de forma consciente y segura.</p>
+              </div>
+              <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300 hover:bg-white">
+                <Briefcase className="h-12 w-12 text-brand-green-600 mb-4" />
+                <h3 className="text-xl font-bold text-brand-green-900 mb-3">🧮 Gestión de tesorería cripto para empresas</h3>
+                <p className="text-brand-green-800">Pensado para empresas que ya operan o quieren empezar a operar con activos digitales, este servicio ofrece una gestión profesional para optimizar rendimientos, liquidez y control operativo.</p>
+              </div>
+            </div>
+
+            {/* Paquetes Section */}
+            <div className="mt-16 max-w-4xl mx-auto">
+              <div className="bg-white/95 backdrop-blur-sm p-6 sm:p-8 rounded-xl shadow-lg border border-brand-green-200">
+                <p className="text-lg text-brand-green-800 text-center leading-relaxed">
+                  Si quieres llevar tu inversión en crypto al siguiente nivel, nuestros paquetes y membresía exclusiva ofrecen acceso a consultorías, comunidad exclusiva y análisis avanzado de cartera.
+                </p>
+                <div className="text-center mt-6">
+                  <Button asChild variant="outline" size="lg">
+                    <Link to="/membresias">
+                      Descubre los paquetes y la membresía exclusiva <ArrowRight className="ml-2 h-5 w-5" />
+                    </Link>
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* BSB Capital Benefits Section */}
+        <section className="py-12 sm:py-20 bg-background">
+          <div className="container mx-auto px-4 sm:px-6">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold text-center main-gradient-text mb-12">
+                Beneficios de trabajar con BSB Capital
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  className="flex items-start p-4 bg-white rounded-lg shadow-sm border"
+                >
+                  <div className="w-2 h-2 bg-brand-primary rounded-full mt-3 mr-4 flex-shrink-0"></div>
+                  <p className="text-brand-text-primary">Inversión en crypto con seguridad y control del riesgo</p>
+                </motion.div>
+                
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="flex items-start p-4 bg-white rounded-lg shadow-sm border"
+                >
+                  <div className="w-2 h-2 bg-brand-primary rounded-full mt-3 mr-4 flex-shrink-0"></div>
+                  <p className="text-brand-text-primary">Estrategias personalizadas según tu nivel de experiencia y objetivos</p>
+                </motion.div>
+                
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                  className="flex items-start p-4 bg-white rounded-lg shadow-sm border"
+                >
+                  <div className="w-2 h-2 bg-brand-primary rounded-full mt-3 mr-4 flex-shrink-0"></div>
+                  <p className="text-brand-text-primary">Acceso a oportunidades emergentes en Web3 y activos digitales</p>
+                </motion.div>
+                
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  className="flex items-start p-4 bg-white rounded-lg shadow-sm border"
+                >
+                  <div className="w-2 h-2 bg-brand-primary rounded-full mt-3 mr-4 flex-shrink-0"></div>
+                  <p className="text-brand-text-primary">Evita errores comunes y decisiones impulsivas</p>
+                </motion.div>
+                
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.5 }}
+                  className="flex items-start p-4 bg-white rounded-lg shadow-sm border md:col-span-2 justify-center"
+                >
+                  <div className="w-2 h-2 bg-brand-primary rounded-full mt-3 mr-4 flex-shrink-0"></div>
+                  <p className="text-brand-text-primary">Estrategias adaptadas a tu perfil y estilo de vida</p>
+                </motion.div>
+              </div>
+              
+              <div className="text-center mt-12">
+                <Button asChild size="lg">
+                  <a href="#agendar-sesion">
+                    Agenda tu sesión 1:1 <ArrowRight className="ml-2 h-5 w-5" />
+                  </a>
+                </Button>
               </div>
             </div>
           </div>
@@ -862,18 +1102,37 @@ const Consultoria = () => {
         </div>
         </div>
 
+        {/* FAQs Section */}
+        <FAQSection />
+
         {/* Final CTA Section */}
-        <section className="py-12 sm:py-20 md:py-32 text-center aurora-background">
+        <section id="agendar-sesion" className="py-12 sm:py-20 md:py-32 text-center aurora-background">
           <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="text-2xl sm:text-3xl font-bold main-gradient-text mb-6"
+              className="text-2xl sm:text-3xl font-bold main-gradient-text mb-4"
             >
-              ¿Listo para transformar tu estrategia financiera?
+              Da el paso hacia el sector más rentable de los últimos años
             </motion.h2>
-            <BookingModal />
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+              className="text-lg text-brand-text-secondary mb-8 max-w-3xl mx-auto"
+            >
+              Deja de improvisar en el mundo crypto y empieza a invertir con confianza, estrategia y control del riesgo.
+            </motion.p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <BookingModal />
+              <Button asChild variant="outline" size="lg">
+                <a href="mailto:info@bsbcapital.io" className="flex items-center">
+                  <Mail className="mr-2 h-4 w-4" />
+                  info@bsbcapital.io
+                </a>
+              </Button>
+            </div>
           </div>
         </section>
 

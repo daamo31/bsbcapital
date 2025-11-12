@@ -4,80 +4,71 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/data-display/card';
 import { Badge } from '@/components/ui/data-display/badge';
-import { Check, ArrowRight, Loader2, X } from 'lucide-react';
+import { Check, ArrowRight, Loader2 } from 'lucide-react';
 import { useToast } from "@/components/ui/feedback/use-toast";
 import { supabase } from '@/lib/customSupabaseClient';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useNavigate } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
 
-// Mover fallbackPlans fuera del componente para evitar recrearlo en cada render
+// Nuevos planes especializados en crypto
 const fallbackPlans = [
     {
-      id: 'free-access',
-      name: 'Free Access',
-      price_monthly: 0,
-      price_annual: 0,
+      id: 'onboarding-crypto',
+      name: 'Onboarding Cripto',
+      price_monthly: null, // No tiene mensual
+      price_annual: 390,
+      price_original: 500, // Precio original para mostrar descuento
       currency: 'EUR',
-      features: ['Newsletter gratuita', 'Acceso limitado al contenido', 'Comunidad básica'],
+      features: [
+        '2 consultorías personalizadas (1h cada una)',
+        'Acceso anual a BSB Academy',
+        'Dossier de buenas prácticas',
+        'Estructura de cartera recomendada'
+      ],
       highlight: false,
-      description: 'Para empezar',
+      description: 'Introducción al ecosistema cripto',
+      objective: 'Introducción al ecosistema cripto, optimización de primeras inversiones y base estratégica de gestión.',
       stripe_price_id: null,
-      stripe_price_id_annual: null
+      stripe_price_id_annual: 'price_onboarding_crypto_390' // Usar el mismo ID que tienes en BD
     },
     {
-      id: 'trader-plan-pro',
-      name: 'Trader Plan Pro',
-      price_monthly: 29.99,
-      price_annual: 299.99,
-      currency: 'EUR',
-      features: [
-        'Newsletter incluida',
-        'Acceso anticipado a BSB Maker (IA copiloto para traders)',
-        'Acceso completo a la formación (cursos temáticos + masterclass)',
-        '20% de descuento en consultorías',
-        '1 consultoría de 30 min incluida en el plan anual'
-      ],
-      highlight: false,
-      description: 'Plan básico',
-      stripe_price_id: 'price_1SDKO8JmSk3VG9oiCLuGoE4s',
-      stripe_price_id_annual: 'price_1SDKQZJmSk3VG9oiGudek18k'
-    },
-    {
-      id: 'premium-investor',
-      name: 'Premium Investor',
-      price_monthly: 29.99,
-      price_annual: 299.99,
-      currency: 'EUR',
-      features: [
-        'Newsletter incluida',
-        'Acceso a la Comunidad privada',
-        'Acceso completo a la formación (cursos temáticos + masterclass)',
-        '20% de descuento en consultorías',
-        '1 consultoría de 30 min incluida en el plan anual'
-      ],
-      highlight: true,
-      description: 'Plan popular',
-      stripe_price_id: 'price_1SDKTKJmSk3VG9oiBTv0HaYK',
-      stripe_price_id_annual: 'price_1SDKVXJmSk3VG9oiLEm9JOoD'
-    },
-    {
-      id: 'wealth-membership',
-      name: 'Wealth Membership',
-      price_monthly: null, // No hay mensual
+      id: 'inversor-premium',
+      name: 'Inversor Premium',
+      price_monthly: null, // Solo anual
       price_annual: 2400,
       currency: 'EUR',
       features: [
-        '6 consultorías de 1h/año (valor: 1.800€)',
+        '6 consultorías personalizadas (1h cada una)',
         'Revisión completa de cartera semestral',
-        'Plan estratégico anual con propuestas de optimización',
-        'Canal privado prioritario + comunidad élite (networking + análisis exclusivos)',
-        'Diseñada para clientes con patrimonio elevado que buscan claridad y continuidad sin ceder la gestión'
+        'Plan estratégico anual adaptado al perfil inversor',
+        'Comunidad y acceso exclusivo',
+        'Canal privado en WhatsApp / Telegram',
+        'Soporte prioritario'
+      ],
+      highlight: true,
+      description: 'Plan popular - Anual',
+      objective: 'Acompañamiento continuo y personalizado para la gestión avanzada de inversiones en cripto y Web3.',
+      stripe_price_id: null,
+      stripe_price_id_annual: 'price_inversor_premium_2400' // Usar el mismo ID que tienes en BD
+    },
+    {
+      id: 'gestion-tesoreria-empresas',
+      name: 'Gestión Tesorería Cripto para Empresas',
+      price_monthly: null, // No tiene mensual
+      price_annual: 1200,
+      currency: 'EUR',
+      features: [
+        '2 consultorías personalizadas (1h cada una)',
+        'Plan de tesorería y estructura de cartera corporativa',
+        'Seguimiento mensual (6 meses)',
+        'Renovación mensual: €80/mes'
       ],
       highlight: false,
-      description: 'Co-Gestión Patrimonial (solo anual)',
+      description: 'Para empresas',
+      objective: 'Ayudar a empresas a integrar y optimizar su tesorería en activos digitales, con análisis de riesgos, oportunidades y estrategias fiscales eficientes.',
       stripe_price_id: null,
-      stripe_price_id_annual: 'price_1SDKb2JmSk3VG9oiJr1unLZZ'
+      stripe_price_id_annual: 'price_gestion_tesoreria_1200' // Usar el mismo ID que tienes en BD
     }
 ];
 
@@ -92,7 +83,6 @@ const MembresiasDB = () => {
   const [loading, setLoading] = useState(true);
   const [loadingPlan, setLoadingPlan] = useState(null);
   const [loadingData, setLoadingData] = useState(false);
-  const [isAnnual, setIsAnnual] = useState(false); // Estado para toggle mensual/anual
   const [error, setError] = useState(null);
 
   const loadPlans = useCallback(async () => {
@@ -182,26 +172,19 @@ const MembresiasDB = () => {
 
     try {
       console.log('🏁 Selecting plan:', plan);
-      console.log('💰 Billing type:', isAnnual ? 'annual' : 'monthly');
       
-      // Determinar el precio correcto según la selección
-      let priceId, billingType;
-      if (isAnnual && plan.stripe_price_id_annual) {
-        priceId = plan.stripe_price_id_annual;
-        billingType = 'annual';
-      } else {
-        priceId = plan.stripe_price_id || plan.stripe_price_monthly;
-        billingType = 'monthly';
-      }
+      // Solo usar el precio anual ya que todos los planes son únicos
+      const priceId = plan.stripe_price_id_annual;
+      const billingType = 'annual';
 
       if (!priceId) {
-        throw new Error(`No hay precio ${billingType} disponible para este plan`);
+        throw new Error(`No hay precio disponible para este plan`);
       }
       
       // Usar el mismo patrón exacto que en consultas
       const checkoutData = { 
         priceId,
-        mode: 'subscription',
+        mode: 'payment', // Cambiar a payment para compras únicas
         email: user.email,
         userId: user.id,
         metadata: {
@@ -209,7 +192,8 @@ const MembresiasDB = () => {
           plan_name: plan.name,
           billing_cycle: billingType,
           user_id: user.id,
-          access_type: 'membership'
+          access_type: 'package',
+          package_type: plan.id
         }
       };
 
@@ -259,7 +243,7 @@ const MembresiasDB = () => {
     } finally {
       setLoadingPlan(null);
     }
-  }, [user, navigate, loadingPlan, isAnnual, toast]);
+  }, [user, navigate, loadingPlan, toast]);
 
   if (loading) {
     return (
@@ -273,116 +257,90 @@ const MembresiasDB = () => {
   return (
     <>
       <Helmet>
-        <title>Membresías - BSB Capital</title>
+        <title>Planes y Paquetes - BSB Capital</title>
+        <meta name="description" content="Descubre nuestros planes especializados en crypto: Onboarding Cripto, Inversor Premium y Gestión de Tesorería para Empresas." />
       </Helmet>
       
       <div className="container mx-auto px-4 py-16">
-        <div className="text-center max-w-3xl mx-auto">
+        <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-6xl font-bold">
-            Elige tu camino hacia el <span className="main-gradient-text">éxito financiero</span>
+            📦 Planes y Paquetes — <span className="main-gradient-text">BSB Capital</span>
           </h1>
-          <p className="text-lg text-gray-600 mt-4">
-            Planes mensuales diseñados para tu crecimiento financiero
+          <p className="text-lg text-gray-600 mt-6">
+            Soluciones especializadas en crypto y activos digitales diseñadas para tu perfil: persona, inversor avanzado o empresa.
           </p>
         </div>
 
-        {/* Toggle Mensual/Anual */}
-        <div className="flex justify-center mt-8 mb-12">
-          <div className="bg-gray-100 rounded-lg p-1 flex">
-            <button
-              onClick={() => setIsAnnual(false)}
-              className={`px-6 py-2 rounded-md text-sm font-medium transition-colors ${
-                !isAnnual 
-                  ? 'bg-white text-gray-900 shadow-sm' 
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              Mensual
-            </button>
-            <button
-              onClick={() => setIsAnnual(true)}
-              className={`px-6 py-2 rounded-md text-sm font-medium transition-colors ${
-                isAnnual 
-                  ? 'bg-white text-gray-900 shadow-sm' 
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              Anual
-              <span className="ml-1 text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">
-                Ahorra 15%
-              </span>
-            </button>
-          </div>
-        </div>
-
-                        <div className="mt-16 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {plans.map((plan) => {
-            // Calcular el precio correcto según la selección
-            const monthlyPrice = plan.price_monthly ?? 0;
-            const annualPrice = plan.price_annual ?? 0;
-            const currentPrice = isAnnual && annualPrice > 0 ? annualPrice : monthlyPrice;
-            const hasAnnualOption = annualPrice > 0 && (plan.stripe_price_id_annual || plan.stripe_price_annual);
+            const currentPrice = plan.price_annual || plan.price_monthly || 0;
             const isLoading = loadingPlan === plan.id;
             
-            // Calcular descuento anual si existe
-            const annualDiscount = hasAnnualOption && monthlyPrice > 0 
-              ? Math.round((1 - (annualPrice / (monthlyPrice * 12))) * 100)
-              : 0;
-            
             return (
-              <Card key={plan.id} className={`${plan.highlight ? 'border-primary border-2' : ''} h-full flex flex-col`}>
-                <CardHeader>
-                  <CardTitle>{plan.name}</CardTitle>
-                  <CardDescription>{plan.description}</CardDescription>
+              <Card key={plan.id} className={`${plan.highlight ? 'border-primary border-2 relative' : ''} h-full flex flex-col`}>
+                {plan.highlight && (
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                    <Badge className="bg-primary text-white px-4 py-1">Más Popular</Badge>
+                  </div>
+                )}
+                
+                <CardHeader className="text-center pb-4">
+                  <CardTitle className="text-xl font-bold">{plan.name}</CardTitle>
+                  <CardDescription className="text-sm text-gray-600">{plan.description}</CardDescription>
                 </CardHeader>
+                
                 <CardContent className="flex-grow">
-                  <div className="text-4xl font-bold mb-4">
-                    {currentPrice === 0 ? 'Gratis' : `${currentPrice}€`}
-                    {currentPrice > 0 && (
-                      <span className="text-lg">
-                        {isAnnual ? '/año' : '/mes'}
-                      </span>
+                  <div className="text-center mb-6">
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <div className="text-4xl font-bold text-primary">€{currentPrice}</div>
+                    </div>
+                    
+                    {/* Mostrar precio original si existe descuento */}
+                    {plan.price_original && (
+                      <div className="text-sm text-gray-500">
+                        <span className="line-through">€{plan.price_original}</span>
+                        <span className="ml-2 text-green-600 font-medium">
+                          / €{plan.id === 'onboarding-crypto' ? '590' : plan.price_original}
+                        </span>
+                      </div>
+                    )}
+                    {plan.id === 'onboarding-crypto' && (
+                      <div className="text-xs text-green-600 mt-1">
+                        (antes €500 / €690)
+                      </div>
                     )}
                   </div>
-                  
-                  {/* Mostrar precio original y descuento si es anual */}
-                  {isAnnual && hasAnnualOption && monthlyPrice > 0 && (
-                    <div className="mb-4">
-                      <div className="text-sm text-gray-500 line-through">
-                        {(monthlyPrice * 12).toFixed(2)}€/año
-                      </div>
-                      <div className="text-sm text-green-600 font-medium">
-                        Ahorras {annualDiscount}% ({((monthlyPrice * 12) - annualPrice).toFixed(2)}€)
-                      </div>
+
+                  {/* Incluye */}
+                  <div className="mb-6">
+                    <h4 className="font-semibold text-gray-900 mb-3">Incluye:</h4>
+                    <ul className="space-y-2">
+                      {Array.isArray(plan.features) ? plan.features.map((feature, index) => (
+                        <li key={index} className="flex items-start">
+                          <Check className="h-4 w-4 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
+                          <span className="text-sm text-gray-700">{feature}</span>
+                        </li>
+                      )) : null}
+                    </ul>
+                  </div>
+
+                  {/* Objetivo */}
+                  {plan.objective && (
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h4 className="font-semibold text-gray-900 mb-2">Objetivo:</h4>
+                      <p className="text-sm text-gray-700">{plan.objective}</p>
                     </div>
                   )}
-                  
-                  {/* Mensaje si no hay opción anual */}
-                  {isAnnual && !hasAnnualOption && currentPrice > 0 && (
-                    <div className="mb-4 text-sm text-gray-500">
-                      Solo disponible mensualmente
-                    </div>
-                  )}
-                  
-                  <ul className="space-y-2">
-                    {Array.isArray(plan.features) ? plan.features.map((feature, index) => (
-                      <li key={index} className="flex items-start">
-                        <Check className="h-5 w-5 text-green-500 mr-2 flex-shrink-0 mt-0.5" />
-                        <span className="text-sm">{feature}</span>
-                      </li>
-                    )) : null}
-                  </ul>
                 </CardContent>
-                <CardFooter className="mt-auto">
+                
+                <CardFooter className="mt-auto pt-4">
                   <Button 
                     className="w-full"
                     onClick={() => handleSelectPlan(plan)}
-                    disabled={isLoading || (isAnnual && !hasAnnualOption && currentPrice > 0)}
+                    disabled={isLoading}
                   >
                     {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                    {currentPrice === 0 ? 'Gratis' : 
-                     (isAnnual && !hasAnnualOption && currentPrice > 0) ? 'No disponible' :
-                     'Seleccionar'}
+                    Seleccionar Plan
                   </Button>
                 </CardFooter>
               </Card>
@@ -390,68 +348,27 @@ const MembresiasDB = () => {
           })}
         </div>
 
-        {/* Tabla Comparativa */}
-        <div className="mt-24">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Compara todos los planes</h2>
-            <p className="text-lg text-gray-600">Encuentra el plan perfecto para ti</p>
+        {/* Información adicional */}
+        <div className="mt-24 bg-gray-50 rounded-2xl p-8">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-4">¿Necesitas ayuda para elegir?</h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Cada plan está diseñado para diferentes perfiles y necesidades. Si no estás seguro de cuál es el mejor para ti, 
+              puedes usar nuestro sistema de recomendación o contactarnos directamente.
+            </p>
           </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse bg-white rounded-xl shadow-lg overflow-hidden">
-              <thead>
-                <tr className="bg-gray-50">
-                  <th className="text-left p-6 font-semibold text-gray-900">Características</th>
-                  {plans.map((plan) => (
-                    <th key={plan.id} className="text-center p-6">
-                      <div className={`font-semibold ${plan.highlight ? 'text-primary' : 'text-gray-900'}`}>
-                        {plan.name}
-                      </div>
-                      <div className="text-sm text-gray-500 mt-1">
-                        {plan.price_monthly === 0 ? 'Gratis' : `${plan.price_monthly}€/mes`}
-                      </div>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  { name: 'Newsletter incluida', free: false, trader: true, premium: true, wealth: true },
-                  { name: 'BSB Maker (IA copiloto)', free: false, trader: true, premium: false, wealth: true },
-                  { name: 'Acceso completo a la formación', free: false, trader: true, premium: true, wealth: true },
-                  { name: 'Comunidad privada', free: false, trader: false, premium: true, wealth: true },
-                  { name: '20% descuento consultorías', free: false, trader: true, premium: true, wealth: false },
-                  { name: '1 consultoría 30 min incluida (anual)', free: false, trader: true, premium: true, wealth: false },
-                  { name: '6 consultorías 1h/año (valor: 1.800€)', free: false, trader: false, premium: false, wealth: true },
-                  { name: 'Revisión de cartera semestral', free: false, trader: false, premium: false, wealth: true },
-                  { name: 'Plan estratégico anual', free: false, trader: false, premium: false, wealth: true },
-                  { name: 'Canal privado prioritario', free: false, trader: false, premium: false, wealth: true }
-                ].map((feature, index) => (
-                  <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                    <td className="p-6 font-medium text-gray-900">{feature.name}</td>
-                    {plans.map((plan) => {
-                      let hasFeature = false;
-                      const planName = plan.name.toLowerCase();
-                      
-                      if (planName.includes('free')) hasFeature = feature.free;
-                      else if (planName.includes('trader') || planName.includes('pro')) hasFeature = feature.trader;
-                      else if (planName.includes('premium')) hasFeature = feature.premium;
-                      else if (planName.includes('wealth')) hasFeature = feature.wealth;
-                      
-                      return (
-                        <td key={plan.id} className="p-6 text-center">
-                          {hasFeature ? (
-                            <Check className="h-5 w-5 text-green-500 mx-auto" />
-                          ) : (
-                            <X className="h-5 w-5 text-red-500 mx-auto" />
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild variant="outline" size="lg">
+              <a href="/guia-inversion">
+                Encuentra tu plan ideal <ArrowRight className="ml-2 h-4 w-4" />
+              </a>
+            </Button>
+            <Button asChild size="lg">
+              <a href="/consultoria">
+                Hablar con un experto
+              </a>
+            </Button>
           </div>
         </div>
       </div>

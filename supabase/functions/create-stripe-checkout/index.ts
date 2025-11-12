@@ -214,10 +214,10 @@ Deno.serve({ port: 8000 }, async (req) => {
       
       // Mapear los valores del frontend a los valores de la base de datos
       const typeMapping: Record<string, string> = {
-        "Onboarding Crypto": "onboarding_crypto",
-        "Planificación financiera": "financial_planning", 
-        "Creación y optimización de carteras": "portfolio",
-        "Crypto/Web3": "strategy"
+        "Optimización de cartera": "financial_planning",
+        "Onboarding cripto": "onboarding_crypto",
+        "Estrategias Crypto & Web3": "portfolio",
+        "Gestión de tesorería cripto para empresas": "crypto_advanced"
       };
       
       const normalizedType = incomingType && typeMapping[incomingType] 

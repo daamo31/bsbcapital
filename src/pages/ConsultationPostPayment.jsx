@@ -95,10 +95,10 @@ const ConsultationPostPayment = () => {
   // Función para obtener el título del formulario
   const getFormTitle = (consultationType) => {
     const titles = {
-      'financial_planning': 'Formulario – Consultoría de Planificación Financiera',
-      'onboarding_crypto': 'Formulario – Onboarding Crypto & Web3',
-      'portfolio': 'Formulario – Optimización de Carteras',
-      'crypto_advanced': 'Formulario – Consultoría Avanzada Crypto & Web3',
+      'financial_planning': 'Formulario – Optimización de cartera',
+      'onboarding_crypto': 'Formulario – Onboarding cripto',
+      'portfolio': 'Formulario – Estrategias Crypto & Web3',
+      'crypto_advanced': 'Formulario – Gestión de tesorería cripto para empresas',
       'strategy': 'Formulario de Consultoría'
     };
     return titles[consultationType] || 'Formulario de Consultoría';

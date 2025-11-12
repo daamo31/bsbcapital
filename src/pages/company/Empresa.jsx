@@ -10,13 +10,7 @@ const teamMembers = [
     bio: 'Experto en criptoactivos y mercados financieros, Juan lidera la visión y estrategia de BSB Capital. Su enfoque se centra en la innovación y la aplicación de tecnologías de vanguardia para la gestión de activos.',
     linkedin: 'https://www.linkedin.com/in/juan-salgado-blanco-63a23417a/',
   },
-  {
-    name: 'Marcos Pérez Martínez',
-    role: 'Co-Founder & Head of Algo-Trading',
-    imageUrl: 'https://horizons-cdn.hostinger.com/817ad863-5db3-450e-8aa2-198248142884/c9b970b80688434bc805d615a050bd5e.jpg',
-    bio: 'Como socio y responsable de tecnología, Marcos lidera el desarrollo del algoritmo propietario de BSB Capital (Algo Fund) y supervisa las consultorías técnicas. Su experiencia es clave para la innovación de la empresa.',
-    linkedin: 'https://www.linkedin.com/in/marcos-p%C3%A9rez-mart%C3%ADnez-6b85621b6/',
-  }
+  
 ];
 
 const fadeIn = {

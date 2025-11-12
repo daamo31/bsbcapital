@@ -209,7 +209,7 @@ const getEmailTemplates = () => {
         <h2 style="color:#0b1f14; font-weight:600; margin:0;">¡Bienvenido al mundo cripto! 🌍</h2>
         <p style="font-size:16px; color:#37493f; line-height:1.6; margin-top:18px; margin-bottom:28px;">
           Hola [Nombre],<br><br>
-          Tu consultoría de Onboarding Crypto & Web3 está confirmada.<br><br>
+          Tu consultoría de Onboarding cripto está confirmada.<br><br>
           En esta sesión te guiaremos paso a paso para entender cómo funciona el ecosistema cripto, invertir con seguridad y comenzar con una estrategia sólida y sencilla.<br><br>
           Verás que no hace falta experiencia previa: te acompañaremos en todo momento para que empieces con confianza y claridad.<br><br>
           📅 En breve recibirás los detalles de tu cita y el acceso al formulario previo.<br><br>

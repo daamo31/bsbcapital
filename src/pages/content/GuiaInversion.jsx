@@ -6,98 +6,119 @@ import React, { useState } from 'react';
     import { ArrowRight, Bot, Briefcase, BookOpen, Repeat } from 'lucide-react';
     import { Card, CardContent } from '@/components/ui/data-display/card';
 
-    const questions = [
-      {
-        question: "¿Qué frase te describe mejor?",
+    const phases = {
+      phase1: {
+        question: "¿Quién eres?",
         options: [
-          { text: "Quiero herramientas para crear y probar mis propias estrategias.", points: { bsbMaker: 3, consultoria: 1 } },
-          { text: "Prefiero delegar la gestión de mis inversiones a expertos.", points: { algoFund: 3 } },
-          { text: "Necesito un plan financiero y asesoramiento personalizado.", points: { consultoria: 3, academia: 1 } },
-          { text: "Quiero aprender a invertir y mejorar mis conocimientos.", points: { academia: 3, bsbMaker: 1 } },
-        ],
+          { text: "Persona", nextPhase: "phase2" },
+          { text: "Empresa", service: "gestion-tesoreria-cripto" }
+        ]
       },
-      {
-        question: "¿Cuánto tiempo quieres dedicar a la semana?",
+      phase2: {
+        question: "¿Cuál de estas opciones describe mejor tu situación actual?",
         options: [
-          { text: "Menos de 1 hora. Quiero algo automático.", points: { algoFund: 3 } },
-          { text: "De 1 a 5 horas. Puedo seguir el mercado.", points: { bsbMaker: 2, consultoria: 2 } },
-          { text: "Más de 5 horas. Disfruto analizando y aprendiendo.", points: { academia: 3, bsbMaker: 2 } },
-        ],
+          { text: "Estoy empezando y quiero aprender a invertir en activos digitales", nextPhase: "phase3_nuevo" },
+          { text: "Ya invierto en cripto y quiero mejorar mis estrategias", nextPhase: "phase3_inversor" },
+          { text: "Soy profesional o asesoro a otros", nextPhase: "phase3_asesor" }
+        ]
       },
-      {
-        question: "¿Cuál es tu principal objetivo?",
+      phase3_nuevo: {
+        question: "¿Cuál es tu objetivo principal?",
         options: [
-          { text: "Maximizar mi rentabilidad con herramientas avanzadas.", points: { bsbMaker: 3, algoFund: 1 } },
-          { text: "Construir un patrimonio a largo plazo con seguridad.", points: { consultoria: 3, algoFund: 2 } },
-          { text: "Obtener independencia y conocimiento financiero.", points: { academia: 3 } },
-        ],
+          { text: "Quiero aprender a invertir en cripto por mi cuenta", service: "bsb-academy" },
+          { text: "Prefiero recibir orientación personalizada", service: "onboarding-cripto" }
+        ]
       },
-    ];
+      phase3_inversor: {
+        question: "¿Cuál es tu objetivo principal?",
+        options: [
+          { text: "Optimizar mis inversiones en cripto y mejorar mis decisiones de cartera", service: "optimizacion-carteras" },
+          { text: "Aprender nuevos conceptos que se transformen en rentabilidad", service: "bsb-academy" },
+          { text: "Contar con herramientas que simplifiquen mis decisiones y estrategias", service: "bsb-maker" },
+          { text: "Gestionar mi cartera de forma profesional y maximizar resultados", service: "inversor-premium" }
+        ]
+      },
+      phase3_asesor: {
+        question: "¿Qué necesitas para tu desarrollo profesional?",
+        options: [
+          { text: "Optimizar estrategias de clientes con acompañamiento estratégico", service: "consultoria-crypto-web3" },
+          { text: "Ampliar conocimientos y herramientas sin depender de nadie", service: "bsb-academy" }
+        ]
+      }
+    };
 
     const serviceInfo = {
-      bsbMaker: { title: "BSB Maker", description: "Tu copiloto de IA para crear, validar y automatizar estrategias de trading. Ideal para traders activos que buscan un 'edge' tecnológico.", icon: <Bot className="h-8 w-8 text-brand-primary" />, link: "/bsb-maker" },
-      algoFund: { title: "Algo Fund", description: "Delega tu inversión en nuestras estrategias algorítmicas probadas. Perfecto si buscas rentabilidad sin dedicar tiempo al análisis diario.", icon: <Repeat className="h-8 w-8 text-brand-primary" />, link: "/algo-fund" },
-      consultoria: { title: "Consultoría Personalizada", description: "Un plan estratégico a medida para tus finanzas y patrimonio. Recibe la guía de expertos para tomar las mejores decisiones.", icon: <Briefcase className="h-8 w-8 text-brand-primary" />, link: "/consultoria" },
-      academia: { title: "Academia BSB", description: "Fórmate con nuestros cursos y contenido premium. Conviértete en un inversor experto a tu propio ritmo.", icon: <BookOpen className="h-8 w-8 text-brand-primary" />, link: "/academia" },
+      "gestion-tesoreria-cripto": { 
+        title: "Paquete Gestión de Tesorería Cripto para Empresa", 
+        description: "Pensado para empresas que ya operan o quieren empezar a operar con activos digitales. Gestión estratégica, segura y personalizada para optimizar rendimientos, liquidez y control operativo.", 
+        details: "• Análisis inicial de la estructura financiera digital\n• Diseño del plan de gestión de tesorería cripto\n• Implantación de herramientas y protocolos de control\n• Revisión mensual durante 6 meses (renovable)",
+        icon: <Briefcase className="h-8 w-8 text-brand-primary" />, 
+        link: "/consultoria" 
+      },
+      "bsb-academy": { 
+        title: "BSB Academy", 
+        description: "Aprende a invertir en cripto de forma sólida, práctica y a tu ritmo. Formación dinámica con los conocimientos esenciales para entender los mercados, gestionar riesgos y construir estrategias desde cero.", 
+        icon: <BookOpen className="h-8 w-8 text-brand-primary" />, 
+        link: "/academia" 
+      },
+      "onboarding-cripto": { 
+        title: "Paquete Onboarding Cripto", 
+        description: "Ideal para empezar con seguridad, acompañamiento y una base sólida de conocimiento.", 
+        details: "• 2 consultorías de 1h\n• Acceso a Academia 1 año\n• Dossier de buenas prácticas",
+        icon: <Bot className="h-8 w-8 text-brand-primary" />, 
+        link: "/consultoria" 
+      },
+      "optimizacion-carteras": { 
+        title: "Consultoría de Optimización de Carteras", 
+        description: "Sesiones personalizadas para analizar tu cartera, reducir riesgos y mejorar rendimiento.", 
+        icon: <Briefcase className="h-8 w-8 text-brand-primary" />, 
+        link: "/consultoria" 
+      },
+      "bsb-maker": { 
+        title: "BSB Maker", 
+        description: "Accede a nuestra IA copilot que te ayuda a crear, probar y optimizar estrategias de inversión de manera automática.", 
+        icon: <Bot className="h-8 w-8 text-brand-primary" />, 
+        link: "/bsb-maker" 
+      },
+      "inversor-premium": { 
+        title: "Paquete Inversor Premium", 
+        description: "Un programa completo de acompañamiento diseñado para quienes buscan una gestión profesional y un rendimiento óptimo de su cartera.", 
+        details: "• 6 consultorías de 1h\n• Revisión semestral de cartera\n• Acceso exclusivo a nuestra comunidad de inversores",
+        icon: <Briefcase className="h-8 w-8 text-brand-primary" />, 
+        link: "/consultoria" 
+      },
+      "consultoria-crypto-web3": { 
+        title: "Consultoría Crypto & Web 3", 
+        description: "Sesiones personalizadas enfocadas en análisis de carteras, diseño de estrategias y adaptación a nuevos activos digitales. Ideal para asesores que buscan una visión externa experta.", 
+        icon: <Briefcase className="h-8 w-8 text-brand-primary" />, 
+        link: "/consultoria" 
+      }
     };
 
     const GuiaInversion = () => {
-      const [step, setStep] = useState(0);
-      const [scores, setScores] = useState({ bsbMaker: 0, algoFund: 0, consultoria: 0, academia: 0 });
+      const [currentPhase, setCurrentPhase] = useState('phase1');
       const [result, setResult] = useState(null);
 
-      const handleAnswer = (points) => {
-        setScores(prevScores => {
-          const newScores = { ...prevScores };
-          for (const service in points) {
-            newScores[service] += points[service];
-          }
-          return newScores;
-        });
-
-        if (step < questions.length - 1) {
-          setStep(step + 1);
-        } else {
-          calculateResult();
+      const handleAnswer = (option) => {
+        if (option.service) {
+          setResult(option.service);
+        } else if (option.nextPhase) {
+          setCurrentPhase(option.nextPhase);
         }
-      };
-      
-      const calculateResult = () => {
-        // We need to re-calculate based on the final click, so we pass scores directly
-         setScores(prevScores => {
-            const finalScores = { ...prevScores };
-            const topService = Object.keys(finalScores).reduce((a, b) => finalScores[a] > finalScores[b] ? a : b);
-            setResult(topService);
-            return finalScores;
-        });
-      };
-      
-      const handleAnswerAndFinish = (points) => {
-        setScores(prevScores => {
-          const newScores = { ...prevScores };
-          for (const service in points) {
-            newScores[service] += points[service];
-          }
-          const topService = Object.keys(newScores).reduce((a, b) => newScores[a] > newScores[b] ? a : b);
-          setResult(topService);
-          return newScores;
-        });
-        setStep(step + 1);
       };
 
       const resetQuiz = () => {
-        setStep(0);
-        setScores({ bsbMaker: 0, algoFund: 0, consultoria: 0, academia: 0 });
+        setCurrentPhase('phase1');
         setResult(null);
       };
       
-      const currentQuestion = questions[step];
+      const currentQuestion = phases[currentPhase];
 
       return (
         <>
           <Helmet>
-            <title>Guía Interactiva - BSB Capital</title>
-            <meta name="description" content="Descubre qué servicio de BSB Capital es el ideal para ti con nuestro cuestionario interactivo." />
+            <title>Encuentra tu Servicio Ideal - BSB Capital</title>
+            <meta name="description" content="Descubre qué servicio de BSB Capital es el ideal para ti con nuestro sistema de recomendación por fases." />
           </Helmet>
           <motion.div
             initial={{ opacity: 0 }}
@@ -106,15 +127,15 @@ import React, { useState } from 'react';
             className="container mx-auto px-4 py-16"
           >
             <div className="max-w-2xl mx-auto text-center">
-              <h1 className="text-4xl font-bold text-brand-text-primary">Descubre tu Servicio Ideal</h1>
-              <p className="mt-4 text-lg text-brand-text-secondary">Responde 3 preguntas rápidas y te recomendaremos la solución perfecta para tus metas.</p>
+              <h1 className="text-4xl font-bold text-brand-text-primary">ENCUENTRA TU SERVICIO IDEAL</h1>
+              <p className="mt-4 text-lg text-brand-text-secondary">Responde unas preguntas rápidas y te recomendaremos la solución perfecta para tus metas.</p>
             </div>
 
             <Card className="max-w-2xl mx-auto mt-12 shadow-lg glass-card">
               <CardContent className="p-8">
                 <AnimatePresence mode="wait">
                   <motion.div
-                    key={step}
+                    key={currentPhase}
                     initial={{ opacity: 0, x: 50 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -50 }}
@@ -127,6 +148,14 @@ import React, { useState } from 'react';
                             {serviceInfo[result].icon}
                             <h3 className="mt-4 text-2xl font-bold text-brand-text-primary">{serviceInfo[result].title}</h3>
                             <p className="mt-2 text-brand-text-secondary">{serviceInfo[result].description}</p>
+                            {serviceInfo[result].details && (
+                              <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                                <h4 className="font-semibold text-brand-text-primary mb-2">Incluye:</h4>
+                                <div className="text-left text-sm text-brand-text-secondary whitespace-pre-line">
+                                  {serviceInfo[result].details}
+                                </div>
+                              </div>
+                            )}
                             <Button asChild className="mt-6">
                                 <Link to={serviceInfo[result].link}>
                                     Saber más <ArrowRight className="ml-2 h-4 w-4" />
@@ -140,17 +169,16 @@ import React, { useState } from 'react';
                     ) : (
                       <div>
                         <div className="mb-6 text-center">
-                          <p className="text-sm font-semibold text-brand-primary">PREGUNTA {step + 1} DE {questions.length}</p>
-                          <h2 className="text-2xl font-semibold mt-1 text-brand-text-primary">{currentQuestion.question}</h2>
+                          <h2 className="text-2xl font-semibold mt-1 text-brand-text-primary">{currentQuestion?.question}</h2>
                         </div>
                         <div className="space-y-4">
-                          {currentQuestion.options.map((option, index) => (
+                          {currentQuestion?.options.map((option, index) => (
                             <Button
                               key={index}
                               variant="outline"
                               size="lg"
-                              className="w-full justify-start text-left h-auto py-3 text-brand-text-primary"
-                              onClick={() => step < questions.length - 1 ? handleAnswer(option.points) : handleAnswerAndFinish(option.points)}
+                              className="w-full justify-start text-left h-auto py-4 text-brand-text-primary hover:bg-brand-primary/10"
+                              onClick={() => handleAnswer(option)}
                             >
                               {option.text}
                             </Button>

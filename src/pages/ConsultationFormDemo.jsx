@@ -21,17 +21,17 @@ const ConsultationFormDemo = () => {
   const demoConsultations = {
     planificacion: {
       id: 'demo-planificacion',
-      consultation_type: 'Planificación financiera',
+      consultation_type: 'Optimización de cartera',
       scheduled_at: '2025-10-20T10:00:00Z',
       duration_minutes: 60,
       client_name: 'Demo Cliente',
       client_email: 'demo@ejemplo.com',
       status: 'pending_payment',
-      description: 'Consultoría de planificación financiera - DEMO'
+      description: 'Consultoría de optimización de cartera - DEMO'
     },
     carteras: {
       id: 'demo-carteras',
-      consultation_type: 'Creación y optimización de carteras',
+      consultation_type: 'Estrategias Crypto & Web3',
       scheduled_at: '2025-10-21T15:00:00Z',
       duration_minutes: 60,
       client_name: 'Demo Inversor',

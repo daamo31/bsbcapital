@@ -198,6 +198,69 @@ const BsbMaker = () => {
             </div>
           </div>
         </div>
+
+        {/* New Section: Beneficios BSB Maker */}
+        <div className="py-24 bg-background/70 backdrop-blur-xl">
+          <div className="container mx-auto px-4">
+            <div className="text-center max-w-4xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                <span className="accent-gradient-text">BSB MAKER</span>
+              </h2>
+              <h3 className="text-2xl md:text-3xl font-semibold mb-12 text-text-primary">
+                Beneficios que notarás desde el primer momento
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <motion.div 
+                  initial={{ y: 20, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  className="text-center p-6 rounded-lg glass-card"
+                >
+                  <div className="flex justify-center items-center mb-4 h-16 w-16 bg-primary/10 rounded-full mx-auto text-primary">
+                    <Zap size={32} />
+                  </div>
+                  <p className="font-semibold text-lg">Toma decisiones más rápidas y efectivas.</p>
+                </motion.div>
+                
+                <motion.div 
+                  initial={{ y: 20, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="text-center p-6 rounded-lg glass-card"
+                >
+                  <div className="flex justify-center items-center mb-4 h-16 w-16 bg-primary/10 rounded-full mx-auto text-primary">
+                    <ShieldCheck size={32} />
+                  </div>
+                  <p className="font-semibold text-lg">Reduce errores por exceso de información o impulsividad.</p>
+                </motion.div>
+                
+                <motion.div 
+                  initial={{ y: 20, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                  className="text-center p-6 rounded-lg glass-card"
+                >
+                  <div className="flex justify-center items-center mb-4 h-16 w-16 bg-primary/10 rounded-full mx-auto text-primary">
+                    <BrainCircuit size={32} />
+                  </div>
+                  <p className="font-semibold text-lg">Accede a estrategias de trading profesional sin ser un experto.</p>
+                </motion.div>
+                
+                <motion.div 
+                  initial={{ y: 20, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  className="text-center p-6 rounded-lg glass-card"
+                >
+                  <div className="flex justify-center items-center mb-4 h-16 w-16 bg-primary/10 rounded-full mx-auto text-primary">
+                    <Rocket size={32} />
+                  </div>
+                  <p className="font-semibold text-lg">Sé parte de un proyecto innovador desde sus inicios.</p>
+                </motion.div>
+              </div>
+            </div>
+          </div>
+        </div>
         
         {/* Section 3: Exclusividad */}
         <div className="py-24 bg-brand-green-900 text-white">

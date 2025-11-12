@@ -74,7 +74,7 @@ import React, { useState, useEffect } from 'react';
                     <li><Link to="/bsb-maker" className="text-brand-green-100/70 hover:text-white transition-colors">BSB Maker</Link></li>
                     <li><Link to="/consultoria" className="text-brand-green-100/70 hover:text-white transition-colors">Consultoría</Link></li>
                     <li><Link to="/formacion" className="text-brand-green-100/70 hover:text-white transition-colors">Formación</Link></li>
-                    <li><Link to="/membresias" className="text-brand-green-100/70 hover:text-white transition-colors">Membresías</Link></li>
+                    <li><Link to="/membresias" className="text-brand-green-100/70 hover:text-white transition-colors">Planes</Link></li>
                     <li><Link to="/algo-fund" className="text-brand-green-100/70 hover:text-white transition-colors">Algo Fund</Link></li>
                     <li><Link to="/otros-servicios" className="text-brand-green-100/70 hover:text-white transition-colors">Otros Servicios</Link></li>
                   </ul>
@@ -133,7 +133,7 @@ import React, { useState, useEffect } from 'react';
         { name: 'BSB Maker', href: '/bsb-maker' },
         { name: 'Consultoría', href: '/consultoria' },
         { name: 'Formación', href: '/formacion' },
-        { name: 'Membresías', href: '/membresias' },
+        { name: 'Planes', href: '/membresias' },
         { name: 'Otros Servicios', href: '/otros-servicios' },
         { name: 'Empresa', href: '/empresa' },
       ];
