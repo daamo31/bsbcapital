@@ -60,7 +60,7 @@ import React, { useState, useEffect } from 'react';
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-12">
               <div className="lg:col-span-1">
                 <Link to="/" className="flex items-center gap-3">
-                  <img alt="Logotipo de BSB Capital" className="h-13 w-auto" src="/images/white_logo.jpeg" />
+                  <img alt="Logotipo de BSB Capital" className="h-13 w-auto" src="/images/black_logo.jpeg" />
                   <span className="font-bold text-xl text-white">BSB Capital</span>
                 </Link>
                 <p className="mt-4 text-sm text-brand-green-100/70">

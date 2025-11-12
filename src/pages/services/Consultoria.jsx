@@ -570,7 +570,7 @@ const Consultoria = () => {
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 className="text-4xl md:text-5xl font-bold main-gradient-text"
               >
-                <span className="accent-gradient-text">BSB Consulting</span>
+                <span className="main-gradient-text">BSB Consulting</span>
               </motion.h1>
               <motion.h2
                 initial={{ opacity: 0, y: 20 }}

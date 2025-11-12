@@ -264,7 +264,7 @@ const MembresiasDB = () => {
       <div className="container mx-auto px-4 py-16">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-6xl font-bold">
-            📦 Planes y Paquetes — <span className="main-gradient-text">BSB Capital</span>
+            Planes y Paquetes — <span className="main-gradient-text">BSB Capital</span>
           </h1>
           <p className="text-lg text-gray-600 mt-6">
             Soluciones especializadas en crypto y activos digitales diseñadas para tu perfil: persona, inversor avanzado o empresa.
@@ -277,7 +277,27 @@ const MembresiasDB = () => {
             const isLoading = loadingPlan === plan.id;
             
             return (
-              <Card key={plan.id} className={`${plan.highlight ? 'border-primary border-2 relative' : ''} h-full flex flex-col`}>
+              <motion.div 
+                key={plan.id}
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ 
+                  duration: 0.6, 
+                  delay: plans.indexOf(plan) * 0.1,
+                  type: "spring",
+                  bounce: 0.4
+                }}
+                whileHover={{ 
+                  scale: 1.05,
+                  transition: { 
+                    type: "spring", 
+                    stiffness: 400, 
+                    damping: 10 
+                  }
+                }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Card className={`${plan.highlight ? 'border-primary border-2 relative' : ''} h-full flex flex-col`}>
                 {plan.highlight && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                     <Badge className="bg-primary text-white px-4 py-1">Más Popular</Badge>
@@ -344,6 +364,7 @@ const MembresiasDB = () => {
                   </Button>
                 </CardFooter>
               </Card>
+              </motion.div>
             );
           })}
         </div>
@@ -359,7 +380,7 @@ const MembresiasDB = () => {
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button asChild variant="outline" size="lg">
+            <Button asChild variant="outline" size="lg" className="border-brand-green-600 text-gray-700 hover:bg-brand-green-600 hover:text-white">
               <a href="/guia-inversion">
                 Encuentra tu plan ideal <ArrowRight className="ml-2 h-4 w-4" />
               </a>
