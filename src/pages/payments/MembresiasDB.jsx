@@ -30,7 +30,8 @@ const fallbackPlans = [
       description: 'Introducción al ecosistema cripto',
       objective: 'Introducción al ecosistema cripto, optimización de primeras inversiones y base estratégica de gestión.',
       stripe_price_id: null,
-      stripe_price_id_annual: 'price_onboarding_crypto_390' // Usar el mismo ID que tienes en BD
+      stripe_price_id_annual: 'price_1SSshWJmSk3VG9oiU1cBNWgf', // Nuevo ID de Stripe
+      stripe_product_id: 'prod_TPi7iCVtydt3Cw' // Nuevo ID de producto
     },
     {
       id: 'inversor-premium',
@@ -50,7 +51,8 @@ const fallbackPlans = [
       description: 'Plan popular - Anual',
       objective: 'Acompañamiento continuo y personalizado para la gestión avanzada de inversiones en cripto y Web3.',
       stripe_price_id: null,
-      stripe_price_id_annual: 'price_inversor_premium_2400' // Usar el mismo ID que tienes en BD
+      stripe_price_id_annual: 'price_1SDKb2JmSk3VG9oiJr1unLZZ', // Mismo ID que Wealth Membership
+      stripe_product_id: 'prod_T9dspdTkGGM7Sy' // Mismo producto que Wealth Membership
     },
     {
       id: 'gestion-tesoreria-empresas',
@@ -68,7 +70,8 @@ const fallbackPlans = [
       description: 'Para empresas',
       objective: 'Ayudar a empresas a integrar y optimizar su tesorería en activos digitales, con análisis de riesgos, oportunidades y estrategias fiscales eficientes.',
       stripe_price_id: null,
-      stripe_price_id_annual: 'price_gestion_tesoreria_1200' // Usar el mismo ID que tienes en BD
+      stripe_price_id_annual: 'price_1SSsfoJmSk3VG9oi70AskCZv', // Nuevo ID de Stripe
+      stripe_product_id: 'prod_TPi5l6SK9nwBKF' // Nuevo ID de producto
     }
 ];
 

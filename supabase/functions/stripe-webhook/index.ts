@@ -197,10 +197,17 @@ serve(async (req: Request) => {
         
         // Mapeo entre priceId de Stripe y plan_id en la tabla subscription_plans
         const priceToPlanMap: Record<string, string> = {
+          // Planes existentes
           "price_1SDKO8JmSk3VG9oiCLuGoE4s": "4f27f890-55ea-4f61-b6f9-3b02b3a358fa", // Plan Trader Pro mensual
           "price_1SDKQZJmSk3VG9oiGudek18k": "9e38bc9e-7f4f-424c-87fe-6b4e453301d7", // Plan Trader Pro anual
-          "price_1SDKVXJmSk3VG9oiLEm9JOoD": "a9097647-e0bc-424c-bacb-7ccbae7a0853", // Otro plan
-          "price_1SDKb2JmSk3VG9oiJr1unLZZ": "d7435ab7-d543-4bdc-9cc4-6874d286aa48", // Otro plan
+          "price_1SDKVXJmSk3VG9oiLEm9JOoD": "a9097647-e0bc-424c-bacb-7ccbae7a0853", // Premium Investor anual
+          "price_1SDKb2JmSk3VG9oiJr1unLZZ": "d7435ab7-d543-4bdc-9cc4-6874d286aa48", // Wealth Membership (Trader Premium)
+          
+          // Nuevos productos crypto con UUIDs específicos
+          "price_1SSshWJmSk3VG9oiU1cBNWgf": "98e48de0-7d37-4e0f-afb8-da0e041d2ae2", // Onboarding Cripto
+          "price_1SSsfoJmSk3VG9oi70AskCZv": "235cb6d6-e532-4a0f-a657-863a68972851", // Gestión de Tesorería
+          
+          // Nota: Inversor Premium (8dd4df50-6acb-4c98-ab89-a7c6736142ef) usa el mismo price_id que Wealth Membership
         };
         
         // Para suscripciones, el subscription ID puede ser null inicialmente
