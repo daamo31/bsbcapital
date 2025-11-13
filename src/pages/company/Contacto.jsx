@@ -21,9 +21,9 @@ const Contacto = () => {
         className="container mx-auto px-4 py-16"
       >
         <div className="text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-brand-text-primary">Ponte en Contacto</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-brand-text-primary">🚀 Ponte en Contacto con BSB Capital</h1>
           <p className="mt-4 text-lg text-brand-text-secondary max-w-2xl mx-auto">
-            ¿Tienes alguna pregunta o quieres saber más sobre nuestros servicios? No dudes en contactarnos.
+            Tu camino hacia decisiones financieras más inteligentes empieza con una conversación. Estamos aquí para guiarte.
           </p>
         </div>
 
@@ -34,8 +34,8 @@ const Contacto = () => {
                 <Mail className="h-6 w-6" />
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-brand-text-primary">Email</h3>
-                <p className="text-brand-text-secondary">La forma más rápida de obtener una respuesta.</p>
+                <h3 className="text-xl font-semibold text-brand-text-primary">📧 Email – Respuesta inmediata</h3>
+                <p className="text-brand-text-secondary">La forma más rápida de resolver tus dudas o recibir información sobre nuestros servicios.</p>
                 <a href={`mailto:${contactEmail}`} className="text-brand-primary font-medium hover:underline">
                   {contactEmail}
                 </a>
@@ -46,21 +46,9 @@ const Contacto = () => {
                 <MapPin className="h-6 w-6" />
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-brand-text-primary">Oficina Principal</h3>
-                <p className="text-brand-text-secondary">Nuestra sede central para operaciones globales.</p>
+                <h3 className="text-xl font-semibold text-brand-text-primary">🏢 Oficina Principal – Operaciones Globales</h3>
+                <p className="text-brand-text-secondary">Nuestro hub estratégico en Dubái, conectando inversiones y oportunidades alrededor del mundo.</p>
                 <p className="font-medium text-brand-text-primary">Dubái, Emiratos Árabes Unidos</p>
-              </div>
-            </div>
-             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 bg-brand-primary/10 text-brand-primary p-3 rounded-full">
-                <Phone className="h-6 w-6" />
-              </div>
-              <div>
-                <h3 className="text-xl font-semibold text-brand-text-primary">Agenda una Llamada</h3>
-                <p className="text-brand-text-secondary">Reserva una consultoría directamente con nuestro equipo.</p>
-                <Button asChild variant="link" className="p-0 h-auto text-brand-primary">
-                    <a href="/consultoria">Ver servicios de consultoría</a>
-                </Button>
               </div>
             </div>
           </div>
@@ -74,12 +62,59 @@ const Contacto = () => {
           </div>
         </div>
         
-        <div className="text-center mt-20">
-            <Button size="lg" asChild>
-                <a href={`mailto:${contactEmail}`}>
-                    Enviar un Mensaje Directo <Mail className="ml-2 h-5 w-5" />
-                </a>
-            </Button>
+        {/* Sección Mensaje Directo */}
+        <div className="mt-20 max-w-2xl mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-brand-text-primary">💬 Mensaje Directo</h2>
+            <p className="text-brand-text-secondary mt-2">
+              ¿Prefieres escribirnos? Envíanos un mensaje y te responderemos con recomendaciones concretas y soluciones prácticas.
+            </p>
+          </div>
+          
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.target);
+              const subject = formData.get('subject');
+              const message = formData.get('message');
+              window.location.href = `mailto:${contactEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+            }}
+            className="space-y-6"
+          >
+            <div>
+              <label htmlFor="subject" className="block text-sm font-medium text-brand-text-primary mb-2">
+                Asunto
+              </label>
+              <input
+                type="text"
+                id="subject"
+                name="subject"
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary"
+                placeholder="¿En qué podemos ayudarte?"
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="message" className="block text-sm font-medium text-brand-text-primary mb-2">
+                Tu mensaje
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                rows={5}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-brand-primary"
+                placeholder="Cuéntanos más detalles sobre tu consulta..."
+              ></textarea>
+            </div>
+            
+            <div className="text-center">
+              <Button type="submit" size="lg">
+                Enviar Mensaje <Mail className="ml-2 h-5 w-5" />
+              </Button>
+            </div>
+          </form>
         </div>
       </motion.div>
     </>

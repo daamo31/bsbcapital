@@ -15,6 +15,7 @@ import DetailedConsultationForm from '@/components/consultations/DetailedConsult
 import FinancialPlanningForm from '@/components/consultations/forms/FinancialPlanningForm';
 import OnboardingCryptoForm from '@/components/consultations/forms/OnboardingCryptoForm';
 import GenericConsultationForm from '@/components/consultations/forms/GenericConsultationForm';
+import TreasuryEnterpriseForm from '@/components/consultations/forms/TreasuryEnterpriseForm';
 import { 
   CheckCircle, 
   Loader2, 
@@ -82,9 +83,10 @@ const ConsultationPostPayment = () => {
         return <FinancialPlanningForm formData={formData} setFormData={setFormData} />;
       case 'onboarding_crypto':
         return <OnboardingCryptoForm formData={formData} setFormData={setFormData} />;
+      case 'crypto_advanced':
+        return <TreasuryEnterpriseForm formData={formData} setFormData={setFormData} />;
       case 'portfolio':
       case 'strategy':
-      case 'crypto_advanced':
         // Por ahora usar genérico, más tarde añadiremos los específicos
         return <GenericConsultationForm formData={formData} setFormData={setFormData} />;
       default:
@@ -407,6 +409,14 @@ const ConsultationPostPayment = () => {
       case 'onboarding_crypto':
         isValidForType = formData.country && formData.crypto_experience_level && formData.crypto_knowledge_level && formData.initial_crypto_capital && formData.consultation_main_goal;
         break;
+      case 'crypto_advanced':
+        // Validación para formulario empresarial de gestión de tesorería
+        isValidForType = formData.company_name && formData.company_country && formData.contact_person && 
+                         formData.crypto_usage && formData.monthly_crypto_volume && formData.crypto_storage_location &&
+                         formData.main_treasury_goal && formData.risk_profile && formData.twelve_month_vision &&
+                         formData.current_controls && formData.legal_advice && formData.accounting_records && 
+                         formData.consultation_expectations;
+        break;
       default:
         isValidForType = formData.consultation_main_goal || formData.consultation_goals;
         break;
@@ -449,7 +459,7 @@ const ConsultationPostPayment = () => {
     console.log('Email del usuario:', user?.email);
 
     try {
-      // �️ MAPEO DINÁMICO DE TODOS LOS CAMPOS DE LA TABLA (PRIMERO)
+      // 📄 MAPEO DINÁMICO DE TODOS LOS CAMPOS DE LA TABLA (PRIMERO)
       const fieldLabels = {
         // Información básica
         client_name: 'Nombre del cliente',
@@ -482,6 +492,22 @@ const ConsultationPostPayment = () => {
         crypto_knowledge_level: 'Nivel de conocimiento cripto',
         initial_crypto_capital: 'Capital inicial para cripto',
         crypto_interest_motivation: 'Motivación por el mundo cripto',
+        
+        // 🏢 Campos específicos empresariales
+        company_name: 'Nombre de la empresa',
+        company_country: 'País de residencia fiscal',
+        company_website: 'Sitio web de la empresa',
+        contact_person: 'Persona de contacto principal',
+        crypto_usage: 'Uso actual de criptomonedas',
+        monthly_crypto_volume: 'Volumen mensual en operaciones',
+        crypto_assets_held: 'Activos crypto que mantiene',
+        crypto_storage_location: 'Método de almacenamiento',
+        main_treasury_goal: 'Objetivo principal de tesorería',
+        risk_profile: 'Perfil de riesgo empresarial',
+        twelve_month_vision: 'Visión a 12 meses',
+        current_controls: 'Controles internos actuales',
+        legal_advice: 'Asesoramiento legal especializado',
+        accounting_records: 'Sistema de registro contable',
         
         // Comunicación
         preferred_communication: 'Preferencia de comunicación',
@@ -555,6 +581,22 @@ const ConsultationPostPayment = () => {
         crypto_knowledge_level: formData.crypto_knowledge_level,
         initial_crypto_capital: formData.initial_crypto_capital,
         crypto_interest_motivation: formData.crypto_interest_motivation,
+        
+        // 🏢 Campos específicos empresariales (formulario de tesorería)
+        company_name: formData.company_name,
+        company_country: formData.company_country,
+        company_website: formData.company_website,
+        contact_person: formData.contact_person,
+        crypto_usage: formData.crypto_usage,
+        monthly_crypto_volume: formData.monthly_crypto_volume,
+        crypto_assets_held: formData.crypto_assets_held,
+        crypto_storage_location: formData.crypto_storage_location,
+        main_treasury_goal: formData.main_treasury_goal,
+        risk_profile: formData.risk_profile,
+        twelve_month_vision: formData.twelve_month_vision,
+        current_controls: formData.current_controls,
+        legal_advice: formData.legal_advice,
+        accounting_records: formData.accounting_records,
         
         // ✅ NUEVA COLUMNA JSON ESTRUCTURADA
         form_data_json: formDataJson,

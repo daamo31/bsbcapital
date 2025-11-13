@@ -89,7 +89,7 @@ const PreRegistrationForm = () => {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-center text-muted-foreground mb-6">Sé de los primeros en probar nuestro copiloto de trading con IA.</p>
+        <p className="text-center text-muted-foreground mb-6">Sé de los primeros en probar nuestro asistente de trading con IA.</p>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="name">👤 Nombre y apellidos</Label>
@@ -155,7 +155,7 @@ const BsbMaker = () => {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-4xl md:text-6xl font-extrabold tracking-tight"
             >
-              <span className="accent-gradient-text">🚀 BSB Maker:</span> tu copiloto de trading con IA
+              <span className="accent-gradient-text">🚀 BSB Maker:</span> tu asistente de trading con IA
             </motion.h1>
             <motion.p 
               initial={{ y: 20, opacity: 0 }}
@@ -172,7 +172,7 @@ const BsbMaker = () => {
               className="mt-10"
             >
               <Button asChild size="lg">
-                <a href="#preregistro">Únete al Preregistro Exclusivo <ArrowRight className="ml-2"/></a>
+                <a href="#preregistro">🚀 Preregistro Exclusivo BSB Maker <ArrowRight className="ml-2"/></a>
               </Button>
             </motion.div>
           </div>
@@ -192,7 +192,7 @@ const BsbMaker = () => {
         <div className="py-24 aurora-background">
           <div className="container mx-auto px-4">
             <div className="text-center max-w-3xl mx-auto mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold">Un copiloto que piensa como un trader institucional</h2>
+              <h2 className="text-3xl md:text-4xl font-bold">              El futuro del trading está en construcción… y tú puedes ser de los primeros en vivirlo.</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <FeatureItem icon={<BarChart />} text="Analiza el mercado en tiempo real para detectar oportunidades antes de que aparezcan en los titulares." />

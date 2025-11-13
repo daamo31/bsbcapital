@@ -124,6 +124,14 @@ Deno.serve({ port: 8000 }, async (req) => {
       requestBody: JSON.stringify(requestBody)
     });
 
+    // Debug específico para client_name
+    console.log("🔍 CLIENT_NAME DEBUG:", {
+      'metadata.client_name': (metadata as any).client_name,
+      'metadata type': typeof (metadata as any).client_name,
+      'metadata keys': Object.keys(metadata),
+      'full metadata': metadata
+    });
+
     console.log("create-stripe-checkout request received", { priceId, mode, userId, email, contentType, rawLength: rawBody?.length || 0 });
     console.log("Payload recibido en create-stripe-checkout:", requestBody);
 
@@ -206,9 +214,19 @@ Deno.serve({ port: 8000 }, async (req) => {
       );
     }
 
-    // Crear pre-reserva de consulta si es un checkout de consultoría (mode === 'payment')
+    // Crear pre-reserva de consulta si es un checkout de consultoría (mode === 'payment' Y no es un plan)
     let consultationId: string | undefined;
-    if (mode === "payment") {
+    const isPlanPurchase = (metadata as any)?.access_type === 'premium' || (metadata as any)?.package_type === 'individual';
+    
+    console.log("🔍 PURCHASE TYPE DEBUG:", {
+      mode,
+      isPlanPurchase,
+      'metadata.access_type': (metadata as any)?.access_type,
+      'metadata.package_type': (metadata as any)?.package_type,
+      shouldCreateConsultation: mode === "payment" && !isPlanPurchase
+    });
+    
+    if (mode === "payment" && !isPlanPurchase) {
       const allowedConsultationTypes = new Set(["investment", "portfolio", "strategy", "technical", "general", "financial_planning", "onboarding_crypto"]);
       const incomingType = (metadata as any).consultation_type as string | undefined;
       

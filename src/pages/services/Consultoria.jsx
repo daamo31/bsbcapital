@@ -204,7 +204,7 @@ const BookingModal = () => {
     }}>
       <DialogTrigger asChild>
         <Button size="lg">
-          Agendar una llamada <ArrowRight className="ml-2 h-5 w-5" />
+          📌 Reserva tu consultoría crypto ahora <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-[95vw] sm:max-w-lg max-h-[90vh] overflow-y-auto">
@@ -257,7 +257,7 @@ const BookingModal = () => {
                     onClick={() => handleSelectChange('duration', '30min')}
                     className={`h-16 flex flex-col ${formData.duration === "30min" ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""}`}
                   >
-                    <span className="font-semibold">30 min</span>
+                    <span className="font-semibold">30 min - 200€</span>
                     <span className="text-xs opacity-70">Consulta rápida</span>
                   </Button>
                   <Button
@@ -266,7 +266,7 @@ const BookingModal = () => {
                     onClick={() => handleSelectChange('duration', '60min')}
                     className={`h-16 flex flex-col ${formData.duration === "60min" ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""}`}
                   >
-                    <span className="font-semibold">60 min</span>
+                    <span className="font-semibold">45 min - 300€</span>
                     <span className="text-xs opacity-70">Consulta completa</span>
                   </Button>
                   <Button
@@ -618,7 +618,7 @@ const Consultoria = () => {
           <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-bold text-center main-gradient-text mb-12">
-                Nuestro enfoque y metodología
+                Nuestro enfoque y metodología:
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <motion.div 
@@ -629,7 +629,7 @@ const Consultoria = () => {
                 >
                   <div className="flex items-center mb-4">
                     <div className="w-8 h-8 bg-brand-primary text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">1</div>
-                    <h3 className="text-lg font-bold text-brand-text-primary">Completa tu formulario de diagnóstico</h3>
+                    <h3 className="text-lg font-bold text-brand-text-primary">📝 Completa tu formulario de diagnóstico</h3>
                   </div>
                   <p className="text-brand-text-secondary">Con esta información, en BSB Consulting diseñamos un plan personalizado que te permita avanzar con seguridad en tus inversiones y decisiones financieras.</p>
                 </motion.div>
@@ -642,7 +642,7 @@ const Consultoria = () => {
                 >
                   <div className="flex items-center mb-4">
                     <div className="w-8 h-8 bg-brand-primary text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">2</div>
-                    <h3 className="text-lg font-bold text-brand-text-primary">Análisis personalizado de activos y riesgos</h3>
+                    <h3 className="text-lg font-bold text-brand-text-primary">📈 Análisis personalizado de activos y riesgos</h3>
                   </div>
                   <p className="text-brand-text-secondary">Identificamos oportunidades y amenazas invisibles en tu cartera.</p>
                 </motion.div>
@@ -655,7 +655,7 @@ const Consultoria = () => {
                 >
                   <div className="flex items-center mb-4">
                     <div className="w-8 h-8 bg-brand-primary text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">3</div>
-                    <h3 className="text-lg font-bold text-brand-text-primary">Diseño del plan de acción</h3>
+                    <h3 className="text-lg font-bold text-brand-text-primary">🧭 Diseño del plan de acción</h3>
                   </div>
                   <p className="text-brand-text-secondary">Estrategias concretas desde wallets y exchanges hasta inversiones en DeFi, NFTs y proyectos Web3.</p>
                 </motion.div>
@@ -668,7 +668,7 @@ const Consultoria = () => {
                 >
                   <div className="flex items-center mb-4">
                     <div className="w-8 h-8 bg-brand-primary text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">4</div>
-                    <h3 className="text-lg font-bold text-brand-text-primary">Seguimiento y ajustes</h3>
+                    <h3 className="text-lg font-bold text-brand-text-primary">🔁 Seguimiento y ajustes</h3>
                   </div>
                   <p className="text-brand-text-secondary">Revisiones periódicas para adaptarte a cambios de mercado y nuevas oportunidades.</p>
                 </motion.div>
@@ -686,7 +686,7 @@ const Consultoria = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 max-w-6xl mx-auto">
               <div className="bg-card backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border border-border hover:shadow-xl transition-all duration-300 hover:border-primary/30">
                 <BarChart3 className="h-12 w-12 text-primary mb-4" />
-                <h3 className="text-xl font-bold text-foreground mb-3">💼 Optimización de cartera</h3>
+                <h3 className="text-xl font-bold text-foreground mb-3">Optimización de cartera</h3>
                 <p className="text-muted-foreground">Optimizamos tus activos digitales para equilibrar rentabilidad y seguridad, integrando cripto de forma estratégica.</p>
               </div>
               <div className="bg-card backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border border-border hover:shadow-xl transition-all duration-300 hover:border-primary/30">
@@ -786,7 +786,7 @@ const Consultoria = () => {
               <div className="text-center mt-12">
                 <Button asChild size="lg">
                   <a href="#agendar-sesion">
-                    Agenda tu sesión 1:1 <ArrowRight className="ml-2 h-5 w-5" />
+                    📌 Agenda tu sesión 1:1 <ArrowRight className="ml-2 h-5 w-5" />
                   </a>
                 </Button>
               </div>
@@ -1131,7 +1131,7 @@ const Consultoria = () => {
               <Button asChild variant="outline" size="lg">
                 <a href="mailto:info@bsbcapital.io" className="flex items-center">
                   <Mail className="mr-2 h-4 w-4" />
-                  info@bsbcapital.io
+                  📌 [Reserva tu consultoría ahora]
                 </a>
               </Button>
             </div>

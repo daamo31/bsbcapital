@@ -33,7 +33,7 @@ import React, { useState } from 'react';
         question: "¿Cuál es tu objetivo principal?",
         options: [
           { text: "Optimizar mis inversiones en cripto y mejorar mis decisiones de cartera", service: "optimizacion-carteras" },
-          { text: "Aprender nuevos conceptos que se transformen en rentabilidad", service: "bsb-academy" },
+          { text: "Aprender nuevos conceptos que se transformen en rentabilidad", service: "bsb-academy-inversor" },
           { text: "Contar con herramientas que simplifiquen mis decisiones y estrategias", service: "bsb-maker" },
           { text: "Gestionar mi cartera de forma profesional y maximizar resultados", service: "inversor-premium" }
         ]
@@ -42,31 +42,31 @@ import React, { useState } from 'react';
         question: "¿Qué necesitas para tu desarrollo profesional?",
         options: [
           { text: "Optimizar estrategias de clientes con acompañamiento estratégico", service: "consultoria-crypto-web3" },
-          { text: "Ampliar conocimientos y herramientas sin depender de nadie", service: "bsb-academy" }
+          { text: "Ampliar conocimientos y herramientas sin depender de nadie", service: "bsb-academy-asesor" }
         ]
       }
     };
 
     const serviceInfo = {
       "gestion-tesoreria-cripto": { 
-        title: "Paquete Gestión de Tesorería Cripto para Empresa", 
-        description: "Pensado para empresas que ya operan o quieren empezar a operar con activos digitales. Gestión estratégica, segura y personalizada para optimizar rendimientos, liquidez y control operativo.", 
-        details: "• Análisis inicial de la estructura financiera digital\n• Diseño del plan de gestión de tesorería cripto\n• Implantación de herramientas y protocolos de control\n• Revisión mensual durante 6 meses (renovable)",
+        title: "Paquete Gestión de tesorería cripto para empresa", 
+        description: "2 consultorías personalizadas (1h cada una):\n- Análisis inicial de la estructura financiera: revisión de wallets, exchanges, custodias y flujos de capital.\n- Diseño del plan de gestión de tesorería crypto: estrategias de diversificación, liquidez y cobertura frente a la volatilidad.\n- Implantación de herramientas y protocolos de control (seguridad, reporting, compliance).\nSeguimiento mensual (6 meses): para evaluar resultados, ajustar estrategias y asegurar un crecimiento sostenido.\nRenovación posterior: €80/mes", 
+        details: "• 2 consultorías personalizadas (1h cada una)\n• Plan de tesorería y estructura de cartera corporativa\n• Seguimiento mensual (6 meses)\n• Renovación posterior: €80/mes",
         icon: <Briefcase className="h-8 w-8 text-brand-primary" />, 
-        link: "/consultoria" 
+        link: "/membresias" 
       },
       "bsb-academy": { 
         title: "BSB Academy", 
-        description: "Aprende a invertir en cripto de forma sólida, práctica y a tu ritmo. Formación dinámica con los conocimientos esenciales para entender los mercados, gestionar riesgos y construir estrategias desde cero.", 
+        description: "Aprende a invertir en cripto de forma sólida, práctica y a tu ritmo. Nuestra Academia te ofrece los conocimientos esenciales para entender los mercados, gestionar riesgos y construir tus propias estrategias desde cero, sin depender de nadie.", 
         icon: <BookOpen className="h-8 w-8 text-brand-primary" />, 
         link: "/academia" 
       },
       "onboarding-cripto": { 
         title: "Paquete Onboarding Cripto", 
-        description: "Ideal para empezar con seguridad, acompañamiento y una base sólida de conocimiento.", 
+        description: "Acceso a Academia anual", 
         details: "• 2 consultorías de 1h\n• Acceso a Academia 1 año\n• Dossier de buenas prácticas",
         icon: <Bot className="h-8 w-8 text-brand-primary" />, 
-        link: "/consultoria" 
+        link: "/membresias" 
       },
       "optimizacion-carteras": { 
         title: "Consultoría de Optimización de Carteras", 
@@ -85,7 +85,19 @@ import React, { useState } from 'react';
         description: "Un programa completo de acompañamiento diseñado para quienes buscan una gestión profesional y un rendimiento óptimo de su cartera.", 
         details: "• 6 consultorías de 1h\n• Revisión semestral de cartera\n• Acceso exclusivo a nuestra comunidad de inversores",
         icon: <Briefcase className="h-8 w-8 text-brand-primary" />, 
-        link: "/consultoria" 
+        link: "/membresias" 
+      },
+      "bsb-academy-asesor": { 
+        title: "BSB Academy", 
+        description: "Accede a formación práctica y estructurada. Ideal para profesionales que quieren actualizarse, dominar nuevas técnicas y adquirir herramientas aplicables en su trabajo diario.", 
+        icon: <BookOpen className="h-8 w-8 text-brand-primary" />, 
+        link: "/academia" 
+      },
+      "consultoria-crypto-web3": {
+        title: "BSB Academy", 
+        description: "Formación práctica y estructurada para adquirir conocimientos sólidos y aplicables en tus inversiones.", 
+        icon: <BookOpen className="h-8 w-8 text-brand-primary" />, 
+        link: "/academia" 
       },
       "consultoria-crypto-web3": { 
         title: "Consultoría Crypto & Web 3", 

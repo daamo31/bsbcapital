@@ -63,28 +63,28 @@ import React from 'react';
     const services = [
       {
         icon: <Briefcase />,
-        title: ' Consultoría Crypto',
+        title: '💼 BSB Consulting: Consultoría especializada en crypto',
         description: 'Asesoramiento profesional diseñado para el nuevo entorno financiero. Te ayudamos a gestionar, optimizar y estructurar tu cartera, construir estrategias sostenibles y reducir riesgos en tus operaciones con criptoactivos.',
         href: '/consultoria',
       },
       {
         icon: <BookOpen />,
-        title: ' Academia Crypto & Finanzas Digitales',
+        title: '📚 BSB Academy: Formación especializada en crypto y activos digitales',
         description: 'Aprende a invertir con autonomía y criterio. Nuestra formación combina píldoras rápidas, masterclasses especializadas y contenido actualizado para que desarrolles una mentalidad financiera sólida y entiendas realmente cómo funciona el ecosistema crypto.',
         href: '/academia',
       },
       {
         icon: <Bot />,
-        title: 'BSB Maker — Tu Asistente de Inversión con IA',
-        description: 'Lleva tus decisiones al siguiente nivel con nuestra herramienta de Inteligencia Artificial diseñada para inversores crypto. Analiza, compara y optimiza tus estrategias: backtesting de estrategias, señales e insights personalizados, simulación de escenarios y gestión de riesgo, y mucho más.',
+        title: '🚀 BSB Maker: tu asistente de trading con IA',
+        description: 'Un asistente que piensa como un trader institucional',
         href: '/bsb-maker',
         buttonText: 'Explorar BSB Maker'
       },
       {
         icon: <Star />,
-        title: ' Paquetes y Membresía',
-        description: 'Descubre nuestros paquetes diseñados para tu perfil, combinando consultoría, formación y herramientas con IA según tus necesidades: ya seas empresa, inversor o asesor financiero.',
-        details: '• Descuentos especiales en servicios y formación.\n• Eventos y masterclasses con expertos en crypto y finanzas digitales.\n• Comunidad privada de inversores y profesionales del sector.',
+        title: '🌐 Paquetes y membresía exclusiva',
+        description: 'Descubre nuestros paquetes diseñados para tu perfil, combinando consultoría, formación y herramientas con IA según tus necesidades: ya seas empresa, inversor o quieras introducirte en el ecosistema crypto.\n\nAdemás, con nuestra membresía exclusiva tendrás acceso a:',
+        details: '• Descuentos especiales en nuestros servicios.\n• Acceso anticipado al BSB Maker.\n• Acceso anual a BSB Academy\n• Eventos y reuniones con expertos en crypto.',
         href: '/membresias',
       },
     ];
@@ -168,7 +168,7 @@ import React from 'react';
                     <motion.div variants={itemVariants} className="mt-6 sm:mt-10">
                       <Button asChild size="lg" className="px-8 py-4 shadow-lg">
                         <Link to="/guia-inversion">
-                          Descubrir mi Servicio Ideal <ArrowRight className="ml-2 h-5 w-5" />
+                          ENCUENTRA TU SERVICIO IDEAL <ArrowRight className="ml-2 h-5 w-5" />
                         </Link>
                       </Button>
                     </motion.div>
