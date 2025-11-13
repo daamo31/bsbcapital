@@ -18,9 +18,6 @@ import { Textarea } from "@/components/ui/forms/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/forms/select";
 import { loadStripe } from '@stripe/stripe-js';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
-import { Particles, ParticlesEffect } from '@/components/animate-ui/primitives/effects/particles';
-import { Magnetic } from '@/components/animate-ui/primitives/effects/magnetic';
-import { ShimmeringText } from '@/components/animate-ui/primitives/texts/shimmering';
 
 const STRIPE_PUBLISHABLE_KEY = 'pk_live_51Rne6CJmSk3VG9oipr5fPA32tndC3TFLYHWrENknJ8fcNvIq8A3Nq0KfLdvwkMAyFvgLOWECBpIuzE2THTX4Mb1s00zqHyg0op';
 
@@ -562,7 +559,7 @@ const Consultoria = () => {
       >
         {/* Hero Section */}
         <header className="py-12 md:py-32 text-center aurora-background relative overflow-hidden">
-          <Particles inView>
+          
             <div className="container mx-auto px-4 sm:px-6 relative z-10">
               <motion.h1
                 initial={{ opacity: 0, y: 20 }}
@@ -609,7 +606,7 @@ const Consultoria = () => {
               delay={0.3}
               className="w-1.5 h-1.5 bg-primary/60 rounded-full opacity-60"
             />
-          </Particles>
+          
         </header>
 
         {/* Storytelling Section */}

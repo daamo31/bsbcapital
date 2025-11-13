@@ -10,9 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { useToast } from '@/components/ui/feedback/use-toast';
 import { ArrowRight, Check, Zap, BrainCircuit, ShieldCheck, BarChart, Rocket, AlertTriangle, Sparkles, Loader2, Target, BookOpen } from 'lucide-react';
-import { Magnetic } from '@/components/animate-ui/primitives/effects/magnetic';
-import { ShimmeringText } from '@/components/animate-ui/primitives/texts/shimmering';
-import { RippleButton, RippleButtonRipples } from '@/components/animate-ui/primitives/buttons/ripple';
 
 const PreRegistrationForm = () => {
   const [name, setName] = useState('');
@@ -123,16 +120,13 @@ const PreRegistrationForm = () => {
               </label>
             </div>
           </div>
-          <RippleButton 
+          <Button 
             type="submit" 
             className="w-full bg-yellow-400 text-gray-900 hover:bg-yellow-500 h-11 px-8 rounded-md font-medium"
             disabled={loading}
-            tapScale={0.98}
-            hoverScale={1.02}
           >
             {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Reservar mi acceso anticipado'}
-            <RippleButtonRipples color="rgba(255, 255, 255, 0.3)" />
-          </RippleButton>
+          </Button>
         </form>
       </CardContent>
     </Card>
@@ -177,11 +171,9 @@ const BsbMaker = () => {
               transition={{ duration: 0.5, delay: 0.3 }} 
               className="mt-10"
             >
-              <Magnetic strength={0.4} range={120}>
-                <Button asChild size="lg" className="bg-yellow-400 hover:bg-yellow-500 text-gray-900">
-                  <a href="#preregistro">Únete al Preregistro Exclusivo <ArrowRight className="ml-2"/></a>
-                </Button>
-              </Magnetic>
+              <Button asChild size="lg" className="bg-yellow-400 hover:bg-yellow-500 text-gray-900">
+                <a href="#preregistro">Únete al Preregistro Exclusivo <ArrowRight className="ml-2"/></a>
+              </Button>
             </motion.div>
           </div>
         </div>
@@ -222,7 +214,7 @@ const BsbMaker = () => {
                 Beneficios que notarás desde el primer momento
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <Magnetic strength={0.15} range={60} onlyOnHover>
+                
                   <motion.div 
                     initial={{ y: 20, opacity: 0 }}
                     whileInView={{ y: 0, opacity: 1 }}
@@ -234,9 +226,9 @@ const BsbMaker = () => {
                     </div>
                     <p className="font-semibold text-lg text-foreground">Toma decisiones más rápidas y efectivas.</p>
                   </motion.div>
-                </Magnetic>
                 
-                <Magnetic strength={0.15} range={60} onlyOnHover>
+                
+                
                   <motion.div 
                     initial={{ y: 20, opacity: 0 }}
                     whileInView={{ y: 0, opacity: 1 }}
@@ -248,9 +240,9 @@ const BsbMaker = () => {
                     </div>
                     <p className="font-semibold text-lg text-foreground">Reduce errores por exceso de información o impulsividad.</p>
                   </motion.div>
-                </Magnetic>
                 
-                <Magnetic strength={0.15} range={60} onlyOnHover>
+                
+                
                   <motion.div 
                     initial={{ y: 20, opacity: 0 }}
                     whileInView={{ y: 0, opacity: 1 }}
@@ -262,9 +254,9 @@ const BsbMaker = () => {
                     </div>
                     <p className="font-semibold text-lg text-foreground">Accede a estrategias de trading profesional sin ser un experto.</p>
                   </motion.div>
-                </Magnetic>
                 
-                <Magnetic strength={0.15} range={60} onlyOnHover>
+                
+                
                   <motion.div 
                     initial={{ y: 20, opacity: 0 }}
                     whileInView={{ y: 0, opacity: 1 }}
@@ -276,7 +268,7 @@ const BsbMaker = () => {
                     </div>
                     <p className="font-semibold text-lg text-foreground">Sé parte de un proyecto innovador desde sus inicios.</p>
                   </motion.div>
-                </Magnetic>
+                
               </div>
             </div>
           </div>

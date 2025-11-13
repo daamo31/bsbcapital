@@ -9,10 +9,6 @@ import React from 'react';
     import { useToast } from "@/components/ui/feedback/use-toast";
     import { useAuth } from '@/contexts/SupabaseAuthContext';
     import { useAdmin } from '@/hooks/useAdmin';
-    import { Particles, ParticlesEffect } from '@/components/animate-ui/primitives/effects/particles';
-    import { Magnetic } from '@/components/animate-ui/primitives/effects/magnetic';
-    import { ShimmeringText } from '@/components/animate-ui/primitives/texts/shimmering';
-    import { Tilt, TiltContent } from '@/components/animate-ui/primitives/effects/tilt';
 
     const containerVariants = {
       hidden: { opacity: 0 },
@@ -39,33 +35,29 @@ import React from 'react';
     };
 
     const ServiceCard = ({ icon, title, description, href, details, buttonText = "Saber más" }) => (
-      <Tilt maxTilt={5} perspective={1000}>
-        <TiltContent>
-          <Magnetic strength={0.2} range={80} onlyOnHover>
-            <motion.div 
-              variants={itemVariants} 
-              className="bg-card p-4 sm:p-6 lg:p-8 rounded-xl shadow-lg border border-border hover:shadow-xl hover:border-primary/30 transition-all duration-300 flex flex-col group h-full backdrop-blur-sm"
-            >
-              <div className="flex-shrink-0 text-primary">{React.cloneElement(icon, { className: "h-8 w-8 sm:h-10 sm:w-10" })}</div>
-              <h3 className="mt-4 sm:mt-6 text-xl sm:text-2xl font-bold text-foreground">{title}</h3>
-              <p className="mt-3 text-muted-foreground flex-grow">{description}</p>
-              {details && (
-                <div className="mt-4 p-4 bg-primary/5 rounded-lg border border-primary/10">
-                  <h4 className="font-semibold text-foreground mb-2">Además, con nuestra membresía exclusiva tendrás acceso a:</h4>
-                  <div className="text-sm text-muted-foreground whitespace-pre-line">
-                    {details}
-                  </div>
-                </div>
-              )}
-              <Button asChild variant="link" className="mt-6 p-0 text-primary hover:text-primary/80 self-start font-medium">
-                <Link to={href}>
-                  {buttonText} <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </Button>
-            </motion.div>
-          </Magnetic>
-        </TiltContent>
-      </Tilt>
+      <motion.div 
+        variants={itemVariants} 
+        className="bg-card p-4 sm:p-6 lg:p-8 rounded-xl shadow-lg border border-border hover:shadow-xl hover:border-primary/30 transition-all duration-300 flex flex-col group h-full backdrop-blur-sm"
+        whileHover={{ scale: 1.02 }}
+        transition={{ type: "spring", stiffness: 400, damping: 10 }}
+      >
+        <div className="flex-shrink-0 text-primary">{React.cloneElement(icon, { className: "h-8 w-8 sm:h-10 sm:w-10" })}</div>
+        <h3 className="mt-4 sm:mt-6 text-xl sm:text-2xl font-bold text-foreground">{title}</h3>
+        <p className="mt-3 text-muted-foreground flex-grow">{description}</p>
+        {details && (
+          <div className="mt-4 p-4 bg-primary/5 rounded-lg border border-primary/10">
+            <h4 className="font-semibold text-foreground mb-2">Además, con nuestra membresía exclusiva tendrás acceso a:</h4>
+            <div className="text-sm text-muted-foreground whitespace-pre-line">
+              {details}
+            </div>
+          </div>
+        )}
+        <Button asChild variant="link" className="mt-6 p-0 text-primary hover:text-primary/80 self-start font-medium">
+          <Link to={href}>
+            {buttonText} <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Link>
+        </Button>
+      </motion.div>
     );
 
     const services = [
@@ -163,8 +155,7 @@ import React from 'react';
             transition={{ duration: 0.5 }}
           >
             {/* Hero Section */}
-            <section className="relative aurora-background text-foreground overflow-hidden">
-              <Particles inView>
+            <section className="relative aurora-background">
                 <div className="container mx-auto px-4 sm:px-6 text-center relative z-10 pt-4 pb-8 sm:pt-6 sm:pb-12 md:pt-8 md:pb-16">
                   <motion.div variants={containerVariants} initial="hidden" animate="visible">
                     <motion.h1 variants={itemVariants} className="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl font-extrabold leading-tight">
@@ -176,33 +167,14 @@ import React from 'react';
                       Unimos consultoría estratégica, formación práctica y herramientas con IA para que tomes decisiones con claridad, confianza y visión de futuro.
                     </motion.p>
                     <motion.div variants={itemVariants} className="mt-6 sm:mt-10">
-                      <Magnetic strength={0.3} range={100}>
-                        <Button asChild size="lg" className="bg-yellow-400 hover:bg-yellow-500 text-gray-800 px-8 py-4 shadow-lg">
-                          <Link to="/guia-inversion">
-                            Descubrir mi Servicio Ideal <ArrowRight className="ml-2 h-5 w-5" />
-                          </Link>
-                        </Button>
-                      </Magnetic>
+                      <Button asChild size="lg" className="bg-yellow-400 hover:bg-yellow-500 text-gray-800 px-8 py-4 shadow-lg">
+                        <Link to="/guia-inversion">
+                          Descubrir mi Servicio Ideal <ArrowRight className="ml-2 h-5 w-5" />
+                        </Link>
+                      </Button>
                     </motion.div>
                   </motion.div>
                 </div>
-                <ParticlesEffect 
-                  side="top" 
-                  align="center" 
-                  count={8} 
-                  radius={50} 
-                  duration={1.2}
-                  className="w-2 h-2 bg-primary/60 rounded-full opacity-60"
-                />
-                <ParticlesEffect 
-                  side="bottom" 
-                  align="end" 
-                  count={6} 
-                  radius={40} 
-                  delay={0.5}
-                  className="w-1.5 h-1.5 bg-accent/70 rounded-full opacity-70"
-                />
-              </Particles>
             </section>
             
             {/* Services Section */}

@@ -45,7 +45,6 @@ import ConsultationFormDemo from '@/pages/ConsultationFormDemo.jsx';
 import ConsultationPostPayment from '@/pages/ConsultationPostPayment.jsx';
 import AdminDashboard from '@/pages/AdminDashboard.jsx';
 import ResponsiveTest from '@/pages/ResponsiveTest.jsx';
-import AnimateUIDemo from '@/pages/AnimateUIDemo.jsx';
 
 // Components
 import ProtectedAdminRoute from '@/components/auth/ProtectedAdminRoute.jsx';
@@ -176,7 +175,6 @@ function App() {
 
                 {/* Rutas de Testing */}
                 <Route path="/email-tester" element={<EmailTester />} />
-                <Route path="/test/animate-ui" element={<AnimateUIDemo />} />
                 <Route path="/test/hotmart" element={
                   <HotmartTestPlayer 
                     contentId="module_1" 
