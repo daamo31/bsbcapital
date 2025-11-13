@@ -1,61 +1,124 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500;700&display=swap');
 
+    /* 
+    ==========================================
+    SISTEMA DE COLORES BSB CAPITAL
+    ==========================================
+    
+    GUÍA RÁPIDA PARA MODIFICAR COLORES:
+    
+    🔹 BOTONES PRINCIPALES:
+       --primary (fondo) + --primary-foreground (texto)
+       
+    🔹 BOTONES SECUNDARIOS:
+       --secondary (fondo) + --secondary-foreground (texto)
+       
+    🔹 FONDO DE PÁGINA:
+       --background (fondo) + --foreground (texto)
+       
+    🔹 TARJETAS/MODALES:
+       --card (fondo) + --card-foreground (texto)
+       
+    🔹 ELEMENTOS DESTACADOS:
+       --accent (fondo) + --accent-foreground (texto)
+       
+    🔹 COLORES DE MARCA:
+       --brand-green-900: Verde muy oscuro
+       --brand-green-600: Verde medio  
+       --brand-green-100: Verde claro
+       --brand-gold-600: Dorado principal
+       --brand-gold-700: Dorado oscuro
+       --brand-gold-100: Dorado claro
+       
+    🔹 GRADIENTES:
+       .main-gradient-text: Para títulos principales
+       .accent-gradient-text: Para elementos dorados
+       
+    🔹 FONDOS ESPECIALES:
+       .aurora-background: Para hero sections
+       .bg-brand-green-100: Fondo verde claro
+    */
+
     @tailwind base;
     @tailwind components;
     @tailwind utilities;
 
     @layer base {
       :root {
-        --background: 160 30% 97%; /* #F5F8F6 - fondo muy claro verdoso */
-        --foreground: 160 50% 8%; /* #0A1A10 - texto principal oscuro */
+        /* === COLORES BASE DE LA APLICACIÓN === */
+        /* Fondo principal de la página */
+        --background: 240 100% 99%;
+        /* Color de texto principal */
+        --foreground: 0 0% 7%;
 
-        --card: 160 40% 94%; /* #EBEEF0 - tarjetas con toque verdoso */
-        --card-foreground: 160 50% 8%; /* #0A1A10 */
+        /* === TARJETAS Y COMPONENTES === */
+        /* Fondo de tarjetas, modales, etc. */
+        --card: 240 100% 99%;
+        /* Texto dentro de tarjetas */
+        --card-foreground: 0 0% 7%;
     
-        --popover: 160 40% 94%;
-        --popover-foreground: 160 50% 8%;
+        /* Fondo de popovers/tooltips */
+        --popover: 240 100% 99%;
+        /* Texto de popovers/tooltips */
+        --popover-foreground: 0 0% 7%;
     
-        --primary: 45 100% 55%; /* #FFD700 - dorado brillante para botones */
-        --primary-foreground: 0 0% 20%; /* #333333 - gris más oscuro para mejor contraste */
+        /* === BOTONES PRINCIPALES === */
+        /* Color de fondo de botones principales (dorado oscuro) */
+        --primary: 43 100% 50%;
+        /* Color de texto de botones principales (negro) */
+        --primary-foreground: 0 0% 0%;
     
-        --secondary: 160 50% 85%; /* #C8D5CC - verde suave secundario */
-        --secondary-foreground: 160 50% 15%; /* #1A4427 */
+        /* === BOTONES SECUNDARIOS === */
+        /* Color de fondo de botones secundarios (verde muy oscuro) */
+        --secondary: 165 48% 11%;
+        /* Color de texto de botones secundarios (blanco) */
+        --secondary-foreground: 0 0% 100%;
     
-        --muted: 160 30% 90%;
-        --muted-foreground: 160 30% 35%;
+        /* === ELEMENTOS SUAVIZADOS === */
+        /* Fondo de elementos menos prominentes */
+        --muted: 220 14.3% 95.9%;
+        /* Texto de elementos menos prominentes */
+        --muted-foreground: 0 0% 40%;
     
-        --accent: 45 100% 65%; /* #FFE55C - dorado brillante complementario */
-        --accent-foreground: 0 0% 100%; /* texto blanco */
+        /* === ELEMENTOS DE ACENTO === */
+        /* Color de acento para highlights */
+        --accent: 165 60% 25%;
+        /* Texto sobre color de acento */
+        --accent-foreground: 0 0% 100%;
     
+        /* === ELEMENTOS DE ERROR/PELIGRO === */
         --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 0 0% 98%;
+        --destructive-foreground: 0 0% 100%;
 
-        --border: 160 40% 85%; /* #C8D5CC - bordes suaves verdosos */
-        --input: 160 40% 92%; /* #DDE4DF */
-        --ring: 45 100% 55%; /* matching primary - dorado brillante */
+        /* === BORDES Y CAMPOS DE ENTRADA === */
+        /* Color de bordes generales */
+        --border: 0 0% 90%;
+        /* Fondo de campos de entrada */
+        --input: 0 0% 90%;
+        /* Color del anillo de enfoque en elementos interactivos */
+        --ring: 43 100% 35%;
     
-        --radius: 0.75rem; /* radio más elegante */
+        /* Radio de bordes redondeados */
+        --radius: 0.75rem;
 
-        /* Paleta Verde Elegante y de Lujo */
-        --brand-green-50: 160 40% 98%; /* #F9FBF9 - casi blanco */
-        --brand-green-100: 160 50% 94%; /* #EBEEF0 - muy claro */
-        --brand-green-200: 160 40% 85%; /* #C8D5CC - claro */
-        --brand-green-300: 160 50% 70%; /* #8FB798 - medio claro */
-        --brand-green-400: 160 60% 55%; /* #5A9B6B - medio */
-        --brand-green-500: 160 70% 40%; /* #2D8A4F - medio oscuro */
-        --brand-green-600: 160 70% 30%; /* #1E7A43 - oscuro elegante */
-        --brand-green-700: 160 80% 20%; /* #146B3A - muy oscuro */
-        --brand-green-800: 160 90% 15%; /* #0F4A28 - ultra oscuro */
-        --brand-green-900: 160 100% 8%; /* #072817 - negro verdoso */
+        /* === PALETA DE MARCA BSB CAPITAL === */
+        /* Verde muy oscuro - Para elementos importantes */
+        --brand-green-900: 165 48% 11%;
+        /* Verde medio - Para elementos destacados */
+        --brand-green-600: 165 60% 25%;
+        /* Verde claro - Para fondos sutiles */
+        --brand-green-100: 164 38% 93%;
+        /* Dorado principal - Para botones y elementos importantes */
+        --brand-gold-600: 43 100% 35%;
+        /* Dorado más oscuro - Para hovers y estados activos */
+        --brand-gold-700: 43 100% 25%;
+        /* Dorado muy claro - Para fondos sutiles */
+        --brand-gold-100: 45 100% 94%;
         
-        /* Acentos dorados complementarios */
-        --brand-gold-100: 45 60% 92%; /* #FDF4DC - dorado muy claro y brillante */
-        --brand-gold-400: 45 100% 65%; /* #FFE55C - dorado brillante medio */
-        --brand-gold-600: 45 100% 55%; /* #FFD700 - dorado brillante */
-        
-        --bg: 160 30% 97%;
-        --text: 160 50% 8%;
-        --text-2: 160 40% 25%;
+        /* === VARIABLES LEGACY (mantener compatibilidad) === */
+        --bg: 240 100% 99%;
+        --text: 0 0% 7%;
+        --text-2: 0 0% 20%;
         
         --chart-1: 160 70% 40%;
         --chart-2: 160 60% 55%;
@@ -64,44 +127,58 @@
         --chart-5: 43 90% 45%;
       }
     
+      /* === MODO OSCURO === */
       .dark {
-        --background: 160 100% 4%; /* #051208 */
-        --foreground: 160 40% 94%; /* #EBEEF0 */
+        /* Fondo principal oscuro */
+        --background: 0 0% 7%;
+        /* Texto principal claro */
+        --foreground: 240 100% 99%;
         
-        --card: 160 90% 8%; /* #0F2917 */
-        --card-foreground: 160 40% 94%;
+        /* Fondo de tarjetas en modo oscuro */
+        --card: 0 0% 7%;
+        /* Texto de tarjetas en modo oscuro */
+        --card-foreground: 240 100% 99%;
         
-        --popover: 160 90% 8%;
-        --popover-foreground: 160 40% 94%;
+        /* Fondo de popovers en modo oscuro */
+        --popover: 0 0% 7%;
+        /* Texto de popovers en modo oscuro */
+        --popover-foreground: 240 100% 99%;
         
-        --primary: 160 60% 55%; /* #5A9B6B */
-        --primary-foreground: 160 100% 8%;
+        /* Botones principales - mismo dorado con texto negro */
+        --primary: 43 100% 35%;
+        --primary-foreground: 0 0% 0%;
         
-        --secondary: 160 80% 15%; /* #0F4A28 */
-        --secondary-foreground: 160 40% 94%;
+        /* Botones secundarios - mismo verde oscuro */
+        --secondary: 165 48% 11%;
+        --secondary-foreground: 0 0% 100%;
         
-        --muted: 160 80% 15%;
-        --muted-foreground: 160 30% 70%;
+        /* Elementos suavizados en modo oscuro */
+        --muted: 0 0% 15%;
+        --muted-foreground: 0 0% 60%;
         
-        --accent: 160 70% 40%; /* #2D8A4F */
-        --accent-foreground: 160 100% 8%;
+        /* Color de acento en modo oscuro */
+        --accent: 165 60% 25%;
+        --accent-foreground: 0 0% 100%;
         
-        --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 0 0% 98%;
+        /* Elementos de error en modo oscuro */
+        --destructive: 0 84.2% 60.2%;
+        --destructive-foreground: 0 0% 100%;
         
-        --border: 160 80% 15%;
-        --input: 160 80% 15%;
-        --ring: 160 60% 55%;
+        /* Bordes y campos en modo oscuro */
+        --border: 0 0% 15%;
+        --input: 0 0% 15%;
+        --ring: 43 100% 35%;
 
-        --bg: 160 100% 4%;
-        --text: 160 40% 94%;
-        --text-2: 160 30% 80%;
+        /* Variables legacy para modo oscuro */
+        --bg: 0 0% 7%;
+        --text: 240 100% 99%;
+        --text-2: 0 0% 80%;
         
-        --chart-1: 160 60% 55%;
-        --chart-2: 160 70% 40%;
-        --chart-3: 160 50% 70%;
-        --chart-4: 43 80% 60%;
-        --chart-5: 43 90% 45%;
+        --chart-1: 165 60% 25%;
+        --chart-2: 43 74% 49%;
+        --chart-3: 165 48% 11%;
+        --chart-4: 43 100% 35%;
+        --chart-5: 164 38% 93%;
       }
     }
     
@@ -205,32 +282,74 @@
       color: hsl(var(--primary));
     }
 
+    /* === GRADIENTES DE TEXTO PERSONALIZADOS === */
+    
+    /* Gradiente principal para títulos destacados */
+    /* Uso: className="main-gradient-text" */
+    /* Va de negro a verde medio */
     .main-gradient-text {
-        background: linear-gradient(135deg, hsl(var(--brand-green-700)) 0%, hsl(var(--brand-green-500)) 50%, hsl(var(--brand-green-600)) 100%);
+        background: linear-gradient(135deg, hsl(var(--foreground)) 0%, hsl(var(--brand-green-600)) 50%, hsl(var(--brand-green-600)) 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
     }
 
+    /* Gradiente de acento para elementos dorados */
+    /* Uso: className="accent-gradient-text" */
+    /* Va de dorado principal a dorado oscuro */
     .accent-gradient-text {
-        background: linear-gradient(135deg, hsl(var(--brand-gold-600)) 0%, hsl(var(--brand-gold-400)) 100%);
+        background: linear-gradient(135deg, hsl(var(--brand-gold-600)) 0%, hsl(var(--brand-gold-700)) 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
     }
     
+    /* === CLASES DE TEXTO DE MARCA === */
+    /* Texto principal negro */
+    .text-brand-text-primary {
+        color: hsl(var(--foreground));
+    }
+    
+    /* Texto secundario gris */
+    .text-brand-text-secondary {
+        color: hsl(var(--muted-foreground));
+    }
+    
+    /* Texto de acento dorado */
+    .text-brand-accent {
+        color: hsl(var(--brand-gold-600));
+    }
+    
+    /* Hover para acento */
+    .hover\:text-brand-accent\/80:hover {
+        color: hsl(var(--brand-gold-600) / 0.8);
+    }
+    
+    /* === FONDOS PERSONALIZADOS === */
+    
+    /* Fondo con color de marca verde claro */
+    /* Uso: className="bg-brand-green-100" */
+    .bg-brand-green-100 {
+        background-color: hsl(var(--brand-green-100));
+    }
+    
+    /* Fondo con efecto aurora para hero sections */
+    /* Uso: className="aurora-background" */
+    /* Gradiente suave desde fondo principal a verde claro */
     .aurora-background {
       position: relative;
       overflow: hidden;
-      background: linear-gradient(135deg, hsl(var(--brand-green-50)) 0%, hsl(var(--brand-green-100)) 100%);
+      background: linear-gradient(135deg, hsl(var(--background)) 0%, hsl(var(--brand-green-100)) 100%);
     }
     
+    /* Efecto de partículas animadas sobre el fondo aurora */
     .aurora-background::before {
       content: "";
       position: absolute;
       inset: -100px;
       z-index: 0;
-      --aurora: conic-gradient(from 90deg at 50% 50%, hsl(var(--brand-green-600) / 0.1) 0%, hsl(var(--brand-gold-400) / 0.1) 25%, transparent 50%, transparent 100%);
+      /* Gradiente cónico con colores de marca para el efecto */
+      --aurora: conic-gradient(from 90deg at 50% 50%, hsl(var(--brand-green-600) / 0.1) 0%, hsl(var(--brand-gold-600) / 0.1) 25%, transparent 50%, transparent 100%);
       background-image: var(--aurora), var(--aurora);
       background-size: 200% 200%, 100% 100%;
       background-position: 50% 50%;

@@ -92,7 +92,7 @@ import React, { useState } from 'react';
             {/* Hero Section */}
             <motion.section variants={itemVariants} className="aurora-background text-center py-12 sm:py-20 md:py-32">
               <div className="container mx-auto px-4 sm:px-6">
-                <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold text-brand-text-primary">Academia BSB Capital</h1>
+                <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold main-gradient-text">Academia BSB Capital</h1>
                 <p className="mt-4 max-w-2xl mx-auto text-base sm:text-lg md:text-xl text-brand-text-secondary">
                   Formación práctica en inversión, fiscalidad y crypto para tomar decisiones con calma y criterio.
                 </p>

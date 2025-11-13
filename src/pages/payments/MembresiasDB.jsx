@@ -355,7 +355,7 @@ const MembresiasDB = () => {
                 
                 <CardFooter className="mt-auto pt-4">
                   <Button 
-                    className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900"
+                    className="w-full"
                     onClick={() => handleSelectPlan(plan)}
                     disabled={isLoading}
                   >
@@ -385,7 +385,7 @@ const MembresiasDB = () => {
                 Encuentra tu plan ideal <ArrowRight className="ml-2 h-4 w-4" />
               </a>
             </Button>
-            <Button asChild size="lg" className="bg-yellow-400 hover:bg-yellow-500 text-gray-900">
+            <Button asChild size="lg">
               <a href="/consultoria">
                 Hablar con un experto
               </a>

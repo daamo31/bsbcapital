@@ -177,8 +177,8 @@ const AcademiaCatalog = () => {
             variants={containerVariants}
             className="text-center"
           >
-            <motion.h1 variants={itemVariants} className="text-4xl md:text-5xl font-bold text-brand-text-primary">Academia BSB Capital</motion.h1>
-            <motion.p variants={itemVariants} className="mt-4 text-lg text-brand-text-secondary max-w-3xl mx-auto">
+            <motion.h1 variants={itemVariants} className="text-4xl md:text-5xl font-bold main-gradient-text">Academia BSB Capital</motion.h1>
+            <motion.p variants={itemVariants} className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
               Formación práctica en inversión, fiscalidad y crypto. Acceso exclusivo para miembros o por compra individual.
             </motion.p>
           </motion.div>

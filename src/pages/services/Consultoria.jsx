@@ -203,7 +203,7 @@ const BookingModal = () => {
       if (!isOpen) resetForm();
     }}>
       <DialogTrigger asChild>
-        <Button size="lg" className="bg-yellow-400 hover:bg-yellow-500 text-gray-900">
+        <Button size="lg">
           Agendar una llamada <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
       </DialogTrigger>
@@ -255,7 +255,7 @@ const BookingModal = () => {
                     type="button"
                     variant={formData.duration === "30min" ? "default" : "outline"}
                     onClick={() => handleSelectChange('duration', '30min')}
-                    className={`h-16 flex flex-col ${formData.duration === "30min" ? "bg-yellow-400 hover:bg-yellow-500 text-gray-900" : ""}`}
+                    className={`h-16 flex flex-col ${formData.duration === "30min" ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""}`}
                   >
                     <span className="font-semibold">30 min</span>
                     <span className="text-xs opacity-70">Consulta rápida</span>
@@ -264,7 +264,7 @@ const BookingModal = () => {
                     type="button"
                     variant={formData.duration === "60min" ? "default" : "outline"}
                     onClick={() => handleSelectChange('duration', '60min')}
-                    className={`h-16 flex flex-col ${formData.duration === "60min" ? "bg-yellow-400 hover:bg-yellow-500 text-gray-900" : ""}`}
+                    className={`h-16 flex flex-col ${formData.duration === "60min" ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""}`}
                   >
                     <span className="font-semibold">60 min</span>
                     <span className="text-xs opacity-70">Consulta completa</span>
@@ -273,7 +273,7 @@ const BookingModal = () => {
                     type="button"
                     variant={formData.duration === "test" ? "default" : "outline"}
                     onClick={() => handleSelectChange('duration', 'test')}
-                    className={`h-16 flex flex-col ${formData.duration === "test" ? "bg-yellow-400 hover:bg-yellow-500 text-gray-900" : "bg-yellow-50 border-yellow-200 hover:bg-yellow-100"}`}
+                    className={`h-16 flex flex-col ${formData.duration === "test" ? "bg-primary text-primary-foreground hover:bg-primary/90" : "bg-muted border-border hover:bg-muted/80"}`}
                   >
                     <span className="font-semibold text-xs">Prueba</span>
                     <span className="text-xs opacity-70">Test producción</span>
@@ -283,18 +283,18 @@ const BookingModal = () => {
               
               {/* Alerta para prueba de producción */}
               {formData.duration === "test" && (
-                <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <div className="mt-4 p-4 bg-muted border border-border rounded-lg">
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
-                      <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                      <svg className="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
                       </svg>
                     </div>
                     <div className="ml-3">
-                      <h3 className="text-sm font-medium text-yellow-800">
+                      <h3 className="text-sm font-medium text-foreground">
                         Modo de Prueba Activado
                       </h3>
-                      <div className="mt-2 text-sm text-yellow-700">
+                      <div className="mt-2 text-sm text-muted-foreground">
                         <p>Esta es una consulta de prueba para verificar el flujo de pagos y emails en producción. Duración: 5 minutos.</p>
                       </div>
                     </div>
@@ -498,7 +498,7 @@ const FAQSection = () => {
   ];
 
   return (
-    <section className="py-12 sm:py-20 bg-brand-green-50">
+    <section className="py-12 sm:py-20 aurora-background">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center main-gradient-text mb-12">
@@ -590,27 +590,11 @@ const Consultoria = () => {
                 <BookingModal />
               </div>
             </div>
-            <ParticlesEffect 
-              side="top" 
-              align="start" 
-              count={6} 
-              radius={35} 
-              duration={1.5}
-              className="w-2 h-2 bg-accent/50 rounded-full opacity-50"
-            />
-            <ParticlesEffect 
-              side="bottom" 
-              align="center" 
-              count={8} 
-              radius={45} 
-              delay={0.3}
-              className="w-1.5 h-1.5 bg-primary/60 rounded-full opacity-60"
-            />
           
         </header>
 
         {/* Storytelling Section */}
-        <div className="bg-brand-green-50 py-8 sm:py-16">
+        <div className="aurora-background py-8 sm:py-16">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-4xl mx-auto">
               <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-8 rounded-xl shadow-lg border border-brand-green-200">
@@ -630,7 +614,7 @@ const Consultoria = () => {
         </div>
 
         {/* Metodología Section */}
-        <div className="py-12 sm:py-20 bg-background">
+        <div className="py-12 sm:py-20 aurora-background">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-bold text-center main-gradient-text mb-12">
@@ -694,7 +678,7 @@ const Consultoria = () => {
         </div>
 
         {/* Benefits Section */}
-        <section className="py-12 sm:py-20 md:py-32 bg-primary/5">
+        <section className="py-12 sm:py-20 md:py-32 aurora-background">
           <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <h2 className="text-3xl md:text-4xl font-bold text-center main-gradient-text mb-12">
               Nuestros servicios

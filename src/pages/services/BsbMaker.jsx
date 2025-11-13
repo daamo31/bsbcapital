@@ -122,7 +122,7 @@ const PreRegistrationForm = () => {
           </div>
           <Button 
             type="submit" 
-            className="w-full bg-yellow-400 text-gray-900 hover:bg-yellow-500 h-11 px-8 rounded-md font-medium"
+            className="w-full h-11 px-8 rounded-md font-medium"
             disabled={loading}
           >
             {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : 'Reservar mi acceso anticipado'}
@@ -171,7 +171,7 @@ const BsbMaker = () => {
               transition={{ duration: 0.5, delay: 0.3 }} 
               className="mt-10"
             >
-              <Button asChild size="lg" className="bg-yellow-400 hover:bg-yellow-500 text-gray-900">
+              <Button asChild size="lg">
                 <a href="#preregistro">Únete al Preregistro Exclusivo <ArrowRight className="ml-2"/></a>
               </Button>
             </motion.div>
@@ -179,7 +179,7 @@ const BsbMaker = () => {
         </div>
 
         {/* Section 1: Problema */}
-        <div className="py-24 bg-background/70 backdrop-blur-xl">
+        <div className="py-24 aurora-background">
           <div className="container mx-auto px-4 text-center max-w-3xl">
             <h2 className="text-3xl md:text-4xl font-bold">El mercado no espera</h2>
             <p className="mt-4 text-lg text-text-secondary">
@@ -189,7 +189,7 @@ const BsbMaker = () => {
         </div>
 
         {/* Section 2: Solución */}
-        <div className="py-24">
+        <div className="py-24 aurora-background">
           <div className="container mx-auto px-4">
             <div className="text-center max-w-3xl mx-auto mb-16">
               <h2 className="text-3xl md:text-4xl font-bold">Un copiloto que piensa como un trader institucional</h2>
@@ -204,7 +204,7 @@ const BsbMaker = () => {
         </div>
 
         {/* New Section: Beneficios BSB Maker */}
-        <div className="py-24 bg-background/70 backdrop-blur-xl">
+        <div className="py-24 aurora-background">
           <div className="container mx-auto px-4">
             <div className="text-center max-w-4xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-bold mb-4">
@@ -275,7 +275,7 @@ const BsbMaker = () => {
         </div>
         
         {/* Section 3: Exclusividad */}
-        <div className="py-24 bg-brand-green-900 text-white">
+        <div className="py-24 bg-brand-green-100 text-brand-green-900">
           <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl md:text-4xl font-bold text-brand-gold-600">Estamos construyendo algo único</h2>

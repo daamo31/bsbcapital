@@ -41,18 +41,18 @@ import React from 'react';
         whileHover={{ scale: 1.02 }}
         transition={{ type: "spring", stiffness: 400, damping: 10 }}
       >
-        <div className="flex-shrink-0 text-primary">{React.cloneElement(icon, { className: "h-8 w-8 sm:h-10 sm:w-10" })}</div>
-        <h3 className="mt-4 sm:mt-6 text-xl sm:text-2xl font-bold text-foreground">{title}</h3>
-        <p className="mt-3 text-muted-foreground flex-grow">{description}</p>
+        <div className="flex-shrink-0 text-brand-accent">{React.cloneElement(icon, { className: "h-8 w-8 sm:h-10 sm:w-10" })}</div>
+        <h3 className="mt-4 sm:mt-6 text-xl sm:text-2xl font-bold text-brand-text-primary">{title}</h3>
+        <p className="mt-3 text-brand-text-secondary flex-grow">{description}</p>
         {details && (
           <div className="mt-4 p-4 bg-primary/5 rounded-lg border border-primary/10">
-            <h4 className="font-semibold text-foreground mb-2">Además, con nuestra membresía exclusiva tendrás acceso a:</h4>
-            <div className="text-sm text-muted-foreground whitespace-pre-line">
+            <h4 className="font-semibold text-brand-text-primary mb-2">Además, con nuestra membresía exclusiva tendrás acceso a:</h4>
+            <div className="text-sm text-brand-text-secondary whitespace-pre-line">
               {details}
             </div>
           </div>
         )}
-        <Button asChild variant="link" className="mt-6 p-0 text-primary hover:text-primary/80 self-start font-medium">
+        <Button asChild variant="link" className="mt-6 p-0 text-brand-accent hover:text-brand-accent/80 self-start font-medium">
           <Link to={href}>
             {buttonText} <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
@@ -107,7 +107,7 @@ import React from 'react';
             <form onSubmit={handleSubmit} className="space-y-6">
                 <Input name="subject" placeholder="Asunto" required className="bg-card border-border text-foreground placeholder:text-muted-foreground" />
                 <Textarea name="message" placeholder="Tu mensaje..." rows={5} required className="bg-card border-border text-foreground placeholder:text-muted-foreground" />
-                <Button type="submit" className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-800 shadow-lg" size="lg">
+                <Button type="submit" className="w-full shadow-lg" size="lg">
                     Enviar Mensaje <Mail className="ml-2 h-4 w-4" />
                 </Button>
             </form>
@@ -136,7 +136,7 @@ import React from 'react';
                     asChild 
                     size="sm" 
                     variant="secondary" 
-                    className="ml-4 bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-500 border-yellow-400/20"
+                    className="ml-4 bg-primary/20 hover:bg-primary/30 text-primary border-primary/20"
                   >
                     <Link to="/admin" className="flex items-center gap-2">
                       <Settings className="h-3 w-3" />
@@ -155,19 +155,18 @@ import React from 'react';
             transition={{ duration: 0.5 }}
           >
             {/* Hero Section */}
-            <section className="relative aurora-background">
+            <section className="relative aurora-background text-brand-text-primary overflow-hidden">
                 <div className="container mx-auto px-4 sm:px-6 text-center relative z-10 pt-4 pb-8 sm:pt-6 sm:pb-12 md:pt-8 md:pb-16">
                   <motion.div variants={containerVariants} initial="hidden" animate="visible">
                     <motion.h1 variants={itemVariants} className="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl font-extrabold leading-tight">
-                      <span className="main-gradient-text">Transformamos tu forma</span><br/> 
-                      <span className="text-foreground">de invertir en crypto</span>
+                      <span className="text-foreground">Inteligencia Financiera</span><br/> 
+                      <span className="main-gradient-text">Potenciada por IA</span>
                     </motion.h1>
-                    <motion.p variants={itemVariants} className="mt-4 sm:mt-6 max-w-3xl mx-auto text-base sm:text-lg text-muted-foreground">
-                      En BSB Capital transformamos la forma en que personas y empresas se relacionan con el mundo crypto. 
-                      Unimos consultoría estratégica, formación práctica y herramientas con IA para que tomes decisiones con claridad, confianza y visión de futuro.
+                    <motion.p variants={itemVariants} className="mt-4 sm:mt-6 max-w-3xl mx-auto text-base sm:text-lg text-brand-text-secondary">
+                      En BSB Capital unimos consultoría con asesores financieros, algoritmos y herramientas desarrolladas con IA para que inviertas con confianza y construyas un futuro sólido.
                     </motion.p>
                     <motion.div variants={itemVariants} className="mt-6 sm:mt-10">
-                      <Button asChild size="lg" className="bg-yellow-400 hover:bg-yellow-500 text-gray-800 px-8 py-4 shadow-lg">
+                      <Button asChild size="lg" className="px-8 py-4 shadow-lg">
                         <Link to="/guia-inversion">
                           Descubrir mi Servicio Ideal <ArrowRight className="ml-2 h-5 w-5" />
                         </Link>
@@ -178,7 +177,7 @@ import React from 'react';
             </section>
             
             {/* Services Section */}
-            <section className="py-12 sm:py-20 md:py-28 bg-background">
+            <section className="py-12 sm:py-20 md:py-28 aurora-background">
                 <div className="container mx-auto px-4 sm:px-6">
                     <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
                         <motion.h2 variants={itemVariants} className="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-foreground">Soluciones de Inversión que <span className="main-gradient-text">Multiplican tu Potencial</span></motion.h2>
@@ -193,7 +192,7 @@ import React from 'react';
             </section>
 
             {/* Social Proof */}
-            <section className="py-12 sm:py-20 md:py-28 bg-primary/5 backdrop-blur-sm">
+            <section className="py-12 sm:py-20 md:py-28 aurora-background">
               <div className="container mx-auto px-4 sm:px-6">
                 <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
                   <motion.h2 variants={itemVariants} className="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-foreground">Confianza y <span className="main-gradient-text">Resultados Comprobados</span></motion.h2>
@@ -216,7 +215,7 @@ import React from 'react';
             </section>
 
             {/* Contact Section */}
-            <section className="py-12 sm:py-20 md:py-28 bg-background">
+            <section className="py-12 sm:py-20 md:py-28 aurora-background">
                 <div className="container mx-auto px-4 sm:px-6">
                     <motion.div 
                         variants={containerVariants} 

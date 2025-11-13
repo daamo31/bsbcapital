@@ -99,7 +99,7 @@ import React, { useState, useEffect } from 'react';
                       onChange={(e) => setEmail(e.target.value)}
                       disabled={loading}
                     />
-                    <Button type="submit" variant="default" disabled={loading} className="bg-yellow-400 hover:bg-yellow-500 text-gray-800">
+                    <Button type="submit" variant="default" disabled={loading}>
                       {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
                     </Button>
                   </form>
@@ -161,7 +161,7 @@ import React, { useState, useEffect } from 'react';
                 {user ? (
                   <>
                     {isAdmin && <AdminDropdown />}
-                    <Button asChild className="bg-yellow-400 hover:bg-yellow-500 text-gray-800">
+                    <Button asChild>
                       <Link to="/dashboard">
                         <User className="mr-2 h-4 w-4" />
                         Mi Cuenta
@@ -169,7 +169,7 @@ import React, { useState, useEffect } from 'react';
                     </Button>
                   </>
                 ) : (
-                  <Button asChild className="bg-yellow-400 hover:bg-yellow-500 text-gray-800">
+                  <Button asChild>
                     <Link to="/login">
                       <LogIn className="mr-2 h-4 w-4" />
                       Iniciar Sesión
@@ -206,7 +206,7 @@ import React, { useState, useEffect } from 'react';
                           </Link>
                         </Button>
                       )}
-                      <Button asChild className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-800" onClick={closeMenu}>
+                      <Button asChild className="w-full" onClick={closeMenu}>
                         <Link to="/dashboard">
                           <User className="mr-2 h-4 w-4" />
                           Mi Cuenta
@@ -214,7 +214,7 @@ import React, { useState, useEffect } from 'react';
                       </Button>
                     </>
                   ) : (
-                    <Button asChild className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-800" onClick={closeMenu}>
+                    <Button asChild className="w-full" onClick={closeMenu}>
                       <Link to="/login">
                         <LogIn className="mr-2 h-4 w-4" />
                         Iniciar Sesión
