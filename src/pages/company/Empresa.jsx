@@ -5,12 +5,13 @@ import { Linkedin } from 'lucide-react';
 const teamMembers = [
   {
     name: 'Juan Salgado Blanco',
-    role: 'Co-Founder & CEO',
+    role: 'Founder & CEO – BSB Capital',
+    subtitle: 'Digital Assets Investment Manager · Trader · EFA',
     imageUrl: 'https://horizons-cdn.hostinger.com/817ad863-5db3-450e-8aa2-198248142884/68bb8eeb7cfe69a6fc0ea78780a5945f.jpg',
-    bio: 'Experto en criptoactivos y mercados financieros, Juan lidera la visión y estrategia de BSB Capital. Su enfoque se centra en la innovación y la aplicación de tecnologías de vanguardia para la gestión de activos.',
+    bio: 'Asesor financiero y gestor de inversiones especializado en criptoactivos. Inversor desde 2018, ha trabajado con divisas, renta variable, derivados y criptoactivos. Es cofundador de CLCRIPTO, la firma fiscal especializada en crypto más grande de España, integrada en el despacho internacional ECIJA durante 2025. Certificado como European Financial Advisor (EFA) y con formación en Blockchain Management.',
+    fullBio: 'Juan Salgado Blanco es asesor financiero y gestor de inversiones especializado en criptoactivos. Inversor desde 2018, ha trabajado con divisas, renta variable, derivados y criptoactivos, lo que le permite tener una visión completa del mercado y de los riesgos reales que asume un inversor. Es cofundador de CLCRIPTO, la firma fiscal especializada en crypto más grande de España y que fue integrada en el despacho internacional ECIJA durante 2025, donde ha participado en el diseño de soluciones para inversores, empresas y proyectos del entorno crypto. Está certificado como European Financial Advisor (EFA) y cuenta con formación en Blockchain Management, lo que refuerza su capacidad para unir criterio financiero y tecnología. En BSB Capital, Juan dirige la estrategia, define los marcos de análisis y marca la línea metodológica que se aplica tanto en las consultorías como en la academia y en el desarrollo de herramientas como BSB Maker.',
     linkedin: 'https://www.linkedin.com/in/juan-salgado-blanco-63a23417a/',
   },
-  
 ];
 
 const fadeIn = {
@@ -39,72 +40,150 @@ const Empresa = () => {
       <section className="py-20 md:py-32 aurora-background">
         <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
           <motion.h1 variants={fadeIn} className="text-4xl md:text-6xl font-extrabold main-gradient-text">
-            Innovación y Experiencia en Finanzas
+            Sobre BSB Capital
           </motion.h1>
           <motion.p variants={fadeIn} className="mt-4 max-w-3xl mx-auto text-lg md:text-xl text-text-secondary">
-            En BSB Capital, fusionamos la experiencia humana con la inteligencia artificial para redefinir el futuro de la inversión y la gestión de activos.
+            BSB Capital nace como la primera firma que combina asesoramiento financiero independiente con especialización profunda en criptoactivos, aportando profesionalidad, claridad y seguridad a un sector que durante años ha estado reservado a perfiles muy técnicos.
           </motion.p>
         </div>
       </section>
 
-      {/* Misión y Visión Section */}
+      {/* Propósito Section */}
       <section className="py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4 md:px-6">
-          <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+          <motion.div variants={fadeIn} className="text-center mb-16">
+            <p className="text-lg md:text-xl text-text-secondary max-w-4xl mx-auto">
+              Nuestro propósito es guiar a inversores y empresas hacia decisiones inteligentes mediante un modelo que integra análisis avanzado, tecnología y formación.
+            </p>
+          </motion.div>
+          
+          <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
             <motion.div variants={fadeIn}>
-              <h2 className="text-3xl md:text-4xl font-bold text-text-primary">Nuestra Misión</h2>
-              <p className="mt-4 text-lg text-text-secondary">
-                Democratizar el acceso a herramientas financieras sofisticadas, permitiendo a nuestros clientes tomar decisiones de inversión más inteligentes y seguras. Nos comprometemos a ofrecer transparencia, innovación y resultados.
+              <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-6">Nuestra Misión</h2>
+              <p className="text-lg text-text-secondary">
+                Nuestra misión es corregir los problemas estructurales que han acompañado al sector crypto desde sus inicios: falta de rigor, ausencia de metodología y poca transparencia. Buscamos ofrecer un ecosistema financiero completo que combine asesoramiento profesional, análisis avanzado y formación de calidad para invertir en activos digitales.
               </p>
             </motion.div>
             <motion.div variants={fadeIn}>
-              <h2 className="text-3xl md:text-4xl font-bold text-text-primary">Nuestra Visión</h2>
-              <p className="mt-4 text-lg text-text-secondary">
-                Ser líderes en la revolución FinTech, creando un ecosistema donde la tecnología y las finanzas convergen para generar un valor sin precedentes para inversores de todos los niveles, desde principiantes hasta institucionales.
+              <h2 className="text-3xl md:text-4xl font-bold text-text-primary mb-6">Nuestra Visión</h2>
+              <p className="text-lg text-text-secondary">
+                Aspiramos a que nunca más tengas la sensación de estar solo frente a un mercado que no entiendes. Nuestra visión es ayudarte a integrar los activos digitales en tu patrimonio de forma ordenada, coherente y alineada con tus objetivos personales a la vez que construimos un espacio de formación donde puedas encontrar las herramientas que más se adaptan a ti y la forma de aplicarlas a tus inversiones.
               </p>
             </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Valores Section */}
+      <section className="py-16 md:py-24 bg-brand-green-100">
+        <div className="container mx-auto px-4 md:px-6">
+          <motion.div variants={fadeIn} className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-text-primary">Nuestros Valores</h2>
+          </motion.div>
+          <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <motion.div variants={fadeIn} className="bg-background p-6 rounded-lg shadow-lg border border-border">
+              <h3 className="text-xl font-bold text-text-primary mb-3">🔍 Transparencia</h3>
+              <p className="text-text-secondary">
+                Construimos confianza compartiendo conocimiento y eliminando barreras.
+              </p>
+            </motion.div>
+            <motion.div variants={fadeIn} className="bg-background p-6 rounded-lg shadow-lg border border-border">
+              <h3 className="text-xl font-bold text-text-primary mb-3">⚖️ Responsabilidad</h3>
+              <p className="text-text-secondary">
+                El mundo crypto exige criterio: actuamos con rigor y ética.
+              </p>
+            </motion.div>
+            <motion.div variants={fadeIn} className="bg-background p-6 rounded-lg shadow-lg border border-border">
+              <h3 className="text-xl font-bold text-text-primary mb-3">🚀 Innovación</h3>
+              <p className="text-text-secondary">
+                Integramos tecnologías de vanguardia para impulsar el futuro financiero.
+              </p>
+            </motion.div>
+            <motion.div variants={fadeIn} className="bg-background p-6 rounded-lg shadow-lg border border-border">
+              <h3 className="text-xl font-bold text-text-primary mb-3">📚 Educación</h3>
+              <p className="text-text-secondary">
+                Creemos que formar es la base para transformar.
+              </p>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Liderazgo Section */}
+      <section className="py-16 md:py-24 bg-background">
+        <div className="container mx-auto px-4 md:px-6">
+          <motion.div variants={fadeIn} className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-text-primary">Liderazgo</h2>
+            <p className="mt-4 max-w-4xl mx-auto text-lg text-text-secondary">
+              BSB Capital es una firma boutique de asesoramiento financiero dirigida por Juan Salgado Blanco. El modelo es sencillo: un cliente, un profesional. No hay capas intermedias ni estructuras interminables; las decisiones estratégicas, el análisis de mercado y la metodología pasan por la misma persona que trabaja en tu caso.
+            </p>
+            <p className="mt-4 max-w-4xl mx-auto text-lg text-text-secondary">
+              Cuando contratas una consultoría, te suscribes a la membresía o entras en la BSB Academy, trabajas directamente con quien diseña la forma de invertir y opera cada día en los mercados.
+            </p>
           </motion.div>
         </div>
       </section>
       
       {/* Equipo Section */}
-      <section className="py-16 md:py-24 bg-background">
+      <section className="py-16 md:py-24 bg-brand-green-100">
         <div className="container mx-auto px-4 md:px-6">
           <motion.div variants={fadeIn} className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-text-primary">Conoce a Nuestro Equipo</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-text-primary">Juan Salgado Blanco</h2>
             <p className="mt-4 max-w-2xl mx-auto text-lg text-text-secondary">
-              Un equipo de visionarios, estrategas y expertos dedicados a construir el futuro de las finanzas.
+              El líder y fundador detrás de la visión de BSB Capital
             </p>
           </motion.div>
-          <motion.div variants={stagger} className="flex justify-center flex-wrap gap-8">
-            {teamMembers.map((member) => (
-              <motion.div
-                key={member.name}
-                variants={fadeIn}
-                className="bg-background rounded-xl shadow-lg overflow-hidden transform hover:scale-105 transition-transform duration-300 border border-border max-w-sm w-full"
-              >
-                <div className="p-8 text-center">
-                  <div className="relative w-40 h-40 mx-auto mb-6">
+          
+          <motion.div variants={stagger} className="flex justify-center">
+            <motion.div
+              variants={fadeIn}
+              className="bg-background rounded-xl shadow-lg overflow-hidden border border-border max-w-4xl w-full"
+            >
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 p-8">
+                {/* Foto y datos básicos */}
+                <div className="text-center lg:text-left">
+                  <div className="relative w-48 h-48 mx-auto lg:mx-0 mb-6">
                     <img
                       className="rounded-full w-full h-full object-cover border-4 border-brand-gold-600"
-                      src={member.imageUrl}
-                      alt={`Foto de ${member.name}`}
+                      src={teamMembers[0].imageUrl}
+                      alt={`Foto de ${teamMembers[0].name}`}
                     />
                   </div>
-                  <h3 className="text-2xl font-bold text-text-primary">{member.name}</h3>
-                  <p className="text-md font-semibold text-brand-green-600">{member.role}</p>
-                  <p className="mt-4 text-sm text-text-secondary h-24">{member.bio}</p>
+                  <h3 className="text-2xl font-bold text-text-primary">{teamMembers[0].name}</h3>
+                  <p className="text-lg font-semibold text-brand-green-600 mt-2">{teamMembers[0].role}</p>
+                  <p className="text-md text-text-secondary mt-1">{teamMembers[0].subtitle}</p>
                   <a
-                    href={member.linkedin}
+                    href={teamMembers[0].linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-block mt-6 text-brand-green-600 hover:text-brand-green-900 transition-colors"
+                    className="inline-block mt-4 text-brand-green-600 hover:text-brand-green-900 transition-colors"
                   >
                     <Linkedin size={24} />
                   </a>
                 </div>
-              </motion.div>
-            ))}
+                
+                {/* Biografía completa */}
+                <div className="lg:col-span-2">
+                  <div className="prose prose-lg max-w-none">
+                    <p className="text-text-secondary leading-relaxed mb-4">
+                      Juan Salgado Blanco es asesor financiero y gestor de inversiones especializado en criptoactivos. Inversor desde 2018, ha trabajado con divisas, renta variable, derivados y criptoactivos, lo que le permite tener una visión completa del mercado y de los riesgos reales que asume un inversor.
+                    </p>
+                    
+                    <p className="text-text-secondary leading-relaxed mb-4">
+                      Es cofundador de <span className="font-semibold">CLCRIPTO</span>, la firma fiscal especializada en crypto más grande de España y que fue integrada en el despacho internacional <span className="font-semibold">ECIJA durante 2025</span>, donde ha participado en el diseño de soluciones para inversores, empresas y proyectos del entorno crypto.
+                    </p>
+                    
+                    <p className="text-text-secondary leading-relaxed mb-4">
+                      Está certificado como <span className="font-semibold">European Financial Advisor (EFA)</span> y cuenta con formación en Blockchain Management, lo que refuerza su capacidad para unir criterio financiero y tecnología.
+                    </p>
+                    
+                    <p className="text-text-secondary leading-relaxed">
+                      En BSB Capital, Juan dirige la estrategia, define los marcos de análisis y marca la línea metodológica que se aplica tanto en las consultorías como en la academia y en el desarrollo de herramientas como BSB Maker. Para proyectos que lo requieren, se apoya en una red de colaboradores especializados en materia fiscal, legal y tecnológica, manteniendo siempre un único criterio de dirección y una visión coherente para el cliente.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>

@@ -187,6 +187,7 @@ const MembresiasDB = () => {
       // Usar el mismo patrón exacto que en consultas
       const checkoutData = {
         price_id: priceId, // Usar la variable priceId que contiene stripe_price_id_annual
+        mode: 'payment', // Membresías son pagos únicos, no suscripciones
         success_url: `${window.location.origin}/subscription-success`,
         cancel_url: `${window.location.origin}/membresias`,
         email: user.email,
@@ -211,12 +212,30 @@ const MembresiasDB = () => {
       });
 
       console.log('📤 Sending to create-stripe-checkout:', checkoutData);
+      console.log('🔍 Detailed checkout data:', {
+        price_id: priceId,
+        plan_id: plan.id,
+        plan_name: plan.name,
+        user_email: user.email,
+        user_id: user.id
+      });
 
       const { data, error } = await supabase.functions.invoke('create-stripe-checkout', {
         body: JSON.stringify(checkoutData),
       });
 
       console.log('📥 Response from create-stripe-checkout:', { data, error });
+      
+      if (error) {
+        console.log('🔍 Detailed error analysis:', {
+          error_message: error.message,
+          error_details: error.details,
+          error_hint: error.hint,
+          error_code: error.code,
+          error_status: error.status,
+          full_error: error
+        });
+      }
 
       if (error) {
         console.error('❌ Supabase function error:', error);

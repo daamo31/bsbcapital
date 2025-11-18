@@ -216,17 +216,39 @@ Deno.serve({ port: 8000 }, async (req) => {
 
     // Crear pre-reserva de consulta si es un checkout de consultoría (mode === 'payment' Y no es un plan)
     let consultationId: string | undefined;
-    const isPlanPurchase = (metadata as any)?.access_type === 'premium' || (metadata as any)?.package_type === 'individual';
     
-    console.log("🔍 PURCHASE TYPE DEBUG:", {
+    // Mejorar detección de compra de plan vs consultoría
+    const isPlanPurchase = Boolean(
+      (metadata as any)?.access_type === 'premium' || 
+      (metadata as any)?.package_type === 'individual' ||
+      (metadata as any)?.plan_id ||
+      (metadata as any)?.plan_name ||
+      (metadata as any)?.billing_cycle
+    );
+    
+    // También verificar si es una consultoría específica
+    const isConsultationPurchase = Boolean(
+      (metadata as any)?.consultation_type ||
+      (metadata as any)?.scheduled_at ||
+      (metadata as any)?.duration_minutes ||
+      (metadata as any)?.booking_date
+    );
+    
+    console.log("🔍 PURCHASE TYPE DEBUG MEJORADO:", {
       mode,
       isPlanPurchase,
+      isConsultationPurchase,
       'metadata.access_type': (metadata as any)?.access_type,
       'metadata.package_type': (metadata as any)?.package_type,
-      shouldCreateConsultation: mode === "payment" && !isPlanPurchase
+      'metadata.plan_id': (metadata as any)?.plan_id,
+      'metadata.consultation_type': (metadata as any)?.consultation_type,
+      'metadata.scheduled_at': (metadata as any)?.scheduled_at,
+      shouldCreateConsultation: mode === "payment" && !isPlanPurchase && isConsultationPurchase,
+      allMetadata: metadata
     });
     
-    if (mode === "payment" && !isPlanPurchase) {
+    // Solo crear consulta si es pago único Y NO es plan Y SÍ es consultoría
+    if (mode === "payment" && !isPlanPurchase && isConsultationPurchase) {
       const allowedConsultationTypes = new Set(["investment", "portfolio", "strategy", "technical", "general", "financial_planning", "onboarding_crypto"]);
       const incomingType = (metadata as any).consultation_type as string | undefined;
       
@@ -348,16 +370,30 @@ Deno.serve({ port: 8000 }, async (req) => {
     params.set("mode", mode);
     params.set("customer", customerId);
     
-    // 🎯 URL de éxito diferente para consultorias vs membresías
+    // 🎯 URLs dinámicas según el tipo de compra
     if (mode === "payment" && consultationId) {
       // Para consultorias: redirigir al formulario post-pago
       params.set("success_url", `${siteUrl}/consultation-post-payment?session_id={CHECKOUT_SESSION_ID}&consultation_id=${consultationId}`);
+      params.set("cancel_url", `${siteUrl}/consultoria`); // Volver a consultoría si cancela
+    } else if (isPlanPurchase) {
+      // Para membresías/planes: URLs específicas para planes
+      params.set("success_url", `${siteUrl}/academia`); // Dashboard de academia tras pago exitoso
+      params.set("cancel_url", `${siteUrl}/membresias`); // Volver a planes si cancela
     } else {
-      // Para membresías: redirigir a página de gracias estándar
+      // Fallback genérico
       params.set("success_url", `${siteUrl}/academia/gracias?session_id={CHECKOUT_SESSION_ID}`);
+      params.set("cancel_url", `${siteUrl}/`); // Home page como último recurso
     }
     
-    params.set("cancel_url", `${siteUrl}/academia`);
+    // Debug URLs configuradas
+    console.log("🔗 URLs configuradas para Stripe:", {
+      success_url: params.get("success_url"),
+      cancel_url: params.get("cancel_url"),
+      isPlanPurchase,
+      hasConsultationId: !!consultationId,
+      mode
+    });
+    
     params.set("metadata[access_type]", mode === "subscription" ? "membership" : "one_time");
     
     if (resolvedUserId) {

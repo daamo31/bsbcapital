@@ -230,15 +230,26 @@ export default defineConfig({
 				'@babel/types'
 			],
 			output: {
-				// Cache busting: agregar timestamp a los nombres de archivo
+				// Cache busting más agresivo: timestamp único para cada build
 				entryFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
 				chunkFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
-				assetFileNames: `assets/[name]-[hash]-${Date.now()}.[ext]`
+				assetFileNames: (assetInfo) => {
+					const ext = assetInfo.name.split('.').pop();
+					if (ext === 'css') {
+						// CSS con timestamp ultra específico para evitar cache mixing
+						return `assets/[name]-[hash]-${Date.now()}-css.[ext]`;
+					}
+					return `assets/[name]-[hash]-${Date.now()}.[ext]`;
+				}
 			}
 		},
-		// Genera manifest para cache busting
+		// Configuración más agresiva para CSS
 		manifest: true,
-		// Asegurar que el CSS tenga hash único
-		cssCodeSplit: true
+		// Separar completamente el CSS y forzar nuevos archivos
+		cssCodeSplit: true,
+		// Configuración específica para CSS
+		cssTarget: 'esnext',
+		// Asegurar minificación completa
+		cssMinify: true
 	}
 });

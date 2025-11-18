@@ -475,3 +475,36 @@
     @apply bg-background text-foreground;
       }
 }
+
+/* === ESTABILIDAD CSS - PREVENIR DISCOTECA DE COLORES === */
+/* Forzar consistencia de colores durante navegación */
+.css-reload {
+  /* Temporal para forzar recalculo */
+}
+
+/* Asegurar que los colores base se mantengan estables */
+html, body {
+  color: hsl(var(--foreground)) !important;
+  background-color: hsl(var(--background)) !important;
+}
+
+/* Prevenir transiciones de color no deseadas */
+*, *::before, *::after {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Aplicar transiciones solo donde sean necesarias */
+.btn-transition {
+  transition: all 0.2s ease !important;
+}
+
+.hover-transition:hover {
+  transition: all 0.2s ease !important;
+}
+
+/* Forzar recalculo de variables CSS críticas */
+:root {
+  /* Timestamp para forzar invalidación de cache CSS */
+  --cache-buster: '2024-css-stable';
+}
