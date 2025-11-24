@@ -119,11 +119,12 @@
       		},
       		fontFamily: {
       			sans: [
-      				'Inter"',
+      				'Poppins',
       				'sans-serif'
       			],
       			mono: [
-      				'Roboto Mono"',
+      				'JetBrains Mono',
+      				'Roboto Mono',
       				'monospace'
       			]
       		}

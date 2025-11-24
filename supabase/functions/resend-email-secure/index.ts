@@ -31,6 +31,80 @@ interface EmailRequest {
   email?: string;
 }
 
+// 🎨 Función para formatear JSON de forma legible para administradores
+function formatFormDataForAdmin(formDataJson: string | object): string {
+  try {
+    let data: any;
+    
+    if (typeof formDataJson === 'string') {
+      data = JSON.parse(formDataJson);
+    } else {
+      data = formDataJson;
+    }
+
+    if (!data || typeof data !== 'object') {
+      return '<em>No hay datos adicionales disponibles</em>';
+    }
+
+    let formattedHtml = '';
+
+    // Información de la consulta
+    if (data.consultation_id) {
+      formattedHtml += `<div style="margin-bottom: 15px; padding: 10px; background: #e3f2fd; border-radius: 5px;">
+        <strong style="color: #1565c0;">📋 INFORMACIÓN DE LA CONSULTA</strong><br>
+        <strong>ID:</strong> ${data.consultation_id}<br>
+        <strong>Tipo:</strong> ${data.consultation_type || 'No especificado'}<br>
+        <strong>Fecha:</strong> ${new Date(data.timestamp || '').toLocaleString('es-ES') || 'No especificado'}
+      </div>`;
+    }
+
+    // Datos del cliente (client_responses es más legible)
+    if (data.client_responses && typeof data.client_responses === 'object') {
+      formattedHtml += `<div style="margin-bottom: 15px; padding: 10px; background: #f3e5f5; border-radius: 5px;">
+        <strong style="color: #7b1fa2;">👤 RESPUESTAS DEL CLIENTE</strong><br><br>`;
+      
+      for (const [key, value] of Object.entries(data.client_responses)) {
+        if (value && value !== '' && value !== 'No especificado') {
+          formattedHtml += `<strong>${key}:</strong> ${value}<br>`;
+        }
+      }
+      formattedHtml += `</div>`;
+    }
+
+    // Datos técnicos del formulario (solo campos relevantes)
+    if (data.form_data && typeof data.form_data === 'object') {
+      const relevantFields = [
+        'investment_experience', 'portfolio_size', 'consultation_goals', 
+        'current_investments', 'specific_questions', 'preferred_communication',
+        'telephone', 'country', 'age_range', 'risk_tolerance', 'time_horizon'
+      ];
+
+      const hasRelevantData = relevantFields.some(field => 
+        data.form_data[field] && data.form_data[field] !== '' && data.form_data[field] !== 'No especificado'
+      );
+
+      if (hasRelevantData) {
+        formattedHtml += `<div style="margin-bottom: 15px; padding: 10px; background: #fff3e0; border-radius: 5px;">
+          <strong style="color: #ef6c00;">🔧 DATOS TÉCNICOS ADICIONALES</strong><br><br>`;
+        
+        relevantFields.forEach(field => {
+          if (data.form_data[field] && data.form_data[field] !== '' && data.form_data[field] !== 'No especificado') {
+            const friendlyName = field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            formattedHtml += `<strong>${friendlyName}:</strong> ${data.form_data[field]}<br>`;
+          }
+        });
+        formattedHtml += `</div>`;
+      }
+    }
+
+    return formattedHtml || '<em>No hay datos adicionales disponibles</em>';
+    
+  } catch (error) {
+    console.error('Error formateando datos del formulario:', error);
+    return `<em>Error al formatear los datos: ${error.message}</em>`;
+  }
+}
+
 // 📧 Templates de email HTML profesionales
 const getEmailTemplates = () => {
   return {
@@ -1067,7 +1141,7 @@ serve(async (req: Request) => {
         .replace(/\{timestamp\}/g, data?.timestamp || new Date().toISOString())
         .replace(/\{additionalInfo\}/g, data?.additionalInfo ? 
           `💭 ${data.additionalInfo}` : "Sin comentarios adicionales")
-        .replace(/\{formDataJson\}/g, data?.formDataJson || "Sin datos adicionales del formulario")
+        .replace(/\{formDataJson\}/g, formatFormDataForAdmin(data?.formDataJson || "{}"))
         .replace(/\{amount\}/g, data?.amount?.toString() || "0")
         .replace(/\{currency\}/g, data?.currency || "EUR");
       emailSubject = subject || template.subject;

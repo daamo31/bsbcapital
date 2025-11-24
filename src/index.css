@@ -190,12 +190,15 @@
         @apply bg-background text-foreground font-sans;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+        letter-spacing: 0.01em;
       }
       h1, h2, h3, h4, h5, h6 {
-        @apply font-sans font-extrabold tracking-tight text-foreground;
+        @apply font-sans font-bold tracking-normal text-foreground;
+        font-weight: 600;
       }
       p, li, span, div {
         @apply text-muted-foreground;
+        font-weight: 400;
       }
       
       /* Estilos de selección de texto mejorados */
@@ -507,4 +510,51 @@ html, body {
 :root {
   /* Timestamp para forzar invalidación de cache CSS */
   --cache-buster: '2024-css-stable';
+}
+
+/* === ESTILOS DE TEXTO REDONDEADO === */
+/* Clases adicionales para texto más suave y redondeado */
+
+.text-rounded-soft {
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1.6;
+}
+
+.text-rounded-medium {
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.5;
+}
+
+.text-rounded-bold {
+  font-weight: 600;
+  letter-spacing: 0.005em;
+  line-height: 1.4;
+}
+
+/* Estilos para títulos más suaves */
+.heading-rounded {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+}
+
+.heading-rounded-xl {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+/* Botones con texto redondeado */
+.btn-text-rounded {
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+/* Texto de párrafos más legible */
+.paragraph-rounded {
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  line-height: 1.7;
 }
