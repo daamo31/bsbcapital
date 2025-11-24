@@ -89,7 +89,7 @@ function formatFormDataForAdmin(formDataJson: string | object): string {
         
         relevantFields.forEach(field => {
           if (data.form_data[field] && data.form_data[field] !== '' && data.form_data[field] !== 'No especificado') {
-            const friendlyName = field.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            const friendlyName = field.replace(/_/g, ' ').replace(/\b\w/g, function(l) { return l.toUpperCase(); });
             formattedHtml += `<strong>${friendlyName}:</strong> ${data.form_data[field]}<br>`;
           }
         });
@@ -99,15 +99,81 @@ function formatFormDataForAdmin(formDataJson: string | object): string {
 
     return formattedHtml || '<em>No hay datos adicionales disponibles</em>';
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error formateando datos del formulario:', error);
-    return `<em>Error al formatear los datos: ${error.message}</em>`;
+    return `<em>Error al formatear los datos: ${error?.message || 'Error desconocido'}</em>`;
   }
 }
 
 // 📧 Templates de email HTML profesionales
 const getEmailTemplates = () => {
   return {
+    // Template para BIENVENIDA (nuevos usuarios)
+    welcome: {
+      subject: "¡Bienvenido a BSB Capital! 🚀 Tu viaje hacia la libertad financiera comienza aquí",
+      html: `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bienvenido a BSB Capital</title>
+</head>
+<body style="margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; background-color:#f5f5f5;">
+  <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px; background-color:#ffffff;">
+    <tr>
+      <td align="center" style="padding:40px 20px 20px;">
+        <img
+          src="${LOGO_URLS.default}"
+          alt="BSB Capital"
+          width="110"
+          style="display:block; margin:auto;"
+        />
+      </td>
+    </tr>
+    <tr>
+      <td align="center" style="padding:10px 30px;">
+        <h2 style="color:#0b1f14; font-weight:600; margin:0;">¡Bienvenido a BSB Capital! 🚀</h2>
+        <p style="font-size:16px; color:#37493f; line-height:1.6; margin-top:18px; margin-bottom:28px;">
+          Hola [Nombre],<br><br>
+          ¡Es genial tenerte en nuestra comunidad!<br><br>
+          En BSB Capital creemos que todos merecen tener claridad y control sobre su futuro financiero. Por eso estamos aquí: para acompañarte con estrategias prácticas, herramientas reales y el conocimiento que necesitas para tomar decisiones inteligentes.<br><br>
+          <strong>¿Qué puedes hacer ahora?</strong><br><br>
+          🎓 <strong>Explora la Academia BSB</strong><br>
+          Accede a formación práctica en inversión, fiscalidad y criptomonedas.<br>
+          <a href="https://bsbcapital.io/academia" style="color:#C5A019; text-decoration:none;">→ Ir a la Academia</a><br><br>
+          
+          🤖 <strong>Prueba BSB Maker</strong><br>
+          Tu copiloto de trading e inversión con inteligencia artificial.<br>
+          <a href="https://bsbcapital.io/bsb-maker" style="color:#C5A019; text-decoration:none;">→ Explorar BSB Maker</a><br><br>
+          
+          💼 <strong>Agenda una consultoría personalizada</strong><br>
+          Recibe estrategias adaptadas a tu situación y objetivos únicos.<br>
+          <a href="https://bsbcapital.io/consultoria" style="color:#C5A019; text-decoration:none;">→ Reservar consultoría</a><br><br>
+          
+          📚 <strong>Únete a la comunidad</strong><br>
+          Conecta con otros inversores y accede a contenido exclusivo.<br>
+          <a href="https://bsbcapital.io/comunidad" style="color:#C5A019; text-decoration:none;">→ Acceder a la comunidad</a><br><br>
+          
+          Estamos emocionados de acompañarte en este viaje. Si tienes preguntas, no dudes en contactarnos.<br><br>
+          <strong>Bienvenido a tu nueva forma de entender las finanzas.</strong><br><br>
+          El equipo de BSB Capital
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding-top:20px; border-bottom:1px solid #e6ece8;"></td>
+    </tr>
+    <tr>
+      <td align="center" style="padding:25px 20px 35px 20px; font-size:12px; color:#6a756f; line-height:1.6;">
+        <p style="margin:0;">© BSB Capital · <a href="mailto:info@bsbcapital.io" style="color:#C5A019; text-decoration:none;">info@bsbcapital.io</a></p>
+        <p style="margin:5px 0 0 0;">¡Gracias por unirte a nuestra comunidad! Este correo ha sido enviado desde no-reply@bsbcapital.io</p>
+        <p style="margin:0;">Para consultas o soporte, contacta: info@bsbcapital.io</p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
+    },
     // Templates para CONSULTORIAS
     consultation_financial: {
       subject: "Tu consultoría en BSB Capital está confirmada 🗓️",

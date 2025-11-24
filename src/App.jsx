@@ -61,6 +61,7 @@ import HotmartAcademy from '@/pages/content/HotmartAcademy';
 import EmailTester from '@/pages/EmailTester';
 import HotmartIntegrationDemo from '@/pages/content/HotmartIntegrationDemo';
 import HotmartTestPlayer from '@/components/hotmart/HotmartTestPlayer';
+import ContentSystemDemo from '@/pages/content/ContentSystemDemo';
 import TestNavigationPage from '@/pages/testing/TestNavigationPage';
 
 import ScrollToTop from '@/components/layout/ScrollToTop';
@@ -117,6 +118,7 @@ function App() {
                 <Route path="/demo-acceso" element={<ContentAccessDemo />} />
                 <Route path="/hotmart-academy" element={<HotmartAcademy />} />
                 <Route path="/hotmart-demo" element={<HotmartIntegrationDemo />} />
+                <Route path="/content-system-demo" element={<ContentSystemDemo />} />
                 <Route path="/hotmart-test" element={
                   <HotmartTestPlayer 
                     contentId="module_1" 
