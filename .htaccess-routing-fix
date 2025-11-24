@@ -1,128 +1,32 @@
-RewriteEngine On
-
-# Debug: Log rewrite activity (temporal para debugging)
-# LogLevel alert rewrite:trace6
-
-# Handle React Router (SPA routing) - VERSIÓN ULTRA ROBUSTA
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_URI} !^/version\.json$
-RewriteCond %{REQUEST_URI} !^/test-cache-hostinger\.html$
-RewriteCond %{REQUEST_URI} !^/diagnostico-visual\.html$
-RewriteCond %{REQUEST_URI} !\.(?:css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ [NC]
-RewriteRule ^(.*)$ /index.html [QSA,L]
-
-# Prevent access to source maps in production
-<Files "*.map">
-    Order allow,deny
-    Deny from all
-</Files>
-
-# Alternative fallback for SPA
-Options -MultiViews
-
-# CORS Headers for API calls
-<IfModule mod_headers.c>
-    Header always set Access-Control-Allow-Origin "*"
-    Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
-    Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
-    
-    # Security Headers
-    Header always set X-Frame-Options "SAMEORIGIN"
-    Header always set X-Content-Type-Options "nosniff"
-    Header always set Referrer-Policy "strict-origin-when-cross-origin"
-    Header always set X-XSS-Protection "1; mode=block"
-    
-    # Performance: Remove server signature
-    Header unset Server
-    Header set X-Powered-By "BSB Capital"
-    
-    # CACHE BUSTING HEADERS - SOLUCIÓN AL PROBLEMA
-    # Forzar revalidación para archivos HTML
-    <FilesMatch "\.(html|htm)$">
-        Header set Cache-Control "no-cache, no-store, must-revalidate"
-        Header set Pragma "no-cache"
-        Header set Expires "0"
-    </FilesMatch>
-    
-    # Cache controlado para assets con hash (Vite genera hashes)
-    <FilesMatch "\.(js|css)$">
-        Header set Cache-Control "public, max-age=31536000, immutable"
-    </FilesMatch>
-    
-    # Cache corto para otros archivos de contenido
-    <FilesMatch "\.(json|xml)$">
-        Header set Cache-Control "public, max-age=300"
-    </FilesMatch>
-</IfModule>
-
-# Enable Gzip Compression
-<IfModule mod_deflate.c>
-    # Compress HTML, CSS, JavaScript, Text, XML and fonts
-    AddOutputFilterByType DEFLATE application/javascript
-    AddOutputFilterByType DEFLATE application/rss+xml
-    AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
-    AddOutputFilterByType DEFLATE application/x-font
-    AddOutputFilterByType DEFLATE application/x-font-opentype
-    AddOutputFilterByType DEFLATE application/x-font-otf
-    AddOutputFilterByType DEFLATE application/x-font-truetype
-    AddOutputFilterByType DEFLATE application/x-font-ttf
-    AddOutputFilterByType DEFLATE application/x-javascript
-    AddOutputFilterByType DEFLATE application/xhtml+xml
-    AddOutputFilterByType DEFLATE application/xml
-    AddOutputFilterByType DEFLATE font/opentype
-    AddOutputFilterByType DEFLATE font/otf
-    AddOutputFilterByType DEFLATE font/ttf
-    AddOutputFilterByType DEFLATE image/svg+xml
-    AddOutputFilterByType DEFLATE image/x-icon
-    AddOutputFilterByType DEFLATE text/css
-    AddOutputFilterByType DEFLATE text/html
-    AddOutputFilterByType DEFLATE text/javascript
-    AddOutputFilterByType DEFLATE text/plain
-    AddOutputFilterByType DEFLATE text/xml
-    AddOutputFilterByType DEFLATE application/json
-</IfModule>
-
-# Configuración de Cache OPTIMIZADA - Permite actualizaciones frecuentes
-<IfModule mod_expires.c>
-    ExpiresActive on
-    
-    # CSS y JavaScript con hash (Vite) - Cache largo porque cambia el nombre del archivo
-    ExpiresByType text/css "access plus 1 year"
-    ExpiresByType application/javascript "access plus 1 year"
-    ExpiresByType application/x-javascript "access plus 1 year"
-    
-    # HTML - Cache muy corto para permitir actualizaciones rápidas
-    ExpiresByType text/html "access plus 5 minutes"
-    
-    # JSON y contenido dinámico - Cache corto
-    ExpiresByType application/json "access plus 5 minutes"
-    
-    # Images - Cache moderado
-    ExpiresByType image/png "access plus 7 days"
-    ExpiresByType image/jpg "access plus 7 days"
-    ExpiresByType image/jpeg "access plus 7 days"
-    ExpiresByType image/gif "access plus 7 days"
-    ExpiresByType image/svg+xml "access plus 7 days"
-    ExpiresByType image/webp "access plus 7 days"
-    
-    # Fonts - Cache largo
-    ExpiresByType font/woff "access plus 1 year"
-    ExpiresByType font/woff2 "access plus 1 year"
-    ExpiresByType application/font-woff "access plus 1 year"
-    ExpiresByType application/font-woff2 "access plus 1 year"
-</IfModule>
-
-# Error Pages
-ErrorDocument 404 /index.html
-ErrorDocument 403 /index.html
-
-# Cache busting para desarrollo - TEMPORAL
 <IfModule mod_rewrite.c>
-    # Agregar timestamp a archivos para forzar recarga
-    RewriteCond %{QUERY_STRING} ^v=(.*)$
-    RewriteRule ^(.*)$ $1 [E=CACHE_BUST:%1,L]
+  RewriteEngine On
+  RewriteBase /
+  
+  # Manejo de preflight requests (OPTIONS) para CORS
+  RewriteCond %{REQUEST_METHOD} OPTIONS
+  RewriteRule ^(.*)$ - [R=200,L]
+  
+  # SPA routing
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ index.html [L]
 </IfModule>
 
-# Force UTF-8 encoding
-AddDefaultCharset UTF-8
+<IfModule mod_headers.c>
+  Header set X-Powered-By "Hostinger Horizons"
+
+  # CORS Headers para Supabase
+  Header always set Access-Control-Allow-Origin "*"
+  Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+  Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With, Accept, Origin, x-client-info, apikey"
+  Header always set Access-Control-Allow-Credentials "true"
+  Header always set Access-Control-Max-Age "86400"
+
+  # Cache everything on CDN by default
+  Header set Cache-Control "public, s-maxage=604800, max-age=0"
+  
+  # Cache in browser all assets
+  <If "%{REQUEST_URI} =~ m#^/assets/.*$#">
+    Header set Cache-Control "public, max-age=604800"
+  </If>
+</IfModule>

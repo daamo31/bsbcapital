@@ -165,7 +165,7 @@ const Academia = () => {
                 Academia BSB Capital
               </h1>
               <p className="text-xl md:text-2xl mb-8 opacity-90">
-                Formación financiera de élite para inversores profesionales
+                Formación profesional en criptoactivos con metodología y rigor
               </p>
               
               {/* Stats */}

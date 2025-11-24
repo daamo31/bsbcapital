@@ -280,7 +280,7 @@ const BsbMaker = () => {
             <div>
               <h2 className="text-3xl md:text-4xl font-bold text-brand-gold-600">Estamos construyendo algo único</h2>
               <p className="mt-4 text-lg text-white/90">
-                BSB Maker unirá la precisión del trading institucional con la velocidad de la inteligencia artificial. Y aún no está abierto al público…
+                BSB Maker combina nuestra especialización profunda en criptoactivos con tecnología avanzada para crear un asistente de trading único. Forma parte del ecosistema que está transformando la manera de invertir en activos digitales.
               </p>
             </div>
             <motion.div

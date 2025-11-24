@@ -9,8 +9,24 @@
 		<meta name="description" content="Fusionamos experiencia de mercado y tecnología de vanguardia para ofrecer soluciones de inversión fiables, escalables y a tu medida." />
 		<meta name="keywords" content="inversión, trading, consultoría financiera, criptomonedas, IA, algoritmos" />
 		<meta name="author" content="BSB Capital" />
-        <!-- Stripe.js web library -->
+		<!-- CORS Configuration for Production -->
+		<meta name="referrer" content="strict-origin-when-cross-origin" />
+		<!-- Stripe.js web library -->
         <script src="https://js.stripe.com/v3/"></script>
+		<!-- CORS Error Handler -->
+		<script>
+			// Early CORS error detection
+			window.addEventListener('error', function(e) {
+				if (e.message && (e.message.includes('CORS') || e.message.includes('preflight'))) {
+					console.error('🚨 Error CORS detectado:', {
+						mensaje: e.message,
+						archivo: e.filename,
+						linea: e.lineno,
+						solución: 'Verificar configuración de dominios en Supabase Dashboard'
+					});
+				}
+			});
+		</script>
 	</head>
 	<body>
 		<div id="root"></div>

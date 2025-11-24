@@ -122,7 +122,7 @@ import React from 'react';
         <>
           <Helmet>
             <title>BSB Capital - Transformamos tu forma de invertir en crypto</title>
-            <meta name="description" content="Transformamos la forma en que personas y empresas se relacionan con el mundo crypto. Consultoría estratégica, formación práctica y herramientas con IA." />
+            <meta name="description" content="BSB Capital nace como la primera firma que combina asesoramiento financiero independiente con especialización profunda en criptoactivos. Profesionalidad, claridad y seguridad." />
           </Helmet>
           
           {/* Barra de notificación para administradores */}
@@ -163,7 +163,7 @@ import React from 'react';
                       <span className="main-gradient-text">Potenciada por IA</span>
                     </motion.h1>
                     <motion.p variants={itemVariants} className="mt-4 sm:mt-6 max-w-3xl mx-auto text-base sm:text-lg text-brand-text-secondary">
-                      En BSB Capital unimos consultoría con asesores financieros, algoritmos y herramientas desarrolladas con IA para que inviertas con confianza y construyas un futuro sólido.
+                      BSB Capital nace como la primera firma que combina asesoramiento financiero independiente con especialización profunda en criptoactivos. Guiamos a inversores y empresas hacia decisiones inteligentes mediante análisis avanzado, tecnología y formación.
                     </motion.p>
                     <motion.div variants={itemVariants} className="mt-6 sm:mt-10">
                       <Button asChild size="lg" className="px-8 py-4 shadow-lg">
@@ -181,7 +181,7 @@ import React from 'react';
                 <div className="container mx-auto px-4 sm:px-6">
                     <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
                         <motion.h2 variants={itemVariants} className="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-foreground">Soluciones de Inversión que <span className="main-gradient-text">Multiplican tu Potencial</span></motion.h2>
-                        <motion.p variants={itemVariants} className="mt-4 text-center text-base sm:text-lg text-muted-foreground max-w-4xl mx-auto">Tanto si estás dando tus primeros pasos en el mundo crypto, como si ya operas y quieres llevar tu gestión al siguiente nivel, en BSB Capital encontrarás las herramientas y el acompañamiento que necesitas.</motion.p>
+                        <motion.p variants={itemVariants} className="mt-4 text-center text-base sm:text-lg text-muted-foreground max-w-4xl mx-auto">Corregimos los problemas estructurales del sector crypto: falta de rigor, ausencia de metodología y poca transparencia. Te ofrecemos un ecosistema financiero completo con asesoramiento profesional, análisis avanzado y formación de calidad.</motion.p>
                         <div className="mt-8 sm:mt-16 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
                             {services.map((service) => (
                                 <ServiceCard key={service.title} {...service} />

@@ -307,16 +307,23 @@ const MembresiasDB = () => {
             <div className="bg-gray-50 p-6 rounded-lg mb-6">
               <h3 className="text-xl font-semibold mb-3">¿Qué es un Paquete BSB Capital?</h3>
               <p className="text-gray-700 mb-4">
-                Un paquete combina varios servicios y recursos que una persona o empresa puede necesitar, adaptados a tu perfil.
-                Se trata de un conjunto completo de consultorías, acceso a formación, herramientas y seguimiento, pensado para que tengas todo lo necesario para invertir en crypto con seguridad y eficiencia.
+                BSB Capital nace como la primera firma que combina asesoramiento financiero independiente con especialización profunda en criptoactivos. Nuestros paquetes ofrecen un conjunto completo de consultorías, formación y herramientas, pensados para corregir los problemas estructurales del sector: falta de rigor, ausencia de metodología y poca transparencia.
               </p>
               
               <div className="space-y-2">
-                <p className="text-gray-700">Cada paquete está diseñado para:</p>
+                <p className="text-gray-700">Cada paquete está diseñado para guiar a inversores y empresas hacia decisiones inteligentes mediante:</p>
                 <div className="ml-4 space-y-1">
                   <p className="flex items-center text-gray-700">
-                    <span className="mr-2">👤</span>
-                    Personas que quieren aprender y empezar a invertir en crypto
+                    <span className="mr-2">📊</span>
+                    Análisis avanzado y metodología profesional
+                  </p>
+                  <p className="flex items-center text-gray-700">
+                    <span className="mr-2">🎯</span>
+                    Tecnología especializada en activos digitales
+                  </p>
+                  <p className="flex items-center text-gray-700">
+                    <span className="mr-2">📚</span>
+                    Formación integral y acompañamiento continuo
                   </p>
                   <p className="flex items-center text-gray-700">
                     <span className="mr-2">📈</span>

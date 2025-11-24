@@ -1,6 +1,12 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
+  
+  # Manejo de preflight requests (OPTIONS) para CORS
+  RewriteCond %{REQUEST_METHOD} OPTIONS
+  RewriteRule ^(.*)$ - [R=200,L]
+  
+  # SPA routing
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteRule ^ index.html [L]
@@ -8,6 +14,13 @@
 
 <IfModule mod_headers.c>
   Header set X-Powered-By "Hostinger Horizons"
+
+  # CORS Headers para Supabase
+  Header always set Access-Control-Allow-Origin "*"
+  Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+  Header always set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With, Accept, Origin, x-client-info, apikey"
+  Header always set Access-Control-Allow-Credentials "true"
+  Header always set Access-Control-Max-Age "86400"
 
   # Cache everything on CDN by default
   Header set Cache-Control "public, s-maxage=604800, max-age=0"

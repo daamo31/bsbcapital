@@ -412,9 +412,9 @@ const ConsultationPostPayment = () => {
       case 'crypto_advanced':
         // Validación para formulario empresarial de gestión de tesorería
         isValidForType = formData.company_name && formData.company_country && formData.contact_person && 
-                         formData.crypto_usage && formData.monthly_crypto_volume && formData.crypto_storage_location &&
+                         formData.crypto_usage && formData.crypto_volume && 
                          formData.main_treasury_goal && formData.risk_profile && formData.twelve_month_vision &&
-                         formData.current_controls && formData.legal_advice && formData.accounting_records && 
+                         formData.legal_advice && formData.operation_records && 
                          formData.consultation_expectations;
         break;
       default:
@@ -499,15 +499,15 @@ const ConsultationPostPayment = () => {
         company_website: 'Sitio web de la empresa',
         contact_person: 'Persona de contacto principal',
         crypto_usage: 'Uso actual de criptomonedas',
-        monthly_crypto_volume: 'Volumen mensual en operaciones',
-        crypto_assets_held: 'Activos crypto que mantiene',
+        crypto_volume: 'Volumen de criptoactivos',
+        crypto_assets_exposure: 'Exposición a activos crypto',
         crypto_storage_location: 'Método de almacenamiento',
         main_treasury_goal: 'Objetivo principal de tesorería',
         risk_profile: 'Perfil de riesgo empresarial',
         twelve_month_vision: 'Visión a 12 meses',
-        current_controls: 'Controles internos actuales',
+        internal_controls: 'Controles internos',
         legal_advice: 'Asesoramiento legal especializado',
-        accounting_records: 'Sistema de registro contable',
+        operation_records: 'Sistema de registro de operaciones',
         
         // Comunicación
         preferred_communication: 'Preferencia de comunicación',
@@ -588,15 +588,15 @@ const ConsultationPostPayment = () => {
         company_website: formData.company_website,
         contact_person: formData.contact_person,
         crypto_usage: formData.crypto_usage,
-        monthly_crypto_volume: formData.monthly_crypto_volume,
-        crypto_assets_held: formData.crypto_assets_held,
+        crypto_volume: formData.crypto_volume,
+        crypto_assets_exposure: formData.crypto_assets_exposure,
         crypto_storage_location: formData.crypto_storage_location,
         main_treasury_goal: formData.main_treasury_goal,
         risk_profile: formData.risk_profile,
         twelve_month_vision: formData.twelve_month_vision,
-        current_controls: formData.current_controls,
+        internal_controls: formData.internal_controls,
         legal_advice: formData.legal_advice,
-        accounting_records: formData.accounting_records,
+        operation_records: formData.operation_records,
         
         // ✅ NUEVA COLUMNA JSON ESTRUCTURADA
         form_data_json: formDataJson,

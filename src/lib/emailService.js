@@ -107,7 +107,7 @@ class EmailService {
           Durante la sesión, trabajaremos contigo para analizar tu exposición actual al ecosistema cripto, revisar tus estrategias y definir un plan de acción claro y alineado con tus objetivos.<br><br>
           Ya sea para optimizar tu cartera, integrar activos digitales o entender nuevas oportunidades de inversión, recibirás una visión técnica, práctica y profesional.<br><br>
           📅 Pronto te enviaremos los detalles de tu cita y un breve formulario previo para personalizar la sesión.<br><br>
-          Gracias por apostar por el futuro de la inversión.<br>
+          Gracias por confiar en BSB Capital para tu crecimiento financiero.<br>
           El equipo de BSB Capital
         </p>
       </td>

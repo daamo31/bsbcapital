@@ -209,11 +209,30 @@ export default defineConfig({
 		addTransformIndexHtml
 	],
 	server: {
-		cors: true,
+		cors: {
+			origin: [
+				'http://localhost:5173',
+				'http://localhost:3000',
+				'https://bsbcapital.io',
+				'https://www.bsbcapital.io'
+			],
+			credentials: true,
+			methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+			allowedHeaders: [
+				'Content-Type',
+				'Authorization', 
+				'x-client-info',
+				'apikey',
+				'Access-Control-Allow-Origin'
+			]
+		},
 		headers: {
 			'Cross-Origin-Embedder-Policy': 'credentialless',
+			'Access-Control-Allow-Origin': '*',
+			'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+			'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-client-info, apikey'
 		},
-		allowedHosts: true,
+		allowedHosts: ['localhost', 'bsbcapital.io', 'www.bsbcapital.io'],
 	},
 	resolve: {
 		extensions: ['.jsx', '.js', '.tsx', '.ts', '.json', ],
