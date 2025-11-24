@@ -232,7 +232,283 @@ const getEmailTemplates = () => {
 </body>
 </html>`
     },
-    // Template para NOTIFICACIONES A ADMINISTRADORES
+    // Template para NOTIFICACIONES A ADMINISTRADORES - OPTIMIZACIÓN DE CARTERA
+    admin_consultation_financial_planning: {
+      subject: "🔔 Nueva consultoría de Optimización de Cartera - BSB Capital",
+      html: `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nueva Consultoría - Optimización de Cartera</title>
+</head>
+<body style="margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; background-color:#f5f5f5;">
+  <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px; background-color:#ffffff;">
+    <tr>
+      <td align="center" style="padding:40px 20px 20px;">
+        <img src="${LOGO_URLS.default}" alt="BSB Capital" width="110" style="display:block; margin:auto;" />
+      </td>
+    </tr>
+    <tr>
+      <td align="center" style="padding:10px 30px;">
+        <h2 style="color:#0b1f14; font-weight:600; margin:0;">📊 Optimización de Cartera</h2>
+        <p style="font-size:16px; color:#37493f; line-height:1.6; margin-top:18px; margin-bottom:28px;">
+          <strong style="color:#C5A019;">INFORMACIÓN DEL CLIENTE:</strong><br>
+          • <strong>Nombre:</strong> {clientName}<br>
+          • <strong>Email:</strong> {clientEmail}<br>
+          • <strong>Teléfono:</strong> {phone}<br><br>
+          
+          <strong style="color:#C5A019;">DETALLES DE LA CONSULTA:</strong><br>
+          • <strong>Tipo:</strong> Optimización de cartera<br>
+          • <strong>Fecha preferida:</strong> {preferredDate}<br>
+          • <strong>Hora preferida:</strong> {preferredTime}<br>
+          • <strong>Duración:</strong> {duration}<br>
+          • <strong>Precio pagado:</strong> {price}<br>
+          • <strong>ID Pago:</strong> {paymentId}<br>
+          • <strong>ID Consulta:</strong> {consultationId}<br><br>
+          
+          <div style="background:#fff3cd; padding:15px; border-radius:6px; border-left:4px solid #ffc107; margin:15px 0;">
+            <strong style="color:#856404;">📋 PERFIL FINANCIERO DEL CLIENTE:</strong><br><br>
+            
+            <strong>🎯 Objetivo principal:</strong><br>
+            <em style="color:#495057;">{consultationGoals}</em><br><br>
+            
+            <strong>📊 Experiencia en inversiones:</strong><br>
+            <em style="color:#495057;">{investmentExperience}</em><br><br>
+            
+            <strong>💰 Tamaño de cartera:</strong><br>
+            <em style="color:#495057;">{portfolioSize}</em><br><br>
+            
+            <strong>📈 Inversiones actuales:</strong><br>
+            <em style="color:#495057;">{currentInvestments}</em><br><br>
+            
+            <strong>⚖️ Tolerancia al riesgo:</strong><br>
+            <em style="color:#495057;">{riskTolerance}</em><br><br>
+            
+            <strong>💭 Información adicional:</strong><br>
+            <em style="color:#495057;">{additionalInfo}</em><br><br>
+            
+            <small style="color:#6c757d;">🕒 Formulario completado: {timestamp}</small>
+          </div>
+
+          <div style="background:#e8f4fd; padding:15px; border-radius:6px; border-left:4px solid #0984e3; margin:15px 0;">
+            <strong style="color:#2d3436;">📋 DATOS COMPLETOS DEL FORMULARIO:</strong><br><br>
+            <div style="font-family:monospace; background:#f8f9fa; padding:10px; border-radius:4px; font-size:12px; color:#495057; white-space:pre-wrap; max-height:300px; overflow-y:auto;">
+{formDataJson}
+            </div>
+          </div>
+          
+          <div style="background:#f8f9fa; padding:15px; border-left:4px solid #C5A019; margin:20px 0;">
+            <strong style="color:#0b1f14;">🎯 ESTADO ACTUAL:</strong><br>
+            ✅ Pago confirmado ({price})<br>
+            ✅ Formulario completado<br>
+            ⏳ <strong>Acción requerida:</strong> Revisar perfil de riesgo y preparar análisis de cartera
+          </div>
+          
+          <p style="text-align:center; margin-top:25px;">
+            <a href="https://bsbcapital.io/admin/consultations" 
+               style="background:#C5A019; color:white; padding:12px 24px; text-decoration:none; border-radius:6px; font-weight:600;">
+              📋 Gestionar en Dashboard
+            </a>
+          </p>
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td align="center" style="padding:25px 20px 35px 20px; font-size:12px; color:#6a756f; line-height:1.6;">
+        <p style="margin:0;">© BSB Capital · Sistema de notificaciones automáticas</p>
+        <p style="margin:5px 0 0 0;">Dashboard: <a href="https://bsbcapital.io/admin" style="color:#C5A019; text-decoration:none;">bsbcapital.io/admin</a></p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
+    },
+    // Template para NOTIFICACIONES A ADMINISTRADORES - ONBOARDING CRIPTO
+    admin_consultation_onboarding_crypto: {
+      subject: "🔔 Nueva consultoría de Onboarding Cripto - BSB Capital",
+      html: `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nueva Consultoría - Onboarding Cripto</title>
+</head>
+<body style="margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; background-color:#f5f5f5;">
+  <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px; background-color:#ffffff;">
+    <tr>
+      <td align="center" style="padding:40px 20px 20px;">
+        <img src="${LOGO_URLS.default}" alt="BSB Capital" width="110" style="display:block; margin:auto;" />
+      </td>
+    </tr>
+    <tr>
+      <td align="center" style="padding:10px 30px;">
+        <h2 style="color:#0b1f14; font-weight:600; margin:0;">🚀 Onboarding Cripto</h2>
+        <p style="font-size:16px; color:#37493f; line-height:1.6; margin-top:18px; margin-bottom:28px;">
+          <strong style="color:#C5A019;">INFORMACIÓN DEL CLIENTE:</strong><br>
+          • <strong>Nombre:</strong> {clientName}<br>
+          • <strong>Email:</strong> {clientEmail}<br>
+          • <strong>Teléfono:</strong> {phone}<br><br>
+          
+          <strong style="color:#C5A019;">DETALLES DE LA CONSULTA:</strong><br>
+          • <strong>Tipo:</strong> Onboarding cripto<br>
+          • <strong>Fecha preferida:</strong> {preferredDate}<br>
+          • <strong>Hora preferida:</strong> {preferredTime}<br>
+          • <strong>Duración:</strong> {duration}<br>
+          • <strong>Precio pagado:</strong> {price}<br>
+          • <strong>ID Pago:</strong> {paymentId}<br>
+          • <strong>ID Consulta:</strong> {consultationId}<br><br>
+          
+          <div style="background:#e8f5e8; padding:15px; border-radius:6px; border-left:4px solid #28a745; margin:15px 0;">
+            <strong style="color:#155724;">📋 PERFIL CRIPTO DEL CLIENTE:</strong><br><br>
+            
+            <strong>🎯 Objetivo con cripto:</strong><br>
+            <em style="color:#495057;">{consultationGoals}</em><br><br>
+            
+            <strong>📊 Experiencia en cripto:</strong><br>
+            <em style="color:#495057;">{investmentExperience}</em><br><br>
+            
+            <strong>💰 Capital inicial estimado:</strong><br>
+            <em style="color:#495057;">{portfolioSize}</em><br><br>
+            
+            <strong>💡 Motivación por cripto:</strong><br>
+            <em style="color:#495057;">{currentInvestments}</em><br><br>
+            
+            <strong>❓ Preguntas específicas:</strong><br>
+            <em style="color:#495057;">{specificQuestions}</em><br><br>
+            
+            <strong>💭 Información adicional:</strong><br>
+            <em style="color:#495057;">{additionalInfo}</em><br><br>
+            
+            <small style="color:#6c757d;">🕒 Formulario completado: {timestamp}</small>
+          </div>
+
+          <div style="background:#e8f4fd; padding:15px; border-radius:6px; border-left:4px solid #0984e3; margin:15px 0;">
+            <strong style="color:#2d3436;">📋 DATOS COMPLETOS DEL FORMULARIO:</strong><br><br>
+            <div style="font-family:monospace; background:#f8f9fa; padding:10px; border-radius:4px; font-size:12px; color:#495057; white-space:pre-wrap; max-height:300px; overflow-y:auto;">
+{formDataJson}
+            </div>
+          </div>
+          
+          <div style="background:#f8f9fa; padding:15px; border-left:4px solid #C5A019; margin:20px 0;">
+            <strong style="color:#0b1f14;">🎯 ESTADO ACTUAL:</strong><br>
+            ✅ Pago confirmado ({price})<br>
+            ✅ Formulario completado<br>
+            ⏳ <strong>Acción requerida:</strong> Preparar plan de onboarding personalizado
+          </div>
+          
+          <p style="text-align:center; margin-top:25px;">
+            <a href="https://bsbcapital.io/admin/consultations" 
+               style="background:#C5A019; color:white; padding:12px 24px; text-decoration:none; border-radius:6px; font-weight:600;">
+              📋 Gestionar en Dashboard
+            </a>
+          </p>
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td align="center" style="padding:25px 20px 35px 20px; font-size:12px; color:#6a756f; line-height:1.6;">
+        <p style="margin:0;">© BSB Capital · Sistema de notificaciones automáticas</p>
+        <p style="margin:5px 0 0 0;">Dashboard: <a href="https://bsbcapital.io/admin" style="color:#C5A019; text-decoration:none;">bsbcapital.io/admin</a></p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
+    },
+    // Template para NOTIFICACIONES A ADMINISTRADORES - TESORERÍA EMPRESARIAL
+    admin_consultation_crypto_advanced: {
+      subject: "🔔 Nueva consultoría de Tesorería Cripto Empresarial - BSB Capital",
+      html: `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nueva Consultoría - Tesorería Cripto Empresarial</title>
+</head>
+<body style="margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; background-color:#f5f5f5;">
+  <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px; background-color:#ffffff;">
+    <tr>
+      <td align="center" style="padding:40px 20px 20px;">
+        <img src="${LOGO_URLS.default}" alt="BSB Capital" width="110" style="display:block; margin:auto;" />
+      </td>
+    </tr>
+    <tr>
+      <td align="center" style="padding:10px 30px;">
+        <h2 style="color:#0b1f14; font-weight:600; margin:0;">🏢 Tesorería Cripto Empresarial</h2>
+        <p style="font-size:16px; color:#37493f; line-height:1.6; margin-top:18px; margin-bottom:28px;">
+          <strong style="color:#C5A019;">INFORMACIÓN DEL CLIENTE:</strong><br>
+          • <strong>Nombre:</strong> {clientName}<br>
+          • <strong>Email:</strong> {clientEmail}<br>
+          • <strong>Teléfono:</strong> {phone}<br><br>
+          
+          <strong style="color:#C5A019;">DETALLES DE LA CONSULTA:</strong><br>
+          • <strong>Tipo:</strong> Gestión de tesorería cripto para empresas<br>
+          • <strong>Fecha preferida:</strong> {preferredDate}<br>
+          • <strong>Hora preferida:</strong> {preferredTime}<br>
+          • <strong>Duración:</strong> {duration}<br>
+          • <strong>Precio pagado:</strong> {price}<br>
+          • <strong>ID Pago:</strong> {paymentId}<br>
+          • <strong>ID Consulta:</strong> {consultationId}<br><br>
+          
+          <div style="background:#fff3cd; padding:15px; border-radius:6px; border-left:4px solid #ffc107; margin:15px 0;">
+            <strong style="color:#856404;">📋 PERFIL EMPRESARIAL:</strong><br><br>
+            
+            <strong>🏢 Información corporativa:</strong><br>
+            <em style="color:#495057;">{additionalInfo}</em><br><br>
+            
+            <strong>🎯 Objetivo tesorería (12 meses):</strong><br>
+            <em style="color:#495057;">{consultationGoals}</em><br><br>
+            
+            <strong>💰 Volumen criptoactivos:</strong><br>
+            <em style="color:#495057;">{portfolioSize}</em><br><br>
+            
+            <strong>🔒 Estado actual cripto:</strong><br>
+            <em style="color:#495057;">{investmentExperience}</em><br><br>
+            
+            <strong>📊 Activos y almacenamiento:</strong><br>
+            <em style="color:#495057;">{currentInvestments}</em><br><br>
+            
+            <strong>📈 Expectativas consultoría:</strong><br>
+            <em style="color:#495057;">{specificQuestions}</em><br><br>
+            
+            <small style="color:#6c757d;">🕒 Formulario completado: {timestamp}</small>
+          </div>
+
+          <div style="background:#e8f4fd; padding:15px; border-radius:6px; border-left:4px solid #0984e3; margin:15px 0;">
+            <strong style="color:#2d3436;">📋 DATOS COMPLETOS DEL FORMULARIO:</strong><br><br>
+            <div style="font-family:monospace; background:#f8f9fa; padding:10px; border-radius:4px; font-size:12px; color:#495057; white-space:pre-wrap; max-height:300px; overflow-y:auto;">
+{formDataJson}
+            </div>
+          </div>
+          
+          <div style="background:#f8f9fa; padding:15px; border-left:4px solid #C5A019; margin:20px 0;">
+            <strong style="color:#0b1f14;">🎯 ESTADO ACTUAL:</strong><br>
+            ✅ Pago confirmado ({price})<br>
+            ✅ Formulario completado<br>
+            ⏳ <strong>Acción requerida:</strong> Revisar estructura empresarial y preparar estrategia de tesorería
+          </div>
+          
+          <p style="text-align:center; margin-top:25px;">
+            <a href="https://bsbcapital.io/admin/consultations" 
+               style="background:#C5A019; color:white; padding:12px 24px; text-decoration:none; border-radius:6px; font-weight:600;">
+              📋 Gestionar en Dashboard
+            </a>
+          </p>
+        </p>
+      </td>
+    </tr>
+    <tr>
+      <td align="center" style="padding:25px 20px 35px 20px; font-size:12px; color:#6a756f; line-height:1.6;">
+        <p style="margin:0;">© BSB Capital · Sistema de notificaciones automáticas</p>
+        <p style="margin:5px 0 0 0;">Dashboard: <a href="https://bsbcapital.io/admin" style="color:#C5A019; text-decoration:none;">bsbcapital.io/admin</a></p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`
+    },
+    // Template para NOTIFICACIONES A ADMINISTRADORES - GENÉRICO (fallback)
     admin_consultation_notification: {
       subject: "🔔 Nueva consultoría reservada - BSB Capital",
       html: `<!DOCTYPE html>
@@ -791,6 +1067,7 @@ serve(async (req: Request) => {
         .replace(/\{timestamp\}/g, data?.timestamp || new Date().toISOString())
         .replace(/\{additionalInfo\}/g, data?.additionalInfo ? 
           `💭 ${data.additionalInfo}` : "Sin comentarios adicionales")
+        .replace(/\{formDataJson\}/g, data?.formDataJson || "Sin datos adicionales del formulario")
         .replace(/\{amount\}/g, data?.amount?.toString() || "0")
         .replace(/\{currency\}/g, data?.currency || "EUR");
       emailSubject = subject || template.subject;

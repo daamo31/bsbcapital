@@ -27,6 +27,15 @@ const itemVariants = {
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
+// Price IDs para la academia con fallbacks
+const ACADEMIA_MEMBERSHIP_PRICE_ID = import.meta.env.VITE_STRIPE_ACADEMY_MEMBERSHIP_PRICE_ID || 'price_default_membership';
+const ACADEMIA_ONETIME_PRICE_ID = import.meta.env.VITE_STRIPE_ACADEMY_ONETIME_PRICE_ID || 'price_default_onetime';
+
+console.log('🏫 Academia Price IDs configurados:', {
+  membership: ACADEMIA_MEMBERSHIP_PRICE_ID,
+  onetime: ACADEMIA_ONETIME_PRICE_ID
+});
+
 const AcademiaCatalog = () => {
   const { user, session, profile } = useAuth();
   const [content, setContent] = useState([]);
@@ -95,19 +104,41 @@ const AcademiaCatalog = () => {
       alert("Please log in or sign up to continue.");
       return;
     }
+    
     setCheckoutLoading(priceId);
+    
     try {
-      const { data, error } = await supabase.functions.invoke('create-academy-checkout', {
-        body: JSON.stringify({ priceId, user_id: user.id, user_email: user.email }),
+      console.log('📤 Iniciando checkout de academia con priceId:', priceId);
+      
+      // Usar la misma Edge Function que consultoría pero para academia
+      const { data, error } = await supabase.functions.invoke('create-stripe-checkout', {
+        body: JSON.stringify({ 
+          priceId,
+          mode: 'subscription', // O 'payment' según el tipo
+          email: user.email,
+          metadata: {
+            user_id: user.id,
+            product_type: 'academia',
+            client_name: profile?.name || user.email,
+            client_email: user.email
+          }
+        }),
       });
+
+      console.log('📥 Respuesta del checkout de academia:', { data, error });
 
       if (error) throw error;
 
-      const stripe = await stripePromise;
-      await stripe.redirectToCheckout({ sessionId: data.sessionId });
+      if (data && data.url) {
+        // Redirigir directamente a Stripe usando window.location
+        window.location.href = data.url;
+      } else {
+        throw new Error('No se recibió URL de checkout válida');
+      }
+      
     } catch (error) {
-      console.error('Error redirecting to checkout:', error);
-      alert('Could not initiate checkout. Please try again.');
+      console.error('❌ Error en checkout de academia:', error);
+      alert('No se pudo iniciar el pago. Por favor intenta de nuevo.');
     } finally {
       setCheckoutLoading(null);
     }
@@ -261,22 +292,22 @@ const AcademiaCatalog = () => {
             ) : (
               <>
                 <Button 
-                  onClick={() => handleCheckout(import.meta.env.VITE_STRIPE_ACADEMY_MEMBERSHIP_PRICE_ID)} 
+                  onClick={() => handleCheckout(ACADEMIA_MEMBERSHIP_PRICE_ID)} 
                   className="w-full" 
                   size="lg"
                   disabled={!!checkoutLoading}
                 >
-                  {checkoutLoading === import.meta.env.VITE_STRIPE_ACADEMY_MEMBERSHIP_PRICE_ID ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  {checkoutLoading === ACADEMIA_MEMBERSHIP_PRICE_ID ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                   Acceder con Membresía
                 </Button>
                 <Button 
-                  onClick={() => handleCheckout(import.meta.env.VITE_STRIPE_ACADEMY_ONETIME_PRICE_ID)} 
+                  onClick={() => handleCheckout(ACADEMIA_ONETIME_PRICE_ID)} 
                   className="w-full" 
                   variant="secondary" 
                   size="lg"
                   disabled={!!checkoutLoading}
                 >
-                  {checkoutLoading === import.meta.env.VITE_STRIPE_ACADEMY_ONETIME_PRICE_ID ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  {checkoutLoading === ACADEMIA_ONETIME_PRICE_ID ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                   Comprar Acceso a la Academia
                 </Button>
               </>

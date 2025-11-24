@@ -944,7 +944,10 @@ const ConsultationPostPayment = () => {
             minute: '2-digit'
           }) : 'Por confirmar',
           duration: consultation.duration_minutes ? `${consultation.duration_minutes} minutos` : 'No especificado',
-          price: consultation.amount ? `€${consultation.amount}` : `€${consultation.duration_minutes === 30 ? '97' : '167'}`,
+          price: consultation.amount ? `€${consultation.amount}` : 
+                 consultation.duration_minutes === 30 ? '€200' : 
+                 consultation.duration_minutes === 45 ? '€300' :
+                 consultation.duration_minutes === 60 ? '€300' : '€167',
           paymentId: consultation.stripe_payment_intent_id || 'No especificado',
           consultationId: consultation.id || 'No especificado',
           
@@ -952,24 +955,56 @@ const ConsultationPostPayment = () => {
           clientResponses: allClientData,
           formDataJson: JSON.stringify(formDataJson, null, 2),
           
-          // ✅ Campos específicos para compatibilidad con template actual (fallbacks inteligentes)
-          consultationGoals: allClientData['Objetivo principal de la consultoría'] || 
-                             allClientData['Objetivos de la consultoría'] || 'No especificado',
-          investmentExperience: allClientData['Experiencia en inversiones'] || 
+          // ✅ Campos específicos para CRYPTO ADVANCED / TREASURY ENTERPRISE
+          consultationGoals: formData.twelve_month_vision || 
+                             formData.consultation_expectations ||
+                             allClientData['Visión a 12 meses'] ||
+                             allClientData['Expectativas de la consultoría'] ||
+                             allClientData['Objetivo principal de la consultoría'] || 'No especificado',
+                             
+          investmentExperience: formData.crypto_usage || 
+                               allClientData['Uso actual de cripto en tesorería'] ||
                                allClientData['Experiencia en criptomonedas'] || 
                                allClientData['Experiencia previa con asesores'] || 'No especificado',
-          portfolioSize: allClientData['Valor aproximado de la cartera'] || 
+                               
+          portfolioSize: formData.crypto_volume || 
+                        allClientData['Volumen aproximado de criptoactivos'] ||
                         allClientData['Capital inicial para cripto'] || 
-                        allClientData['Rango de ingresos mensuales'] ||
-                        allClientData['Tamaño de cartera'] || 'No especificado',
-          currentInvestments: allClientData['Inversiones actuales'] || 
-                             allClientData['Nivel de conocimiento cripto'] || 
+                        allClientData['Rango de ingresos mensuales'] || 'No especificado',
+                        
+          currentInvestments: formData.crypto_assets_exposure || 
+                             allClientData['Tipo de activos cripto'] ||
+                             allClientData['Inversiones actuales'] || 
                              allClientData['Porcentaje destinado a ahorro'] || 'No especificado',
-          specificQuestions: allClientData['Expectativas de la consultoría'] || 
+                             
+          specificQuestions: formData.consultation_expectations || 
+                            allClientData['Expectativas de la consultoría'] ||
                             allClientData['Preguntas específicas'] ||
                             allClientData['Motivación por el mundo cripto'] || 'No especificado',
-          preferredCommunication: allClientData['Preferencia de comunicación'] || 'Email',
+                            
+          preferredCommunication: formData.preferred_communication || allClientData['Preferencia de comunicación'] || 'Email',
+          
           additionalInfo: [
+            // 🏢 Datos empresariales específicos
+            formData.company_name ? `🏢 Empresa: ${formData.company_name}` : null,
+            formData.company_country ? `🌍 País: ${formData.company_country}` : null,
+            formData.company_website ? `🔗 Web: ${formData.company_website}` : null,
+            formData.contact_person ? `👤 Contacto: ${formData.contact_person}` : null,
+            
+            // 💰 Situación cripto actual
+            formData.crypto_storage_location ? `💾 Almacenamiento: ${formData.crypto_storage_location}` : null,
+            formData.main_treasury_goal ? `🎯 Objetivo tesorería: ${formData.main_treasury_goal}` : null,
+            formData.risk_profile ? `⚖️ Perfil riesgo: ${formData.risk_profile}` : null,
+            
+            // ⚖️ Control y compliance
+            formData.internal_controls ? `🔒 Controles internos: ${formData.internal_controls}` : null,
+            formData.legal_advice ? `⚖️ Asesoría legal: ${formData.legal_advice}` : null,
+            formData.operation_records ? `📊 Registro operaciones: ${formData.operation_records}` : null,
+            
+            // 📝 Información adicional
+            formData.additional_info ? `📝 Información adicional: ${formData.additional_info}` : null,
+            
+            // Campos dinámicos generales
             allClientData['Comentarios adicionales'],
             allClientData['Notas adicionales'],
             allClientData['Prioridades financieras'],
@@ -977,11 +1012,11 @@ const ConsultationPostPayment = () => {
             allClientData['Tolerancia al riesgo'],
             allClientData['País de residencia'],
             allClientData['Rango de edad']
-          ].filter(Boolean).join(' | ') || '',
+          ].filter(Boolean).join('\n') || 'Sin información adicional',
           
           // ✅ Metadatos
           timestamp: new Date().toISOString(),
-          source: 'Formulario post-pago'
+          source: `Formulario post-pago - ${consultation.service === 'crypto_advanced' ? 'Treasury Enterprise' : 'Consultoría General'}`
         };
 
         console.log('📧 Datos del email al admin (FINALES):', adminEmailData);

@@ -244,17 +244,63 @@ const BookingModal = () => {
               
               <div className="space-y-3">
                 <Label className="text-sm font-medium">Tema de la consultoría</Label>
-                <Select onValueChange={(value) => handleSelectChange('service_interest', value)} value={formData.service_interest}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Selecciona un tema" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Optimización de cartera">Optimización de cartera</SelectItem>
-                    <SelectItem value="Onboarding cripto">Onboarding cripto</SelectItem>
-                    <SelectItem value="Estrategias Crypto & Web3">Estrategias Crypto & Web3</SelectItem>
-                    <SelectItem value="Gestión de tesorería cripto para empresas">Gestión de tesorería cripto para empresas</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Button
+                    type="button"
+                    variant={formData.service_interest === "Optimización de cartera" ? "default" : "outline"}
+                    onClick={() => handleSelectChange('service_interest', 'Optimización de cartera')}
+                    className={`h-20 flex flex-col items-center justify-center p-3 text-center ${
+                      formData.service_interest === "Optimización de cartera" 
+                        ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90" 
+                        : "border-border hover:bg-muted/50 hover:border-primary/30"
+                    }`}
+                  >
+                    <BarChart3 className="h-5 w-5 mb-1" />
+                    <span className="text-sm font-medium">Optimización de cartera</span>
+                  </Button>
+                  
+                  <Button
+                    type="button"
+                    variant={formData.service_interest === "Onboarding cripto" ? "default" : "outline"}
+                    onClick={() => handleSelectChange('service_interest', 'Onboarding cripto')}
+                    className={`h-20 flex flex-col items-center justify-center p-3 text-center ${
+                      formData.service_interest === "Onboarding cripto" 
+                        ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90" 
+                        : "border-border hover:bg-muted/50 hover:border-primary/30"
+                    }`}
+                  >
+                    <Rocket className="h-5 w-5 mb-1" />
+                    <span className="text-sm font-medium">Onboarding cripto</span>
+                  </Button>
+                  
+                  <Button
+                    type="button"
+                    variant={formData.service_interest === "Estrategias Crypto & Web3" ? "default" : "outline"}
+                    onClick={() => handleSelectChange('service_interest', 'Estrategias Crypto & Web3')}
+                    className={`h-20 flex flex-col items-center justify-center p-3 text-center ${
+                      formData.service_interest === "Estrategias Crypto & Web3" 
+                        ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90" 
+                        : "border-border hover:bg-muted/50 hover:border-primary/30"
+                    }`}
+                  >
+                    <Globe className="h-5 w-5 mb-1" />
+                    <span className="text-sm font-medium">Estrategias Crypto & Web3</span>
+                  </Button>
+                  
+                  <Button
+                    type="button"
+                    variant={formData.service_interest === "Gestión de tesorería cripto para empresas" ? "default" : "outline"}
+                    onClick={() => handleSelectChange('service_interest', 'Gestión de tesorería cripto para empresas')}
+                    className={`h-20 flex flex-col items-center justify-center p-3 text-center ${
+                      formData.service_interest === "Gestión de tesorería cripto para empresas" 
+                        ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90" 
+                        : "border-border hover:bg-muted/50 hover:border-primary/30"
+                    }`}
+                  >
+                    <Briefcase className="h-5 w-5 mb-1" />
+                    <span className="text-sm font-medium">Tesorería empresarial</span>
+                  </Button>
+                </div>
               </div>
 
               <div className="space-y-3">
@@ -264,7 +310,11 @@ const BookingModal = () => {
                     type="button"
                     variant={formData.duration === "30min" ? "default" : "outline"}
                     onClick={() => handleSelectChange('duration', '30min')}
-                    className={`h-16 flex flex-col ${formData.duration === "30min" ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""}`}
+                    className={`h-16 flex flex-col ${
+                      formData.duration === "30min" 
+                        ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90" 
+                        : "border-border hover:bg-muted/50 hover:border-primary/30"
+                    }`}
                   >
                     <span className="font-semibold">30 min - 200€</span>
                     <span className="text-xs opacity-70">Consulta rápida</span>
@@ -273,7 +323,11 @@ const BookingModal = () => {
                     type="button"
                     variant={formData.duration === "60min" ? "default" : "outline"}
                     onClick={() => handleSelectChange('duration', '60min')}
-                    className={`h-16 flex flex-col ${formData.duration === "60min" ? "bg-primary text-primary-foreground hover:bg-primary/90" : ""}`}
+                    className={`h-16 flex flex-col ${
+                      formData.duration === "60min" 
+                        ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90" 
+                        : "border-border hover:bg-muted/50 hover:border-primary/30"
+                    }`}
                   >
                     <span className="font-semibold">45 min - 300€</span>
                     <span className="text-xs opacity-70">Consulta completa</span>
@@ -282,7 +336,11 @@ const BookingModal = () => {
                     type="button"
                     variant={formData.duration === "test" ? "default" : "outline"}
                     onClick={() => handleSelectChange('duration', 'test')}
-                    className={`h-16 flex flex-col ${formData.duration === "test" ? "bg-primary text-primary-foreground hover:bg-primary/90" : "bg-muted border-border hover:bg-muted/80"}`}
+                    className={`h-16 flex flex-col ${
+                      formData.duration === "test" 
+                        ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90" 
+                        : "bg-muted/30 border-border hover:bg-muted/50 hover:border-primary/30"
+                    }`}
                   >
                     <span className="font-semibold text-xs">Prueba</span>
                     <span className="text-xs opacity-70">Test producción</span>

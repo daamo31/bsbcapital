@@ -681,30 +681,55 @@ class EmailService {
    */
   async sendAdminConsultationNotification(consultationData) {
     try {
+      // 🎯 Determinar el tipo de template específico según el tipo de consultoría
+      const consultationType = consultationData.consultationType || consultationData.type;
+      let emailType = 'admin_consultation_notification'; // fallback genérico
+      
+      // Mapear tipos de consultoría a templates específicos
+      const consultationTypeMap = {
+        'financial_planning': 'admin_consultation_financial_planning',
+        'onboarding_crypto': 'admin_consultation_onboarding_crypto', 
+        'crypto_advanced': 'admin_consultation_crypto_advanced',
+        'Optimización de cartera': 'admin_consultation_financial_planning',
+        'Onboarding cripto': 'admin_consultation_onboarding_crypto',
+        'Gestión de tesorería cripto para empresas': 'admin_consultation_crypto_advanced'
+      };
+      
+      if (consultationTypeMap[consultationType]) {
+        emailType = consultationTypeMap[consultationType];
+        console.log(`📧 Usando template específico: ${emailType} para tipo: ${consultationType}`);
+      } else {
+        console.log(`📧 Usando template genérico para tipo desconocido: ${consultationType}`);
+      }
+
       const { data, error } = await supabase.functions.invoke(this.functionName, {
         body: JSON.stringify({
-          type: 'admin_consultation_notification',
+          type: emailType, // Usar el tipo específico determinado
           to: 'info@bsbcapital.io', // Email de administradores
           data: {
             clientName: consultationData.clientName || consultationData.name,
             clientEmail: consultationData.clientEmail || consultationData.email,
-            clientPhone: consultationData.clientPhone || consultationData.phone,
+            phone: consultationData.phone || consultationData.clientPhone,
             consultationType: consultationData.consultationType || consultationData.type,
             preferredDate: consultationData.preferredDate || consultationData.scheduledDate,
             preferredTime: consultationData.preferredTime || consultationData.scheduledTime,
+            duration: consultationData.duration,
             price: consultationData.price,
+            paymentId: consultationData.paymentId,
+            consultationId: consultationData.consultationId,
             consultationGoals: consultationData.consultationGoals || consultationData.goals,
             additionalInfo: consultationData.additionalInfo || consultationData.message,
-            // 🔧 CAMPOS ADICIONALES que estaban faltando
+            // 🔧 CAMPOS ADICIONALES específicos por tipo
             investmentExperience: consultationData.investmentExperience,
             portfolioSize: consultationData.portfolioSize,
             currentInvestments: consultationData.currentInvestments,
             specificQuestions: consultationData.specificQuestions,
             preferredCommunication: consultationData.preferredCommunication,
+            riskTolerance: consultationData.riskTolerance,
             // 📋 Datos completos del formulario
             clientResponses: consultationData.clientResponses,
             formDataJson: consultationData.formDataJson,
-            timestamp: new Date().toISOString()
+            timestamp: consultationData.timestamp || new Date().toISOString()
           }
         })
       });
