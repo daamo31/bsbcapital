@@ -93,12 +93,6 @@ import React, { useState } from 'react';
         icon: <BookOpen className="h-8 w-8 text-brand-primary" />, 
         link: "/academia" 
       },
-      "consultoria-crypto-web3": {
-        title: "BSB Academy", 
-        description: "Formación práctica y estructurada para adquirir conocimientos sólidos y aplicables en tus inversiones.", 
-        icon: <BookOpen className="h-8 w-8 text-brand-primary" />, 
-        link: "/academia" 
-      },
       "consultoria-crypto-web3": { 
         title: "Consultoría Crypto & Web 3", 
         description: "Sesiones personalizadas enfocadas en análisis de carteras, diseño de estrategias y adaptación a nuevos activos digitales. Ideal para asesores que buscan una visión externa experta.", 

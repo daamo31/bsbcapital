@@ -21,8 +21,9 @@ RewriteRule ^ index.html [L]
 # Seguridad básica
 <IfModule mod_headers.c>
     Header set X-Content-Type-Options "nosniff"
-    Header set X-Frame-Options "DENY"
+    Header set X-Frame-Options "SAMEORIGIN"
     Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
 # Redirigir HTTP a HTTPS
@@ -32,7 +33,14 @@ RewriteRule ^ index.html [L]
 </IfModule>
 
 # Restringir el acceso a archivos sensibles
-<FilesMatch "\.(env|json|sql|sh|ts|js|config|toml|md)$">
+<FilesMatch "\.(env|sql|sh|toml)$">
     Order allow,deny
     Deny from all
+</FilesMatch>
+
+# Permitir acceso a archivos JavaScript, JSON y CSS necesarios
+<FilesMatch "\.(js|json|css|map)$">
+    <IfModule mod_headers.c>
+        Header set Cache-Control "public, max-age=31536000"
+    </IfModule>
 </FilesMatch>

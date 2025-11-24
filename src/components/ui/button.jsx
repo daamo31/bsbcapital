@@ -10,9 +10,9 @@ import { cn } from '@/lib/utils';
     			variant: {
     				default: 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/30',
     				destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-    				outline: 'border-2 border-input bg-transparent hover:bg-accent hover:text-accent-foreground',
+    				outline: 'border-2 border-input bg-transparent hover:bg-primary hover:text-primary-foreground',
     				secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80 shadow-lg shadow-secondary/30',
-    				ghost: 'hover:bg-accent/20 hover:text-accent-foreground',
+    				ghost: 'hover:bg-primary/20 hover:text-primary-foreground',
     				link: 'text-primary underline-offset-4 hover:underline',
     			},
     			size: {

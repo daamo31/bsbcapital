@@ -147,6 +147,9 @@ const BookingModal = () => {
 
       console.log('📤 Sending to create-stripe-checkout:', checkoutData);
 
+      // Diagnosticar función Edge antes de la llamada
+      console.log('🔍 Diagnosing create-stripe-checkout function...');
+      
       const { data, error } = await supabase.functions.invoke('create-stripe-checkout', {
         body: JSON.stringify(checkoutData),
       });
@@ -155,15 +158,21 @@ const BookingModal = () => {
 
       if (error) {
         console.error('❌ Supabase function error:', error);
-        throw new Error(error.message);
+        console.error('❌ Error details:', {
+          name: error.name,
+          message: error.message,
+          stack: error.stack,
+          cause: error.cause
+        });
+        throw new Error(`Edge Function Error: ${error.message}`);
       }
       if (data?.error) {
         console.error('❌ Edge function returned error:', data.error);
-        throw new Error(data.error);
+        throw new Error(`Stripe Error: ${data.error}`);
       }
       if (!data?.sessionId) {
         console.error('❌ No sessionId received:', data);
-        throw new Error('No sessionId received from Stripe');
+        throw new Error('No sessionId received from Stripe. Check Edge Function logs.');
       }
 
       console.log('✅ Got sessionId:', data.sessionId);
