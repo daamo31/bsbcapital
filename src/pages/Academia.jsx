@@ -4,10 +4,12 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useUserAccess } from '@/hooks/useUserAccess';
+import { useAdmin } from '@/hooks/useAdmin';
 import { supabase } from '@/lib/customSupabaseClient';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { Badge } from '@/components/ui/data-display/badge';
+import HotmartIframePlayer from '@/components/hotmart/HotmartIframePlayer';
 import { 
   Loader2, 
   Play, 
@@ -19,36 +21,62 @@ import {
   Star,
   Users,
   Calendar,
-  TrendingUp
+  TrendingUp,
+  Shield,
+  X
 } from 'lucide-react';
 
 const Academia = () => {
   const { user } = useAuth();
   const { hasAccess, isLoading: accessLoading, userSubscription } = useUserAccess();
+  const { isAdmin, canAccessContent, loading: adminLoading, accessLevel, userRole } = useAdmin();
   const [courses, setCourses] = useState([]);
   const [stats, setStats] = useState({ totalCourses: 0, totalVideos: 0, totalHours: 0 });
   const [loading, setLoading] = useState(true);
+  const [selectedContent, setSelectedContent] = useState(null); // Para mostrar contenido embebido
+  const [isPlayerOpen, setIsPlayerOpen] = useState(false);
+
+  // Debug logs
+  useEffect(() => {
+    console.log('🔍 Academia Debug:', {
+      user: user?.email,
+      isAdmin,
+      accessLevel,
+      userRole,
+      hasAccess,
+      loading: adminLoading
+    });
+  }, [user, isAdmin, accessLevel, userRole, hasAccess, adminLoading]);
 
   useEffect(() => {
     const fetchAcademyData = async () => {
       try {
         setLoading(true);
 
-        // Obtener cursos y contenido
+        // Obtener contenido de la tabla course_content
         const { data: coursesData, error: coursesError } = await supabase
           .from('course_content')
-          .select(`
-            *,
-            subscription_plans!inner(
-              id,
-              name,
-              features
-            )
-          `)
-          .eq('is_active', true)
+          .select('*')
           .order('order_index');
 
         if (coursesError) {
+          console.error('Error fetching courses:', coursesError);
+          setCourses([]);
+        } else {
+          console.log('📚 Contenido obtenido:', coursesData);
+          setCourses(coursesData || []);
+          
+          // Calcular estadísticas
+          const videos = coursesData?.filter(c => c.content_type === 'video').length || 0;
+          const totalContent = coursesData?.length || 0;
+          
+          setStats({
+            totalCourses: totalContent,
+            totalVideos: videos,
+            totalHours: Math.ceil(videos * 0.5) // Estimación de 30min por video
+          });
+        }
+      } catch (error) {
           console.error('Error fetching courses:', coursesError);
           return;
         }
@@ -108,13 +136,33 @@ const Academia = () => {
 
   // Función para verificar si el usuario puede acceder a un curso específico
   const canAccessCourse = (course) => {
-    if (!hasAccess || !userSubscription) return false;
+    console.log('🔍 Evaluando acceso:', {
+      courseTitle: course.title,
+      isAdmin,
+      hasAccess,
+      userRole,
+      accessLevel,
+      courseAccessLevel: course.required_access_level,
+      isFree: course.is_free
+    });
+
+    // Los admins pueden acceder a todo
+    if (isAdmin) {
+      console.log('🔑 Admin access granted for:', course.title);
+      return true;
+    }
+
+    // Si es contenido gratuito
+    if (course.is_free) {
+      console.log('🆓 Free content access for:', course.title);
+      return true;
+    }
+
+    // Verificar acceso según nivel requerido
+    const requiredLevel = course.required_access_level || 'basic';
+    console.log(`🔍 Checking access for ${course.title}: required=${requiredLevel}, hasAccess=${hasAccess}`);
     
-    // Si no hay planes requeridos específicos, cualquier suscripción activa da acceso
-    if (!course.requiredPlans || course.requiredPlans.length === 0) return true;
-    
-    // Verificar si el plan del usuario está en los planes requeridos
-    return course.requiredPlans.includes(userSubscription.plan_id);
+    return hasAccess || (userSubscription && userSubscription.status === 'active');
   };
 
   const getContentTypeIcon = (type) => {
@@ -136,7 +184,7 @@ const Academia = () => {
     }
   };
 
-  if (loading || accessLoading) {
+  if (loading || accessLoading || adminLoading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Loader2 className="h-16 w-16 animate-spin text-primary" />
@@ -167,6 +215,30 @@ const Academia = () => {
               <p className="text-xl md:text-2xl mb-8 opacity-90">
                 Formación profesional en criptoactivos con metodología y rigor
               </p>
+
+              {/* Estado del usuario y debug info */}
+              <div className="mb-8 flex flex-wrap justify-center gap-2">
+                {isAdmin && (
+                  <Badge className="bg-red-500 text-white">
+                    👨‍💼 ADMIN ACCESS
+                  </Badge>
+                )}
+                {hasAccess && (
+                  <Badge className="bg-green-500 text-white">
+                    ✓ Premium Access
+                  </Badge>
+                )}
+                {userSubscription && (
+                  <Badge variant="outline" className="bg-white/20 text-white border-white/40">
+                    {userSubscription.subscription_type || 'Subscription Active'}
+                  </Badge>
+                )}
+                {!hasAccess && !isAdmin && (
+                  <Badge variant="outline" className="bg-yellow-500/20 text-white border-yellow-400">
+                    ⚠️ Limited Access
+                  </Badge>
+                )}
+              </div>
               
               {/* Stats */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
@@ -223,8 +295,8 @@ const Academia = () => {
                 </Button>
               </div>
             </motion.div>
-          ) : !hasAccess ? (
-            // Usuario logueado sin acceso
+          ) : !hasAccess && !isAdmin ? (
+            // Usuario logueado sin acceso (no admin)
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -251,38 +323,52 @@ const Academia = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               {/* Welcome Message */}
-              <div className="bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-lg p-6 mb-8">
+              <div className={`rounded-lg p-6 mb-8 ${
+                isAdmin 
+                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white' 
+                  : 'bg-gradient-to-r from-green-500 to-blue-500 text-white'
+              }`}>
                 <div className="flex items-center">
-                  <CheckCircle className="h-8 w-8 mr-3" />
+                  {isAdmin ? (
+                    <Shield className="h-8 w-8 mr-3" />
+                  ) : (
+                    <CheckCircle className="h-8 w-8 mr-3" />
+                  )}
                   <div>
                     <h3 className="text-xl font-bold">
-                      ¡Bienvenido a la Academia, {user.email}!
+                      {isAdmin 
+                        ? `¡Bienvenido Admin!`
+                        : `¡Bienvenido a la Academia, ${user.email}!`
+                      }
                     </h3>
                     <p className="opacity-90">
-                      Membresía: {userSubscription?.subscription_plans?.name || 'Activa'}
+                      {isAdmin 
+                        ? 'Acceso completo como administrador'
+                        : `Membresía: ${userSubscription?.subscription_plans?.name || 'Activa'}`
+                      }
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Courses Grid */}
+              {/* Content Grid */}
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {courses.map((course, index) => {
-                  const canAccess = canAccessCourse(course);
+                {courses.map((content, index) => {
+                  const canAccess = canAccessCourse(content);
                   
                   return (
                     <motion.div
-                      key={course.id}
+                      key={content.id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.1 * index }}
                     >
                       <Card className={`h-full transition-all duration-300 hover:shadow-lg ${
-                        canAccess ? 'hover:shadow-blue-100' : 'opacity-60'
+                        canAccess ? 'hover:shadow-blue-100 border-green-200' : 'opacity-60'
                       }`}>
                         <CardHeader>
                           <div className="flex items-center justify-between mb-2">
-                            <CardTitle className="text-lg">{course.title}</CardTitle>
+                            <CardTitle className="text-lg line-clamp-2">{content.title}</CardTitle>
                             {canAccess ? (
                               <CheckCircle className="h-5 w-5 text-green-500" />
                             ) : (
@@ -290,58 +376,48 @@ const Academia = () => {
                             )}
                           </div>
                           <div className="flex items-center space-x-4 text-sm text-gray-600">
-                            <div className="flex items-center">
-                              <Clock className="h-4 w-4 mr-1" />
-                              {Math.round(course.totalDuration / 60)}h
-                            </div>
-                            <div className="flex items-center">
-                              <Play className="h-4 w-4 mr-1" />
-                              {course.contents.length} contenidos
-                            </div>
+                            {getContentTypeIcon(content.content_type)}
+                            <Badge variant="outline">
+                              {getContentTypeLabel(content.content_type)}
+                            </Badge>
+                            <Badge variant={content.is_free ? 'default' : 'secondary'}>
+                              {content.is_free ? 'Gratuito' : content.required_access_level}
+                            </Badge>
                           </div>
                         </CardHeader>
                         
                         <CardContent>
-                          <div className="space-y-3">
-                            {course.contents.slice(0, 3).map((content) => (
-                              <div key={content.id} className="flex items-center space-x-3 p-2 rounded-lg bg-gray-50">
-                                {getContentTypeIcon(content.content_type)}
-                                <div className="flex-1 min-w-0">
-                                  <p className="text-sm font-medium text-gray-900 truncate">
-                                    {content.title}
-                                  </p>
-                                  <div className="flex items-center space-x-2">
-                                    <Badge variant="secondary" className="text-xs">
-                                      {getContentTypeLabel(content.content_type)}
-                                    </Badge>
-                                    {content.duration_minutes && (
-                                      <span className="text-xs text-gray-500">
-                                        {content.duration_minutes}min
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                            
-                            {course.contents.length > 3 && (
-                              <p className="text-sm text-gray-500 text-center pt-2">
-                                +{course.contents.length - 3} contenidos más
-                              </p>
-                            )}
-                          </div>
+                          <p className="text-sm text-gray-600 mb-4 line-clamp-3">
+                            {content.description}
+                          </p>
+                          
+                          {content.module_id && (
+                            <Badge variant="outline" className="mb-4">
+                              {content.module_id}
+                            </Badge>
+                          )}
                           
                           <div className="mt-6">
                             {canAccess ? (
-                              <Button asChild className="w-full">
-                                <Link to={`/academia/curso/${course.id}`}>
-                                  Acceder al Curso
-                                </Link>
+                              <Button 
+                                className="w-full"
+                                onClick={() => {
+                                  if (content.content_type === 'video') {
+                                    // NUEVA INTEGRACIÓN EMBEBIDA - No redirección
+                                    setSelectedContent(content);
+                                    setIsPlayerOpen(true);
+                                  } else {
+                                    console.log('Accediendo a:', content.title);
+                                  }
+                                }}
+                              >
+                                <Play className="h-4 w-4 mr-2" />
+                                Ver Contenido
                               </Button>
                             ) : (
                               <Button variant="outline" className="w-full" disabled>
                                 <Lock className="h-4 w-4 mr-2" />
-                                Requiere Membresía Premium
+                                Requiere {content.required_access_level}
                               </Button>
                             )}
                           </div>
@@ -356,10 +432,13 @@ const Academia = () => {
                 <div className="text-center py-16">
                   <BookOpen className="h-24 w-24 mx-auto text-gray-400 mb-6" />
                   <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                    Contenido Próximamente
+                    {isAdmin ? 'No hay contenido configurado' : 'Contenido Próximamente'}
                   </h3>
                   <p className="text-lg text-gray-600">
-                    Estamos preparando contenido exclusivo para ti. ¡Mantente atento!
+                    {isAdmin 
+                      ? 'Ejecuta las migraciones para agregar contenido a la base de datos.'
+                      : 'Estamos preparando contenido exclusivo para ti. ¡Mantente atento!'
+                    }
                   </p>
                 </div>
               )}
@@ -367,6 +446,38 @@ const Academia = () => {
           )}
         </div>
       </div>
+
+      {/* REPRODUCTOR EMBEBIDO - NUEVA INTEGRACIÓN PROFESIONAL */}
+      {isPlayerOpen && selectedContent && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg w-full max-w-6xl max-h-[90vh] overflow-auto">
+            <div className="sticky top-0 bg-white border-b px-6 py-4 flex justify-between items-center">
+              <h2 className="text-xl font-bold">{selectedContent.title}</h2>
+              <Button
+                onClick={() => {
+                  setIsPlayerOpen(false);
+                  setSelectedContent(null);
+                }}
+                variant="ghost"
+                size="sm"
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
+            
+            <div className="p-6">
+              <HotmartIframePlayer
+                contentId={selectedContent.content_id}
+                title={selectedContent.title}
+                description={selectedContent.description}
+                hotmartVideoId={selectedContent.hotmart_video_id}
+                customHeight="500px"
+                allowFullscreen={true}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

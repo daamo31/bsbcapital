@@ -34,6 +34,30 @@ const TestNavigationPage = () => {
       features: ['Explicación técnica', 'Flujo completo', 'Configuración']
     },
     {
+      title: '🎓 Academia Real (Testing)',
+      description: 'NUEVO: Experiencia exacta del usuario que compra - Con contenido real',
+      path: '/test/academia-real',
+      icon: <Play className="h-6 w-6 text-green-600" />,
+      status: 'ready',
+      features: ['Contenido BSB Capital real', 'Sin restricciones de acceso', 'iframe embebido', 'Experiencia completa']
+    },
+    {
+      title: '🆕 Integración Profesional Hotmart',
+      description: 'NUEVO: Demo completo con iframe embebido y ID real (6308462)',
+      path: '/content/hotmart-professional-integration',
+      icon: <Zap className="h-6 w-6 text-blue-600" />,
+      status: 'ready',
+      features: ['iframe embebido', 'ID real: 6308462', 'Sin redirecciones', 'Experiencia profesional']
+    },
+    {
+      title: '🆕 Ejemplo de Uso Completo',
+      description: 'NUEVO: Guía práctica con código y configuración',
+      path: '/examples/ejemplo-uso-hotmart',
+      icon: <BookOpen className="h-6 w-6 text-purple-600" />,
+      status: 'ready',
+      features: ['Código de ejemplo', 'Configuración paso a paso', 'Diferentes casos de uso', 'Documentación']
+    },
+    {
       title: 'Academia con Hotmart',
       description: 'Vista de academia usando componentes de Hotmart',
       path: '/hotmart-academy',

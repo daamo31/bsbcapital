@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
     import { Helmet } from 'react-helmet';
     import { motion } from 'framer-motion';
     import { Button } from '@/components/ui/button';
     import { ArrowRight, CheckCircle, Film, FileText, LifeBuoy, ShieldCheck, BarChart, Users, HelpCircle, RefreshCw, MessageSquare, Quote } from 'lucide-react';
     import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/data-display/accordion";
     import CheckoutModal from '@/components/consultations/CheckoutModal';
+    import { useAdmin } from '@/hooks/useAdmin';
+    import { useNavigate } from 'react-router-dom';
 
     const containerVariants = {
       hidden: { opacity: 0 },
@@ -21,16 +23,39 @@ import React, { useState } from 'react';
 
     const Formacion = () => {
       const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+      const { isAdmin, loading } = useAdmin();
+      const navigate = useNavigate();
 
-      const ComprarCursoButton = ({ children, ...props }) => (
-        <Button 
-          size="lg" 
-          onClick={() => setIsCheckoutModalOpen(true)}
-          {...props}
-        >
-          {children} <ArrowRight className="ml-2 h-5 w-5" />
-        </Button>
-      );
+      // Redirigir admin directamente a academia
+      useEffect(() => {
+        if (!loading && isAdmin) {
+          navigate('/academia');
+        }
+      }, [isAdmin, loading, navigate]);
+
+      const ComprarCursoButton = ({ children, ...props }) => {
+        if (isAdmin) {
+          return (
+            <Button 
+              size="lg" 
+              onClick={() => navigate('/academia')}
+              {...props}
+            >
+              Ir a Academia (Admin) <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          );
+        }
+
+        return (
+          <Button 
+            size="lg" 
+            onClick={() => setIsCheckoutModalOpen(true)}
+            {...props}
+          >
+            {children} <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
+        );
+      };
 
       const benefits = [
         { icon: <ShieldCheck className="h-8 w-8 text-primary" />, title: "Claridad Fiscal", description: "Navega por la fiscalidad de criptoactivos y derivados sin estrés." },

@@ -39,6 +39,7 @@ import AcademiaDashboard from '@/pages/dashboard/AcademiaDashboard.jsx';
 
 // Admin
 import AccessPanel from '@/pages/admin/AccessPanel.jsx';
+import HotmartSystemStatus from '@/components/admin/HotmartSystemStatus.jsx';
 
 // Demo/Testing
 import ConsultationFormDemo from '@/pages/ConsultationFormDemo.jsx';
@@ -63,6 +64,11 @@ import HotmartIntegrationDemo from '@/pages/content/HotmartIntegrationDemo';
 import HotmartTestPlayer from '@/components/hotmart/HotmartTestPlayer';
 import ContentSystemDemo from '@/pages/content/ContentSystemDemo';
 import TestNavigationPage from '@/pages/testing/TestNavigationPage';
+
+// Nuevas páginas de integración Hotmart
+import HotmartProfessionalIntegration from '@/pages/content/HotmartProfessionalIntegration';
+import EjemploUsoHotmart from '@/pages/examples/EjemploUsoHotmart';
+import AcademiaTestPage from '@/pages/testing/AcademiaTestPage';
 
 import ScrollToTop from '@/components/layout/ScrollToTop';
 import { AuthProvider } from '@/contexts/SupabaseAuthContext';
@@ -126,7 +132,14 @@ function App() {
                     description="Prueba la conexión con Hotmart en diferentes modos"
                   />
                 } />
+                
+                {/* Nuevas rutas para integración profesional Hotmart */}
+                <Route path="/content/hotmart-professional-integration" element={<HotmartProfessionalIntegration />} />
+                <Route path="/examples/ejemplo-uso-hotmart" element={<EjemploUsoHotmart />} />
+                <Route path="/test/academia-real" element={<AcademiaTestPage />} />
+                
                 <Route path="/test-navigation" element={<TestNavigationPage />} />
+                <Route path="/hotmart-status" element={<HotmartSystemStatus />} />
                 <Route path="/checkout" element={<CheckoutPage />} />
                 <Route path="/compra-exitosa" element={<CompraExitosa />} />
 
