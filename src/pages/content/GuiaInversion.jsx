@@ -112,9 +112,14 @@ const GuiaInversion = () => {
   const [result, setResult] = useState(null);
 
   const handleAnswer = (option) => {
+    console.log('handleAnswer called with option:', option);
     if (option.service) {
+      console.log('Setting result to service:', option.service);
+      console.log('Service exists in serviceInfo?', !!serviceInfo[option.service]);
+      console.log('serviceInfo keys:', Object.keys(serviceInfo));
       setResult(option.service);
     } else if (option.nextPhase) {
+      console.log('Moving to next phase:', option.nextPhase);
       setCurrentPhase(option.nextPhase);
     }
   };

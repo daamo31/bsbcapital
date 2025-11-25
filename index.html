@@ -1,39 +1,72 @@
 <!doctype html>
 <html lang="es">
-	<head>
-		<meta charset="UTF-8" />
-		<link rel="icon" type="image/jpeg" href="/images/black_logo.jpeg" />
-		<meta name="generator" content="BSB Capital" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>BSB Capital - Inteligencia Financiera Potenciada por IA</title>
-		<meta name="description" content="Fusionamos experiencia de mercado y tecnología de vanguardia para ofrecer soluciones de inversión fiables, escalables y a tu medida." />
-		<meta name="keywords" content="inversión, trading, consultoría financiera, criptomonedas, IA, algoritmos" />
-		<meta name="author" content="BSB Capital" />
-		<!-- Google Fonts - Poppins para texto más redondeado -->
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
-		<!-- CORS Configuration for Production -->
-		<meta name="referrer" content="strict-origin-when-cross-origin" />
-		<!-- Stripe.js web library -->
-        <script src="https://js.stripe.com/v3/"></script>
-		<!-- CORS Error Handler -->
-		<script>
-			// Early CORS error detection
-			window.addEventListener('error', function(e) {
-				if (e.message && (e.message.includes('CORS') || e.message.includes('preflight'))) {
-					console.error('🚨 Error CORS detectado:', {
-						mensaje: e.message,
-						archivo: e.filename,
-						linea: e.lineno,
-						solución: 'Verificar configuración de dominios en Supabase Dashboard'
-					});
-				}
-			});
-		</script>
-	</head>
-	<body>
-		<div id="root"></div>
-		<script type="module" src="/src/main.jsx"></script>
-	</body>
+
+<head>
+	<meta charset="UTF-8" />
+
+	<!-- Favicons - Multiple formats for better compatibility -->
+	<link rel="icon" type="image/png" sizes="32x32" href="/images/black_logo-Photoroom.png" />
+	<link rel="icon" type="image/png" sizes="16x16" href="/images/black_logo-Photoroom.png" />
+	<link rel="icon" type="image/jpeg" href="/images/black_logo.jpeg" />
+	<link rel="apple-touch-icon" sizes="180x180" href="/images/black_logo-Photoroom.png" />
+
+	<meta name="generator" content="BSB Capital" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>BSB Capital - Inteligencia Financiera Potenciada por IA</title>
+	<meta name="description"
+		content="Fusionamos experiencia de mercado y tecnología de vanguardia para ofrecer soluciones de inversión fiables, escalables y a tu medida." />
+	<meta name="keywords" content="inversión, trading, consultoría financiera, criptomonedas, IA, algoritmos" />
+	<meta name="author" content="BSB Capital" />
+
+	<!-- Open Graph / Facebook -->
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://bsbcapital.io/" />
+	<meta property="og:title" content="BSB Capital - Inteligencia Financiera Potenciada por IA" />
+	<meta property="og:description"
+		content="Fusionamos experiencia de mercado y tecnología de vanguardia para ofrecer soluciones de inversión fiables, escalables y a tu medida." />
+	<meta property="og:image" content="https://bsbcapital.io/images/black_logo-Photoroom.png" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:site_name" content="BSB Capital" />
+	<meta property="og:locale" content="es_ES" />
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:url" content="https://bsbcapital.io/" />
+	<meta name="twitter:title" content="BSB Capital - Inteligencia Financiera Potenciada por IA" />
+	<meta name="twitter:description"
+		content="Fusionamos experiencia de mercado y tecnología de vanguardia para ofrecer soluciones de inversión fiables, escalables y a tu medida." />
+	<meta name="twitter:image" content="https://bsbcapital.io/images/black_logo-Photoroom.png" />
+
+	<!-- Google Fonts - Poppins para texto más redondeado -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+		rel="stylesheet">
+	<!-- CORS Configuration for Production -->
+	<meta name="referrer" content="strict-origin-when-cross-origin" />
+	<!-- Stripe.js web library -->
+	<script src="https://js.stripe.com/v3/"></script>
+	<!-- CORS Error Handler -->
+	<script>
+		// Early CORS error detection
+		window.addEventListener('error', function (e) {
+			if (e.message && (e.message.includes('CORS') || e.message.includes('preflight'))) {
+				console.error('🚨 Error CORS detectado:', {
+					mensaje: e.message,
+					archivo: e.filename,
+					linea: e.lineno,
+					solución: 'Verificar configuración de dominios en Supabase Dashboard'
+				});
+			}
+		});
+	</script>
+</head>
+
+<body>
+	<div id="root"></div>
+	<script type="module" src="/src/main.jsx"></script>
+</body>
+
 </html>
