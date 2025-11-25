@@ -60,7 +60,7 @@ const BookingModal = () => {
   };
 
   const isStepValid = (step) => {
-    switch(step) {
+    switch (step) {
       case 1: return formData.service_interest && formData.duration;
       case 2: return date;
       case 3: return selectedTime;
@@ -80,13 +80,12 @@ const BookingModal = () => {
     const bookingDateTime = new Date(date);
     const [hours, minutes] = selectedTime.split(':');
     bookingDateTime.setHours(parseInt(hours), parseInt(minutes));
-    
+
     const priceId = consultationPrices[formData.duration];
-    const serviceDescription = `${formData.service_interest} (${
-      formData.duration === '30min' ? '30 min' : 
-      formData.duration === '60min' ? '1 hora' : 
-      formData.duration === 'test' ? 'Prueba' : formData.duration
-    })`;
+    const serviceDescription = `${formData.service_interest} (${formData.duration === '30min' ? '30 min' :
+      formData.duration === '60min' ? '1 hora' :
+        formData.duration === 'test' ? 'Prueba' : formData.duration
+      })`;
 
     // DEBUG: Log all data before sending
     console.log('🔍 DEBUGGING CONSULTORIA CHECKOUT:', {
@@ -99,10 +98,10 @@ const BookingModal = () => {
     // Validation before sending
     if (!priceId) {
       console.error('❌ Missing priceId for duration:', formData.duration);
-      toast({ 
-        variant: "destructive", 
-        title: "Error de configuración", 
-        description: `No se encontró precio para ${formData.duration}` 
+      toast({
+        variant: "destructive",
+        title: "Error de configuración",
+        description: `No se encontró precio para ${formData.duration}`
       });
       setLoading(false);
       return;
@@ -123,7 +122,7 @@ const BookingModal = () => {
     }
 
     try {
-      const checkoutData = { 
+      const checkoutData = {
         priceId,
         mode: 'payment',
         email: formData.email,
@@ -133,9 +132,9 @@ const BookingModal = () => {
           client_email: formData.email,
           consultation_type: formData.service_interest,
           scheduled_at: bookingDateTime.toISOString(),
-          duration_minutes: formData.duration === '30min' ? '30' : 
-                          formData.duration === '60min' ? '60' : 
-                          formData.duration === 'test' ? '5' : '30',
+          duration_minutes: formData.duration === '30min' ? '30' :
+            formData.duration === '60min' ? '60' :
+              formData.duration === 'test' ? '5' : '30',
           description: formData.more_info,
           status: 'scheduled',
           // Mantenemos campos originales para compatibilidad
@@ -149,7 +148,7 @@ const BookingModal = () => {
 
       // Diagnosticar función Edge antes de la llamada
       console.log('🔍 Diagnosing create-stripe-checkout function...');
-      
+
       const { data, error } = await supabase.functions.invoke('create-stripe-checkout', {
         body: JSON.stringify(checkoutData),
       });
@@ -187,7 +186,7 @@ const BookingModal = () => {
         throw new Error(stripeError.message);
       }
 
-    } catch(error) {
+    } catch (error) {
       console.error('❌ STRIPE CHECKOUT ERROR:', {
         error,
         message: error.message,
@@ -195,14 +194,14 @@ const BookingModal = () => {
         priceId,
         stack: error.stack
       });
-      
+
       toast({
         variant: "destructive",
-        title: "Error al procesar el pago", 
+        title: "Error al procesar el pago",
         description: `${error.message || "Hubo un problema al redirigirte a la pasarela de pago."} Revisa la consola para más detalles.`,
       });
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 
@@ -213,7 +212,7 @@ const BookingModal = () => {
     }}>
       <DialogTrigger asChild>
         <Button size="lg">
-          📌 Reserva tu consultoría crypto ahora <ArrowRight className="ml-2 h-5 w-5" />
+          Reserva tu consultoría crypto ahora <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-[95vw] sm:max-w-lg max-h-[90vh] overflow-y-auto">
@@ -224,8 +223,8 @@ const BookingModal = () => {
           </DialogDescription>
           {/* Progress bar */}
           <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-            <div 
-              className="bg-green-600 h-2 rounded-full transition-all duration-300" 
+            <div
+              className="bg-green-600 h-2 rounded-full transition-all duration-300"
               style={{ width: `${(currentStep / 4) * 100}%` }}
             />
           </div>
@@ -241,7 +240,7 @@ const BookingModal = () => {
               className="space-y-4"
             >
               <h3 className="text-lg font-semibold text-center mb-4">¿Qué tipo de consultoría necesitas?</h3>
-              
+
               <div className="space-y-3">
                 <Label className="text-sm font-medium">Tema de la consultoría</Label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -249,53 +248,49 @@ const BookingModal = () => {
                     type="button"
                     variant={formData.service_interest === "Optimización de cartera" ? "default" : "outline"}
                     onClick={() => handleSelectChange('service_interest', 'Optimización de cartera')}
-                    className={`h-20 flex flex-col items-center justify-center p-3 text-center ${
-                      formData.service_interest === "Optimización de cartera" 
-                        ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90" 
-                        : "border-border hover:bg-muted/50 hover:border-primary/30"
-                    }`}
+                    className={`h-20 flex flex-col items-center justify-center p-3 text-center ${formData.service_interest === "Optimización de cartera"
+                      ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
+                      : "border-border hover:bg-muted/50 hover:border-primary/30"
+                      }`}
                   >
                     <BarChart3 className="h-5 w-5 mb-1" />
                     <span className="text-sm font-medium">Optimización de cartera</span>
                   </Button>
-                  
+
                   <Button
                     type="button"
                     variant={formData.service_interest === "Onboarding cripto" ? "default" : "outline"}
                     onClick={() => handleSelectChange('service_interest', 'Onboarding cripto')}
-                    className={`h-20 flex flex-col items-center justify-center p-3 text-center ${
-                      formData.service_interest === "Onboarding cripto" 
-                        ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90" 
-                        : "border-border hover:bg-muted/50 hover:border-primary/30"
-                    }`}
+                    className={`h-20 flex flex-col items-center justify-center p-3 text-center ${formData.service_interest === "Onboarding cripto"
+                      ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
+                      : "border-border hover:bg-muted/50 hover:border-primary/30"
+                      }`}
                   >
                     <Rocket className="h-5 w-5 mb-1" />
                     <span className="text-sm font-medium">Onboarding cripto</span>
                   </Button>
-                  
+
                   <Button
                     type="button"
                     variant={formData.service_interest === "Estrategias Crypto & Web3" ? "default" : "outline"}
                     onClick={() => handleSelectChange('service_interest', 'Estrategias Crypto & Web3')}
-                    className={`h-20 flex flex-col items-center justify-center p-3 text-center ${
-                      formData.service_interest === "Estrategias Crypto & Web3" 
-                        ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90" 
-                        : "border-border hover:bg-muted/50 hover:border-primary/30"
-                    }`}
+                    className={`h-20 flex flex-col items-center justify-center p-3 text-center ${formData.service_interest === "Estrategias Crypto & Web3"
+                      ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
+                      : "border-border hover:bg-muted/50 hover:border-primary/30"
+                      }`}
                   >
                     <Globe className="h-5 w-5 mb-1" />
                     <span className="text-sm font-medium">Estrategias Crypto & Web3</span>
                   </Button>
-                  
+
                   <Button
                     type="button"
                     variant={formData.service_interest === "Gestión de tesorería cripto para empresas" ? "default" : "outline"}
                     onClick={() => handleSelectChange('service_interest', 'Gestión de tesorería cripto para empresas')}
-                    className={`h-20 flex flex-col items-center justify-center p-3 text-center ${
-                      formData.service_interest === "Gestión de tesorería cripto para empresas" 
-                        ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90" 
-                        : "border-border hover:bg-muted/50 hover:border-primary/30"
-                    }`}
+                    className={`h-20 flex flex-col items-center justify-center p-3 text-center ${formData.service_interest === "Gestión de tesorería cripto para empresas"
+                      ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
+                      : "border-border hover:bg-muted/50 hover:border-primary/30"
+                      }`}
                   >
                     <Briefcase className="h-5 w-5 mb-1" />
                     <span className="text-sm font-medium">Tesorería empresarial</span>
@@ -310,11 +305,10 @@ const BookingModal = () => {
                     type="button"
                     variant={formData.duration === "30min" ? "default" : "outline"}
                     onClick={() => handleSelectChange('duration', '30min')}
-                    className={`h-16 flex flex-col ${
-                      formData.duration === "30min" 
-                        ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90" 
-                        : "border-border hover:bg-muted/50 hover:border-primary/30"
-                    }`}
+                    className={`h-16 flex flex-col ${formData.duration === "30min"
+                      ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
+                      : "border-border hover:bg-muted/50 hover:border-primary/30"
+                      }`}
                   >
                     <span className="font-semibold">30 min - 200€</span>
                     <span className="text-xs opacity-70">Consulta rápida</span>
@@ -323,11 +317,10 @@ const BookingModal = () => {
                     type="button"
                     variant={formData.duration === "60min" ? "default" : "outline"}
                     onClick={() => handleSelectChange('duration', '60min')}
-                    className={`h-16 flex flex-col ${
-                      formData.duration === "60min" 
-                        ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90" 
-                        : "border-border hover:bg-muted/50 hover:border-primary/30"
-                    }`}
+                    className={`h-16 flex flex-col ${formData.duration === "60min"
+                      ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
+                      : "border-border hover:bg-muted/50 hover:border-primary/30"
+                      }`}
                   >
                     <span className="font-semibold">45 min - 300€</span>
                     <span className="text-xs opacity-70">Consulta completa</span>
@@ -336,18 +329,17 @@ const BookingModal = () => {
                     type="button"
                     variant={formData.duration === "test" ? "default" : "outline"}
                     onClick={() => handleSelectChange('duration', 'test')}
-                    className={`h-16 flex flex-col ${
-                      formData.duration === "test" 
-                        ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90" 
-                        : "bg-muted/30 border-border hover:bg-muted/50 hover:border-primary/30"
-                    }`}
+                    className={`h-16 flex flex-col ${formData.duration === "test"
+                      ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
+                      : "bg-muted/30 border-border hover:bg-muted/50 hover:border-primary/30"
+                      }`}
                   >
                     <span className="font-semibold text-xs">Prueba</span>
                     <span className="text-xs opacity-70">Test producción</span>
                   </Button>
                 </div>
               </div>
-              
+
               {/* Alerta para prueba de producción */}
               {formData.duration === "test" && (
                 <div className="mt-4 p-4 bg-muted border border-border rounded-lg">
@@ -433,7 +425,7 @@ const BookingModal = () => {
               className="space-y-4"
             >
               <h3 className="text-lg font-semibold text-center mb-4">Completa tus datos</h3>
-              
+
               {/* Summary */}
               <div className="bg-gray-50 rounded-lg p-4 text-sm space-y-1">
                 <div className="flex justify-between">
@@ -443,10 +435,10 @@ const BookingModal = () => {
                 <div className="flex justify-between">
                   <span className="font-medium">Duración:</span>
                   <span>{
-                    formData.duration === "30min" ? "30 minutos" : 
-                    formData.duration === "60min" ? "1 hora" : 
-                    formData.duration === "test" ? "Prueba (5 min)" : 
-                    formData.duration
+                    formData.duration === "30min" ? "30 minutos" :
+                      formData.duration === "60min" ? "1 hora" :
+                        formData.duration === "test" ? "Prueba (5 min)" :
+                          formData.duration
                   }</span>
                 </div>
                 <div className="flex justify-between">
@@ -462,33 +454,33 @@ const BookingModal = () => {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Nombre completo</Label>
-                  <Input 
-                    id="name" 
-                    value={formData.name} 
-                    onChange={handleChange} 
+                  <Input
+                    id="name"
+                    value={formData.name}
+                    onChange={handleChange}
                     placeholder="Tu nombre completo"
                     className="w-full"
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input 
-                    id="email" 
-                    type="email" 
-                    value={formData.email} 
-                    onChange={handleChange} 
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
                     placeholder="tu@email.com"
                     className="w-full"
                   />
                 </div>
-                
+
                 <div className="space-y-2">
                   <Label htmlFor="more_info">Información adicional (opcional)</Label>
-                  <Textarea 
-                    id="more_info" 
-                    value={formData.more_info} 
-                    onChange={handleChange} 
+                  <Textarea
+                    id="more_info"
+                    value={formData.more_info}
+                    onChange={handleChange}
                     placeholder="Cuéntanos brevemente sobre tu situación o dudas específicas"
                     className="w-full min-h-[80px]"
                   />
@@ -501,19 +493,19 @@ const BookingModal = () => {
         <DialogFooter className="flex flex-col sm:flex-row gap-2">
           <div className="flex justify-between w-full">
             {currentStep > 1 && (
-              <Button 
-                type="button" 
-                variant="outline" 
+              <Button
+                type="button"
+                variant="outline"
                 onClick={prevStep}
                 className="flex-1 sm:flex-none"
               >
                 Anterior
               </Button>
             )}
-            
+
             {currentStep < 4 ? (
-              <Button 
-                type="button" 
+              <Button
+                type="button"
                 onClick={nextStep}
                 disabled={!isStepValid(currentStep)}
                 className="flex-1 sm:flex-none ml-auto"
@@ -521,8 +513,8 @@ const BookingModal = () => {
                 Siguiente
               </Button>
             ) : (
-              <Button 
-                type="button" 
+              <Button
+                type="button"
                 onClick={handleSubmit}
                 disabled={loading || !isStepValid(currentStep)}
                 className="flex-1 sm:flex-none ml-auto"
@@ -578,28 +570,21 @@ const FAQSection = () => {
                 initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: index * 0.1 }}
-                className="bg-white rounded-lg shadow-sm border"
-              >
+                className="bg-white rounded-lg shadow-sm border overflow-hidden">
                 <button
                   onClick={() => setOpenFAQ(openFAQ === index ? null : index)}
-                  className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors"
-                >
+                  className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
                   <h3 className="text-lg font-semibold text-brand-text-primary">{faq.question}</h3>
                   {openFAQ === index ? (
-                    <ChevronUp className="h-5 w-5 text-brand-primary" />
+                    <ChevronUp className="h-5 w-5 text-brand-primary flex-shrink-0" />
                   ) : (
-                    <ChevronDown className="h-5 w-5 text-brand-primary" />
+                    <ChevronDown className="h-5 w-5 text-brand-primary flex-shrink-0" />
                   )}
                 </button>
                 {openFAQ === index && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    className="px-6 pb-4"
-                  >
+                  <div className="px-6 pb-4">
                     <p className="text-brand-text-secondary">{faq.answer}</p>
-                  </motion.div>
+                  </div>
                 )}
               </motion.div>
             ))}
@@ -626,38 +611,38 @@ const Consultoria = () => {
       >
         {/* Hero Section */}
         <header className="py-12 md:py-32 text-center aurora-background relative overflow-hidden">
-          
-            <div className="container mx-auto px-4 sm:px-6 relative z-10">
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-                className="text-4xl md:text-5xl font-bold main-gradient-text"
-              >
-                <span className="main-gradient-text">BSB Consulting</span>
-              </motion.h1>
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
-                className="text-2xl md:text-3xl font-semibold text-foreground mt-4"
-              >
-                Consultoría Financiera Especializada en Crypto y Activos digitales
-              </motion.h2>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-                className="mt-6 text-lg text-muted-foreground max-w-4xl mx-auto"
-              >
-                El mundo cripto se mueve rápido: nuevas oportunidades, nuevas tecnologías y riesgos que cambian cada día. En BSB Capital, te ayudamos a navegar este universo con seguridad, confianza y control, evitando errores comunes y aprovechando las oportunidades.
-              </motion.p>
-              
-              <div className="mt-8">
-                <BookingModal />
-              </div>
+
+          <div className="container mx-auto px-4 sm:px-6 relative z-10">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="text-4xl md:text-5xl font-bold main-gradient-text"
+            >
+              <span className="main-gradient-text">BSB Consulting</span>
+            </motion.h1>
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
+              className="text-2xl md:text-3xl font-semibold text-foreground mt-4"
+            >
+              Consultoría Financiera Especializada en Crypto y Activos digitales
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+              className="mt-6 text-lg text-muted-foreground max-w-4xl mx-auto"
+            >
+              El mundo crypto se mueve rápido: nuevas oportunidades, nuevas tecnologías y riesgos que cambian cada día. En BSB Capital, te ayudamos a navegar este universo con seguridad, confianza y control, evitando errores comunes y aprovechando las oportunidades.
+            </motion.p>
+
+            <div className="mt-8">
+              <BookingModal />
             </div>
-          
+          </div>
+
         </header>
 
         {/* Storytelling Section */}
@@ -673,7 +658,7 @@ const Consultoria = () => {
                   Algunos confían en el viento; otros esperan a que pase la tormenta.
                 </p>
                 <p className="text-lg text-brand-green-800 leading-relaxed">
-                  En BSB Capital, trazamos la ruta contigo: analizamos tus activos, identificamos riesgos invisibles y diseñamos un plan de acción para que avances con seguridad en el ecosistema cripto y Web3.
+                  En BSB Capital, trazamos la ruta contigo: analizamos tus activos, identificamos riesgos invisibles y diseñamos un plan de acción para que avances con seguridad en el ecosistema crypto y Web3.
                 </p>
               </div>
             </div>
@@ -688,7 +673,7 @@ const Consultoria = () => {
                 Nuestro enfoque y metodología:
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.1 }}
@@ -696,12 +681,12 @@ const Consultoria = () => {
                 >
                   <div className="flex items-center mb-4">
                     <div className="w-8 h-8 bg-brand-primary text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">1</div>
-                    <h3 className="text-lg font-bold text-brand-text-primary">📝 Completa tu formulario de diagnóstico</h3>
+                    <h3 className="text-lg font-bold text-brand-text-primary">✏️ Completa tu formulario de diagnóstico</h3>
                   </div>
                   <p className="text-brand-text-secondary">Con esta información, en BSB Consulting diseñamos un plan personalizado que te permita avanzar con seguridad en tus inversiones y decisiones financieras.</p>
                 </motion.div>
-                
-                <motion.div 
+
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
@@ -713,8 +698,8 @@ const Consultoria = () => {
                   </div>
                   <p className="text-brand-text-secondary">Identificamos oportunidades y amenazas invisibles en tu cartera.</p>
                 </motion.div>
-                
-                <motion.div 
+
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.3 }}
@@ -726,8 +711,8 @@ const Consultoria = () => {
                   </div>
                   <p className="text-brand-text-secondary">Estrategias concretas desde wallets y exchanges hasta inversiones en DeFi, NFTs y proyectos Web3.</p>
                 </motion.div>
-                
-                <motion.div 
+
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.4 }}
@@ -758,17 +743,17 @@ const Consultoria = () => {
               </div>
               <div className="bg-card backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border border-border hover:shadow-xl transition-all duration-300 hover:border-primary/30">
                 <Globe className="h-12 w-12 text-primary mb-4" />
-                <h3 className="text-xl font-bold text-foreground mb-3">🪙 Estrategias Crypto & Web3</h3>
+                <h3 className="text-xl font-bold text-foreground mb-3">Estrategias Crypto & Web3</h3>
                 <p className="text-muted-foreground">Te guiamos para aprovechar oportunidades con fundamentos sólidos y control del riesgo.</p>
               </div>
               <div className="bg-card backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border border-border hover:shadow-xl transition-all duration-300 hover:border-primary/30">
                 <Rocket className="h-12 w-12 text-primary mb-4" />
-                <h3 className="text-xl font-bold text-foreground mb-3">🚀 Onboarding cripto</h3>
+                <h3 className="text-xl font-bold text-foreground mb-3">Onboarding cripto</h3>
                 <p className="text-muted-foreground">Tu puerta de entrada segura al universo crypto. Te acompañamos paso a paso para invertir de forma consciente y segura.</p>
               </div>
               <div className="bg-card backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border border-border hover:shadow-xl transition-all duration-300 hover:border-primary/30">
                 <Briefcase className="h-12 w-12 text-primary mb-4" />
-                <h3 className="text-xl font-bold text-foreground mb-3">🧮 Gestión de tesorería cripto para empresas</h3>
+                <h3 className="text-xl font-bold text-foreground mb-3">Gestión de tesorería cripto para empresas</h3>
                 <p className="text-muted-foreground">Pensado para empresas que ya operan o quieren empezar a operar con activos digitales, este servicio ofrece una gestión profesional para optimizar rendimientos, liquidez y control operativo.</p>
               </div>
             </div>
@@ -799,7 +784,7 @@ const Consultoria = () => {
                 Beneficios de trabajar con BSB Capital
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.1 }}
@@ -808,8 +793,8 @@ const Consultoria = () => {
                   <div className="w-2 h-2 bg-brand-primary rounded-full mt-3 mr-4 flex-shrink-0"></div>
                   <p className="text-brand-text-primary">Inversión en crypto con seguridad y control del riesgo</p>
                 </motion.div>
-                
-                <motion.div 
+
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.2 }}
@@ -818,8 +803,8 @@ const Consultoria = () => {
                   <div className="w-2 h-2 bg-brand-primary rounded-full mt-3 mr-4 flex-shrink-0"></div>
                   <p className="text-brand-text-primary">Estrategias personalizadas según tu nivel de experiencia y objetivos</p>
                 </motion.div>
-                
-                <motion.div 
+
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.3 }}
@@ -828,8 +813,8 @@ const Consultoria = () => {
                   <div className="w-2 h-2 bg-brand-primary rounded-full mt-3 mr-4 flex-shrink-0"></div>
                   <p className="text-brand-text-primary">Acceso a oportunidades emergentes en Web3 y activos digitales</p>
                 </motion.div>
-                
-                <motion.div 
+
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.4 }}
@@ -838,22 +823,12 @@ const Consultoria = () => {
                   <div className="w-2 h-2 bg-brand-primary rounded-full mt-3 mr-4 flex-shrink-0"></div>
                   <p className="text-brand-text-primary">Evita errores comunes y decisiones impulsivas</p>
                 </motion.div>
-                
-                <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.5 }}
-                  className="flex items-start p-4 bg-white rounded-lg shadow-sm border md:col-span-2 justify-center"
-                >
-                  <div className="w-2 h-2 bg-brand-primary rounded-full mt-3 mr-4 flex-shrink-0"></div>
-                  <p className="text-brand-text-primary">Estrategias adaptadas a tu perfil y estilo de vida</p>
-                </motion.div>
               </div>
-              
+
               <div className="text-center mt-12">
                 <Button asChild size="lg">
                   <a href="#agendar-sesion">
-                    📌 Agenda tu sesión 1:1 <ArrowRight className="ml-2 h-5 w-5" />
+                    Agenda tu sesión 1:1 <ArrowRight className="ml-2 h-5 w-5" />
                   </a>
                 </Button>
               </div>
@@ -865,7 +840,7 @@ const Consultoria = () => {
         <div className="relative overflow-hidden bg-gradient-to-br from-brand-green-100 via-brand-green-50 to-brand-green-100">
           <div className="container mx-auto px-4 py-16">
             <h2 className="text-3xl font-bold text-center main-gradient-text mb-12">Lo que dicen nuestros clientes</h2>
-          
+
             <div className="relative overflow-hidden">
               <div className="flex animate-[scroll_40s_linear_infinite] pause-animation">
                 {/* Testimonial 1 */}
@@ -875,300 +850,300 @@ const Consultoria = () => {
                     <div className="flex items-center mb-4">
                       <div className="w-12 h-12 bg-gradient-to-br from-brand-accent to-brand-primary rounded-full flex items-center justify-center text-white font-bold mr-3">
                         CM
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-brand-text-primary">Carlos Mendoza</h3>
+                        <p className="text-sm text-brand-text-secondary">Freelancer, Madrid</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-brand-text-primary">Carlos Mendoza</h3>
-                      <p className="text-sm text-brand-text-secondary">Freelancer, Madrid</p>
+                    <p className="text-brand-text-secondary italic">
+                      "Llevaba años sin control de mis finanzas como freelancer. En 2 meses con BSB Capital ya tengo mi fondo de emergencia completo y un plan de inversión que me da tranquilidad. ¡Brutal cómo cambió mi mentalidad financiera! 🚀"
+                    </p>
+                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                      <span>⭐⭐⭐⭐</span>
+                      <span className="ml-2">• hace 3 semanas</span>
                     </div>
-                  </div>
-                  <p className="text-brand-text-secondary italic">
-                    "Llevaba años sin control de mis finanzas como freelancer. En 2 meses con BSB Capital ya tengo mi fondo de emergencia completo y un plan de inversión que me da tranquilidad. ¡Brutal cómo cambió mi mentalidad financiera! 🚀"
-                  </p>
-                  <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                    <span>⭐⭐⭐⭐</span>
-                    <span className="ml-2">• hace 3 semanas</span>
                   </div>
                 </div>
-              </div>
 
-              {/* Testimonial 2 */}
-              <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
-                <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                  <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                  <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                      AS
+                {/* Testimonial 2 */}
+                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                    <div className="flex items-center mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                        AS
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-brand-text-primary">Ana Sánchez</h3>
+                        <p className="text-sm text-brand-text-secondary">Arquitecta, Barcelona</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-brand-text-primary">Ana Sánchez</h3>
-                      <p className="text-sm text-brand-text-secondary">Arquitecta, Barcelona</p>
+                    <p className="text-brand-text-secondary italic">
+                      "Tenía mis ahorros en el banco ganando 0%. Después de la consultoría redistribuí todo: ETFs, algo de crypto y renta fija. En 6 meses ya veo resultados reales. Su enfoque es súper profesional 💪"
+                    </p>
+                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                      <span>⭐⭐⭐⭐⭐</span>
+                      <span className="ml-2">• hace 1 mes</span>
                     </div>
-                  </div>
-                  <p className="text-brand-text-secondary italic">
-                    "Tenía mis ahorros en el banco ganando 0%. Después de la consultoría redistribuí todo: ETFs, algo de crypto y renta fija. En 6 meses ya veo resultados reales. Su enfoque es súper profesional 💪"
-                  </p>
-                  <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                    <span>⭐⭐⭐⭐⭐</span>
-                    <span className="ml-2">• hace 1 mes</span>
                   </div>
                 </div>
-              </div>
 
-              {/* Testimonial 3 */}
-              <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
-                <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                  <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                  <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                      JR
+                {/* Testimonial 3 */}
+                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                    <div className="flex items-center mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                        JR
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-brand-text-primary">Javier Ruiz</h3>
+                        <p className="text-sm text-brand-text-secondary">Empresario, Valencia</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-brand-text-primary">Javier Ruiz</h3>
-                      <p className="text-sm text-brand-text-secondary">Empresario, Valencia</p>
+                    <p className="text-brand-text-secondary italic">
+                      "Quería entrar en crypto pero no sabía ni por dónde empezar. Me explicaron todo desde cero: wallets, DeFi, riesgos... Ahora tengo un 10% en crypto bien diversificado y duermo tranquilo 👌"
+                    </p>
+                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                      <span>⭐⭐⭐⭐⭐</span>
+                      <span className="ml-2">• hace 2 semanas</span>
                     </div>
-                  </div>
-                  <p className="text-brand-text-secondary italic">
-                    "Quería entrar en crypto pero no sabía ni por dónde empezar. Me explicaron todo desde cero: wallets, DeFi, riesgos... Ahora tengo un 10% en crypto bien diversificado y duermo tranquilo 👌"
-                  </p>
-                  <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                    <span>⭐⭐⭐⭐⭐</span>
-                    <span className="ml-2">• hace 2 semanas</span>
                   </div>
                 </div>
-              </div>
 
-              {/* Testimonial 4 */}
-              <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
-                <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                  <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                  <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                      MG
+                {/* Testimonial 4 */}
+                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                    <div className="flex items-center mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                        MG
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-brand-text-primary">María García</h3>
+                        <p className="text-sm text-brand-text-secondary">Médica, Sevilla</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-brand-text-primary">María García</h3>
-                      <p className="text-sm text-brand-text-secondary">Médica, Sevilla</p>
+                    <p className="text-brand-text-secondary italic">
+                      "Como médica no tenía tiempo para estudiar inversiones. La consultoría me ayudó a automatizar todo: plan de pensiones, ETFs... Todo en piloto automático. Ahora mi dinero trabaja mientras yo trabajo 🔥"
+                    </p>
+                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                      <span>⭐⭐⭐⭐</span>
+                      <span className="ml-2">• hace 5 días</span>
                     </div>
-                  </div>
-                  <p className="text-brand-text-secondary italic">
-                    "Como médica no tenía tiempo para estudiar inversiones. La consultoría me ayudó a automatizar todo: plan de pensiones, ETFs... Todo en piloto automático. Ahora mi dinero trabaja mientras yo trabajo 🔥"
-                  </p>
-                  <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                    <span>⭐⭐⭐⭐</span>
-                    <span className="ml-2">• hace 5 días</span>
                   </div>
                 </div>
-              </div>
 
-              {/* Testimonial 5 */}
-              <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
-                <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                  <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                  <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                      LM
+                {/* Testimonial 5 */}
+                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                    <div className="flex items-center mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                        LM
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-brand-text-primary">Luis Martín</h3>
+                        <p className="text-sm text-brand-text-secondary">Ingeniero, Bilbao</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-brand-text-primary">Luis Martín</h3>
-                      <p className="text-sm text-brand-text-secondary">Ingeniero, Bilbao</p>
+                    <p className="text-brand-text-secondary italic">
+                      "Honestly, tenía dudas al principio. Pero después de 3 meses siguiendo su estrategia de DCA en ETFs, ya voy viendo la diferencia. No es magia, pero funciona. Recomendable para gente seria 👍"
+                    </p>
+                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                      <span>⭐⭐⭐⭐</span>
+                      <span className="ml-2">• hace 1 semana</span>
                     </div>
-                  </div>
-                  <p className="text-brand-text-secondary italic">
-                    "Honestly, tenía dudas al principio. Pero después de 3 meses siguiendo su estrategia de DCA en ETFs, ya voy viendo la diferencia. No es magia, pero funciona. Recomendable para gente seria 👍"
-                  </p>
-                  <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                    <span>⭐⭐⭐⭐</span>
-                    <span className="ml-2">• hace 1 semana</span>
                   </div>
                 </div>
-              </div>
 
-              {/* Testimonial 6 */}
-              <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
-                <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                  <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                  <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                      SP
+                {/* Testimonial 6 */}
+                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                    <div className="flex items-center mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                        SP
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-brand-text-primary">Sara Pérez</h3>
+                        <p className="text-sm text-brand-text-secondary">Consultora, Zaragoza</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-brand-text-primary">Sara Pérez</h3>
-                      <p className="text-sm text-brand-text-secondary">Consultora, Zaragoza</p>
+                    <p className="text-brand-text-secondary italic">
+                      "Tenía un portfolio muy conservador, todo en depósitos. Me costó el cambio pero ahora tengo una mezcla equilibrada. Los primeros meses fueron intensos, pero el seguimiento fue genial 🎯"
+                    </p>
+                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                      <span>⭐⭐⭐⭐⭐</span>
+                      <span className="ml-2">• hace 2 meses</span>
                     </div>
-                  </div>
-                  <p className="text-brand-text-secondary italic">
-                    "Tenía un portfolio muy conservador, todo en depósitos. Me costó el cambio pero ahora tengo una mezcla equilibrada. Los primeros meses fueron intensos, pero el seguimiento fue genial 🎯"
-                  </p>
-                  <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                    <span>⭐⭐⭐⭐⭐</span>
-                    <span className="ml-2">• hace 2 meses</span>
                   </div>
                 </div>
-              </div>
 
-              {/* Testimonial 7 */}
-              <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
-                <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                  <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                  <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                      DR
+                {/* Testimonial 7 */}
+                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                    <div className="flex items-center mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                        DR
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-brand-text-primary">David Rodríguez</h3>
+                        <p className="text-sm text-brand-text-secondary">Comercial, Málaga</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-brand-text-primary">David Rodríguez</h3>
-                      <p className="text-sm text-brand-text-secondary">Comercial, Málaga</p>
+                    <p className="text-brand-text-secondary italic">
+                      "Mi objetivo era comprar casa en 2 años. Creamos un plan específico: parte en renta fija, parte en bolsa. Va todo según lo previsto, creo que lo voy a conseguir incluso antes 🏠"
+                    </p>
+                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                      <span>⭐⭐⭐⭐</span>
+                      <span className="ml-2">• hace 4 días</span>
                     </div>
-                  </div>
-                  <p className="text-brand-text-secondary italic">
-                    "Mi objetivo era comprar casa en 2 años. Creamos un plan específico: parte en renta fija, parte en bolsa. Va todo según lo previsto, creo que lo voy a conseguir incluso antes 🏠"
-                  </p>
-                  <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                    <span>⭐⭐⭐⭐</span>
-                    <span className="ml-2">• hace 4 días</span>
                   </div>
                 </div>
-              </div>
 
-              {/* Testimonial 8 */}
-              <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
-                <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                  <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                  <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                      PC
+                {/* Testimonial 8 */}
+                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                    <div className="flex items-center mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                        PC
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-brand-text-primary">Pedro Caballero</h3>
+                        <p className="text-sm text-brand-text-secondary">Abogado, Sevilla</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-brand-text-primary">Pedro Caballero</h3>
-                      <p className="text-sm text-brand-text-secondary">Abogado, Sevilla</p>
+                    <p className="text-brand-text-secondary italic">
+                      "Como autónomo mis ingresos varían mucho. BSB me ayudó a estructurar un plan adaptado a mi situación: reservas para la época baja y inversiones para cuando sobra. Game changer total 🎯"
+                    </p>
+                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                      <span>⭐⭐⭐⭐⭐</span>
+                      <span className="ml-2">• hace 1 semana</span>
                     </div>
-                  </div>
-                  <p className="text-brand-text-secondary italic">
-                    "Como autónomo mis ingresos varían mucho. BSB me ayudó a estructurar un plan adaptado a mi situación: reservas para la época baja y inversiones para cuando sobra. Game changer total 🎯"
-                  </p>
-                  <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                    <span>⭐⭐⭐⭐⭐</span>
-                    <span className="ml-2">• hace 1 semana</span>
                   </div>
                 </div>
-              </div>
 
-              {/* Testimonial 9 */}
-              <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
-                <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                  <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                  <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                      LF
+                {/* Testimonial 9 */}
+                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                    <div className="flex items-center mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                        LF
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-brand-text-primary">Laura Fernández</h3>
+                        <p className="text-sm text-brand-text-secondary">Ejecutiva, Bilbao</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-brand-text-primary">Laura Fernández</h3>
-                      <p className="text-sm text-brand-text-secondary">Ejecutiva, Bilbao</p>
+                    <p className="text-brand-text-secondary italic">
+                      "Tenía miedo de invertir en bolsa después de 2008. Me explicaron todo con calma, empezamos poco a poco y ahora tengo una cartera diversificada que me da mucha más confianza 💪"
+                    </p>
+                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                      <span>⭐⭐⭐⭐⭐</span>
+                      <span className="ml-2">• hace 2 semanas</span>
                     </div>
-                  </div>
-                  <p className="text-brand-text-secondary italic">
-                    "Tenía miedo de invertir en bolsa después de 2008. Me explicaron todo con calma, empezamos poco a poco y ahora tengo una cartera diversificada que me da mucha más confianza 💪"
-                  </p>
-                  <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                    <span>⭐⭐⭐⭐⭐</span>
-                    <span className="ml-2">• hace 2 semanas</span>
                   </div>
                 </div>
-              </div>
 
-              {/* Testimonial 10 */}
-              <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
-                <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                  <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                  <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                      RT
+                {/* Testimonial 10 */}
+                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                    <div className="flex items-center mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                        RT
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-brand-text-primary">Roberto Torres</h3>
+                        <p className="text-sm text-brand-text-secondary">Empresario, Valencia</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-brand-text-primary">Roberto Torres</h3>
-                      <p className="text-sm text-brand-text-secondary">Empresario, Valencia</p>
+                    <p className="text-brand-text-secondary italic">
+                      "Necesitaba optimizar los impuestos de mi empresa. Su asesoramiento fiscal me ha ahorrado miles de euros y además tengo todo más organizado. Súper recomendable 📊"
+                    </p>
+                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                      <span>⭐⭐⭐⭐⭐</span>
+                      <span className="ml-2">• hace 3 días</span>
                     </div>
-                  </div>
-                  <p className="text-brand-text-secondary italic">
-                    "Necesitaba optimizar los impuestos de mi empresa. Su asesoramiento fiscal me ha ahorrado miles de euros y además tengo todo más organizado. Súper recomendable 📊"
-                  </p>
-                  <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                    <span>⭐⭐⭐⭐⭐</span>
-                    <span className="ml-2">• hace 3 días</span>
                   </div>
                 </div>
-              </div>
 
-              {/* Testimonial 11 */}
-              <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
-                <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                  <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                  <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-rose-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                      CV
+                {/* Testimonial 11 */}
+                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                    <div className="flex items-center mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-rose-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                        CV
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-brand-text-primary">Carmen Vega</h3>
+                        <p className="text-sm text-brand-text-secondary">Profesora, Granada</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-brand-text-primary">Carmen Vega</h3>
-                      <p className="text-sm text-brand-text-secondary">Profesora, Granada</p>
+                    <p className="text-brand-text-secondary italic">
+                      "Quería empezar a invertir pero no sabía nada. Me explicaron desde lo básico hasta estrategias avanzadas. Ahora entiendo mis inversiones y duermo tranquila 😌"
+                    </p>
+                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                      <span>⭐⭐⭐⭐⭐</span>
+                      <span className="ml-2">• hace 10 días</span>
                     </div>
-                  </div>
-                  <p className="text-brand-text-secondary italic">
-                    "Quería empezar a invertir pero no sabía nada. Me explicaron desde lo básico hasta estrategias avanzadas. Ahora entiendo mis inversiones y duermo tranquila 😌"
-                  </p>
-                  <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                    <span>⭐⭐⭐⭐⭐</span>
-                    <span className="ml-2">• hace 10 días</span>
                   </div>
                 </div>
-              </div>
 
-              {/* Testimonial 12 */}
-              <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
-                <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                  <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                  <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                      AB
+                {/* Testimonial 12 */}
+                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                    <div className="flex items-center mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                        AB
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-brand-text-primary">Alejandro Blanco</h3>
+                        <p className="text-sm text-brand-text-secondary">Desarrollador, Madrid</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-brand-text-primary">Alejandro Blanco</h3>
-                      <p className="text-sm text-brand-text-secondary">Desarrollador, Madrid</p>
+                    <p className="text-brand-text-secondary italic">
+                      "Trabajo en tech y quería diversificar más allá de las acciones de mi empresa. Me ayudaron a crear un portfolio balanceado. Mi patrimonio ha crecido un 15% este año 🚀"
+                    </p>
+                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                      <span>⭐⭐⭐⭐⭐</span>
+                      <span className="ml-2">• hace 1 mes</span>
                     </div>
-                  </div>
-                  <p className="text-brand-text-secondary italic">
-                    "Trabajo en tech y quería diversificar más allá de las acciones de mi empresa. Me ayudaron a crear un portfolio balanceado. Mi patrimonio ha crecido un 15% este año 🚀"
-                  </p>
-                  <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                    <span>⭐⭐⭐⭐⭐</span>
-                    <span className="ml-2">• hace 1 mes</span>
                   </div>
                 </div>
-              </div>
 
-              {/* Duplicamos los primeros testimonials para crear loop infinito */}
-              <div className="flex-shrink-0 w-80 mx-4">
-                <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                  <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                  <div className="flex items-center mb-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-brand-accent to-brand-primary rounded-full flex items-center justify-center text-white font-bold mr-3">
-                      CM
+                {/* Duplicamos los primeros testimonials para crear loop infinito */}
+                <div className="flex-shrink-0 w-80 mx-4">
+                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                    <div className="flex items-center mb-4">
+                      <div className="w-12 h-12 bg-gradient-to-br from-brand-accent to-brand-primary rounded-full flex items-center justify-center text-white font-bold mr-3">
+                        CM
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-brand-text-primary">Carlos Mendoza</h3>
+                        <p className="text-sm text-brand-text-secondary">Freelancer, Madrid</p>
+                      </div>
                     </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-brand-text-primary">Carlos Mendoza</h3>
-                      <p className="text-sm text-brand-text-secondary">Freelancer, Madrid</p>
+                    <p className="text-brand-text-secondary italic">
+                      "Llevaba años sin control de mis finanzas como freelancer. En 2 meses con BSB Capital ya tengo mi fondo de emergencia completo y un plan de inversión que me da tranquilidad. ¡Brutal cómo cambió mi mentalidad financiera! �"
+                    </p>
+                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                      <span>⭐⭐⭐⭐⭐</span>
+                      <span className="ml-2">• hace 3 semanas</span>
                     </div>
-                  </div>
-                  <p className="text-brand-text-secondary italic">
-                    "Llevaba años sin control de mis finanzas como freelancer. En 2 meses con BSB Capital ya tengo mi fondo de emergencia completo y un plan de inversión que me da tranquilidad. ¡Brutal cómo cambió mi mentalidad financiera! �"
-                  </p>
-                  <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                    <span>⭐⭐⭐⭐⭐</span>
-                    <span className="ml-2">• hace 3 semanas</span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
         </div>
 
         {/* FAQs Section */}
@@ -1198,7 +1173,7 @@ const Consultoria = () => {
               <Button asChild variant="outline" size="lg">
                 <a href="mailto:info@bsbcapital.io" className="flex items-center">
                   <Mail className="mr-2 h-4 w-4" />
-                  📌 [Reserva tu consultoría ahora]
+                  Reserva tu consultoría ahora
                 </a>
               </Button>
             </div>

@@ -21,7 +21,7 @@ const Contacto = () => {
         className="container mx-auto px-4 py-16"
       >
         <div className="text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-brand-text-primary">🚀 Ponte en Contacto con BSB Capital</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-brand-text-primary">Ponte en Contacto con BSB Capital 💬</h1>
           <p className="mt-4 text-lg text-brand-text-secondary max-w-2xl mx-auto">
             Tu camino hacia decisiones financieras más inteligentes empieza con una conversación. Estamos aquí para guiarte.
           </p>
@@ -34,7 +34,7 @@ const Contacto = () => {
                 <Mail className="h-6 w-6" />
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-brand-text-primary">📧 Email – Respuesta inmediata</h3>
+                <h3 className="text-xl font-semibold text-brand-text-primary">Email – Respuesta inmediata</h3>
                 <p className="text-brand-text-secondary">La forma más rápida de resolver tus dudas o recibir información sobre nuestros servicios.</p>
                 <a href={`mailto:${contactEmail}`} className="text-brand-primary font-medium hover:underline">
                   {contactEmail}
@@ -46,13 +46,13 @@ const Contacto = () => {
                 <MapPin className="h-6 w-6" />
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-brand-text-primary">🏢 Oficina Principal – Operaciones Globales</h3>
+                <h3 className="text-xl font-semibold text-brand-text-primary">Oficina Principal – Operaciones Globales</h3>
                 <p className="text-brand-text-secondary">Nuestro hub estratégico en Dubái, conectando inversiones y oportunidades alrededor del mundo.</p>
                 <p className="font-medium text-brand-text-primary">Dubái, Emiratos Árabes Unidos</p>
               </div>
             </div>
           </div>
-          
+
           <div>
             <img
               className="rounded-lg shadow-xl object-cover w-full h-full"
@@ -61,7 +61,7 @@ const Contacto = () => {
             />
           </div>
         </div>
-        
+
         {/* Sección Mensaje Directo */}
         <div className="mt-20 max-w-2xl mx-auto">
           <div className="text-center mb-8">
@@ -70,8 +70,8 @@ const Contacto = () => {
               ¿Prefieres escribirnos? Envíanos un mensaje y te responderemos con recomendaciones concretas y soluciones prácticas.
             </p>
           </div>
-          
-          <form 
+
+          <form
             onSubmit={(e) => {
               e.preventDefault();
               const formData = new FormData(e.target);
@@ -94,7 +94,7 @@ const Contacto = () => {
                 placeholder="¿En qué podemos ayudarte?"
               />
             </div>
-            
+
             <div>
               <label htmlFor="message" className="block text-sm font-medium text-brand-text-primary mb-2">
                 Tu mensaje
@@ -108,7 +108,7 @@ const Contacto = () => {
                 placeholder="Cuéntanos más detalles sobre tu consulta..."
               ></textarea>
             </div>
-            
+
             <div className="text-center">
               <Button type="submit" size="lg">
                 Enviar Mensaje <Mail className="ml-2 h-5 w-5" />
