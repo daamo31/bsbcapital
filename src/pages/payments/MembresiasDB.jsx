@@ -13,75 +13,75 @@ import { loadStripe } from '@stripe/stripe-js';
 
 // Nuevos planes especializados en crypto
 const fallbackPlans = [
-    {
-      id: 'onboarding-crypto',
-      name: 'Onboarding Cripto',
-      price_monthly: null, // No tiene mensual
-      price_annual: 390,
-      price_original: 500, // Precio original para mostrar descuento
-      currency: 'EUR',
-      features: [
-        '2 consultorías personalizadas (1h cada una)',
-        'Acceso anual a BSB Academy',
-        'Dossier de buenas prácticas',
-        'Estructura de cartera recomendada'
-      ],
-      highlight: false,
-      description: 'Paquete anual - Introducción al ecosistema cripto',
-      objective: 'Introducción al ecosistema cripto, optimización de primeras inversiones y base estratégica de gestión.',
-      stripe_price_id: null,
-      stripe_price_id_annual: 'price_1SSshWJmSk3VG9oiU1cBNWgf', // Nuevo ID de Stripe
-      stripe_product_id: 'prod_TPi7iCVtydt3Cw' // Nuevo ID de producto
-    },
-    {
-      id: 'inversor-premium',
-      name: 'Inversor Premium',
-      price_monthly: null, // Solo anual
-      price_annual: 2400,
-      currency: 'EUR',
-      features: [
-        '6 consultorías personalizadas (1h cada una)',
-        'Revisión completa de cartera semestral',
-        'Plan estratégico anual adaptado al perfil inversor',
-        'Comunidad y acceso exclusivo',
-        'Canal privado en WhatsApp / Telegram',
-        'Soporte prioritario'
-      ],
-      highlight: true,
-      description: 'Paquete anual popular',
-      objective: 'Acompañamiento continuo y personalizado para la gestión avanzada de inversiones en cripto y Web3.',
-      stripe_price_id: null,
-      stripe_price_id_annual: 'price_1SDKb2JmSk3VG9oiJr1unLZZ', // Mismo ID que Wealth Membership
-      stripe_product_id: 'prod_T9dspdTkGGM7Sy' // Mismo producto que Wealth Membership
-    },
-    {
-      id: 'gestion-tesoreria-empresas',
-      name: 'Gestión Tesorería Cripto para Empresas',
-      price_monthly: null, // No tiene mensual
-      price_annual: 1200,
-      currency: 'EUR',
-      features: [
-        '2 consultorías personalizadas (1h cada una)',
-        'Plan de tesorería y estructura de cartera corporativa',
-        'Seguimiento mensual (6 meses)',
-        'Renovación mensual: €80/mes'
-      ],
-      highlight: false,
-      description: 'Paquete anual para empresas',
-      objective: 'Ayudar a empresas a integrar y optimizar su tesorería en activos digitales, con análisis de riesgos, oportunidades y estrategias fiscales eficientes.',
-      stripe_price_id: null,
-      stripe_price_id_annual: 'price_1SSsfoJmSk3VG9oi70AskCZv', // Nuevo ID de Stripe
-      stripe_product_id: 'prod_TPi5l6SK9nwBKF' // Nuevo ID de producto
-    }
+  {
+    id: 'onboarding-crypto',
+    name: 'Onboarding Cripto',
+    price_monthly: null, // No tiene mensual
+    price_annual: 390,
+    price_original: 500, // Precio original para mostrar descuento
+    currency: 'EUR',
+    features: [
+      '2 consultorías personalizadas (1h cada una)',
+      'Acceso anual a BSB Academy',
+      'Dossier de buenas prácticas',
+      'Estructura de cartera recomendada'
+    ],
+    highlight: false,
+    description: 'Paquete anual - Introducción al ecosistema cripto',
+    objective: 'Introducción al ecosistema cripto, optimización de primeras inversiones y base estratégica de gestión.',
+    stripe_price_id: null,
+    stripe_price_id_annual: 'price_1SSshWJmSk3VG9oiU1cBNWgf', // Nuevo ID de Stripe
+    stripe_product_id: 'prod_TPi7iCVtydt3Cw' // Nuevo ID de producto
+  },
+  {
+    id: 'inversor-premium',
+    name: 'Inversor Premium',
+    price_monthly: null, // Solo anual
+    price_annual: 2400,
+    currency: 'EUR',
+    features: [
+      '6 consultorías personalizadas (1h cada una)',
+      'Revisión completa de cartera semestral',
+      'Plan estratégico anual adaptado al perfil inversor',
+      'Comunidad y acceso exclusivo',
+      'Canal privado en WhatsApp / Telegram',
+      'Soporte prioritario'
+    ],
+    highlight: true,
+    description: 'Paquete anual popular',
+    objective: 'Acompañamiento continuo y personalizado para la gestión avanzada de inversiones en cripto y Web3.',
+    stripe_price_id: null,
+    stripe_price_id_annual: 'price_1SDKb2JmSk3VG9oiJr1unLZZ', // Mismo ID que Wealth Membership
+    stripe_product_id: 'prod_T9dspdTkGGM7Sy' // Mismo producto que Wealth Membership
+  },
+  {
+    id: 'gestion-tesoreria-empresas',
+    name: 'Gestión Tesorería Cripto para Empresas',
+    price_monthly: null, // No tiene mensual
+    price_annual: 1200,
+    currency: 'EUR',
+    features: [
+      '2 consultorías personalizadas (1h cada una)',
+      'Plan de tesorería y estructura de cartera corporativa',
+      'Seguimiento mensual (6 meses)',
+      'Renovación mensual: €80/mes'
+    ],
+    highlight: false,
+    description: 'Paquete anual para empresas',
+    objective: 'Ayudar a empresas a integrar y optimizar su tesorería en activos digitales, con análisis de riesgos, oportunidades y estrategias fiscales eficientes.',
+    stripe_price_id: null,
+    stripe_price_id_annual: 'price_1SSsfoJmSk3VG9oi70AskCZv', // Nuevo ID de Stripe
+    stripe_product_id: 'prod_TPi5l6SK9nwBKF' // Nuevo ID de producto
+  }
 ];
 
 const MembresiasDB = () => {
   console.log('MembresiasDB: Component rendering');
-  
+
   const { user, profile, loading: loadingAuth } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  
+
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingPlan, setLoadingPlan] = useState(null);
@@ -92,7 +92,7 @@ const MembresiasDB = () => {
     try {
       setLoading(true);
       console.log('Loading plans from Supabase...');
-      
+
       // Consulta directa a subscription_plans con las columnas correctas
       const { data, error } = await supabase
         .from('subscription_plans')
@@ -112,16 +112,16 @@ const MembresiasDB = () => {
         `)
         .eq('is_active', true)
         .order('price', { ascending: true });
-      
+
       console.log('Response from subscription_plans:', { data, error });
-      
+
       if (error) {
         console.error('Error loading plans from Supabase:', error);
         console.log('Using fallback plans due to Supabase error');
         setPlans(fallbackPlans);
         return;
       }
-      
+
       if (data?.length > 0) {
         // Mapear los datos de Supabase al formato esperado por el frontend
         const mappedPlans = data.map(plan => ({
@@ -131,14 +131,14 @@ const MembresiasDB = () => {
           price_monthly: plan.price,
           price_annual: plan.price_annual,
           currency: plan.currency || 'EUR',
-          features: Array.isArray(plan.features) ? plan.features : 
-                   (typeof plan.features === 'string' ? JSON.parse(plan.features) : []),
+          features: Array.isArray(plan.features) ? plan.features :
+            (typeof plan.features === 'string' ? JSON.parse(plan.features) : []),
           highlight: plan.name === 'Premium Investor', // Destacar el plan premium
           stripe_price_id: plan.stripe_price_id,
           stripe_price_id_annual: plan.stripe_price_id_annual,
           stripe_product_id: plan.stripe_product_id
         }));
-        
+
         console.log('Mapped plans from database:', mappedPlans);
         setPlans(mappedPlans);
       } else {
@@ -169,13 +169,13 @@ const MembresiasDB = () => {
       navigate('/login');
       return;
     }
-    
+
     if (loadingPlan === plan.id) return;
     setLoadingPlan(plan.id);
 
     try {
       console.log('🏁 Selecting plan:', plan);
-      
+
       // Solo usar el precio anual ya que todos los paquetes son de pago único anual
       const priceId = plan.stripe_price_id_annual;
       const billingType = 'annual';
@@ -183,7 +183,7 @@ const MembresiasDB = () => {
       if (!priceId) {
         throw new Error(`No hay precio disponible para este plan`);
       }
-      
+
       // Usar el mismo patrón exacto que en consultas
       const checkoutData = {
         price_id: priceId, // Usar la variable priceId que contiene stripe_price_id_annual
@@ -225,7 +225,7 @@ const MembresiasDB = () => {
       });
 
       console.log('📥 Response from create-stripe-checkout:', { data, error });
-      
+
       if (error) {
         console.log('🔍 Detailed error analysis:', {
           error_message: error.message,
@@ -292,7 +292,7 @@ const MembresiasDB = () => {
         <title>Paquetes BSB Capital y Membresía Anual</title>
         <meta name="description" content="Soluciones especializadas en crypto y activos digitales, diseñadas según tu perfil. Encuentra el paquete que mejor se adapte a tus necesidades." />
       </Helmet>
-      
+
       <div className="container mx-auto px-4 py-16">
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-4xl md:text-6xl font-bold">
@@ -303,13 +303,13 @@ const MembresiasDB = () => {
             <p className="text-lg text-gray-600 mb-6">
               Soluciones especializadas en crypto y activos digitales, diseñadas según tu perfil. Encuentra el paquete que mejor se adapte a tus necesidades.
             </p>
-            
+
             <div className="bg-gray-50 p-6 rounded-lg mb-6">
               <h3 className="text-xl font-semibold mb-3">¿Qué es un Paquete BSB Capital?</h3>
               <p className="text-gray-700 mb-4">
                 BSB Capital nace como la primera firma que combina asesoramiento financiero independiente con especialización profunda en criptoactivos. Nuestros paquetes ofrecen un conjunto completo de consultorías, formación y herramientas, pensados para corregir los problemas estructurales del sector: falta de rigor, ausencia de metodología y poca transparencia.
               </p>
-              
+
               <div className="space-y-2">
                 <p className="text-gray-700">Cada paquete está diseñado para guiar a inversores y empresas hacia decisiones inteligentes mediante:</p>
                 <div className="ml-4 space-y-1">
@@ -343,96 +343,96 @@ const MembresiasDB = () => {
           {plans.map((plan) => {
             const currentPrice = plan.price_annual || 0;
             const isLoading = loadingPlan === plan.id;
-            
+
             return (
-              <motion.div 
+              <motion.div
                 key={plan.id}
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ 
-                  duration: 0.6, 
+                transition={{
+                  duration: 0.6,
                   delay: plans.indexOf(plan) * 0.1,
                   type: "spring",
                   bounce: 0.4
                 }}
-                whileHover={{ 
+                whileHover={{
                   scale: 1.05,
-                  transition: { 
-                    type: "spring", 
-                    stiffness: 400, 
-                    damping: 10 
+                  transition: {
+                    type: "spring",
+                    stiffness: 400,
+                    damping: 10
                   }
                 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <Card className={`${plan.highlight ? 'border-primary border-2 relative' : ''} h-full flex flex-col`}>
-                {plan.highlight && (
-                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <Badge className="bg-primary text-white px-4 py-1">Más Popular</Badge>
-                  </div>
-                )}
-                
-                <CardHeader className="text-center pb-4">
-                  <CardTitle className="text-xl font-bold">{plan.name}</CardTitle>
-                  <CardDescription className="text-sm text-gray-600">{plan.description}</CardDescription>
-                </CardHeader>
-                
-                <CardContent className="flex-grow">
-                  <div className="text-center mb-6">
-                    <div className="flex flex-col items-center justify-center gap-2 mb-2">
-                      <div className="text-4xl font-bold text-primary">€{currentPrice}</div>
-                      <div className="text-sm text-gray-600 font-medium">Pago anual único</div>
-                    </div>
-                    
-                    {/* Mostrar precio original si existe descuento */}
-                    {plan.price_original && (
-                      <div className="text-sm text-gray-500">
-                        <span className="line-through">€{plan.price_original}</span>
-                        <span className="ml-2 text-green-600 font-medium">
-                          / €{plan.id === 'onboarding-crypto' ? '590' : plan.price_original}
-                        </span>
-                      </div>
-                    )}
-                    {plan.id === 'onboarding-crypto' && (
-                      <div className="text-xs text-green-600 mt-1">
-                        (antes €500 / €690)
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Incluye */}
-                  <div className="mb-6">
-                    <h4 className="font-semibold text-gray-900 mb-3">Incluye:</h4>
-                    <ul className="space-y-2">
-                      {Array.isArray(plan.features) ? plan.features.map((feature, index) => (
-                        <li key={index} className="flex items-start">
-                          <Check className="h-4 w-4 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
-                          <span className="text-sm text-gray-700">{feature}</span>
-                        </li>
-                      )) : null}
-                    </ul>
-                  </div>
-
-                  {/* Objetivo */}
-                  {plan.objective && (
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <h4 className="font-semibold text-gray-900 mb-2">Objetivo:</h4>
-                      <p className="text-sm text-gray-700">{plan.objective}</p>
+                  {plan.highlight && (
+                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                      <Badge className="bg-primary text-white px-4 py-1">Más Popular</Badge>
                     </div>
                   )}
-                </CardContent>
-                
-                <CardFooter className="mt-auto pt-4">
-                  <Button 
-                    className="w-full"
-                    onClick={() => handleSelectPlan(plan)}
-                    disabled={isLoading}
-                  >
-                    {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                    Seleccionar Plan
-                  </Button>
-                </CardFooter>
-              </Card>
+
+                  <CardHeader className="text-center pb-4">
+                    <CardTitle className="text-xl font-bold">{plan.name}</CardTitle>
+                    <CardDescription className="text-sm text-gray-600">{plan.description}</CardDescription>
+                  </CardHeader>
+
+                  <CardContent className="flex-grow">
+                    <div className="text-center mb-6">
+                      <div className="flex flex-col items-center justify-center gap-2 mb-2">
+                        <div className="text-4xl font-bold text-primary">€{currentPrice}</div>
+                        <div className="text-sm text-gray-600 font-medium">Pago anual único</div>
+                      </div>
+
+                      {/* Mostrar precio original si existe descuento */}
+                      {plan.price_original && (
+                        <div className="text-sm text-gray-500">
+                          <span className="line-through">€{plan.price_original}</span>
+                          <span className="ml-2 text-green-600 font-medium">
+                            / €{plan.id === 'onboarding-crypto' ? '590' : plan.price_original}
+                          </span>
+                        </div>
+                      )}
+                      {plan.id === 'onboarding-crypto' && (
+                        <div className="text-xs text-green-600 mt-1">
+                          (antes €500 / €690)
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Incluye */}
+                    <div className="mb-6">
+                      <h4 className="font-semibold text-gray-900 mb-3">Incluye:</h4>
+                      <ul className="space-y-2">
+                        {Array.isArray(plan.features) ? plan.features.map((feature, index) => (
+                          <li key={index} className="flex items-start">
+                            <Check className="h-4 w-4 text-green-500 mr-3 flex-shrink-0 mt-0.5" />
+                            <span className="text-sm text-gray-700">{feature}</span>
+                          </li>
+                        )) : null}
+                      </ul>
+                    </div>
+
+                    {/* Objetivo */}
+                    {plan.objective && (
+                      <div className="bg-gray-50 p-4 rounded-lg">
+                        <h4 className="font-semibold text-gray-900 mb-2">Objetivo:</h4>
+                        <p className="text-sm text-gray-700">{plan.objective}</p>
+                      </div>
+                    )}
+                  </CardContent>
+
+                  <CardFooter className="mt-auto pt-4">
+                    <Button
+                      className="w-full"
+                      onClick={() => handleSelectPlan(plan)}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                      Seleccionar Plan
+                    </Button>
+                  </CardFooter>
+                </Card>
               </motion.div>
             );
           })}
@@ -556,12 +556,12 @@ const MembresiasDB = () => {
             <Button size="lg" className="px-8 py-4 text-lg">
               🔗 Hazte miembro
             </Button>
-            
+
             <p className="text-xs text-gray-500 mt-4">
               Acceso inmediato tras la inscripción.
             </p>
             <p className="text-xs text-gray-400 mt-2">
-              La membresía tiene una duración anual. En caso de pago mensual, se establece una permanencia de 12 meses. 
+              La membresía tiene una duración anual. En caso de pago mensual, se establece una permanencia de 12 meses.
               Los beneficios estarán activos mientras la suscripción esté al corriente de pago.
             </p>
           </div>
@@ -572,18 +572,18 @@ const MembresiasDB = () => {
           <div className="text-center mb-8">
             <h2 className="text-3xl font-bold mb-4">¿Necesitas ayuda para elegir?</h2>
             <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Cada plan está diseñado para diferentes perfiles y necesidades. Si no estás seguro de cuál es el mejor para ti, 
+              Cada plan está diseñado para diferentes perfiles y necesidades. Si no estás seguro de cuál es el mejor para ti,
               puedes usar nuestro sistema de recomendación o contactarnos directamente.
             </p>
           </div>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild variant="outline" size="lg" className="border-brand-green-600 text-gray-700 hover:bg-brand-green-600 hover:text-white">
               <a href="/guia-inversion">
                 Encuentra tu plan ideal <ArrowRight className="ml-2 h-4 w-4" />
               </a>
             </Button>
-            <Button asChild size="lg">
+            <Button asChild size="lg" className="shadow-lg">
               <a href="/consultoria">
                 Hablar con un experto
               </a>

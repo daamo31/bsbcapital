@@ -10,12 +10,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { Badge } from '@/components/ui/data-display/badge';
 import HotmartIframePlayer from '@/components/hotmart/HotmartIframePlayer';
-import { 
-  Loader2, 
-  Play, 
-  FileText, 
-  Clock, 
-  BookOpen, 
+import {
+  Loader2,
+  Play,
+  FileText,
+  Clock,
+  BookOpen,
   Lock,
   CheckCircle,
   Star,
@@ -62,24 +62,11 @@ const Academia = () => {
         if (coursesError) {
           console.error('Error fetching courses:', coursesError);
           setCourses([]);
-        } else {
-          console.log('📚 Contenido obtenido:', coursesData);
-          setCourses(coursesData || []);
-          
-          // Calcular estadísticas
-          const videos = coursesData?.filter(c => c.content_type === 'video').length || 0;
-          const totalContent = coursesData?.length || 0;
-          
-          setStats({
-            totalCourses: totalContent,
-            totalVideos: videos,
-            totalHours: Math.ceil(videos * 0.5) // Estimación de 30min por video
-          });
-        }
-      } catch (error) {
-          console.error('Error fetching courses:', coursesError);
+          setLoading(false);
           return;
         }
+
+        console.log('📚 Contenido obtenido:', coursesData);
 
         // Agrupar contenido por curso
         const groupedCourses = coursesData.reduce((acc, content) => {
@@ -93,10 +80,10 @@ const Academia = () => {
               requiredPlans: new Set()
             };
           }
-          
+
           acc[courseId].contents.push(content);
           acc[courseId].totalDuration += content.duration_minutes || 0;
-          
+
           // Agregar planes requeridos
           if (content.required_plans) {
             content.required_plans.forEach(planId => {
@@ -117,7 +104,7 @@ const Academia = () => {
         // Calcular estadísticas
         const totalVideos = coursesData.filter(c => c.content_type === 'video').length;
         const totalHours = Math.round(coursesData.reduce((sum, c) => sum + (c.duration_minutes || 0), 0) / 60);
-        
+
         setStats({
           totalCourses: coursesArray.length,
           totalVideos,
@@ -161,7 +148,7 @@ const Academia = () => {
     // Verificar acceso según nivel requerido
     const requiredLevel = course.required_access_level || 'basic';
     console.log(`🔍 Checking access for ${course.title}: required=${requiredLevel}, hasAccess=${hasAccess}`);
-    
+
     return hasAccess || (userSubscription && userSubscription.status === 'active');
   };
 
@@ -239,7 +226,7 @@ const Academia = () => {
                   </Badge>
                 )}
               </div>
-              
+
               {/* Stats */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
                 <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6">
@@ -283,11 +270,11 @@ const Academia = () => {
                 Acceso Exclusivo para Miembros
               </h2>
               <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-                Únete a nuestra comunidad de inversores y accede a formación especializada, 
+                Únete a nuestra comunidad de inversores y accede a formación especializada,
                 análisis de mercado y estrategias algoritmos de inversión.
               </p>
               <div className="space-x-4">
-                <Button asChild size="lg">
+                <Button asChild size="lg" className="shadow-lg">
                   <Link to="/login">Iniciar Sesión</Link>
                 </Button>
                 <Button asChild variant="outline" size="lg">
@@ -308,7 +295,7 @@ const Academia = () => {
                 ¡Hola {user.email}! Activa tu Membresía
               </h2>
               <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-                Para acceder al contenido exclusivo de la Academia BSB Capital, 
+                Para acceder al contenido exclusivo de la Academia BSB Capital,
                 necesitas una membresía activa. Elige el plan que mejor se adapte a tus objetivos.
               </p>
               <Button asChild size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600">
@@ -323,11 +310,10 @@ const Academia = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               {/* Welcome Message */}
-              <div className={`rounded-lg p-6 mb-8 ${
-                isAdmin 
-                  ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white' 
-                  : 'bg-gradient-to-r from-green-500 to-blue-500 text-white'
-              }`}>
+              <div className={`rounded-lg p-6 mb-8 ${isAdmin
+                ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                : 'bg-gradient-to-r from-green-500 to-blue-500 text-white'
+                }`}>
                 <div className="flex items-center">
                   {isAdmin ? (
                     <Shield className="h-8 w-8 mr-3" />
@@ -336,13 +322,13 @@ const Academia = () => {
                   )}
                   <div>
                     <h3 className="text-xl font-bold">
-                      {isAdmin 
+                      {isAdmin
                         ? `¡Bienvenido Admin!`
                         : `¡Bienvenido a la Academia, ${user.email}!`
                       }
                     </h3>
                     <p className="opacity-90">
-                      {isAdmin 
+                      {isAdmin
                         ? 'Acceso completo como administrador'
                         : `Membresía: ${userSubscription?.subscription_plans?.name || 'Activa'}`
                       }
@@ -355,7 +341,7 @@ const Academia = () => {
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {courses.map((content, index) => {
                   const canAccess = canAccessCourse(content);
-                  
+
                   return (
                     <motion.div
                       key={content.id}
@@ -363,9 +349,8 @@ const Academia = () => {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.1 * index }}
                     >
-                      <Card className={`h-full transition-all duration-300 hover:shadow-lg ${
-                        canAccess ? 'hover:shadow-blue-100 border-green-200' : 'opacity-60'
-                      }`}>
+                      <Card className={`h-full transition-all duration-300 hover:shadow-lg ${canAccess ? 'hover:shadow-blue-100 border-green-200' : 'opacity-60'
+                        }`}>
                         <CardHeader>
                           <div className="flex items-center justify-between mb-2">
                             <CardTitle className="text-lg line-clamp-2">{content.title}</CardTitle>
@@ -385,21 +370,21 @@ const Academia = () => {
                             </Badge>
                           </div>
                         </CardHeader>
-                        
+
                         <CardContent>
                           <p className="text-sm text-gray-600 mb-4 line-clamp-3">
                             {content.description}
                           </p>
-                          
+
                           {content.module_id && (
                             <Badge variant="outline" className="mb-4">
                               {content.module_id}
                             </Badge>
                           )}
-                          
+
                           <div className="mt-6">
                             {canAccess ? (
-                              <Button 
+                              <Button
                                 className="w-full"
                                 onClick={() => {
                                   if (content.content_type === 'video') {
@@ -435,7 +420,7 @@ const Academia = () => {
                     {isAdmin ? 'No hay contenido configurado' : 'Contenido Próximamente'}
                   </h3>
                   <p className="text-lg text-gray-600">
-                    {isAdmin 
+                    {isAdmin
                       ? 'Ejecuta las migraciones para agregar contenido a la base de datos.'
                       : 'Estamos preparando contenido exclusivo para ti. ¡Mantente atento!'
                     }
@@ -464,7 +449,7 @@ const Academia = () => {
                 <X className="h-5 w-5" />
               </Button>
             </div>
-            
+
             <div className="p-6">
               <HotmartIframePlayer
                 contentId={selectedContent.content_id}

@@ -120,8 +120,8 @@ const PreRegistrationForm = () => {
               </label>
             </div>
           </div>
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className="w-full h-11 px-8 rounded-md font-medium"
             disabled={loading}
           >
@@ -147,9 +147,9 @@ const BsbMaker = () => {
       >
         {/* Hero Section */}
         <div className="relative overflow-hidden pt-32 pb-20">
-           <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+          <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
           <div className="container mx-auto px-4 text-center relative">
-            <motion.h1 
+            <motion.h1
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.1 }}
@@ -157,7 +157,7 @@ const BsbMaker = () => {
             >
               <span className="accent-gradient-text">🚀 BSB Maker:</span> tu asistente de trading con IA
             </motion.h1>
-            <motion.p 
+            <motion.p
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.2 }}
@@ -168,11 +168,11 @@ const BsbMaker = () => {
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }} 
+              transition={{ duration: 0.5, delay: 0.3 }}
               className="mt-10"
             >
-              <Button asChild size="lg">
-                <a href="#preregistro">🚀 Preregistro Exclusivo BSB Maker <ArrowRight className="ml-2"/></a>
+              <Button asChild size="lg" className="shadow-lg">
+                <a href="#preregistro">🚀 Preregistro Exclusivo BSB Maker <ArrowRight className="ml-2" /></a>
               </Button>
             </motion.div>
           </div>
@@ -195,10 +195,10 @@ const BsbMaker = () => {
               <h2 className="text-3xl md:text-4xl font-bold">              El futuro del trading está en construcción… y tú puedes ser de los primeros en vivirlo.</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <FeatureItem icon={<BarChart />} text="Analiza el mercado en tiempo real para detectar oportunidades antes de que aparezcan en los titulares." />
-                <FeatureItem icon={<Target />} text="Optimiza tus entradas y salidas, calculando niveles clave con la lógica de un trader institucional." />
-                <FeatureItem icon={<ShieldCheck />} text="Gestiona riesgo y apalancamiento con fórmulas claras, sin improvisaciones ni emociones." />
-                <FeatureItem icon={<BookOpen />} text="Te ahorra tiempo, traduce los datos complejos en decisiones concretas." />
+              <FeatureItem icon={<BarChart />} text="Analiza el mercado en tiempo real para detectar oportunidades antes de que aparezcan en los titulares." />
+              <FeatureItem icon={<Target />} text="Optimiza tus entradas y salidas, calculando niveles clave con la lógica de un trader institucional." />
+              <FeatureItem icon={<ShieldCheck />} text="Gestiona riesgo y apalancamiento con fórmulas claras, sin improvisaciones ni emociones." />
+              <FeatureItem icon={<BookOpen />} text="Te ahorra tiempo, traduce los datos complejos en decisiones concretas." />
             </div>
           </div>
         </div>
@@ -214,66 +214,66 @@ const BsbMaker = () => {
                 Beneficios que notarás desde el primer momento
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                
-                  <motion.div 
-                    initial={{ y: 20, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 0.1 }}
-                    className="text-center p-6 rounded-lg bg-card border border-border shadow-lg"
-                  >
-                    <div className="flex justify-center items-center mb-4 h-16 w-16 bg-primary/10 rounded-full mx-auto text-primary">
-                      <Zap size={32} />
-                    </div>
-                    <p className="font-semibold text-lg text-foreground">Toma decisiones más rápidas y efectivas.</p>
-                  </motion.div>
-                
-                
-                
-                  <motion.div 
-                    initial={{ y: 20, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 0.2 }}
-                    className="text-center p-6 rounded-lg bg-card border border-border shadow-lg"
-                  >
-                    <div className="flex justify-center items-center mb-4 h-16 w-16 bg-primary/10 rounded-full mx-auto text-primary">
-                      <ShieldCheck size={32} />
-                    </div>
-                    <p className="font-semibold text-lg text-foreground">Reduce errores por exceso de información o impulsividad.</p>
-                  </motion.div>
-                
-                
-                
-                  <motion.div 
-                    initial={{ y: 20, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 0.3 }}
-                    className="text-center p-6 rounded-lg bg-card border border-border shadow-lg"
-                  >
-                    <div className="flex justify-center items-center mb-4 h-16 w-16 bg-primary/10 rounded-full mx-auto text-primary">
-                      <BrainCircuit size={32} />
-                    </div>
-                    <p className="font-semibold text-lg text-foreground">Accede a estrategias de trading profesional sin ser un experto.</p>
-                  </motion.div>
-                
-                
-                
-                  <motion.div 
-                    initial={{ y: 20, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    transition={{ duration: 0.5, delay: 0.4 }}
-                    className="text-center p-6 rounded-lg bg-card border border-border shadow-lg"
-                  >
-                    <div className="flex justify-center items-center mb-4 h-16 w-16 bg-primary/10 rounded-full mx-auto text-primary">
-                      <Rocket size={32} />
-                    </div>
-                    <p className="font-semibold text-lg text-foreground">Sé parte de un proyecto innovador desde sus inicios.</p>
-                  </motion.div>
-                
+
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.1 }}
+                  className="text-center p-6 rounded-lg bg-card border border-border shadow-lg"
+                >
+                  <div className="flex justify-center items-center mb-4 h-16 w-16 bg-primary/10 rounded-full mx-auto text-primary">
+                    <Zap size={32} />
+                  </div>
+                  <p className="font-semibold text-lg text-foreground">Toma decisiones más rápidas y efectivas.</p>
+                </motion.div>
+
+
+
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                  className="text-center p-6 rounded-lg bg-card border border-border shadow-lg"
+                >
+                  <div className="flex justify-center items-center mb-4 h-16 w-16 bg-primary/10 rounded-full mx-auto text-primary">
+                    <ShieldCheck size={32} />
+                  </div>
+                  <p className="font-semibold text-lg text-foreground">Reduce errores por exceso de información o impulsividad.</p>
+                </motion.div>
+
+
+
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                  className="text-center p-6 rounded-lg bg-card border border-border shadow-lg"
+                >
+                  <div className="flex justify-center items-center mb-4 h-16 w-16 bg-primary/10 rounded-full mx-auto text-primary">
+                    <BrainCircuit size={32} />
+                  </div>
+                  <p className="font-semibold text-lg text-foreground">Accede a estrategias de trading profesional sin ser un experto.</p>
+                </motion.div>
+
+
+
+                <motion.div
+                  initial={{ y: 20, opacity: 0 }}
+                  whileInView={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.5, delay: 0.4 }}
+                  className="text-center p-6 rounded-lg bg-card border border-border shadow-lg"
+                >
+                  <div className="flex justify-center items-center mb-4 h-16 w-16 bg-primary/10 rounded-full mx-auto text-primary">
+                    <Rocket size={32} />
+                  </div>
+                  <p className="font-semibold text-lg text-foreground">Sé parte de un proyecto innovador desde sus inicios.</p>
+                </motion.div>
+
               </div>
             </div>
           </div>
         </div>
-        
+
         {/* Section 3: Exclusividad */}
         <div className="py-24 bg-brand-green-100 text-brand-green-900">
           <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
@@ -291,11 +291,11 @@ const BsbMaker = () => {
                          before:animate-[pulse_4s_cubic-bezier(0.4,0,0.6,1)_infinite]"
             >
               <div className="relative">
-                <h3 className="text-2xl font-bold flex items-center gap-3 text-white"><Sparkles className="text-yellow-300"/> Preregistro anticipado:</h3>
+                <h3 className="text-2xl font-bold flex items-center gap-3 text-white"><Sparkles className="text-yellow-300" /> Preregistro anticipado:</h3>
                 <ul className="mt-6 space-y-4">
-                    <li className="flex items-start text-white"><Check className="text-yellow-300 mr-3 mt-1 flex-shrink-0"/>Acceso temprano a la beta.</li>
-                    <li className="flex items-start text-white"><Check className="text-yellow-300 mr-3 mt-1 flex-shrink-0"/>Beneficios exclusivos para los primeros usuarios.</li>
-                    <li className="flex items-start text-white"><Check className="text-yellow-300 mr-3 mt-1 flex-shrink-0"/>Participa en dar forma al futuro del trading con IA.</li>
+                  <li className="flex items-start text-white"><Check className="text-yellow-300 mr-3 mt-1 flex-shrink-0" />Acceso temprano a la beta.</li>
+                  <li className="flex items-start text-white"><Check className="text-yellow-300 mr-3 mt-1 flex-shrink-0" />Beneficios exclusivos para los primeros usuarios.</li>
+                  <li className="flex items-start text-white"><Check className="text-yellow-300 mr-3 mt-1 flex-shrink-0" />Participa en dar forma al futuro del trading con IA.</li>
                 </ul>
               </div>
             </motion.div>
@@ -306,7 +306,7 @@ const BsbMaker = () => {
         <div id="preregistro" className="py-24">
           <div className="container mx-auto px-4">
             <div className="text-center max-w-3xl mx-auto mb-12">
-              <h2 className="text-3xl md:text-4xl font-bold flex items-center justify-center gap-3"><AlertTriangle className="text-destructive"/> Plazas limitadas</h2>
+              <h2 className="text-3xl md:text-4xl font-bold flex items-center justify-center gap-3"><AlertTriangle className="text-destructive" /> Plazas limitadas</h2>
               <p className="mt-4 text-lg text-text-secondary">
                 Una vez cerremos el preregistro, no habrá acceso hasta el lanzamiento oficial.
               </p>
@@ -321,12 +321,12 @@ const BsbMaker = () => {
 };
 
 const FeatureItem = ({ icon, text }) => (
-    <div className="text-center p-6 rounded-lg glass-card flex flex-col items-center">
-        <div className="flex justify-center items-center mb-4 h-16 w-16 bg-primary/10 rounded-full mx-auto text-primary">
-            {React.cloneElement(icon, { size: 32 })}
-        </div>
-        <p className="font-semibold text-lg">{text}</p>
+  <div className="text-center p-6 rounded-lg glass-card flex flex-col items-center">
+    <div className="flex justify-center items-center mb-4 h-16 w-16 bg-primary/10 rounded-full mx-auto text-primary">
+      {React.cloneElement(icon, { size: 32 })}
     </div>
+    <p className="font-semibold text-lg">{text}</p>
+  </div>
 );
 
 export default BsbMaker;

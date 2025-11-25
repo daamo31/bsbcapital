@@ -531,28 +531,36 @@ const BookingModal = () => {
 }
 
 const FAQSection = () => {
-  const [openFAQ, setOpenFAQ] = useState(null);
+  const [openIndex, setOpenIndex] = React.useState(null);
 
   const faqs = [
     {
-      question: "¿Quién puede beneficiarse de la consultoría?",
-      answer: "Cualquier persona o empresa interesada en invertir en cripto de forma segura."
+      question: "¿Quién puede beneficiarse de la consultoría en crypto?",
+      answer: "Nuestros servicios están diseñados tanto para inversores individuales que quieren adentrarse en el mundo crypto con seguridad, como para empresas que buscan integrar activos digitales en su tesorería. Si estás comenzando, te ayudamos a sentar bases sólidas. Si ya inviertes, optimizamos tu estrategia y reducimos riesgos. También trabajamos con asesores financieros que necesitan actualizar sus conocimientos en este sector."
     },
     {
-      question: "¿Cómo se realiza la consultoría?",
-      answer: "Las sesiones son 1:1 online, con duración adaptada a tu necesidad (tenemos dos modalidades: 30 y 60 minutos)."
+      question: "¿Cómo se realizan las sesiones de consultoría?",
+      answer: "Todas las consultorías son sesiones 1:1 online por videollamada, lo que te permite acceder desde cualquier lugar del mundo. Ofrecemos dos modalidades: sesiones de 30 minutos para consultas específicas y sesiones de 60 minutos para análisis más profundos. Durante la sesión compartimos pantalla, revisamos documentos y creamos estrategias personalizadas según tus necesidades."
     },
     {
-      question: "¿Puedo contratar solo el Onboarding cripto?",
-      answer: "Sí, cada servicio puede contratarse de manera independiente o integrado en una estrategia global."
+      question: "¿Puedo contratar solo el servicio de Onboarding cripto?",
+      answer: "Sí, absolutamente. Cada uno de nuestros servicios puede contratarse de manera independiente según tus necesidades específicas. El paquete Onboarding Cripto es ideal si estás empezando y quieres una introducción completa al ecosistema. También puedes combinar varios servicios o formar parte de nuestra membresía anual para acceso ilimitado a formación y descuentos en consultorías."
     },
     {
-      question: "¿Qué tipo de soporte incluye?",
-      answer: "Soporte por email para resolver dudas sobre el contenido de la consultoría y seguimiento de tu plan. Escríbenos a info@bsbcapital.io."
+      question: "¿Qué tipo de soporte incluye después de la consultoría?",
+      answer: "Después de cada consultoría recibes un resumen detallado con las recomendaciones y pasos a seguir. Además, ofrecemos soporte continuo por email para resolver dudas sobre el contenido tratado en la sesión. Si contratas nuestros paquetes Premium o de Empresa, incluyen seguimiento mensual para evaluar el progreso y ajustar estrategias. Puedes contactarnos en cualquier momento a info@bsbcapital.io."
     },
     {
-      question: "¿Cómo protegen mi información?",
-      answer: "Todos los datos compartidos son confidenciales y gestionados bajo protocolos de seguridad estrictos."
+      question: "¿Cómo protegen mi información y datos personales?",
+      answer: "La confidencialidad es nuestra prioridad. Todos los datos compartidos durante las consultorías están protegidos bajo protocolos de seguridad estrictos y acuerdos de confidencialidad. No compartimos información de clientes con terceros bajo ninguna circunstancia. Utilizamos plataformas encriptadas para las videollamadas y almacenamiento seguro para documentos. Cumplimos con todas las normativas GDPR de protección de datos."
+    },
+    {
+      question: "¿Necesito tener conocimientos previos en crypto?",
+      answer: "No es necesario tener conocimientos previos. Nuestro servicio de Onboarding Cripto está diseñado específicamente para principiantes y te guía desde cero. Explicamos todos los conceptos de forma clara y práctica, adaptándonos a tu nivel de experiencia. Si ya tienes experiencia, nos enfocamos en optimizar y profesionalizar tus estrategias existentes."
+    },
+    {
+      question: "¿Cuánto tiempo tarda en verse resultados?",
+      answer: "Los resultados dependen de tus objetivos y el tipo de servicio contratado. En una sesión de Onboarding ya sales con una estrategia clara y los primeros pasos implementados. Para optimización de carteras, los ajustes se implementan de forma inmediata. Si contratas seguimiento mensual, revisamos el progreso cada 30 días y ajustamos la estrategia según los resultados obtenidos y cambios del mercado."
     }
   ];
 
@@ -564,30 +572,59 @@ const FAQSection = () => {
             Preguntas frecuentes
           </h2>
           <div className="space-y-4">
-            {faqs.map((faq, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
-                className="bg-white rounded-lg shadow-sm border overflow-hidden">
-                <button
-                  onClick={() => setOpenFAQ(openFAQ === index ? null : index)}
-                  className="w-full px-6 py-4 text-left flex justify-between items-center hover:bg-gray-50 transition-colors">
-                  <h3 className="text-lg font-semibold text-brand-text-primary">{faq.question}</h3>
-                  {openFAQ === index ? (
-                    <ChevronUp className="h-5 w-5 text-brand-primary flex-shrink-0" />
-                  ) : (
-                    <ChevronDown className="h-5 w-5 text-brand-primary flex-shrink-0" />
+            {faqs.map((faq, index) => {
+              const isOpen = openIndex === index;
+
+              return (
+                <div
+                  key={`faq-${index}`}
+                  className="bg-white rounded-lg shadow-sm border overflow-hidden"
+                  style={{ position: 'relative', zIndex: 1 }}
+                >
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      console.log(`FAQ ${index} clicked! Current state:`, openIndex);
+                      setOpenIndex(isOpen ? null : index);
+                    }}
+                    className="w-full px-6 py-4 text-left flex justify-between items-start hover:bg-gray-50 transition-colors cursor-pointer"
+                    style={{
+                      border: 'none',
+                      background: 'transparent',
+                      cursor: 'pointer',
+                      userSelect: 'none'
+                    }}
+                  >
+                    <span className="text-lg font-semibold text-gray-900 pr-4 flex-1">
+                      {faq.question}
+                    </span>
+                    <span className="flex-shrink-0 mt-1">
+                      {isOpen ? (
+                        <ChevronUp className="h-5 w-5 text-yellow-600" />
+                      ) : (
+                        <ChevronDown className="h-5 w-5 text-yellow-600" />
+                      )}
+                    </span>
+                  </button>
+
+                  {isOpen && (
+                    <div
+                      className="px-6 pb-4 pt-2 bg-gray-50"
+                      style={{
+                        display: 'block',
+                        animation: 'fadeIn 0.2s ease-in'
+                      }}
+                    >
+                      <p className="text-gray-700 leading-relaxed">
+                        {faq.answer}
+                      </p>
+                    </div>
                   )}
-                </button>
-                {openFAQ === index && (
-                  <div className="px-6 pb-4">
-                    <p className="text-brand-text-secondary">{faq.answer}</p>
-                  </div>
-                )}
-              </motion.div>
-            ))}
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -826,7 +863,7 @@ const Consultoria = () => {
               </div>
 
               <div className="text-center mt-12">
-                <Button asChild size="lg">
+                <Button asChild size="lg" className="shadow-lg">
                   <a href="#agendar-sesion">
                     Agenda tu sesión 1:1 <ArrowRight className="ml-2 h-5 w-5" />
                   </a>
@@ -1170,7 +1207,7 @@ const Consultoria = () => {
             </motion.p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <BookingModal />
-              <Button asChild variant="outline" size="lg">
+              <Button asChild variant="outline" size="lg" className="shadow-sm">
                 <a href="mailto:info@bsbcapital.io" className="flex items-center">
                   <Mail className="mr-2 h-4 w-4" />
                   Reserva tu consultoría ahora

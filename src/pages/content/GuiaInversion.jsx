@@ -87,6 +87,12 @@ const serviceInfo = {
     icon: <Briefcase className="h-8 w-8 text-brand-primary" />,
     link: "/membresias"
   },
+  "bsb-academy-inversor": {
+    title: "BSB Academy",
+    description: "Aprende nuevos conceptos y estrategias que se transformen en rentabilidad. Formación práctica diseñada para inversores que buscan ampliar sus conocimientos y mejorar sus resultados.",
+    icon: <BookOpen className="h-8 w-8 text-brand-primary" />,
+    link: "/academia"
+  },
   "bsb-academy-asesor": {
     title: "BSB Academy",
     description: "Accede a formación práctica y estructurada. Ideal para profesionales que quieren actualizarse, dominar nuevas técnicas y adquirir herramientas aplicables en su trabajo diario.",
@@ -148,26 +154,35 @@ const GuiaInversion = () => {
                 transition={{ duration: 0.3 }}
               >
                 {result ? (
-                  <div className="text-center">
-                    <h2 className="text-2xl font-semibold text-brand-text-primary mb-4">Tu servicio recomendado es:</h2>
-                    <div className="bg-brand-surface p-6 rounded-lg border border-brand-primary/20">
-                      {serviceInfo[result].icon}
-                      <h3 className="mt-4 text-2xl font-bold text-brand-text-primary">{serviceInfo[result].title}</h3>
-                      <p className="mt-2 text-brand-text-secondary">{serviceInfo[result].description}</p>
-                      {serviceInfo[result].details && (
-                        <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                          <h4 className="font-semibold text-brand-text-primary mb-2">Incluye:</h4>
-                          <div className="text-left text-sm text-brand-text-secondary whitespace-pre-line">
-                            {serviceInfo[result].details}
-                          </div>
+                  <div className="text-center space-y-4">
+                    {serviceInfo[result] ? (
+                      <>
+                        <div className="bg-yellow-50 p-8 rounded-lg border-2 border-yellow-400">
+                          <h2 className="text-2xl font-semibold text-brand-text-primary mb-4">Tu servicio recomendado es:</h2>
+                          {serviceInfo[result].icon}
+                          <h3 className="mt-4 text-2xl font-bold text-brand-text-primary">{serviceInfo[result].title}</h3>
+                          <p className="mt-2 text-brand-text-secondary">{serviceInfo[result].description}</p>
+                          {serviceInfo[result].details && (
+                            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                              <h4 className="font-semibold text-brand-text-primary mb-2">Incluye:</h4>
+                              <div className="text-left text-sm text-brand-text-secondary whitespace-pre-line">
+                                {serviceInfo[result].details}
+                              </div>
+                            </div>
+                          )}
+                          <Button asChild className="mt-6 bg-yellow-400 hover:bg-yellow-500 text-gray-900">
+                            <Link to={serviceInfo[result].link}>
+                              Saber más <ArrowRight className="ml-2 h-4 w-4" />
+                            </Link>
+                          </Button>
                         </div>
-                      )}
-                      <Button asChild className="mt-6 bg-yellow-400 hover:bg-yellow-500 text-gray-900">
-                        <Link to={serviceInfo[result].link}>
-                          Saber más <ArrowRight className="ml-2 h-4 w-4" />
-                        </Link>
-                      </Button>
-                    </div>
+                      </>
+                    ) : (
+                      <div className="bg-red-50 p-8 rounded-lg border-2 border-red-400">
+                        <p className="text-red-700">Error: Servicio no encontrado ({result})</p>
+                        <p className="text-sm text-red-600 mt-2">Por favor, contacta con soporte.</p>
+                      </div>
+                    )}
                     <Button variant="link" onClick={resetQuiz} className="mt-6 text-brand-primary">
                       <Repeat className="mr-2 h-4 w-4" /> Volver a empezar
                     </Button>
