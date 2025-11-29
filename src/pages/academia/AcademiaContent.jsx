@@ -12,6 +12,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/navigation/tooltip";
+import HotmartIframePlayer from '@/components/hotmart/HotmartIframePlayer';
 
 const AcademiaContent = () => {
   const { slug } = useParams();
@@ -21,11 +22,18 @@ const AcademiaContent = () => {
 
   useEffect(() => {
     const fetchContent = async () => {
+      // No intentar cargar si no hay slug
+      if (!slug) {
+        setError('No se especificó qué contenido mostrar.');
+        setLoading(false);
+        return;
+      }
+
       setLoading(true);
       const { data, error } = await supabase
-        .from('academy_content')
+        .from('course_content')
         .select('*')
-        .eq('slug', slug)
+        .eq('content_id', slug) // slug param es realmente el content_id
         .single();
 
       if (error) {
@@ -42,16 +50,44 @@ const AcademiaContent = () => {
 
   const renderContent = () => {
     if (content.content_type === 'video') {
-      const videoUrl = new URL(content.content_url);
-      let embedUrl = '';
-      if (videoUrl.hostname.includes('youtube.com') || videoUrl.hostname.includes('youtu.be')) {
-        const videoId = videoUrl.searchParams.get('v') || videoUrl.pathname.split('/').pop();
-        embedUrl = `https://www.youtube.com/embed/${videoId}?rel=0&showinfo=0&modestbranding=1`;
-      } else if (videoUrl.hostname.includes('vimeo.com')) {
-        const videoId = videoUrl.pathname.split('/').pop();
-        embedUrl = `https://player.vimeo.com/video/${videoId}?title=0&byline=0&portrait=0`;
+      // Prioritize Hotmart Video
+      if (content.hotmart_video_id) {
+        return (
+          <div className="w-full">
+            <HotmartIframePlayer
+              contentId={content.content_id}
+              title={content.title}
+              description={content.description}
+              hotmartVideoId={content.hotmart_video_id}
+              customHeight="600px"
+            />
+          </div>
+        );
       }
-      
+
+      // Fallback to URL-based video (YouTube, Vimeo, etc.)
+      if (!content.content_url) {
+        return <div className="p-4 bg-yellow-100 text-yellow-800 rounded">Este video no tiene URL ni ID de Hotmart configurado.</div>;
+      }
+
+      let embedUrl = '';
+      try {
+        const videoUrl = new URL(content.content_url);
+        if (videoUrl.hostname.includes('youtube.com') || videoUrl.hostname.includes('youtu.be')) {
+          const videoId = videoUrl.searchParams.get('v') || videoUrl.pathname.split('/').pop();
+          embedUrl = `https://www.youtube.com/embed/${videoId}?rel=0&showinfo=0&modestbranding=1`;
+        } else if (videoUrl.hostname.includes('vimeo.com')) {
+          const videoId = videoUrl.pathname.split('/').pop();
+          embedUrl = `https://player.vimeo.com/video/${videoId}?title=0&byline=0&portrait=0`;
+        } else {
+          // Fallback for other URLs or direct video links
+          embedUrl = content.content_url;
+        }
+      } catch (e) {
+        console.error('Invalid video URL:', content.content_url);
+        return <div className="p-4 bg-red-100 text-red-700 rounded">Error: URL de video inválida ({content.content_url})</div>;
+      }
+
       return (
         <div className="aspect-video w-full bg-black rounded-lg overflow-hidden">
           <iframe
@@ -67,7 +103,7 @@ const AcademiaContent = () => {
     }
 
     if (content.content_type === 'document') {
-      const embedUrl = content.content_url.includes('?') 
+      const embedUrl = content.content_url.includes('?')
         ? `${content.content_url}&embedded=true`
         : `${content.content_url}?embedded=true`;
 
@@ -113,7 +149,7 @@ const AcademiaContent = () => {
           </Button>
           <h1 className="text-4xl font-bold mb-4">{content.title}</h1>
           <p className="text-lg text-muted-foreground mb-8">{content.description}</p>
-          
+
           <div className="mb-8">
             {renderContent()}
           </div>

@@ -98,119 +98,119 @@ function App() {
         <ScrollToTop />
         <AnimatePresence mode="wait">
           <Routes location={location} key={location.pathname}>
-                <Route path="/" element={<Home />} />
-                <Route path="/bsb-maker" element={<BsbMaker />} />
-                <Route path="/consultoria" element={<Consultoria />} />
-                <Route path="/consultoria/precios" element={<ConsultationPricing />} />
-                <Route path="/consultation-post-payment" element={<ConsultationPostPayment />} />
-                <Route path="/membresias" element={<MembresiasDB />} />
-                <Route path="/dashboard" element={
-                  <ProtectedRoute>
-                    <UserDashboard />
-                  </ProtectedRoute>
-                } />
-                <Route path="/empresa" element={<Empresa />} />
-                <Route path="/algo-fund" element={<AlgoFund />} />
-                <Route path="/otros-servicios" element={<OtrosServicios />} />
-                <Route path="/legal/:page" element={<Legal />} />
-                <Route path="/blog" element={<Blog />} />
-                <Route path="/contacto" element={<Contacto />} />
-                <Route path="/guia-inversion" element={<GuiaInversion />} />
-                <Route path="/formacion" element={<Formacion />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/signup" element={<SignUp />} />
-                <Route path="/test" element={<TestSystemPage />} />
-                <Route path="/test-simple" element={<TestPageSimple />} />
-                <Route path="/demo-acceso" element={<ContentAccessDemo />} />
-                <Route path="/hotmart-academy" element={<HotmartAcademy />} />
-                <Route path="/hotmart-demo" element={<HotmartIntegrationDemo />} />
-                <Route path="/content-system-demo" element={<ContentSystemDemo />} />
-                <Route path="/hotmart-test" element={
-                  <HotmartTestPlayer 
-                    contentId="module_1" 
-                    title="Test de Integración Hotmart"
-                    description="Prueba la conexión con Hotmart en diferentes modos"
-                  />
-                } />
-                
-                {/* Nuevas rutas para integración profesional Hotmart */}
-                <Route path="/content/hotmart-professional-integration" element={<HotmartProfessionalIntegration />} />
-                <Route path="/examples/ejemplo-uso-hotmart" element={<EjemploUsoHotmart />} />
-                <Route path="/test/academia-real" element={<AcademiaTestPage />} />
-                
-                <Route path="/test-navigation" element={<TestNavigationPage />} />
-                <Route path="/hotmart-status" element={<HotmartSystemStatus />} />
-                <Route path="/checkout" element={<CheckoutPage />} />
-                <Route path="/compra-exitosa" element={<CompraExitosa />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/bsb-maker" element={<BsbMaker />} />
+            <Route path="/consultoria" element={<Consultoria />} />
+            <Route path="/consultoria/precios" element={<ConsultationPricing />} />
+            <Route path="/consultation-post-payment" element={<ConsultationPostPayment />} />
+            <Route path="/membresias" element={<MembresiasDB />} />
+            <Route path="/dashboard" element={
+              <ProtectedRoute>
+                <UserDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/empresa" element={<Empresa />} />
+            <Route path="/algo-fund" element={<AlgoFund />} />
+            <Route path="/otros-servicios" element={<OtrosServicios />} />
+            <Route path="/legal/:page" element={<Legal />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/contacto" element={<Contacto />} />
+            <Route path="/guia-inversion" element={<GuiaInversion />} />
+            <Route path="/formacion" element={<Formacion />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/test" element={<TestSystemPage />} />
+            <Route path="/test-simple" element={<TestPageSimple />} />
+            <Route path="/demo-acceso" element={<ContentAccessDemo />} />
+            <Route path="/hotmart-academy" element={<HotmartAcademy />} />
+            <Route path="/hotmart-demo" element={<HotmartIntegrationDemo />} />
+            <Route path="/content-system-demo" element={<ContentSystemDemo />} />
+            <Route path="/hotmart-test" element={
+              <HotmartTestPlayer
+                contentId="module_1"
+                title="Test de Integración Hotmart"
+                description="Prueba la conexión con Hotmart en diferentes modos"
+              />
+            } />
 
-                <Route path="/panel/accesos" element={
-                  <ProtectedRoute adminOnly={true}>
-                    <AccessPanel />
-                  </ProtectedRoute>
-                } />
+            {/* Nuevas rutas para integración profesional Hotmart */}
+            <Route path="/content/hotmart-professional-integration" element={<HotmartProfessionalIntegration />} />
+            <Route path="/examples/ejemplo-uso-hotmart" element={<EjemploUsoHotmart />} />
+            <Route path="/test/academia-real" element={<AcademiaTestPage />} />
 
-                {/* Admin Dashboard - Sistema completo de administración */}
-                <Route path="/admin" element={
-                  <ProtectedAdminRoute>
-                    <AdminDashboard />
-                  </ProtectedAdminRoute>
-                } />
-                <Route path="/admin/*" element={
-                  <ProtectedAdminRoute>
-                    <AdminDashboard />
-                  </ProtectedAdminRoute>
-                } />
+            <Route path="/test-navigation" element={<TestNavigationPage />} />
+            <Route path="/hotmart-status" element={<HotmartSystemStatus />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/compra-exitosa" element={<CompraExitosa />} />
 
-                {/* Academia Routes - Nueva estructura */}
-                <Route path="/academia" element={<AcademiaIndex />}>
-                  <Route path="catalogo" element={<AcademiaCatalog />} />
-                  <Route path="contenido" element={
-                    <AcademyProtectedRoute>
-                      <AcademiaContent />
-                    </AcademyProtectedRoute>
-                  } />
-                  <Route path="admin" element={
-                    <ProtectedRoute adminOnly={true}>
-                      <AcademiaAdmin />
-                    </ProtectedRoute>
-                  } />
-                  <Route path="modulo/:moduleId" element={
-                    <AcademyProtectedRoute>
-                      <ModuloAcademia />
-                    </AcademyProtectedRoute>
-                  } />
-                </Route>
+            <Route path="/panel/accesos" element={
+              <ProtectedRoute adminOnly={true}>
+                <AccessPanel />
+              </ProtectedRoute>
+            } />
 
-                {/* Rutas de Dashboard separadas */}
-                <Route path="/academia/dashboard" element={
-                  <AcademyProtectedRoute>
-                    <AcademiaDashboard />
-                  </AcademyProtectedRoute>
-                } />
+            {/* Admin Dashboard - Sistema completo de administración */}
+            <Route path="/admin" element={
+              <ProtectedAdminRoute>
+                <AdminDashboard />
+              </ProtectedAdminRoute>
+            } />
+            <Route path="/admin/*" element={
+              <ProtectedAdminRoute>
+                <AdminDashboard />
+              </ProtectedAdminRoute>
+            } />
 
-                {/* Rutas de Testing */}
-                <Route path="/email-tester" element={<EmailTester />} />
-                <Route path="/test/hotmart" element={
-                  <HotmartTestPlayer 
-                    contentId="module_1" 
-                    title="Test de Integración Hotmart"
-                    description="Prueba la conexión con Hotmart en diferentes modos"
-                  />
-                } />
-                <Route path="/test/user-status" element={<TestNavigationPage />} />
-                <Route path="/demo/consultation-form" element={<ConsultationFormDemo />} />
-                <Route path="/test/tools" element={<ContentAccessDemo />} />
-                <Route path="/test/responsive" element={<ResponsiveTest />} />
+            {/* Academia Routes - Nueva estructura */}
+            <Route path="/academia" element={<AcademiaIndex />}>
+              <Route path="catalogo" element={<AcademiaCatalog />} />
+              <Route path="contenido/:slug" element={
+                <AcademyProtectedRoute>
+                  <AcademiaContent />
+                </AcademyProtectedRoute>
+              } />
+              <Route path="admin" element={
+                <ProtectedRoute adminOnly={true}>
+                  <AcademiaAdmin />
+                </ProtectedRoute>
+              } />
+              <Route path="modulo/:moduleId" element={
+                <AcademyProtectedRoute>
+                  <ModuloAcademia />
+                </AcademyProtectedRoute>
+              } />
+            </Route>
 
-                {oldAcademyRoutes.map(path => (
-                  <Route key={path} path={path} element={<Navigate to="/formacion" replace />} />
-                ))}
+            {/* Rutas de Dashboard separadas */}
+            <Route path="/academia/dashboard" element={
+              <AcademyProtectedRoute>
+                <AcademiaDashboard />
+              </AcademyProtectedRoute>
+            } />
 
-            </Routes>
-          </AnimatePresence>
-        </Layout>
-      </AuthProvider>
-    );
+            {/* Rutas de Testing */}
+            <Route path="/email-tester" element={<EmailTester />} />
+            <Route path="/test/hotmart" element={
+              <HotmartTestPlayer
+                contentId="module_1"
+                title="Test de Integración Hotmart"
+                description="Prueba la conexión con Hotmart en diferentes modos"
+              />
+            } />
+            <Route path="/test/user-status" element={<TestNavigationPage />} />
+            <Route path="/demo/consultation-form" element={<ConsultationFormDemo />} />
+            <Route path="/test/tools" element={<ContentAccessDemo />} />
+            <Route path="/test/responsive" element={<ResponsiveTest />} />
+
+            {oldAcademyRoutes.map(path => (
+              <Route key={path} path={path} element={<Navigate to="/formacion" replace />} />
+            ))}
+
+          </Routes>
+        </AnimatePresence>
+      </Layout>
+    </AuthProvider>
+  );
 }
 
 export default App;

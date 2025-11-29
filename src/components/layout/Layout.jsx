@@ -129,13 +129,12 @@ const Header = () => {
   const { isAdmin } = useAdmin();
 
   const navLinks = [
-    { name: 'Inicio', href: '/' },
+    { name: 'BSB Consulting', href: '/consultoria' },
+    { name: 'BSB Academy', href: '/formacion' },
     { name: 'BSB Maker', href: '/bsb-maker' },
-    { name: 'Consultoría', href: '/consultoria' },
-    { name: 'Formación', href: '/formacion' },
-    { name: 'Planes', href: '/membresias' },
+    { name: 'Paquetes', href: '/membresias' },
     { name: 'Otros Servicios', href: '/otros-servicios' },
-    { name: 'Empresa', href: '/empresa' },
+    { name: 'BSB Capital', href: '/empresa' },
   ];
 
   const toggleMenu = () => setIsOpen(!isOpen);

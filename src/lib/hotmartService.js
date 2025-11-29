@@ -9,6 +9,7 @@ import {
   isSecureOrigin,
   handleHotmartIframeMessage
 } from './hotmartIframeConfig';
+import { supabase } from './customSupabaseClient';
 
 class HotmartService {
   constructor() {
@@ -200,24 +201,17 @@ class HotmartService {
     }
   }
 
-  // Obtener URL directa de un video específico
+  // Obtener URL directa de un video específico usando Edge Function
   async getVideoStreamURL(videoId, userEmail) {
     try {
-      const token = await this.getAccessToken();
-      
-      const response = await fetch(
-        `${this.baseURL}/api/v1/videos/${videoId}/stream`,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      const { data, error } = await supabase.functions.invoke('get-hotmart-video', {
+        body: { videoId, userEmail }
+      });
 
-      if (response.ok) {
-        const data = await response.json();
-        return data.stream_url; // URL directa del video para tu reproductor
+      if (error) throw error;
+
+      if (data && data.streamUrl) {
+        return data.streamUrl;
       }
 
       return null;

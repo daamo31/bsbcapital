@@ -27,11 +27,17 @@ const AcademiaAdmin = () => {
     level: 'Básico',
     is_downloadable: false,
     is_featured: false,
+    content_id: '',
+    hotmart_video_id: '',
+    hotmart_product_id: '6308462', // Default product ID
+    module_id: '',
+    is_free: false,
+    required_access_level: 'basic',
   });
 
   const fetchContent = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from('academy_content').select('*').order('created_at', { ascending: false });
+    const { data, error } = await supabase.from('course_content').select('*').order('created_at', { ascending: false });
     if (error) {
       toast({ variant: 'destructive', title: 'Error', description: 'No se pudo cargar el contenido.' });
     } else {
@@ -43,9 +49,9 @@ const AcademiaAdmin = () => {
   useEffect(() => {
     fetchContent();
 
-    // Suscripción en tiempo real a cambios en la tabla academy_content
-    const channel = supabase.channel('academy_content_changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'academy_content' }, (payload) => {
+    // Suscripción en tiempo real a cambios en la tabla course_content
+    const channel = supabase.channel('course_content_changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'course_content' }, (payload) => {
         fetchContent();
       })
       .subscribe();
@@ -60,6 +66,8 @@ const AcademiaAdmin = () => {
     setFormData({
       title: '', description: '', content_type: 'video', content_url: '',
       duration: '', level: 'Básico', is_downloadable: false, is_featured: false,
+      content_id: '', hotmart_video_id: '', hotmart_product_id: '6308462',
+      module_id: '', is_free: false, required_access_level: 'basic',
     });
   };
 
@@ -69,18 +77,24 @@ const AcademiaAdmin = () => {
       title: content.title,
       description: content.description || '',
       content_type: content.content_type,
-      content_url: content.content_url,
+      content_url: content.content_url || '',
       duration: content.duration || '',
-      level: content.level,
-      is_downloadable: content.is_downloadable,
-      is_featured: content.is_featured,
+      level: content.level || 'Básico',
+      is_downloadable: content.is_downloadable || false,
+      is_featured: content.is_featured || false,
+      content_id: content.content_id || '',
+      hotmart_video_id: content.hotmart_video_id || '',
+      hotmart_product_id: content.hotmart_product_id || '6308462',
+      module_id: content.module_id || '',
+      is_free: content.is_free || false,
+      required_access_level: content.required_access_level || 'basic',
     });
     setIsFormOpen(true);
   };
 
   const handleDelete = async (id) => {
     if (!window.confirm('¿Estás seguro de que quieres eliminar este contenido?')) return;
-    const { error } = await supabase.from('academy_content').delete().eq('id', id);
+    const { error } = await supabase.from('course_content').delete().eq('id', id);
     if (error) {
       toast({ variant: 'destructive', title: 'Error', description: 'No se pudo eliminar el contenido.' });
     } else {
@@ -91,14 +105,13 @@ const AcademiaAdmin = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const slug = formData.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-    const dataToSubmit = { ...formData, slug };
+    const dataToSubmit = { ...formData };
 
     let error;
     if (editingContent) {
-      ({ error } = await supabase.from('academy_content').update(dataToSubmit).eq('id', editingContent.id));
+      ({ error } = await supabase.from('course_content').update(dataToSubmit).eq('id', editingContent.id));
     } else {
-      ({ error } = await supabase.from('academy_content').insert(dataToSubmit));
+      ({ error } = await supabase.from('course_content').insert(dataToSubmit));
     }
 
     if (error) {
@@ -117,23 +130,46 @@ const AcademiaAdmin = () => {
   };
 
   const ContentForm = (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div><Label htmlFor="title">Título</Label><Input id="title" name="title" value={formData.title} onChange={handleInputChange} required /></div>
+    <form onSubmit={handleSubmit} className="space-y-4 max-h-[70vh] overflow-y-auto px-1">
+      <div><Label htmlFor="content_id">Content ID (único) *</Label><Input id="content_id" name="content_id" value={formData.content_id} onChange={handleInputChange} required placeholder="ej: modulo_1_video" /></div>
+      <div><Label htmlFor="title">Título *</Label><Input id="title" name="title" value={formData.title} onChange={handleInputChange} required /></div>
       <div><Label htmlFor="description">Descripción</Label><Textarea id="description" name="description" value={formData.description} onChange={handleInputChange} /></div>
+
       <div><Label>Tipo de Contenido</Label>
         <Select name="content_type" value={formData.content_type} onValueChange={(v) => setFormData(p => ({ ...p, content_type: v }))}>
           <SelectTrigger><SelectValue /></SelectTrigger>
           <SelectContent><SelectItem value="video">Vídeo</SelectItem><SelectItem value="document">Documento</SelectItem></SelectContent>
         </Select>
       </div>
-      <div><Label htmlFor="content_url">URL del Contenido</Label><Input id="content_url" name="content_url" value={formData.content_url} onChange={handleInputChange} required /></div>
+
+      {/* Hotmart Fields */}
+      <div className="border-t pt-4">
+        <h3 className="text-sm font-semibold mb-2">Hotmart Configuration</h3>
+        <div className="space-y-3">
+          <div><Label htmlFor="hotmart_video_id">Hotmart Video ID</Label><Input id="hotmart_video_id" name="hotmart_video_id" value={formData.hotmart_video_id} onChange={handleInputChange} placeholder="ej: 14owvy154p" /></div>
+          <div><Label htmlFor="hotmart_product_id">Hotmart Product ID</Label><Input id="hotmart_product_id" name="hotmart_product_id" value={formData.hotmart_product_id} onChange={handleInputChange} placeholder="ej: 6308462" /></div>
+        </div>
+      </div>
+
+      <div><Label htmlFor="content_url">URL del Contenido (fallback)</Label><Input id="content_url" name="content_url" value={formData.content_url} onChange={handleInputChange} placeholder="URL de YouTube, Vimeo, o documento" /></div>
+      <div><Label htmlFor="module_id">Module ID</Label><Input id="module_id" name="module_id" value={formData.module_id} onChange={handleInputChange} placeholder="ej: modulo_1" /></div>
       <div><Label htmlFor="duration">Duración (ej. 1h 30m)</Label><Input id="duration" name="duration" value={formData.duration} onChange={handleInputChange} /></div>
+
       <div><Label>Nivel</Label>
         <Select name="level" value={formData.level} onValueChange={(v) => setFormData(p => ({ ...p, level: v }))}>
           <SelectTrigger><SelectValue /></SelectTrigger>
           <SelectContent><SelectItem value="Básico">Básico</SelectItem><SelectItem value="Intermedio">Intermedio</SelectItem><SelectItem value="Avanzado">Avanzado</SelectItem></SelectContent>
         </Select>
       </div>
+
+      <div><Label>Nivel de Acceso Requerido</Label>
+        <Select name="required_access_level" value={formData.required_access_level} onValueChange={(v) => setFormData(p => ({ ...p, required_access_level: v }))}>
+          <SelectTrigger><SelectValue /></SelectTrigger>
+          <SelectContent><SelectItem value="basic">Basic</SelectItem><SelectItem value="premium">Premium</SelectItem><SelectItem value="enterprise">Enterprise</SelectItem></SelectContent>
+        </Select>
+      </div>
+
+      <div className="flex items-center space-x-2"><Switch id="is_free" checked={formData.is_free} onCheckedChange={(c) => setFormData(p => ({ ...p, is_free: c }))} /><Label htmlFor="is_free">Contenido Gratuito</Label></div>
       <div className="flex items-center space-x-2"><Switch id="is_downloadable" checked={formData.is_downloadable} onCheckedChange={(c) => setFormData(p => ({ ...p, is_downloadable: c }))} /><Label htmlFor="is_downloadable">Permitir descarga</Label></div>
       <div className="flex items-center space-x-2"><Switch id="is_featured" checked={formData.is_featured} onCheckedChange={(c) => setFormData(p => ({ ...p, is_featured: c }))} /><Label htmlFor="is_featured">Destacado</Label></div>
       <Button type="submit">{editingContent ? 'Actualizar' : 'Crear'} Contenido</Button>
@@ -148,7 +184,7 @@ const AcademiaAdmin = () => {
           <h1 className="text-3xl font-bold">Admin Academia</h1>
           <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
             <DialogTrigger asChild><Button onClick={resetForm}><PlusCircle className="mr-2 h-4 w-4" /> Nuevo Contenido</Button></DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]"><DialogHeader><DialogTitle>{editingContent ? 'Editar' : 'Nuevo'} Contenido</DialogTitle></DialogHeader>{ContentForm}</DialogContent>
+            <DialogContent className="sm:max-w-[600px]"><DialogHeader><DialogTitle>{editingContent ? 'Editar' : 'Nuevo'} Contenido</DialogTitle></DialogHeader>{ContentForm}</DialogContent>
           </Dialog>
         </div>
         {loading ? <Loader2 className="mx-auto h-12 w-12 animate-spin" /> : (

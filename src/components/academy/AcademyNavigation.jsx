@@ -3,14 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/data-display/badge';
-import { 
-  Play, 
-  BookOpen, 
-  Settings, 
-  Users, 
-  BarChart3, 
-  Video, 
-  FileText, 
+import {
+  Play,
+  BookOpen,
+  Settings,
+  Users,
+  BarChart3,
+  Video,
+  FileText,
   Headphones,
   Crown,
   TestTube,
@@ -18,11 +18,14 @@ import {
   Wrench
 } from 'lucide-react';
 import { useUserAccess } from '@/hooks/useUserAccess';
+import { useAdmin } from '@/hooks/useAdmin';
+
 
 const AcademyNavigation = () => {
   const navigate = useNavigate();
   const { hasAccess, userSubscription, hotmartData } = useUserAccess();
-  
+  const { isAdmin } = useAdmin();
+
   // Detectar si estamos en modo premium simulado
   const isPremiumMockMode = hotmartData?.mockMode || userSubscription?.id === 'mock-premium-sub';
 
@@ -38,7 +41,7 @@ const AcademyNavigation = () => {
     {
       title: 'Mi Contenido',
       description: 'Accede a tus cursos activos',
-      path: '/academia/contenido',
+      path: '/academia/catalogo',
       icon: Play,
       color: 'bg-green-500',
       premium: true
@@ -107,12 +110,12 @@ const AcademyNavigation = () => {
   };
 
   const renderRouteCard = (route) => {
-    const isAccessible = !route.premium || hasAccess || isPremiumMockMode;
+    const isAccessible = !route.premium || hasAccess || isPremiumMockMode || isAdmin;
     const isAdminRoute = route.adminOnly;
-    
+
     return (
-      <Card 
-        key={route.path} 
+      <Card
+        key={`${route.title}-${route.path}`}
         className={`cursor-pointer transition-all hover:shadow-md ${!isAccessible ? 'opacity-60' : ''}`}
         onClick={() => isAccessible && handleNavigation(route.path)}
       >
@@ -138,8 +141,8 @@ const AcademyNavigation = () => {
           <CardDescription>{route.description}</CardDescription>
         </CardHeader>
         <CardContent className="pt-0">
-          <Button 
-            className="w-full" 
+          <Button
+            className="w-full"
             variant={isAccessible ? "default" : "outline"}
             disabled={!isAccessible}
           >

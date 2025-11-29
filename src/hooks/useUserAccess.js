@@ -57,14 +57,17 @@ export const useUserAccess = (contentId = null) => {
       setVideoStreamURL(null);
 
       // 1. VERIFICAR SI ES ADMIN - Acceso automático
-      const { data: profile } = await supabase
+      console.log('🔍 Verificando perfil de admin para user.id:', user.id);
+      const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('role')
         .eq('id', user.id)
         .single();
       
+      console.log('📊 Resultado de consulta de perfil:', { profile, profileError });
+      
       if (profile && (profile.role === 'admin' || profile.role === 'super_admin')) {
-        console.log('🔧 Usuario admin detectado - Acceso completo otorgado');
+        console.log('🔧 ✅ Usuario admin detectado - Acceso completo otorgado', { role: profile.role });
         setHasAccess(true);
         setUserSubscription({
           id: 'admin-access',
@@ -79,33 +82,88 @@ export const useUserAccess = (contentId = null) => {
         });
         setIsLoading(false);
         return true;
+      } else {
+        console.log('❌ No es usuario admin o perfil no encontrado:', { 
+          hasProfile: !!profile, 
+          role: profile?.role,
+          error: profileError 
+        });
       }
 
-      // 2. Verificar suscripción local para usuarios normales
-      const subscriptionCall = () => supabase
-        .from('user_subscriptions')
-        .select(`
-          *,
-          subscription_plans (
-            id,
-            name,
-            features,
-            duration_months
-          )
-        `)
-        .eq('user_id', user.id)
-        .eq('status', 'active')
-        .or('expired_at.is.null,expired_at.gt.now()')
-        .order('created_at', { ascending: false })
-        .limit(1);
+      // 2. Verificar suscripción local en MÚLTIPLES TABLAS para usuarios normales
+      const [subscriptionData, academyAccessData, userAccessData] = await Promise.all([
+        // Tabla 1: user_subscriptions (principal)
+        fetchWithTimeout(() => supabase
+          .from('user_subscriptions')
+          .select(`
+            *,
+            subscription_plans (
+              id,
+              name,
+              features,
+              duration_months
+            )
+          `)
+          .eq('user_id', user.id)
+          .eq('status', 'active')
+          .or('expired_at.is.null,expired_at.gt.now()')
+          .order('created_at', { ascending: false })
+          .limit(1), 10000, signal),
         
-      const { data: subscription, error: subError } = await fetchWithTimeout(subscriptionCall, 10000, signal);
+        // Tabla 2: user_academy_access (alternativa)
+        fetchWithTimeout(() => supabase
+          .from('user_academy_access')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('status', 'active')
+          .order('created_at', { ascending: false })
+          .limit(1), 10000, signal),
+        
+        // Tabla 3: user_access (webhook legacy)
+        fetchWithTimeout(() => supabase
+          .from('user_access')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('has_access', true)
+          .order('created_at', { ascending: false })
+          .limit(1), 10000, signal)
+      ]);
       
       if (signal?.aborted || !isMounted) return false;
-      if (subError) throw subError;
 
-      const hasLocalSubscription = subscription && subscription.length > 0;
-      setUserSubscription(hasLocalSubscription ? subscription[0] : null);
+      // Determinar si tiene acceso desde cualquiera de las tablas
+      const hasUserSubscription = subscriptionData?.data && subscriptionData.data.length > 0;
+      const hasAcademyAccess = academyAccessData?.data && academyAccessData.data.length > 0;
+      const hasUserAccess = userAccessData?.data && userAccessData.data.length > 0;
+      
+      const hasLocalSubscription = hasUserSubscription || hasAcademyAccess || hasUserAccess;
+      
+      // Establecer la suscripción prioritaria
+      if (hasUserSubscription) {
+        setUserSubscription(subscriptionData.data[0]);
+        console.log('✅ Acceso verificado via user_subscriptions');
+      } else if (hasAcademyAccess) {
+        setUserSubscription({
+          id: academyAccessData.data[0].id,
+          subscription_type: 'hotmart',
+          status: 'active',
+          product_name: 'Academia BSB Capital',
+          created_at: academyAccessData.data[0].created_at
+        });
+        console.log('✅ Acceso verificado via user_academy_access');
+      } else if (hasUserAccess) {
+        setUserSubscription({
+          id: userAccessData.data[0].id,
+          subscription_type: 'hotmart',
+          status: 'active',
+          product_name: 'Academia BSB Capital',
+          created_at: userAccessData.data[0].created_at
+        });
+        console.log('✅ Acceso verificado via user_access');
+      } else {
+        setUserSubscription(null);
+        console.log('❌ No se encontró acceso activo');
+      }
 
       // 2. Verificar acceso a contenido específico con Hotmart (si contentId existe)
       if (contentId && user.email) {

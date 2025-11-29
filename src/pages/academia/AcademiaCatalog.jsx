@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/lib/customSupabaseClient';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
+import { useAdmin } from '@/hooks/useAdmin';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { Badge } from '@/components/ui/data-display/badge';
@@ -48,27 +49,27 @@ const AcademiaCatalog = () => {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      const { data: contentData, error: contentError } = await supabase
-        .from('academy_content')
+      const { data: allContent, error: contentError } = await supabase
+        .from('course_content')
         .select('*')
-        .eq('status', 'published')
+        // .eq('status', 'published') // column does not exist
         .order('created_at', { ascending: false });
 
-      const { data: routesData, error: routesError } = await supabase
-        .from('academy_routes')
-        .select('*, academy_route_content(academy_content(*))');
+      // academy_routes table not used; set empty routes
+      setRoutes([]);
 
-      if (contentError || routesError) {
-        console.error('Error fetching data:', contentError || routesError);
+      if (contentError) {
+        console.error('Error fetching content:', contentError);
       } else {
-        setContent(contentData);
-        setRoutes(routesData);
-      }
+        setContent(allContent);
+      };
       setLoading(false);
     };
 
     fetchData();
   }, []);
+
+  const { isAdmin } = useAdmin();
 
   useEffect(() => {
     const checkAccess = async () => {
@@ -81,13 +82,14 @@ const AcademiaCatalog = () => {
         .select('*')
         .eq('user_id', user.id)
         .eq('status', 'active')
-        .single();
-      
-      setHasAccess(!!data);
+        .maybeSingle();
+
+      // Admins should always have access
+      setHasAccess(!!data || isAdmin);
     };
 
     checkAccess();
-  }, [user]);
+  }, [user, isAdmin]);
 
   const handleGetAccess = () => {
     if (!user) {
@@ -104,15 +106,15 @@ const AcademiaCatalog = () => {
       alert("Please log in or sign up to continue.");
       return;
     }
-    
+
     setCheckoutLoading(priceId);
-    
+
     try {
       console.log('📤 Iniciando checkout de academia con priceId:', priceId);
-      
+
       // Usar la misma Edge Function que consultoría pero para academia
       const { data, error } = await supabase.functions.invoke('create-stripe-checkout', {
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           priceId,
           mode: 'subscription', // O 'payment' según el tipo
           email: user.email,
@@ -135,7 +137,7 @@ const AcademiaCatalog = () => {
       } else {
         throw new Error('No se recibió URL de checkout válida');
       }
-      
+
     } catch (error) {
       console.error('❌ Error en checkout de academia:', error);
       alert('No se pudo iniciar el pago. Por favor intenta de nuevo.');
@@ -158,7 +160,7 @@ const AcademiaCatalog = () => {
   const renderContentCard = (item) => {
     const isRoute = item.item_type === 'route';
     const icon = isRoute ? <Layers className="h-6 w-6 text-primary" /> : (item.content_type === 'video' ? <Video className="h-6 w-6 text-primary" /> : <FileText className="h-6 w-6 text-primary" />);
-    const link = isRoute ? `/academia/ruta/${item.slug}` : `/academia/contenido/${item.slug}`;
+    const link = isRoute ? `/academia/ruta/${item.content_id}` : `/academia/contenido/${item.content_id}`;
 
     return (
       <motion.div variants={itemVariants} key={item.id}>
@@ -215,7 +217,7 @@ const AcademiaCatalog = () => {
           </motion.div>
 
           {!hasAccess && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
@@ -291,19 +293,19 @@ const AcademiaCatalog = () => {
               </div>
             ) : (
               <>
-                <Button 
-                  onClick={() => handleCheckout(ACADEMIA_MEMBERSHIP_PRICE_ID)} 
-                  className="w-full" 
+                <Button
+                  onClick={() => handleCheckout(ACADEMIA_MEMBERSHIP_PRICE_ID)}
+                  className="w-full"
                   size="lg"
                   disabled={!!checkoutLoading}
                 >
                   {checkoutLoading === ACADEMIA_MEMBERSHIP_PRICE_ID ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                   Acceder con Membresía
                 </Button>
-                <Button 
-                  onClick={() => handleCheckout(ACADEMIA_ONETIME_PRICE_ID)} 
-                  className="w-full" 
-                  variant="secondary" 
+                <Button
+                  onClick={() => handleCheckout(ACADEMIA_ONETIME_PRICE_ID)}
+                  className="w-full"
+                  variant="secondary"
                   size="lg"
                   disabled={!!checkoutLoading}
                 >

@@ -44,7 +44,6 @@ const fallbackPlans = [
       'Revisión completa de cartera semestral',
       'Plan estratégico anual adaptado al perfil inversor',
       'Comunidad y acceso exclusivo',
-      'Canal privado en WhatsApp / Telegram',
       'Soporte prioritario'
     ],
     highlight: true,
@@ -63,8 +62,7 @@ const fallbackPlans = [
     features: [
       '2 consultorías personalizadas (1h cada una)',
       'Plan de tesorería y estructura de cartera corporativa',
-      'Seguimiento mensual (6 meses)',
-      'Renovación mensual: €80/mes'
+      'Seguimiento mensual (6 meses)'
     ],
     highlight: false,
     description: 'Paquete anual para empresas',
@@ -429,7 +427,7 @@ const MembresiasDB = () => {
                       disabled={isLoading}
                     >
                       {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                      Seleccionar Plan
+                      Elegir paquete
                     </Button>
                   </CardFooter>
                 </Card>
@@ -441,7 +439,7 @@ const MembresiasDB = () => {
         {/* Sección 2: Membresía Anual BSB Capital */}
         <div className="mt-32">
           <div className="text-center max-w-4xl mx-auto mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold mb-6">
+            <h2 className="text-2xl font-bold mb-4">
               2️⃣ Membresía Anual BSB Capital
             </h2>
             <h3 className="text-2xl font-semibold text-gray-800 mb-4">

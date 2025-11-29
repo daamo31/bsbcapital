@@ -17,8 +17,8 @@ const phases = {
   phase2: {
     question: "¿Cuál de estas opciones describe mejor tu situación actual?",
     options: [
-      { text: "Quiero aprender a invertir en crypto por mi cuenta", nextPhase: "phase3_nuevo" },
-      { text: "Ya invierto en cripto y quiero mejorar mis estrategias", nextPhase: "phase3_inversor" },
+      { text: "Estoy empezando y quiero aprender a invertir en activos digitales", nextPhase: "phase3_nuevo" },
+      { text: "Ya invierto en crypto y quiero mejorar mis estrategias", nextPhase: "phase3_inversor" },
       { text: "Soy profesional o asesoro a otros", nextPhase: "phase3_asesor" }
     ]
   },
@@ -32,7 +32,7 @@ const phases = {
   phase3_inversor: {
     question: "¿Cuál es tu objetivo principal?",
     options: [
-      { text: "Optimizar mis inversiones en cripto y mejorar mis decisiones de cartera", service: "optimizacion-carteras" },
+      { text: "Optimizar mis inversiones en crypto y mejorar mis decisiones de cartera", service: "optimizacion-carteras" },
       { text: "Aprender nuevos conceptos que se transformen en rentabilidad", service: "bsb-academy-inversor" },
       { text: "Contar con herramientas que simplifiquen mis decisiones y estrategias", service: "bsb-maker" },
       { text: "Gestionar mi cartera de forma profesional y maximizar resultados", service: "inversor-premium" }
@@ -62,7 +62,7 @@ const serviceInfo = {
     link: "/academia"
   },
   "onboarding-cripto": {
-    title: "Paquete Onboarding Cripto",
+    title: "Paquete Onboarding Crypto",
     description: "Acceso a Academia anual",
     details: "• 2 consultorías de 1h\n• Acceso a Academia 1 año\n• Dossier de buenas prácticas",
     icon: <Bot className="h-8 w-8 text-brand-primary" />,

@@ -8,42 +8,25 @@ import { supabase } from '@/lib/customSupabaseClient';
 import { useNavigate } from 'react-router-dom';
 
 const CheckoutModal = ({ isOpen, onClose }) => {
-  const [selectedPlan, setSelectedPlan] = useState('acceso-completo');
+  const [selectedPlan, setSelectedPlan] = useState('plan-mensual');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const { user } = useAuth();
   const navigate = useNavigate();
-  
+
   const plans = {
-    'acceso-completo': {
-      name: 'Acceso Completo',
-      price: '149,99€',
-      originalPrice: '299,99€',
-      description: 'Acceso de por vida a todo el contenido',
-      features: [
-        'Todos los módulos de formación',
-        'Plantillas y checklists descargables',
-        'Soporte por email',
-        'Actualizaciones futuras incluidas',
-        'Acceso de por vida',
-        'Garantía de 30 días'
-      ],
-      popular: true
-    },
-    'membresia': {
-      name: 'Membresía Premium',
-      price: 'Ver planes',
+    'plan-mensual': {
+      name: 'Plan Mensual',
+      price: '20€/mes',
       description: 'Acceso completo a toda la plataforma',
       features: [
-        'Academia + Consultoría ilimitada',
-        'Señales de trading en vivo',
-        'Comunidad exclusiva',
-        'Análisis de mercado diarios',
-        'Soporte prioritario'
+        'Todos los módulos de formación',
+        'Masterclass y Píldoras',
+        'Material descargable',
+        'Soporte y actualizaciones',
+        'Sin permanencia'
       ],
-      popular: false,
-      isLink: true,
-      linkTo: '/membresias'
+      popular: true
     }
   };
 
@@ -51,10 +34,10 @@ const CheckoutModal = ({ isOpen, onClose }) => {
     if (!user) {
       // Cerrar modal y redirigir al login
       onClose();
-      navigate('/login', { 
-        state: { 
+      navigate('/login', {
+        state: {
           from: '/formacion',
-          message: 'Inicia sesión para acceder a la compra de la academia' 
+          message: 'Inicia sesión para acceder a la compra de la academia'
         }
       });
       return;
@@ -111,11 +94,10 @@ const CheckoutModal = ({ isOpen, onClose }) => {
           {Object.entries(plans).map(([key, plan]) => (
             <div
               key={key}
-              className={`border rounded-lg p-6 cursor-pointer transition-all ${
-                !plan.isLink && selectedPlan === key
-                  ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
-                  : 'border-gray-200 hover:border-gray-300'
-              } ${plan.popular ? 'relative' : ''} ${plan.isLink ? 'hover:bg-blue-50 hover:border-blue-300' : ''}`}
+              className={`border rounded-lg p-6 cursor-pointer transition-all ${!plan.isLink && selectedPlan === key
+                ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
+                : 'border-gray-200 hover:border-gray-300'
+                } ${plan.popular ? 'relative' : ''} ${plan.isLink ? 'hover:bg-blue-50 hover:border-blue-300' : ''}`}
               onClick={() => {
                 if (plan.isLink) {
                   onClose();
@@ -130,16 +112,15 @@ const CheckoutModal = ({ isOpen, onClose }) => {
                   Más Popular
                 </Badge>
               )}
-              
+
               <div className="flex items-start justify-between mb-4">
                 <div>
                   <div className="flex items-center space-x-2">
                     {!plan.isLink && (
-                      <div className={`w-4 h-4 rounded-full border-2 ${
-                        selectedPlan === key
-                          ? 'bg-primary border-primary'
-                          : 'border-gray-300'
-                      }`}>
+                      <div className={`w-4 h-4 rounded-full border-2 ${selectedPlan === key
+                        ? 'bg-primary border-primary'
+                        : 'border-gray-300'
+                        }`}>
                         {selectedPlan === key && (
                           <Check className="w-3 h-3 text-white mx-auto" />
                         )}
@@ -202,9 +183,9 @@ const CheckoutModal = ({ isOpen, onClose }) => {
         {/* Botón de compra */}
         {!plans[selectedPlan]?.isLink && (
           <div className="pt-4">
-            <Button 
+            <Button
               onClick={handlePurchase}
-              size="lg" 
+              size="lg"
               className="w-full bg-primary hover:bg-primary/90"
               disabled={isLoading}
             >
@@ -237,7 +218,7 @@ const CheckoutModal = ({ isOpen, onClose }) => {
             )}
           </div>
         )}
-        
+
         {/* Mensaje para enlaces */}
         {plans[selectedPlan]?.isLink && (
           <div className="pt-4 text-center">

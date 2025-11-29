@@ -64,7 +64,7 @@ const services = [
   {
     icon: <Briefcase />,
     title: 'BSB Consulting: Consultoría especializada en crypto',
-    description: 'Asesoramiento profesional diseñado para el nuevo entorno financiero. Te ayudamos a gestionar, optimizar y estructurar tu cartera, construir estrategias sostenibles y reducir riesgos en tus operaciones con criptoactivos.',
+    description: 'Asesoramiento profesional diseñado para el nuevo entorno financiero. Te ayudamos a gestionar, optimizar y estructurar tu cartera, construir estrategias sostenibles y reducir riesgos en tus operaciones con activos crypto.',
     href: '/consultoria',
   },
   {
@@ -124,7 +124,7 @@ const Home = () => {
     <>
       <Helmet>
         <title>BSB Capital - Transformamos tu forma de invertir en crypto</title>
-        <meta name="description" content="BSB Capital nace como la primera firma que combina asesoramiento financiero independiente con especialización profunda en criptoactivos. Profesionalidad, claridad y seguridad." />
+        <meta name="description" content="BSB Capital nace como la primera firma que combina asesoramiento financiero independiente con especialización profunda en activos crypto. Profesionalidad, claridad y seguridad." />
       </Helmet>
 
       {/* Barra de notificación para administradores */}
@@ -165,7 +165,7 @@ const Home = () => {
                 <span className="main-gradient-text">Potenciada por IA</span>
               </motion.h1>
               <motion.p variants={itemVariants} className="mt-4 sm:mt-6 max-w-3xl mx-auto text-base sm:text-lg text-brand-text-secondary">
-                BSB Capital nace como la primera firma que combina asesoramiento financiero independiente con especialización profunda en criptoactivos. Guiamos a inversores y empresas hacia decisiones inteligentes mediante análisis avanzado, tecnología y formación.
+                BSB Capital nace como la primera firma que combina asesoramiento financiero independiente con especialización profunda en activos crypto. Guiamos a inversores y empresas hacia decisiones inteligentes mediante análisis avanzado, tecnología y formación.
               </motion.p>
               <motion.div variants={itemVariants} className="mt-6 sm:mt-10">
                 <Button asChild size="lg" className="px-8 py-4 shadow-lg">
