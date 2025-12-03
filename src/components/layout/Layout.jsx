@@ -67,42 +67,22 @@ const Footer = () => {
               La primera firma que combina asesoramiento financiero independiente con especialización profunda en criptoactivos.
             </p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 lg:col-span-2">
+          <div className="grid grid-cols-2 gap-6 sm:gap-8 lg:col-span-2">
             <div>
               <p className="font-semibold text-white">Servicios</p>
               <ul className="mt-4 space-y-2 text-sm">
+                <li><Link to="/consultoria" className="text-brand-green-100/70 hover:text-white transition-colors">BSB Consulting</Link></li>
+                <li><Link to="/formacion" className="text-brand-green-100/70 hover:text-white transition-colors">BSB Academy</Link></li>
                 <li><Link to="/bsb-maker" className="text-brand-green-100/70 hover:text-white transition-colors">BSB Maker</Link></li>
-                <li><Link to="/consultoria" className="text-brand-green-100/70 hover:text-white transition-colors">Consultoría</Link></li>
-                <li><Link to="/formacion" className="text-brand-green-100/70 hover:text-white transition-colors">Formación</Link></li>
-                <li><Link to="/membresias" className="text-brand-green-100/70 hover:text-white transition-colors">Planes</Link></li>
-                <li><Link to="/algo-fund" className="text-brand-green-100/70 hover:text-white transition-colors">Algo Fund</Link></li>
-                <li><Link to="/otros-servicios" className="text-brand-green-100/70 hover:text-white transition-colors">Otros Servicios</Link></li>
+                <li><Link to="/otros-servicios" className="text-brand-green-100/70 hover:text-white transition-colors">Otros servicios</Link></li>
               </ul>
             </div>
             <div>
               <p className="font-semibold text-white">Empresa</p>
               <ul className="mt-4 space-y-2 text-sm">
-                <li><Link to="/empresa" className="text-brand-green-100/70 hover:text-white transition-colors">Sobre Nosotros</Link></li>
-                <li><Link to="/blog" className="text-brand-green-100/70 hover:text-white transition-colors">Blog</Link></li>
+                <li><Link to="/empresa" className="text-brand-green-100/70 hover:text-white transition-colors">BSB Capital</Link></li>
                 <li><Link to="/contacto" className="text-brand-green-100/70 hover:text-white transition-colors">Contacto</Link></li>
               </ul>
-            </div>
-            <div className="col-span-2 md:col-span-1">
-              <p className="font-semibold text-white">Suscríbete a Free Access</p>
-              <p className="mt-2 text-sm text-brand-green-100/70">Newsletter gratuita con análisis y reflexiones financieras para empezar a conocernos.</p>
-              <form onSubmit={handleSubscription} className="mt-4 flex gap-2">
-                <Input
-                  type="email"
-                  placeholder="Tu email"
-                  className="bg-brand-green-900 border-brand-green-600 text-white placeholder:text-brand-green-100/50 flex-grow"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={loading}
-                />
-                <Button type="submit" variant="default" disabled={loading}>
-                  {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <ArrowRight className="h-4 w-4" />}
-                </Button>
-              </form>
             </div>
           </div>
         </div>

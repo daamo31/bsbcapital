@@ -27,7 +27,7 @@ const AreaCliente = () => {
     const [loading, setLoading] = useState(true);
 
     const allServices = [
-        { name: 'BSB Maker', description: 'Acceso a nuestro asistente de IA para trading.', link: '/bsb-maker' },
+        { name: 'BSB Maker', description: 'Tu asistente de inversión con IA: backtesting, señales y gestión de riesgo.', link: '/bsb-maker' },
         { name: 'Algo Fund', description: 'Inversión en nuestro fondo algorítmico.', link: '/algo-fund' },
         { name: 'Consultoría', description: 'Asesoramiento financiero personalizado.', link: '/consultoria' },
         { name: 'Comunidad BSB', description: 'Acceso a la comunidad de inversores.', link: '/academia' },

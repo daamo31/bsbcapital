@@ -114,9 +114,9 @@ const Formacion = () => {
       </Helmet>
       <motion.div initial="hidden" animate="visible" variants={containerVariants}>
         {/* Hero Section */}
-        <motion.section variants={itemVariants} className="aurora-background text-center py-12 sm:py-20 md:py-32">
+        <motion.section variants={itemVariants} className="bg-background text-center py-12 sm:py-20 md:py-32">
           <div className="container mx-auto px-4 sm:px-6">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold main-gradient-text">BSB Academy</h1>
+            <h1 className="text-4xl md:text-6xl font-bold text-foreground">BSB Academy</h1>
             <p className="mt-6 max-w-3xl mx-auto text-lg md:text-xl text-brand-text-secondary leading-relaxed">
               La plataforma educativa de BSB Capital, especializada en formación crypto, para que aprendas a invertir con confianza y maximices el potencial de tu cartera.
             </p>
@@ -208,7 +208,7 @@ const Formacion = () => {
         </motion.section>
 
         {/* Contact Section */}
-        <motion.section variants={itemVariants} className="py-16">
+        <motion.section variants={itemVariants} className="py-16 bg-background">
           <div className="container mx-auto px-4 max-w-2xl text-center">
             <h3 className="text-2xl font-bold mb-4">Cada inversor tiene su propio punto de partida.</h3>
             <p className="text-muted-foreground text-lg">

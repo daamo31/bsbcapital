@@ -202,7 +202,7 @@ const AcademiaCatalog = () => {
         <title>Academia BSB Capital | Formación en inversión, fiscalidad y crypto</title>
         <meta name="description" content="Acceso exclusivo a vídeos y documentos. Membresía o pago único. Contenidos sin descarga por defecto." />
       </Helmet>
-      <div className="aurora-background">
+      <div className="bg-background">
         <div className="container mx-auto px-4 py-16 md:py-24">
           <motion.div
             initial="hidden"
@@ -210,7 +210,7 @@ const AcademiaCatalog = () => {
             variants={containerVariants}
             className="text-center"
           >
-            <motion.h1 variants={itemVariants} className="text-4xl md:text-5xl font-bold main-gradient-text">Academia BSB Capital</motion.h1>
+            <motion.h1 variants={itemVariants} className="text-4xl md:text-5xl font-bold text-foreground">Academia BSB Capital</motion.h1>
             <motion.p variants={itemVariants} className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
               Formación práctica en inversión, fiscalidad y crypto. Acceso exclusivo para miembros o por compra individual.
             </motion.p>

@@ -37,9 +37,9 @@ const Empresa = () => {
       className="bg-background text-text-primary"
     >
       {/* Hero Section */}
-      <section className="py-20 md:py-32 aurora-background">
+      <section className="py-20 md:py-32 bg-background">
         <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
-          <motion.h1 variants={fadeIn} className="text-4xl md:text-6xl font-extrabold main-gradient-text">
+          <motion.h1 variants={fadeIn} className="text-4xl md:text-6xl font-bold text-foreground">
             Sobre BSB Capital
           </motion.h1>
           <motion.p variants={fadeIn} className="mt-4 max-w-3xl mx-auto text-lg md:text-xl text-text-secondary">

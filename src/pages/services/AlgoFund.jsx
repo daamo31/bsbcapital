@@ -39,8 +39,8 @@ const AlgoFund = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
             >
-              <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight text-foreground">
-                BSB Algo Fund: <span className="accent-gradient-text">Tu Capital, Potenciado.</span>
+              <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground">
+                BSB Algo Fund: Tu Capital, Potenciado.
               </h1>
               <p className="mt-6 text-lg md:text-xl text-text-secondary max-w-3xl mx-auto">
                 Presentamos <span className="font-bold text-foreground">WFH</span>, nuestra estrategia de inversión sistemática y automatizada, ahora pública en la plataforma Darwinex. Invierte con inteligencia, delega la gestión.

@@ -76,8 +76,8 @@ const services = [
   },
   {
     icon: <Bot />,
-    title: 'BSB Maker: tu asistente de trading con IA',
-    description: 'Un asistente que piensa como un trader institucional',
+    title: 'BSB Maker: Tu Asistente de Inversión con IA',
+    description: 'Lleva tus decisiones al siguiente nivel con nuestra herramienta de Inteligencia Artificial diseñada para inversores crypto.\n\nAnaliza, compara y optimiza tus estrategias: backtesting de estrategias, señales e insights personalizados, simulación de escenarios y gestión de riesgo, y mucho más',
     href: '/bsb-maker',
     buttonText: 'Explorar BSB Maker'
   },
@@ -157,13 +157,15 @@ const Home = () => {
         transition={{ duration: 0.5 }}
       >
         {/* Hero Section */}
-        <section className="relative aurora-background text-brand-text-primary overflow-hidden">
+        <section className="relative bg-background text-brand-text-primary overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6 text-center relative z-10 pt-4 pb-8 sm:pt-6 sm:pb-12 md:pt-8 md:pb-16">
             <motion.div variants={containerVariants} initial="hidden" animate="visible">
-              <motion.h1 variants={itemVariants} className="text-3xl sm:text-4xl lg:text-6xl xl:text-7xl font-extrabold leading-tight">
-                <span className="text-foreground">Inteligencia Financiera</span><br />
-                <span className="main-gradient-text">Potenciada por IA</span>
+              <motion.h1 variants={itemVariants} className="text-3xl sm:text-4xl md:text-6xl font-bold leading-tight text-foreground">
+                Transformamos tu forma
               </motion.h1>
+              <motion.h2 variants={itemVariants} className="text-3xl sm:text-4xl md:text-6xl font-bold leading-tight text-foreground mt-1">
+                de invertir en crypto
+              </motion.h2>
               <motion.p variants={itemVariants} className="mt-4 sm:mt-6 max-w-3xl mx-auto text-base sm:text-lg text-brand-text-secondary">
                 BSB Capital nace como la primera firma que combina asesoramiento financiero independiente con especialización profunda en activos crypto. Guiamos a inversores y empresas hacia decisiones inteligentes mediante análisis avanzado, tecnología y formación.
               </motion.p>
@@ -179,10 +181,10 @@ const Home = () => {
         </section>
 
         {/* Services Section */}
-        <section className="py-12 sm:py-20 md:py-28 aurora-background">
+        <section className="py-12 sm:py-20 md:py-28 bg-brand-green-100">
           <div className="container mx-auto px-4 sm:px-6">
             <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
-              <motion.h2 variants={itemVariants} className="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-foreground">Soluciones de Inversión que <span className="main-gradient-text">Multiplican tu Potencial</span></motion.h2>
+              <motion.h2 variants={itemVariants} className="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-foreground">Soluciones de inversión que multiplican tu potencial</motion.h2>
               <motion.p variants={itemVariants} className="mt-4 text-center text-base sm:text-lg text-muted-foreground max-w-4xl mx-auto">Corregimos los problemas estructurales del sector crypto: falta de rigor, ausencia de metodología y poca transparencia. Te ofrecemos un ecosistema financiero completo con asesoramiento profesional, análisis avanzado y formación de calidad.</motion.p>
               <div className="mt-8 sm:mt-16 grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8">
                 {services.map((service) => (
@@ -194,21 +196,21 @@ const Home = () => {
         </section>
 
         {/* Social Proof */}
-        <section className="py-12 sm:py-20 md:py-28 aurora-background">
+        <section className="py-12 sm:py-20 md:py-28 bg-background">
           <div className="container mx-auto px-4 sm:px-6">
             <motion.div variants={containerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.2 }}>
-              <motion.h2 variants={itemVariants} className="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-foreground">Confianza y <span className="main-gradient-text">Resultados Comprobados</span></motion.h2>
+              <motion.h2 variants={itemVariants} className="text-3xl sm:text-4xl md:text-5xl font-bold text-center text-foreground">Confianza y resultados comprobados</motion.h2>
               <div className="mt-8 sm:mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 text-center">
                 <motion.div variants={itemVariants}>
-                  <p className="text-3xl sm:text-4xl lg:text-5xl font-bold main-gradient-text">+4 años</p>
+                  <p className="text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-green-600">+4 años</p>
                   <p className="text-muted-foreground mt-2">de experiencia en el ecosistema crypto y blockchain</p>
                 </motion.div>
                 <motion.div variants={itemVariants}>
-                  <p className="text-3xl sm:text-4xl lg:text-5xl font-bold main-gradient-text">95%</p>
+                  <p className="text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-green-600">95%</p>
                   <p className="text-muted-foreground mt-2">de satisfacción de clientes</p>
                 </motion.div>
                 <motion.div variants={itemVariants}>
-                  <p className="text-3xl sm:text-4xl lg:text-5xl font-bold main-gradient-text">+10K</p>
+                  <p className="text-3xl sm:text-4xl lg:text-5xl font-bold text-brand-green-600">+10K</p>
                   <p className="text-muted-foreground mt-2">operaciones analizadas por IA</p>
                 </motion.div>
               </div>
@@ -217,7 +219,7 @@ const Home = () => {
         </section>
 
         {/* Contact Section */}
-        <section className="py-12 sm:py-20 md:py-28 aurora-background">
+        <section className="py-12 sm:py-20 md:py-28 bg-brand-green-100">
           <div className="container mx-auto px-4 sm:px-6">
             <motion.div
               variants={containerVariants}
@@ -227,7 +229,7 @@ const Home = () => {
               className="max-w-2xl mx-auto text-center"
             >
               <motion.h2 variants={itemVariants} className="text-3xl sm:text-4xl md:text-5xl font-bold text-foreground">
-                ¿Listo para <span className="main-gradient-text">Empezar</span>?
+                ¿Listo para empezar?
               </motion.h2>
               <motion.p variants={itemVariants} className="mt-4 text-base sm:text-lg text-muted-foreground">
                 Ponte en contacto con nosotros y empieza a construir una estrategia financiera adaptada al futuro digital.

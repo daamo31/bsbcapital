@@ -582,10 +582,10 @@ const FAQSection = () => {
   ];
 
   return (
-    <section className="py-12 sm:py-20 aurora-background">
+    <section className="py-12 sm:py-20 bg-background">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold text-center main-gradient-text mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-12">
             Preguntas frecuentes
           </h2>
           <div className="space-y-4">
@@ -664,16 +664,16 @@ const Consultoria = () => {
         className="min-h-screen bg-background"
       >
         {/* Hero Section */}
-        <header className="py-12 md:py-32 text-center aurora-background relative overflow-hidden">
+        <header className="py-12 md:py-32 text-center bg-background relative overflow-hidden">
 
           <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="text-4xl md:text-5xl font-bold main-gradient-text"
+              className="text-4xl md:text-6xl font-bold text-foreground"
             >
-              <span className="main-gradient-text">BSB Consulting</span>
+              BSB Consulting
             </motion.h1>
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
@@ -700,7 +700,7 @@ const Consultoria = () => {
         </header>
 
         {/* Storytelling Section */}
-        <div className="aurora-background py-8 sm:py-16">
+        <div className="bg-brand-green-100 py-8 sm:py-16">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-4xl mx-auto">
               <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-8 rounded-xl shadow-lg border border-brand-green-200">
@@ -720,10 +720,10 @@ const Consultoria = () => {
         </div>
 
         {/* Metodología Section */}
-        <div className="py-12 sm:py-20 aurora-background">
+        <div className="py-12 sm:py-20 bg-background">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold text-center main-gradient-text mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-12">
                 Nuestro enfoque y metodología:
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -784,9 +784,9 @@ const Consultoria = () => {
         </div>
 
         {/* Benefits Section */}
-        <section className="py-12 sm:py-20 md:py-32 aurora-background">
+        <section className="py-12 sm:py-20 md:py-32 bg-brand-green-100">
           <div className="container mx-auto px-4 sm:px-6 relative z-10">
-            <h2 className="text-3xl md:text-4xl font-bold text-center main-gradient-text mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-12">
               Nuestros servicios
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 max-w-6xl mx-auto">
@@ -834,7 +834,7 @@ const Consultoria = () => {
         <section className="py-12 sm:py-20 bg-background">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold text-center main-gradient-text mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-12">
                 Beneficios de trabajar con BSB Capital
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -893,7 +893,7 @@ const Consultoria = () => {
         {/* Testimonials Carousel Section */}
         <div className="relative overflow-hidden bg-gradient-to-br from-brand-green-100 via-brand-green-50 to-brand-green-100">
           <div className="container mx-auto px-4 py-16">
-            <h2 className="text-3xl font-bold text-center main-gradient-text mb-12">Lo que dicen nuestros clientes</h2>
+            <h2 className="text-3xl font-bold text-center text-foreground mb-12">Lo que dicen nuestros clientes</h2>
 
             <div className="relative overflow-hidden">
               <div className="flex animate-[scroll_40s_linear_infinite] pause-animation">
@@ -1204,13 +1204,13 @@ const Consultoria = () => {
         <FAQSection />
 
         {/* Final CTA Section */}
-        <section id="agendar-sesion" className="py-12 sm:py-20 md:py-32 text-center aurora-background">
+        <section id="agendar-sesion" className="py-12 sm:py-20 md:py-32 text-center bg-brand-green-100">
           <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="text-2xl sm:text-3xl font-bold main-gradient-text mb-4"
+              className="text-2xl sm:text-3xl font-bold text-foreground mb-4"
             >
               Da el paso hacia el sector más rentable de los últimos años
             </motion.h2>

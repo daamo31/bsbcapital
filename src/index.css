@@ -200,10 +200,10 @@
         -moz-osx-font-smoothing: grayscale;
       }
       h1, h2, h3, h4, h5, h6 {
-        @apply font-sans font-extrabold tracking-tight text-text-primary;
+        @apply font-sans font-bold tracking-tight text-foreground;
       }
       p, li, span, div {
-        @apply text-text-secondary;
+        @apply text-foreground;
       }
       
       /* Estilos de selección de texto mejorados */

@@ -20,6 +20,31 @@ const ConsultationDetailsView = ({ consultation, onUpdate }) => {
     { id: 'admin-ana', name: 'Ana Martínez', email: 'ana@bsbcapital.com' },
   ];
 
+  // 🔍 LOG DE DEPURACIÓN: Ver todos los datos de la consulta
+  React.useEffect(() => {
+    if (consultation) {
+      console.log('📋 === DATOS DE CONSULTORÍA EN ADMIN ===');
+      console.log('ID:', consultation.id);
+      console.log('Cliente:', consultation.client_name);
+      console.log('Email:', consultation.client_email);
+      console.log('Form completado:', consultation.form_completed_at);
+      console.log('Todos los campos:', consultation);
+      console.log('Campos específicos crypto:', {
+        crypto_experience_level: consultation.crypto_experience_level,
+        crypto_knowledge_level: consultation.crypto_knowledge_level,
+        initial_crypto_capital: consultation.initial_crypto_capital,
+        crypto_interest_motivation: consultation.crypto_interest_motivation
+      });
+      console.log('Campos específicos empresa:', {
+        company_name: consultation.company_name,
+        company_country: consultation.company_country,
+        contact_person: consultation.contact_person,
+        crypto_usage: consultation.crypto_usage,
+        crypto_volume: consultation.crypto_volume
+      });
+    }
+  }, [consultation]);
+
   if (!consultation) return null;
 
   const formatValue = (value, type = 'text') => {
@@ -322,6 +347,138 @@ const ConsultationDetailsView = ({ consultation, onUpdate }) => {
     );
   };
 
+  const renderCryptoInfo = () => {
+    if (!consultation.crypto_experience_level && !consultation.crypto_knowledge_level && 
+        !consultation.initial_crypto_capital && !consultation.crypto_interest_motivation) {
+      return null;
+    }
+
+    return (
+      <Card className="mb-4">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <TrendingUp className="h-5 w-5" />
+            Información Crypto
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <div className="space-y-4">
+            {consultation.crypto_experience_level && (
+              <div>
+                <span className="text-sm font-medium text-gray-600">Nivel de experiencia:</span>
+                <Badge variant="secondary" className="ml-2">{consultation.crypto_experience_level}</Badge>
+              </div>
+            )}
+            
+            {consultation.crypto_knowledge_level && (
+              <div>
+                <span className="text-sm font-medium text-gray-600">Nivel de conocimiento:</span>
+                <Badge variant="outline" className="ml-2">{consultation.crypto_knowledge_level}</Badge>
+              </div>
+            )}
+            
+            {consultation.initial_crypto_capital && (
+              <div>
+                <span className="text-sm font-medium text-gray-600">Capital inicial crypto:</span>
+                <p className="mt-1">{consultation.initial_crypto_capital}</p>
+              </div>
+            )}
+            
+            {consultation.crypto_interest_motivation && (
+              <div>
+                <span className="text-sm font-medium text-gray-600">Motivación:</span>
+                <p className="mt-1 p-3 bg-purple-50 rounded-md border border-purple-200">{consultation.crypto_interest_motivation}</p>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+
+  const renderEnterpriseInfo = () => {
+    if (!consultation.company_name && !consultation.company_country && 
+        !consultation.crypto_usage && !consultation.crypto_volume) {
+      return null;
+    }
+
+    return (
+      <Card className="mb-4">
+        <CardHeader className="pb-3">
+          <CardTitle className="text-lg flex items-center gap-2">
+            <FileText className="h-5 w-5" />
+            Información Empresarial
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {consultation.company_name && (
+                <div>
+                  <span className="text-sm font-medium text-gray-600">Empresa:</span>
+                  <p className="mt-1 font-semibold">{consultation.company_name}</p>
+                </div>
+              )}
+              
+              {consultation.company_country && (
+                <div>
+                  <span className="text-sm font-medium text-gray-600">País:</span>
+                  <p className="mt-1">{consultation.company_country}</p>
+                </div>
+              )}
+              
+              {consultation.contact_person && (
+                <div>
+                  <span className="text-sm font-medium text-gray-600">Persona de contacto:</span>
+                  <p className="mt-1">{consultation.contact_person}</p>
+                </div>
+              )}
+              
+              {consultation.company_website && (
+                <div>
+                  <span className="text-sm font-medium text-gray-600">Website:</span>
+                  <p className="mt-1">
+                    <a href={consultation.company_website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                      {consultation.company_website}
+                    </a>
+                  </p>
+                </div>
+              )}
+            </div>
+            
+            {consultation.crypto_usage && (
+              <div>
+                <span className="text-sm font-medium text-gray-600">Uso actual de crypto:</span>
+                <p className="mt-1 p-3 bg-blue-50 rounded-md">{consultation.crypto_usage}</p>
+              </div>
+            )}
+            
+            {consultation.crypto_volume && (
+              <div>
+                <span className="text-sm font-medium text-gray-600">Volumen en criptoactivos:</span>
+                <Badge variant="secondary" className="ml-2">{consultation.crypto_volume}</Badge>
+              </div>
+            )}
+            
+            {consultation.main_treasury_goal && (
+              <div>
+                <span className="text-sm font-medium text-gray-600">Objetivo principal de tesorería:</span>
+                <p className="mt-1 p-3 bg-green-50 rounded-md border border-green-200">{consultation.main_treasury_goal}</p>
+              </div>
+            )}
+            
+            {consultation.risk_profile && (
+              <div>
+                <span className="text-sm font-medium text-gray-600">Perfil de riesgo:</span>
+                <Badge variant="outline" className="ml-2">{consultation.risk_profile}</Badge>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+
   const renderExpectationsAndComments = () => {
     if (!consultation.consultation_expectations && !consultation.pre_consultation_comments && !consultation.specific_challenges) {
       return null;
@@ -451,6 +608,8 @@ const ConsultationDetailsView = ({ consultation, onUpdate }) => {
       {renderFinancialSituation()}
       {renderGoalsAndObjectives()}
       {renderPortfolioInfo()}
+      {renderCryptoInfo()}
+      {renderEnterpriseInfo()}
       {renderExpectationsAndComments()}
       {renderPostPaymentForm()}
       {renderMetadata()}

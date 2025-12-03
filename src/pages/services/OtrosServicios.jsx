@@ -96,13 +96,13 @@ const OtrosServicios = () => {
         <meta name="description" content="Servicios exclusivos de BSB Capital: residencia en Dubái, inversión inmobiliaria y fiscalidad crypto. Contacta con nosotros para una asesoría personalizada." />
       </Helmet>
       <div className="bg-background text-foreground">
-        <header className="py-20 md:py-32 text-center aurora-background">
+        <header className="py-20 md:py-32 text-center bg-background">
           <div className="container mx-auto px-4 relative z-10">
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="text-4xl md:text-6xl font-extrabold main-gradient-text"
+              className="text-4xl md:text-6xl font-bold text-foreground"
             >
               Otros Servicios
             </motion.h1>

@@ -137,8 +137,8 @@ const BsbMaker = () => {
   return (
     <>
       <Helmet>
-        <title>BSB Maker: Preregistro - Tu Copiloto de Trading con IA</title>
-        <meta name="description" content="El futuro del trading está en construcción. Únete al preregistro exclusivo de BSB Maker y sé de los primeros en probar nuestro copiloto de trading con IA." />
+        <title>BSB Maker: Tu Asistente de Inversión con IA</title>
+        <meta name="description" content="Lleva tus decisiones al siguiente nivel con nuestra herramienta de Inteligencia Artificial diseñada para inversores crypto. Backtesting, señales personalizadas, simulación de escenarios y mucho más." />
       </Helmet>
       <motion.div
         initial={{ opacity: 0 }}
@@ -146,16 +146,16 @@ const BsbMaker = () => {
         transition={{ duration: 0.5 }}
       >
         {/* Hero Section */}
-        <div className="relative overflow-hidden pt-32 pb-20">
+        <div className="relative bg-background overflow-hidden pt-32 pb-20">
           <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
           <div className="container mx-auto px-4 text-center relative">
             <motion.h1
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="text-4xl md:text-6xl font-extrabold tracking-tight"
+              className="text-3xl md:text-5xl font-bold text-foreground"
             >
-              <span className="accent-gradient-text">🚀 BSB Maker:</span> tu asistente de trading con IA
+              🤖 BSB Maker — Tu Asistente de Inversión con IA
             </motion.h1>
             <motion.p
               initial={{ y: 20, opacity: 0 }}
@@ -163,7 +163,7 @@ const BsbMaker = () => {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="mt-6 text-lg md:text-xl text-text-secondary max-w-3xl mx-auto"
             >
-              El futuro del trading está en construcción… y tú puedes ser de los primeros en vivirlo.
+              Lleva tus decisiones al siguiente nivel con nuestra herramienta de Inteligencia Artificial diseñada para inversores crypto.
             </motion.p>
             <motion.div
               initial={{ y: 20, opacity: 0 }}
@@ -179,9 +179,9 @@ const BsbMaker = () => {
         </div>
 
         {/* Section 1: Problema */}
-        <div className="py-24 aurora-background">
+        <div className="py-24 bg-brand-green-100">
           <div className="container mx-auto px-4 text-center max-w-3xl">
-            <h2 className="text-3xl md:text-4xl font-bold">El mercado no espera</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground">El mercado no espera</h2>
             <p className="mt-4 text-lg text-text-secondary">
               Mientras otros dudan, los movimientos ya suceden. Las oportunidades se esfuman en segundos y el exceso de información provoca decisiones tardías o impulsivas.
             </p>
@@ -189,28 +189,28 @@ const BsbMaker = () => {
         </div>
 
         {/* Section 2: Solución */}
-        <div className="py-24 aurora-background">
+        <div className="py-24 bg-background">
           <div className="container mx-auto px-4">
             <div className="text-center max-w-3xl mx-auto mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold">              El futuro del trading está en construcción… y tú puedes ser de los primeros en vivirlo.</h2>
+              <h2 className="text-3xl md:text-4xl font-bold text-foreground">Analiza, compara y optimiza tus estrategias</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <FeatureItem icon={<BarChart />} text="Analiza el mercado en tiempo real para detectar oportunidades antes de que aparezcan en los titulares." />
-              <FeatureItem icon={<Target />} text="Optimiza tus entradas y salidas, calculando niveles clave con la lógica de un trader institucional." />
-              <FeatureItem icon={<ShieldCheck />} text="Gestiona riesgo y apalancamiento con fórmulas claras, sin improvisaciones ni emociones." />
-              <FeatureItem icon={<BookOpen />} text="Te ahorra tiempo, traduce los datos complejos en decisiones concretas." />
+              <FeatureItem icon={<BarChart />} text="Backtesting de estrategias: Prueba tus ideas con datos históricos antes de arriesgar capital real." />
+              <FeatureItem icon={<Target />} text="Señales e insights personalizados: Recibe alertas y análisis adaptados a tu perfil de inversión." />
+              <FeatureItem icon={<ShieldCheck />} text="Simulación de escenarios y gestión de riesgo: Anticipa diferentes situaciones del mercado y protege tu cartera." />
+              <FeatureItem icon={<BookOpen />} text="Y mucho más: Herramientas avanzadas que evolucionan con el mercado crypto." />
             </div>
           </div>
         </div>
 
         {/* New Section: Beneficios BSB Maker */}
-        <div className="py-24 aurora-background">
+        <div className="py-24 bg-brand-green-100">
           <div className="container mx-auto px-4">
             <div className="text-center max-w-4xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                <span className="accent-gradient-text">BSB MAKER</span>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4 text-foreground">
+                BSB MAKER
               </h2>
-              <h3 className="text-2xl md:text-3xl font-semibold mb-12 text-text-primary">
+              <h3 className="text-2xl md:text-3xl font-semibold mb-12 text-foreground">
                 Beneficios que notarás desde el primer momento
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -252,7 +252,13 @@ const BsbMaker = () => {
                   <div className="flex justify-center items-center mb-4 h-16 w-16 bg-primary/10 rounded-full mx-auto text-primary">
                     <BrainCircuit size={32} />
                   </div>
-                  <p className="font-semibold text-lg text-foreground">Accede a estrategias de trading profesional sin ser un experto.</p>
+                  <h3 className="font-bold text-xl text-foreground mb-3">Tu Asistente de Inversión con IA</h3>
+                  <p className="text-base text-text-secondary mb-3">
+                    Lleva tus decisiones al siguiente nivel con nuestra herramienta de Inteligencia Artificial diseñada para inversores crypto.
+                  </p>
+                  <p className="text-sm text-text-secondary">
+                    Analiza, compara y optimiza tus estrategias: backtesting de estrategias, señales e insights personalizados, simulación de escenarios y gestión de riesgo, y mucho más
+                  </p>
                 </motion.div>
 
 

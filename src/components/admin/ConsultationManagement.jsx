@@ -102,6 +102,18 @@ const ConsultationManagement = () => {
       }
       
       console.log('✅ Consultas cargadas:', data?.length || 0);
+      
+      // 🔍 LOG DE DEPURACIÓN: Ver estructura de datos
+      if (data && data.length > 0) {
+        console.log('📋 === EJEMPLO DE CONSULTA CARGADA ===');
+        console.log('Primera consulta:', data[0]);
+        console.log('Campos disponibles:', Object.keys(data[0]));
+        console.log('¿Tiene form_completed_at?:', !!data[0].form_completed_at);
+        console.log('¿Tiene client_name?:', !!data[0].client_name);
+        console.log('¿Tiene crypto_experience_level?:', !!data[0].crypto_experience_level);
+        console.log('¿Tiene company_name?:', !!data[0].company_name);
+      }
+      
       setConsultations(data || []);
       
     } catch (error) {
