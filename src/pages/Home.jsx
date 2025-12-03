@@ -71,7 +71,7 @@ const services = [
     icon: <BookOpen />,
     title: 'BSB Academy: Formación especializada en crypto y activos digitales',
     description: 'Aprende a invertir con autonomía y criterio. Nuestra formación combina píldoras rápidas, masterclasses especializadas y contenido actualizado para que desarrolles una mentalidad financiera sólida y entiendas realmente cómo funciona el ecosistema crypto.',
-    href: '/academia',
+    href: '/formacion',
     buttonText: 'Accede a la Academia'
   },
   {
