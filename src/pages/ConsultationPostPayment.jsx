@@ -810,21 +810,28 @@ const ConsultationPostPayment = () => {
         // Enviar email específico según el tipo de consultoría
         switch (consultationType) {
           case 'financial_planning':
-            await emailService.sendConsultationFinancial(emailData);
-            console.log('✅ Email de confirmación financiera enviado');
+          case 'portfolio':
+            await emailService.sendConsultationPortfolioOptimization(emailData);
+            console.log('✅ Email de confirmación de optimización de cartera enviado');
             break;
           case 'strategy':
-          case 'portfolio':
-            await emailService.sendConsultationCryptoAdvanced(emailData);
-            console.log('✅ Email de confirmación crypto avanzado enviado');
+          case 'crypto_advanced':
+          case 'crypto_web3':
+            await emailService.sendConsultationCryptoWeb3(emailData);
+            console.log('✅ Email de confirmación crypto & web3 enviado');
             break;
           case 'onboarding_crypto':
             await emailService.sendConsultationCryptoOnboarding(emailData);
             console.log('✅ Email de confirmación onboarding crypto enviado');
             break;
+          case 'treasury_crypto':
+            await emailService.sendConsultationTreasuryCrypto(emailData);
+            console.log('✅ Email de confirmación de gestión de tesorería crypto enviado');
+            break;
           default:
-            await emailService.sendConsultationConfirmation(emailData);
-            console.log('✅ Email de confirmación general enviado');
+            // Usar el método más genérico disponible como fallback
+            await emailService.sendConsultationPortfolioOptimization(emailData);
+            console.log('⚠️ Tipo de consultoría no específico, usando template de optimización de cartera');
         }
       } catch (emailError) {
         console.error('❌ Error sending confirmation email:', emailError);

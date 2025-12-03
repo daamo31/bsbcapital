@@ -564,3 +564,37 @@ html, body {
   letter-spacing: 0.02em;
   line-height: 1.7;
 }
+/* === CUSTOM ANIMATIONS FOR PACKAGES PAGE === */
+@keyframes gradient-x {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 3s ease infinite;
+}
+
+/* Override the global no-animation rule for specific animated elements */
+.animate-pulse,
+.animate-spin,
+.animate-gradient-x,
+.group-hover\/button\:animate-pulse,
+[class*="animate-"] {
+  animation: revert !important;
+}
+
+/* Allow transitions on specific interactive elements */
+.transition-all,
+.transition-transform,
+.transition-opacity,
+.transition-colors,
+.transition-shadow,
+.group-hover\/item\:scale-110,
+.group-hover\/button\:translate-x-1 {
+  transition: revert !important;
+}

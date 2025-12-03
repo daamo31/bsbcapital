@@ -47,11 +47,12 @@ const ConsultationPricingCard = ({
   const handleBookConsultation = () => {
     if (!user) {
       toast({
-        title: "Inicia sesión",
-        description: "Debes iniciar sesión para agendar una consultoría",
+        title: "Debes iniciar sesión",
+        description: "Para reservar una consultoría necesitas tener una cuenta activa.",
         variant: "destructive"
       });
-      navigate('/login');
+      // Redirigir al login después de mostrar el mensaje
+      setTimeout(() => navigate('/auth/login'), 1500);
       return;
     }
 
@@ -177,7 +178,7 @@ const ConsultationPricingCard = ({
           size="lg"
         >
           <Calendar className="h-4 w-4 mr-2" />
-          Agendar Consultoría
+          {!user ? 'Iniciar sesión para reservar' : 'Agendar Consultoría'}
         </Button>
 
         {/* Member Benefits Notice */}

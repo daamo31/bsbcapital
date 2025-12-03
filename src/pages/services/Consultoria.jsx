@@ -205,13 +205,30 @@ const BookingModal = () => {
     }
   };
 
+  const handleOpenDialog = () => {
+    // Validar autenticación antes de abrir el modal
+    if (!user) {
+      toast({
+        variant: "destructive",
+        title: "Inicia sesión para continuar",
+        description: "Debes iniciar sesión antes de reservar una consultoría."
+      });
+      setTimeout(() => navigate('/auth/login'), 1500);
+      return;
+    }
+    setOpen(true);
+  };
+
   return (
     <Dialog open={open} onOpenChange={(isOpen) => {
       setOpen(isOpen);
       if (!isOpen) resetForm();
     }}>
       <DialogTrigger asChild>
-        <Button size="lg">
+        <Button size="lg" onClick={(e) => {
+          e.preventDefault();
+          handleOpenDialog();
+        }}>
           Reserva tu consultoría crypto ahora <ArrowRight className="ml-2 h-5 w-5" />
         </Button>
       </DialogTrigger>

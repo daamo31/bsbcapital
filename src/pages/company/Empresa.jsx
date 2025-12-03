@@ -10,7 +10,7 @@ const teamMembers = [
     imageUrl: 'https://horizons-cdn.hostinger.com/817ad863-5db3-450e-8aa2-198248142884/68bb8eeb7cfe69a6fc0ea78780a5945f.jpg',
     bio: 'Asesor financiero y gestor de inversiones especializado en activos crypto. Inversor desde 2018, ha trabajado con divisas, renta variable, derivados y activos crypto. Es cofundador de CLCRIPTO, la firma fiscal especializada en crypto más grande de España, integrada en el despacho internacional ECIJA durante 2025. Certificado como European Financial Advisor (EFA) y con formación en Blockchain Management.',
     fullBio: 'Juan Salgado Blanco es asesor financiero y gestor de inversiones especializado en activos crypto. Inversor desde 2018, ha trabajado con divisas, renta variable, derivados y activos crypto, lo que le permite tener una visión completa del mercado y de los riesgos reales que asume un inversor. Es cofundador de CLCRIPTO, la firma fiscal especializada en crypto más grande de España y que fue integrada en el despacho internacional ECIJA durante 2025, donde ha participado en el diseño de soluciones para inversores, empresas y proyectos del entorno crypto. Está certificado como European Financial Advisor (EFA) y cuenta con formación en Blockchain Management, lo que refuerza su capacidad para unir criterio financiero y tecnología. En BSB Capital, Juan dirige la estrategia, define los marcos de análisis y marca la línea metodológica que se aplica tanto en las consultorías como en la academia y en el desarrollo de herramientas como BSB Maker.',
-    linkedin: 'https://www.linkedin.com/in/juan-salgado-blanco-63a23417a/',
+    linkedin: 'https://www.linkedin.com/in/juanbsb/',
   },
 ];
 
