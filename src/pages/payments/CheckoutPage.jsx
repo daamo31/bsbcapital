@@ -93,14 +93,16 @@ const CheckoutPage = () => {
   // Información de precios para diferentes planes
   const pricingInfo = {
     monthly: { 
-      price: '29.99', 
+      price: '20.00', 
       saveText: null,
-      stripeId: 'price_1SDKO8JmSk3VG9oiCLuGoE4s' // PLAN TRADER PRO mensual
+      stripeId: 'price_1SaXofJmSk3VG9oigjDZtcF6', // Membresía Exclusiva mensual
+      productId: 'prod_TXd41kG8ddpyDP'
     },
     annual: { 
-      price: '299.00', 
+      price: '200.00', 
       saveText: 'Ahorra $60 al año',
-      stripeId: 'price_1SDKQZJmSk3VG9oiGudek18k' // PLAN TRADER PRO ANUAL
+      stripeId: 'price_1SaXpNJmSk3VG9oifsW4ajZ2', // Membresía Exclusiva anual
+      productId: 'prod_TXd5JJfHRg8ZTx'
     }
   };
 
@@ -180,21 +182,24 @@ const CheckoutPage = () => {
 
       // Usar exactamente el mismo patrón que consultoría
       const { data, error } = await supabase.functions.invoke('create-stripe-checkout', {
-        body: JSON.stringify({ 
+        body: { 
           priceId: selectedPrice.stripeId,
           mode: 'subscription',
+          userId: user.id,
           email: formData.email,
           metadata: {
+            supabase_user_id: user.id,
             client_name: formData.name,
             client_email: formData.email,
             plan_type: billingCycle,
-            plan_name: planData?.name || 'Premium Plan',
+            plan_name: planData?.name || 'Membresía Exclusiva BSB',
             billing_cycle: billingCycle,
             phone: formData.phone,
             country: formData.country,
-            user_id: user.id
+            access_type: 'membership',
+            package_type: 'individual'
           }
-        }),
+        },
       });
 
       console.log('📥 Respuesta completa de Supabase:', { data, error });

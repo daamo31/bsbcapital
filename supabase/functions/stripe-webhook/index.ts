@@ -197,17 +197,21 @@ serve(async (req: Request) => {
         
         // Mapeo entre priceId de Stripe y plan_id en la tabla subscription_plans
         const priceToPlanMap: Record<string, string> = {
-          // Planes existentes
-          "price_1SDKO8JmSk3VG9oiCLuGoE4s": "4f27f890-55ea-4f61-b6f9-3b02b3a358fa", // Plan Trader Pro mensual
-          "price_1SDKQZJmSk3VG9oiGudek18k": "9e38bc9e-7f4f-424c-87fe-6b4e453301d7", // Plan Trader Pro anual
+          // Membresía Exclusiva (actualizado 4/12/2025)
+          "price_1SaXofJmSk3VG9oigjDZtcF6": "4f27f890-55ea-4f61-b6f9-3b02b3a358fa", // Membresía Exclusiva mensual
+          "price_1SaXpNJmSk3VG9oifsW4ajZ2": "9e38bc9e-7f4f-424c-87fe-6b4e453301d7", // Membresía Exclusiva anual
+          
+          // Academia BSB (actualizado 4/12/2025 - UUID fijo)
+          "price_1SaXVjJmSk3VG9oix0Pu2N9J": "b8f3c5e1-4a2d-4e9f-8c7b-1d5e6f7a8b9c", // Academia mensual 20€
+          "price_1SDKgoJmSk3VG9oiamJj88De": "b8f3c5e1-4a2d-4e9f-8c7b-1d5e6f7a8b9c", // Academia anual 200€ (mismo plan)
+          
+          // Planes legacy (mantener por compatibilidad)
           "price_1SDKVXJmSk3VG9oiLEm9JOoD": "a9097647-e0bc-424c-bacb-7ccbae7a0853", // Premium Investor anual
           "price_1SDKb2JmSk3VG9oiJr1unLZZ": "d7435ab7-d543-4bdc-9cc4-6874d286aa48", // Wealth Membership (Trader Premium)
           
-          // Nuevos productos crypto con UUIDs específicos
-          "price_1SSshWJmSk3VG9oiU1cBNWgf": "98e48de0-7d37-4e0f-afb8-da0e041d2ae2", // Onboarding Cripto
+          // Paquetes crypto
+          "price_1SSshWJmSk3VG9oiU1cBNWgf": "98e48de0-7d37-4e0f-afb8-da0e041d2ae2", // Onboarding Crypto
           "price_1SSsfoJmSk3VG9oi70AskCZv": "235cb6d6-e532-4a0f-a657-863a68972851", // Gestión de Tesorería
-          
-          // Nota: Inversor Premium (8dd4df50-6acb-4c98-ab89-a7c6736142ef) usa el mismo price_id que Wealth Membership
         };
         
         // Para suscripciones, el subscription ID puede ser null inicialmente

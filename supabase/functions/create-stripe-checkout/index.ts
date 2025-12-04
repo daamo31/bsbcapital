@@ -361,7 +361,16 @@ Deno.serve({ port: 8000 }, async (req) => {
       customerId = customer.id;
     }
 
-    const siteUrl = SITE_URL || new URL(SUPABASE_URL!).origin;
+    // ✅ IMPORTANTE: Usar siempre la URL de producción para Stripe
+    // Stripe no puede redirigir a localhost
+    const siteUrl = SITE_URL || "https://bsbcapital.io";
+    
+    console.log("🌐 URLs de entorno:", {
+      SITE_URL_env: SITE_URL,
+      SUPABASE_URL: SUPABASE_URL,
+      siteUrl_resolved: siteUrl,
+      note: "Usando URL fija de producción para evitar problemas con localhost"
+    });
 
     // Crear sesión de checkout
     const params = new URLSearchParams();

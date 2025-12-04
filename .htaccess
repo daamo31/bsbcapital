@@ -6,6 +6,13 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^ index.html [L]
 
+# Forzar no-cache para index.html para asegurar que siempre se cargue la última versión
+<FilesMatch "^index\.html$">
+    Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "0"
+</FilesMatch>
+
 # Configuración de caché para mejorar el rendimiento
 <IfModule mod_expires.c>
     ExpiresActive On

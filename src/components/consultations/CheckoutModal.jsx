@@ -50,8 +50,15 @@ const CheckoutModal = ({ isOpen, onClose }) => {
   };
 
   const handlePurchase = async () => {
+    console.log('🎯 handlePurchase iniciado', { 
+      hasUser: !!user, 
+      userId: user?.id, 
+      selectedPlan 
+    });
+
     if (!user) {
       // Cerrar modal y redirigir al login
+      console.log('⚠️ Usuario no autenticado, redirigiendo al login');
       onClose();
       navigate('/login', {
         state: {
@@ -66,31 +73,81 @@ const CheckoutModal = ({ isOpen, onClose }) => {
     setError(null);
 
     try {
-      // Llamar a nuestra Edge Function para crear el checkout
-      const { data, error } = await supabase.functions.invoke('hotmart-checkout-production', {
-        body: {
-          productId: import.meta.env.VITE_HOTMART_PRODUCT_ID || '6308462',
-          userEmail: user.email,
-          userId: user.id,
-          userName: user.user_metadata?.full_name || user.email.split('@')[0],
-          returnUrl: `${window.location.origin}/compra-exitosa`
+      // Determinar el price_id según el plan seleccionado
+      const stripePriceIds = {
+        'plan-mensual': 'price_1SaXVjJmSk3VG9oix0Pu2N9J', // Academia mensual
+        'plan-anual': 'price_1SDKgoJmSk3VG9oiamJj88De'  // Academia anual
+      };
+      
+      const stripeProductId = 'prod_T9dymUXkbPpeir'; // Academia
+      const selectedPlanData = plans[selectedPlan];
+      
+      // El plan mensual es recurrente (subscription), el anual es pago único (payment)
+      const mode = selectedPlan === 'plan-mensual' ? 'subscription' : 'payment';
+      
+      console.log('🎯 Plan seleccionado:', selectedPlan);
+      console.log('💳 Price ID a usar:', stripePriceIds[selectedPlan]);
+      console.log('📦 Product ID:', stripeProductId);
+      console.log('🔄 Mode:', mode, '(mensual=subscription, anual=payment)');
+      
+      const requestBody = {
+        priceId: stripePriceIds[selectedPlan],
+        mode: mode,
+        userId: user.id,
+        email: user.email,
+        metadata: {
+          supabase_user_id: user.id,
+          client_email: user.email,
+          client_name: user.user_metadata?.full_name || user.email,
+          plan_name: selectedPlanData.name,
+          plan_type: 'academia',
+          billing_cycle: selectedPlan === 'plan-mensual' ? 'monthly' : 'annual',
+          access_type: 'membership',
+          stripe_product_id: stripeProductId
         }
+      };
+
+      console.log('📤 Enviando a create-stripe-checkout:', requestBody);
+      
+      // Llamar a nuestra Edge Function para crear el checkout
+      const { data, error } = await supabase.functions.invoke('create-stripe-checkout', {
+        body: requestBody
       });
 
+      console.log('📥 Respuesta de create-stripe-checkout:', { data, error });
+
       if (error) {
+        console.error('❌ Error de Supabase Functions:', error);
         throw error;
       }
 
-      if (data.success && (data.checkoutUrl || data.checkout_url)) {
-        // Cerrar modal y redirigir al checkout de Hotmart
+      // La respuesta debe tener una URL para redirigir a Stripe Checkout
+      if (data && data.url) {
+        console.log('✅ URL de checkout recibida:', data.url);
+        console.log('🔍 Tipo de URL:', typeof data.url);
+        console.log('🔍 URL comienza con https://checkout.stripe.com?', data.url.startsWith('https://checkout.stripe.com'));
+        console.log('🔍 Objeto data completo:', JSON.stringify(data, null, 2));
+        
+        // Cerrar modal y redirigir al checkout de Stripe
         onClose();
-        window.location.href = data.checkoutUrl || data.checkout_url;
+        
+        console.log('🚀 Redirigiendo a:', data.url);
+        window.location.href = data.url;
       } else {
-        throw new Error('No se pudo crear el checkout');
+        console.error('❌ Respuesta sin URL:', data);
+        throw new Error('No se recibió URL de checkout de Stripe');
       }
     } catch (error) {
       console.error('Error durante la compra:', error);
-      setError(error.message || 'Error al procesar la compra. Inténtalo de nuevo.');
+      
+      // Mensaje de error más específico
+      let errorMessage = error.message || 'Error al procesar la compra. Inténtalo de nuevo.';
+      
+      if (error.message && error.message.includes('recurring')) {
+        errorMessage = 'Error de configuración: El precio seleccionado no está configurado correctamente en Stripe. Por favor contacta al soporte.';
+      }
+      
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
