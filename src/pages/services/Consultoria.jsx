@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '@/lib/customSupabaseClient';
-import { Loader2, Clock, BarChart3, Briefcase, Globe, Rocket, Quote, ArrowRight, ChevronDown, ChevronUp, Mail } from 'lucide-react';
+import { Loader2, Clock, BarChart3, Briefcase, Globe, Rocket, Quote, ArrowRight, ChevronDown, ChevronUp, Mail, Anchor, Compass, ShieldCheck } from 'lucide-react';
 import { useToast } from "@/components/ui/feedback/use-toast";
 import { Button } from '@/components/ui/button';
 import { Calendar } from "@/components/ui/data-display/calendar";
@@ -276,15 +276,15 @@ const BookingModal = () => {
 
                   <Button
                     type="button"
-                    variant={formData.service_interest === "Onboarding cripto" ? "default" : "outline"}
-                    onClick={() => handleSelectChange('service_interest', 'Onboarding cripto')}
-                    className={`h-20 flex flex-col items-center justify-center p-3 text-center ${formData.service_interest === "Onboarding cripto"
+                    variant={formData.service_interest === "Onboarding crypto" ? "default" : "outline"}
+                    onClick={() => handleSelectChange('service_interest', 'Onboarding crypto')}
+                    className={`h-20 flex flex-col items-center justify-center p-3 text-center ${formData.service_interest === "Onboarding crypto"
                       ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
                       : "border-border hover:bg-muted/50 hover:border-primary/30"
                       }`}
                   >
                     <Rocket className="h-5 w-5 mb-1" />
-                    <span className="text-sm font-medium">Onboarding cripto</span>
+                    <span className="text-sm font-medium">Onboarding crypto</span>
                   </Button>
 
                   <Button
@@ -302,9 +302,9 @@ const BookingModal = () => {
 
                   <Button
                     type="button"
-                    variant={formData.service_interest === "Gestión de tesorería cripto para empresas" ? "default" : "outline"}
-                    onClick={() => handleSelectChange('service_interest', 'Gestión de tesorería cripto para empresas')}
-                    className={`h-20 flex flex-col items-center justify-center p-3 text-center ${formData.service_interest === "Gestión de tesorería cripto para empresas"
+                    variant={formData.service_interest === "Gestión de tesorería crypto para empresas" ? "default" : "outline"}
+                    onClick={() => handleSelectChange('service_interest', 'Gestión de tesorería crypto para empresas')}
+                    className={`h-20 flex flex-col items-center justify-center p-3 text-center ${formData.service_interest === "Gestión de tesorería crypto para empresas"
                       ? "bg-primary text-primary-foreground border-primary hover:bg-primary/90"
                       : "border-border hover:bg-muted/50 hover:border-primary/30"
                       }`}
@@ -560,8 +560,8 @@ const FAQSection = () => {
       answer: "Todas las consultorías son sesiones 1:1 online por videollamada, lo que te permite acceder desde cualquier lugar del mundo. Ofrecemos dos modalidades: sesiones de 30 minutos para consultas específicas y sesiones de 60 minutos para análisis más profundos. Durante la sesión compartimos pantalla, revisamos documentos y creamos estrategias personalizadas según tus necesidades."
     },
     {
-      question: "¿Puedo contratar solo el servicio de Onboarding cripto?",
-      answer: "Sí, absolutamente. Cada uno de nuestros servicios puede contratarse de manera independiente según tus necesidades específicas. El paquete Onboarding Cripto es ideal si estás empezando y quieres una introducción completa al ecosistema. También puedes combinar varios servicios o formar parte de nuestra membresía anual para acceso ilimitado a formación y descuentos en consultorías."
+      question: "¿Puedo contratar solo el servicio de Onboarding crypto?",
+      answer: "Sí, absolutamente. Cada uno de nuestros servicios puede contratarse de manera independiente según tus necesidades específicas. El paquete Onboarding Crypto es ideal si estás empezando y quieres una introducción completa al ecosistema. También puedes combinar varios servicios o formar parte de nuestra membresía anual para acceso ilimitado a formación y descuentos en consultorías."
     },
     {
       question: "¿Qué tipo de soporte incluye después de la consultoría?",
@@ -573,7 +573,7 @@ const FAQSection = () => {
     },
     {
       question: "¿Necesito tener conocimientos previos en crypto?",
-      answer: "No es necesario tener conocimientos previos. Nuestro servicio de Onboarding Cripto está diseñado específicamente para principiantes y te guía desde cero. Explicamos todos los conceptos de forma clara y práctica, adaptándonos a tu nivel de experiencia. Si ya tienes experiencia, nos enfocamos en optimizar y profesionalizar tus estrategias existentes."
+      answer: "No es necesario tener conocimientos previos. Nuestro servicio de Onboarding Crypto está diseñado específicamente para principiantes y te guía desde cero. Explicamos todos los conceptos de forma clara y práctica, adaptándonos a tu nivel de experiencia. Si ya tienes experiencia, nos enfocamos en optimizar y profesionalizar tus estrategias existentes."
     },
     {
       question: "¿Cuánto tiempo tarda en verse resultados?",
@@ -582,7 +582,7 @@ const FAQSection = () => {
   ];
 
   return (
-    <section className="py-12 sm:py-20 bg-background">
+    <section className="py-12 sm:py-20 bg-brand-green-100">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-12">
@@ -699,91 +699,7 @@ const Consultoria = () => {
 
         </header>
 
-        {/* Storytelling Section */}
-        <div className="bg-brand-green-100 py-8 sm:py-16">
-          <div className="container mx-auto px-4 sm:px-6">
-            <div className="max-w-4xl mx-auto">
-              <div className="bg-white/95 backdrop-blur-sm p-4 sm:p-8 rounded-xl shadow-lg border border-brand-green-200">
-                <h3 className="text-2xl font-bold text-brand-green-900 mb-6">Navega el mundo crypto con seguridad</h3>
-                <p className="text-xl text-brand-green-900 leading-relaxed mb-4">
-                  Imagina que tu cartera es un barco.
-                </p>
-                <p className="text-lg text-brand-green-800 leading-relaxed mb-4">
-                  Algunos confían en el viento; otros esperan a que pase la tormenta.
-                </p>
-                <p className="text-lg text-brand-green-800 leading-relaxed">
-                  En BSB Capital, trazamos la ruta contigo: analizamos tus activos, identificamos riesgos invisibles y diseñamos un plan de acción para que avances con seguridad en el ecosistema crypto y Web3.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Metodología Section */}
-        <div className="py-12 sm:py-20 bg-background">
-          <div className="container mx-auto px-4 sm:px-6">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-12">
-                Nuestro enfoque y metodología:
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.1 }}
-                  className="bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300"
-                >
-                  <div className="flex items-center mb-4">
-                    <div className="w-8 h-8 bg-brand-primary text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">1</div>
-                    <h3 className="text-lg font-bold text-brand-text-primary">✏️ Completa tu formulario de diagnóstico</h3>
-                  </div>
-                  <p className="text-brand-text-secondary">Con esta información, en BSB Consulting diseñamos un plan personalizado que te permita avanzar con seguridad en tus inversiones y decisiones financieras.</p>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                  className="bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300"
-                >
-                  <div className="flex items-center mb-4">
-                    <div className="w-8 h-8 bg-brand-primary text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">2</div>
-                    <h3 className="text-lg font-bold text-brand-text-primary">📈 Análisis personalizado de activos y riesgos</h3>
-                  </div>
-                  <p className="text-brand-text-secondary">Identificamos oportunidades y amenazas invisibles en tu cartera.</p>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
-                  className="bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300"
-                >
-                  <div className="flex items-center mb-4">
-                    <div className="w-8 h-8 bg-brand-primary text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">3</div>
-                    <h3 className="text-lg font-bold text-brand-text-primary">🧭 Diseño del plan de acción</h3>
-                  </div>
-                  <p className="text-brand-text-secondary">Estrategias concretas desde wallets y exchanges hasta inversiones en DeFi, NFTs y proyectos Web3.</p>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.4 }}
-                  className="bg-white/95 backdrop-blur-sm p-6 rounded-xl shadow-lg border hover:shadow-xl transition-all duration-300"
-                >
-                  <div className="flex items-center mb-4">
-                    <div className="w-8 h-8 bg-brand-primary text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">4</div>
-                    <h3 className="text-lg font-bold text-brand-text-primary">🔁 Seguimiento y ajustes</h3>
-                  </div>
-                  <p className="text-brand-text-secondary">Revisiones periódicas para adaptarte a cambios de mercado y nuevas oportunidades.</p>
-                </motion.div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Benefits Section */}
+        {/* Benefits Section - Nuestros Servicios */}
         <section className="py-12 sm:py-20 md:py-32 bg-brand-green-100">
           <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-12">
@@ -813,22 +729,196 @@ const Consultoria = () => {
             </div>
 
             {/* Paquetes Section */}
-            <div className="mt-16 max-w-4xl mx-auto">
-              <div className="bg-white/95 backdrop-blur-sm p-6 sm:p-8 rounded-xl shadow-lg border border-brand-green-200">
-                <p className="text-lg text-brand-green-800 text-center leading-relaxed">
-                  Si quieres llevar tu inversión en crypto al siguiente nivel, nuestros paquetes y membresía exclusiva ofrecen acceso a consultorías, comunidad exclusiva y análisis avanzado de cartera.
-                </p>
-                <div className="text-center mt-6">
-                  <Button asChild variant="outline" size="lg">
-                    <Link to="/membresias">
-                      Descubre los paquetes y la membresía exclusiva <ArrowRight className="ml-2 h-5 w-5" />
-                    </Link>
-                  </Button>
+            <div className="mt-16 max-w-4xl mx-auto text-center">
+              <p className="text-lg text-foreground leading-relaxed mb-6">
+                Si quieres llevar tu inversión en crypto al siguiente nivel, nuestros paquetes y membresía exclusiva ofrecen acceso a consultorías, comunidad exclusiva y análisis avanzado de cartera.
+              </p>
+              <Button asChild size="lg" className="bg-brand-gold-600 hover:bg-brand-gold-700 text-foreground">
+                <Link to="/membresias">
+                  Descubre los paquetes y la membresía exclusiva <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        {/* Metodología Section - Enfoque y Metodología */}
+        <div className="py-16 sm:py-24 md:py-32 bg-background">
+          <div className="container mx-auto px-4 sm:px-6">
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-16 md:mb-20">
+                Nuestro enfoque y metodología:
+              </h2>
+              <div className="relative">
+                {/* Mobile View (Vertical Timeline) */}
+                <div className="md:hidden space-y-8 relative pb-8">
+                  {/* Vertical Line */}
+                  <div className="absolute left-6 top-0 bottom-0 w-1 bg-gradient-to-b from-brand-green-600 via-brand-gold-600 to-brand-green-600" />
+
+                  {[
+                    {
+                      id: 1,
+                      title: "Completa tu formulario de diagnóstico",
+                      description: "Con esta información, en BSB Consulting diseñamos un plan personalizado que te permita avanzar con seguridad en tus inversiones y decisiones financieras."
+                    },
+                    {
+                      id: 2,
+                      title: "Análisis personalizado de activos y riesgos",
+                      description: "Identificamos oportunidades y amenazas invisibles en tu cartera."
+                    },
+                    {
+                      id: 3,
+                      title: "Diseño del plan de acción",
+                      description: "Estrategias concretas desde wallets y exchanges hasta inversiones en DeFi, NFTs y proyectos Web3."
+                    },
+                    {
+                      id: 4,
+                      title: "Seguimiento y ajustes",
+                      description: "Revisiones periódicas para adaptarte a cambios de mercado y nuevas oportunidades."
+                    }
+                  ].map((step, index) => (
+                    <motion.div
+                      key={step.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      className="relative flex items-start pl-2"
+                    >
+                      <div className="absolute left-0 w-12 h-12 rounded-full bg-brand-gold-600 border-4 border-background shadow-lg flex items-center justify-center z-10">
+                        <span className="text-xl font-bold text-white">{step.id}</span>
+                      </div>
+                      <div className="ml-16 bg-card p-6 rounded-xl shadow-md border border-border w-full hover:shadow-lg transition-shadow duration-300">
+                        <h3 className="text-lg font-bold text-foreground mb-2">{step.title}</h3>
+                        <p className="text-muted-foreground">{step.description}</p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Desktop View (Horizontal Alternating Timeline) */}
+                <div className="hidden md:block relative py-16">
+                  {/* Horizontal Thick Bar with Gradient */}
+                  <div className="absolute top-1/2 left-0 w-full h-4 bg-gradient-to-r from-brand-green-600 via-brand-gold-600 to-brand-green-600 -translate-y-1/2 rounded-full shadow-md" />
+
+                  <div className="grid grid-cols-4 gap-8 relative z-10" style={{ minHeight: '400px' }}>
+                    {[
+                      {
+                        id: 1,
+                        title: "Completa tu formulario de diagnóstico",
+                        description: "Con esta información, en BSB Consulting diseñamos un plan personalizado que te permita avanzar con seguridad en tus inversiones y decisiones financieras.",
+                        color: "bg-brand-green-600",
+                        position: "bottom"
+                      },
+                      {
+                        id: 2,
+                        title: "Análisis personalizado de activos y riesgos",
+                        description: "Identificamos oportunidades y amenazas invisibles en tu cartera.",
+                        color: "bg-brand-gold-600",
+                        position: "top"
+                      },
+                      {
+                        id: 3,
+                        title: "Diseño del plan de acción",
+                        description: "Estrategias concretas desde wallets y exchanges hasta inversiones en DeFi, NFTs y proyectos Web3.",
+                        color: "bg-brand-green-600",
+                        position: "bottom"
+                      },
+                      {
+                        id: 4,
+                        title: "Seguimiento y ajustes",
+                        description: "Revisiones periódicas para adaptarte a cambios de mercado y nuevas oportunidades.",
+                        color: "bg-brand-gold-600",
+                        position: "top"
+                      }
+                    ].map((step, index) => {
+                      const isTop = step.position === "top";
+
+                      return (
+                        <div key={step.id} className="relative flex flex-col items-center justify-center">
+
+                          {/* Top Content */}
+                          {isTop && (
+                            <div className="absolute bottom-1/2 mb-12 w-full">
+                              <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: index * 0.15 }}
+                                className="bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-md border border-gray-200 text-left"
+                              >
+                                <h3 className="text-sm font-bold text-gray-800 mb-2 leading-tight">{step.title}</h3>
+                                <p className="text-xs text-gray-600 leading-relaxed">{step.description}</p>
+                              </motion.div>
+                              {/* Vertical Connector Line */}
+                              <div className="absolute top-full left-1/2 -translate-x-1/2 w-0.5 h-12 bg-gray-300" />
+                            </div>
+                          )}
+
+                          {/* Center Circle Node */}
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            whileInView={{ scale: 1 }}
+                            transition={{ duration: 0.4, delay: index * 0.1, type: "spring", stiffness: 200 }}
+                            className={`w-20 h-20 rounded-full ${step.color} border-4 border-white shadow-xl flex items-center justify-center z-20 relative`}
+                          >
+                            <span className="text-3xl font-bold text-white">0{step.id}</span>
+                          </motion.div>
+
+                          {/* Bottom Content */}
+                          {!isTop && (
+                            <div className="absolute top-1/2 mt-12 w-full">
+                              {/* Vertical Connector Line */}
+                              <div className="absolute bottom-full left-1/2 -translate-x-1/2 w-0.5 h-12 bg-gray-300" />
+                              <motion.div
+                                initial={{ opacity: 0, y: -20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.5, delay: index * 0.15 }}
+                                className="bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-md border border-gray-200 text-left"
+                              >
+                                <h3 className="text-sm font-bold text-gray-800 mb-2 leading-tight">{step.title}</h3>
+                                <p className="text-xs text-gray-600 leading-relaxed">{step.description}</p>
+                              </motion.div>
+                            </div>
+                          )}
+
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </section>
+        </div>
+
+        {/* Storytelling Section - Navega en crypto con seguridad */}
+        <div className="bg-brand-green-100 py-12 sm:py-20">
+          <div className="container mx-auto px-4 sm:px-6">
+            <div className="max-w-4xl mx-auto text-center">
+              <motion.h3
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="text-3xl md:text-4xl font-bold text-foreground mb-8"
+              >
+                Navega el mundo crypto con seguridad
+              </motion.h3>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="space-y-6"
+              >
+                <p className="text-xl text-foreground leading-relaxed">
+                  Imagina que tu cartera es un barco. Algunos confían en el viento; otros esperan a que pase la tormenta.
+                </p>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  En BSB Capital, trazamos la ruta contigo: analizamos tus activos, identificamos riesgos invisibles y diseñamos un plan de acción para que avances con seguridad en el ecosistema crypto y Web3.
+                </p>
+              </motion.div>
+            </div>
+          </div>
+        </div>
 
         {/* BSB Capital Benefits Section */}
         <section className="py-12 sm:py-20 bg-background">
@@ -890,321 +980,323 @@ const Consultoria = () => {
           </div>
         </section>
 
-        {/* Testimonials Carousel Section */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-brand-green-100 via-brand-green-50 to-brand-green-100">
-          <div className="container mx-auto px-4 py-16">
-            <h2 className="text-3xl font-bold text-center text-foreground mb-12">Lo que dicen nuestros clientes</h2>
+        {/* Testimonials Carousel Section - COMENTADO */}
+        {false && (
+          <div className="relative overflow-hidden bg-gradient-to-br from-brand-green-100 via-brand-green-50 to-brand-green-100">
+            <div className="container mx-auto px-4 py-16">
+              <h2 className="text-3xl font-bold text-center text-foreground mb-12">Lo que dicen nuestros clientes</h2>
 
-            <div className="relative overflow-hidden">
-              <div className="flex animate-[scroll_40s_linear_infinite] pause-animation">
-                {/* Testimonial 1 */}
-                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
-                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                    <div className="flex items-center mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-brand-accent to-brand-primary rounded-full flex items-center justify-center text-white font-bold mr-3">
-                        CM
+              <div className="relative overflow-hidden">
+                <div className="flex animate-[scroll_40s_linear_infinite] pause-animation">
+                  {/* Testimonial 1 */}
+                  <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                    <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                      <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                      <div className="flex items-center mb-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-brand-accent to-brand-primary rounded-full flex items-center justify-center text-white font-bold mr-3">
+                          CM
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-brand-text-primary">Carlos Mendoza</h3>
+                          <p className="text-sm text-brand-text-secondary">Freelancer, Madrid</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-brand-text-primary">Carlos Mendoza</h3>
-                        <p className="text-sm text-brand-text-secondary">Freelancer, Madrid</p>
+                      <p className="text-brand-text-secondary italic">
+                        "Llevaba años sin control de mis finanzas como freelancer. En 2 meses con BSB Capital ya tengo mi fondo de emergencia completo y un plan de inversión que me da tranquilidad. ¡Brutal cómo cambió mi mentalidad financiera! 🚀"
+                      </p>
+                      <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                        <span>⭐⭐⭐⭐</span>
+                        <span className="ml-2">• hace 3 semanas</span>
                       </div>
-                    </div>
-                    <p className="text-brand-text-secondary italic">
-                      "Llevaba años sin control de mis finanzas como freelancer. En 2 meses con BSB Capital ya tengo mi fondo de emergencia completo y un plan de inversión que me da tranquilidad. ¡Brutal cómo cambió mi mentalidad financiera! 🚀"
-                    </p>
-                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                      <span>⭐⭐⭐⭐</span>
-                      <span className="ml-2">• hace 3 semanas</span>
                     </div>
                   </div>
-                </div>
 
-                {/* Testimonial 2 */}
-                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
-                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                    <div className="flex items-center mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                        AS
+                  {/* Testimonial 2 */}
+                  <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                    <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                      <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                      <div className="flex items-center mb-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                          AS
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-brand-text-primary">Ana Sánchez</h3>
+                          <p className="text-sm text-brand-text-secondary">Arquitecta, Barcelona</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-brand-text-primary">Ana Sánchez</h3>
-                        <p className="text-sm text-brand-text-secondary">Arquitecta, Barcelona</p>
+                      <p className="text-brand-text-secondary italic">
+                        "Tenía mis ahorros en el banco ganando 0%. Después de la consultoría redistribuí todo: ETFs, algo de crypto y renta fija. En 6 meses ya veo resultados reales. Su enfoque es súper profesional 💪"
+                      </p>
+                      <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                        <span>⭐⭐⭐⭐⭐</span>
+                        <span className="ml-2">• hace 1 mes</span>
                       </div>
-                    </div>
-                    <p className="text-brand-text-secondary italic">
-                      "Tenía mis ahorros en el banco ganando 0%. Después de la consultoría redistribuí todo: ETFs, algo de crypto y renta fija. En 6 meses ya veo resultados reales. Su enfoque es súper profesional 💪"
-                    </p>
-                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                      <span>⭐⭐⭐⭐⭐</span>
-                      <span className="ml-2">• hace 1 mes</span>
                     </div>
                   </div>
-                </div>
 
-                {/* Testimonial 3 */}
-                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
-                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                    <div className="flex items-center mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                        JR
+                  {/* Testimonial 3 */}
+                  <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                    <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                      <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                      <div className="flex items-center mb-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                          JR
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-brand-text-primary">Javier Ruiz</h3>
+                          <p className="text-sm text-brand-text-secondary">Empresario, Valencia</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-brand-text-primary">Javier Ruiz</h3>
-                        <p className="text-sm text-brand-text-secondary">Empresario, Valencia</p>
+                      <p className="text-brand-text-secondary italic">
+                        "Quería entrar en crypto pero no sabía ni por dónde empezar. Me explicaron todo desde cero: wallets, DeFi, riesgos... Ahora tengo un 10% en crypto bien diversificado y duermo tranquilo 👌"
+                      </p>
+                      <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                        <span>⭐⭐⭐⭐⭐</span>
+                        <span className="ml-2">• hace 2 semanas</span>
                       </div>
-                    </div>
-                    <p className="text-brand-text-secondary italic">
-                      "Quería entrar en crypto pero no sabía ni por dónde empezar. Me explicaron todo desde cero: wallets, DeFi, riesgos... Ahora tengo un 10% en crypto bien diversificado y duermo tranquilo 👌"
-                    </p>
-                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                      <span>⭐⭐⭐⭐⭐</span>
-                      <span className="ml-2">• hace 2 semanas</span>
                     </div>
                   </div>
-                </div>
 
-                {/* Testimonial 4 */}
-                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
-                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                    <div className="flex items-center mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                        MG
+                  {/* Testimonial 4 */}
+                  <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                    <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                      <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                      <div className="flex items-center mb-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                          MG
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-brand-text-primary">María García</h3>
+                          <p className="text-sm text-brand-text-secondary">Médica, Sevilla</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-brand-text-primary">María García</h3>
-                        <p className="text-sm text-brand-text-secondary">Médica, Sevilla</p>
+                      <p className="text-brand-text-secondary italic">
+                        "Como médica no tenía tiempo para estudiar inversiones. La consultoría me ayudó a automatizar todo: plan de pensiones, ETFs... Todo en piloto automático. Ahora mi dinero trabaja mientras yo trabajo 🔥"
+                      </p>
+                      <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                        <span>⭐⭐⭐⭐</span>
+                        <span className="ml-2">• hace 5 días</span>
                       </div>
-                    </div>
-                    <p className="text-brand-text-secondary italic">
-                      "Como médica no tenía tiempo para estudiar inversiones. La consultoría me ayudó a automatizar todo: plan de pensiones, ETFs... Todo en piloto automático. Ahora mi dinero trabaja mientras yo trabajo 🔥"
-                    </p>
-                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                      <span>⭐⭐⭐⭐</span>
-                      <span className="ml-2">• hace 5 días</span>
                     </div>
                   </div>
-                </div>
 
-                {/* Testimonial 5 */}
-                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
-                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                    <div className="flex items-center mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                        LM
+                  {/* Testimonial 5 */}
+                  <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                    <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                      <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                      <div className="flex items-center mb-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                          LM
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-brand-text-primary">Luis Martín</h3>
+                          <p className="text-sm text-brand-text-secondary">Ingeniero, Bilbao</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-brand-text-primary">Luis Martín</h3>
-                        <p className="text-sm text-brand-text-secondary">Ingeniero, Bilbao</p>
+                      <p className="text-brand-text-secondary italic">
+                        "Honestly, tenía dudas al principio. Pero después de 3 meses siguiendo su estrategia de DCA en ETFs, ya voy viendo la diferencia. No es magia, pero funciona. Recomendable para gente seria 👍"
+                      </p>
+                      <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                        <span>⭐⭐⭐⭐</span>
+                        <span className="ml-2">• hace 1 semana</span>
                       </div>
-                    </div>
-                    <p className="text-brand-text-secondary italic">
-                      "Honestly, tenía dudas al principio. Pero después de 3 meses siguiendo su estrategia de DCA en ETFs, ya voy viendo la diferencia. No es magia, pero funciona. Recomendable para gente seria 👍"
-                    </p>
-                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                      <span>⭐⭐⭐⭐</span>
-                      <span className="ml-2">• hace 1 semana</span>
                     </div>
                   </div>
-                </div>
 
-                {/* Testimonial 6 */}
-                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
-                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                    <div className="flex items-center mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                        SP
+                  {/* Testimonial 6 */}
+                  <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                    <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                      <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                      <div className="flex items-center mb-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-rose-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                          SP
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-brand-text-primary">Sara Pérez</h3>
+                          <p className="text-sm text-brand-text-secondary">Consultora, Zaragoza</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-brand-text-primary">Sara Pérez</h3>
-                        <p className="text-sm text-brand-text-secondary">Consultora, Zaragoza</p>
+                      <p className="text-brand-text-secondary italic">
+                        "Tenía un portfolio muy conservador, todo en depósitos. Me costó el cambio pero ahora tengo una mezcla equilibrada. Los primeros meses fueron intensos, pero el seguimiento fue genial 🎯"
+                      </p>
+                      <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                        <span>⭐⭐⭐⭐⭐</span>
+                        <span className="ml-2">• hace 2 meses</span>
                       </div>
-                    </div>
-                    <p className="text-brand-text-secondary italic">
-                      "Tenía un portfolio muy conservador, todo en depósitos. Me costó el cambio pero ahora tengo una mezcla equilibrada. Los primeros meses fueron intensos, pero el seguimiento fue genial 🎯"
-                    </p>
-                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                      <span>⭐⭐⭐⭐⭐</span>
-                      <span className="ml-2">• hace 2 meses</span>
                     </div>
                   </div>
-                </div>
 
-                {/* Testimonial 7 */}
-                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
-                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                    <div className="flex items-center mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                        DR
+                  {/* Testimonial 7 */}
+                  <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                    <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                      <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                      <div className="flex items-center mb-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                          DR
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-brand-text-primary">David Rodríguez</h3>
+                          <p className="text-sm text-brand-text-secondary">Comercial, Málaga</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-brand-text-primary">David Rodríguez</h3>
-                        <p className="text-sm text-brand-text-secondary">Comercial, Málaga</p>
+                      <p className="text-brand-text-secondary italic">
+                        "Mi objetivo era comprar casa en 2 años. Creamos un plan específico: parte en renta fija, parte en bolsa. Va todo según lo previsto, creo que lo voy a conseguir incluso antes 🏠"
+                      </p>
+                      <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                        <span>⭐⭐⭐⭐</span>
+                        <span className="ml-2">• hace 4 días</span>
                       </div>
-                    </div>
-                    <p className="text-brand-text-secondary italic">
-                      "Mi objetivo era comprar casa en 2 años. Creamos un plan específico: parte en renta fija, parte en bolsa. Va todo según lo previsto, creo que lo voy a conseguir incluso antes 🏠"
-                    </p>
-                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                      <span>⭐⭐⭐⭐</span>
-                      <span className="ml-2">• hace 4 días</span>
                     </div>
                   </div>
-                </div>
 
-                {/* Testimonial 8 */}
-                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
-                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                    <div className="flex items-center mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                        PC
+                  {/* Testimonial 8 */}
+                  <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                    <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                      <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                      <div className="flex items-center mb-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                          PC
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-brand-text-primary">Pedro Caballero</h3>
+                          <p className="text-sm text-brand-text-secondary">Abogado, Sevilla</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-brand-text-primary">Pedro Caballero</h3>
-                        <p className="text-sm text-brand-text-secondary">Abogado, Sevilla</p>
+                      <p className="text-brand-text-secondary italic">
+                        "Como autónomo mis ingresos varían mucho. BSB me ayudó a estructurar un plan adaptado a mi situación: reservas para la época baja y inversiones para cuando sobra. Game changer total 🎯"
+                      </p>
+                      <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                        <span>⭐⭐⭐⭐⭐</span>
+                        <span className="ml-2">• hace 1 semana</span>
                       </div>
-                    </div>
-                    <p className="text-brand-text-secondary italic">
-                      "Como autónomo mis ingresos varían mucho. BSB me ayudó a estructurar un plan adaptado a mi situación: reservas para la época baja y inversiones para cuando sobra. Game changer total 🎯"
-                    </p>
-                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                      <span>⭐⭐⭐⭐⭐</span>
-                      <span className="ml-2">• hace 1 semana</span>
                     </div>
                   </div>
-                </div>
 
-                {/* Testimonial 9 */}
-                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
-                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                    <div className="flex items-center mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                        LF
+                  {/* Testimonial 9 */}
+                  <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                    <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                      <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                      <div className="flex items-center mb-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-emerald-500 to-green-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                          LF
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-brand-text-primary">Laura Fernández</h3>
+                          <p className="text-sm text-brand-text-secondary">Ejecutiva, Bilbao</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-brand-text-primary">Laura Fernández</h3>
-                        <p className="text-sm text-brand-text-secondary">Ejecutiva, Bilbao</p>
+                      <p className="text-brand-text-secondary italic">
+                        "Tenía miedo de invertir en bolsa después de 2008. Me explicaron todo con calma, empezamos poco a poco y ahora tengo una cartera diversificada que me da mucha más confianza 💪"
+                      </p>
+                      <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                        <span>⭐⭐⭐⭐⭐</span>
+                        <span className="ml-2">• hace 2 semanas</span>
                       </div>
-                    </div>
-                    <p className="text-brand-text-secondary italic">
-                      "Tenía miedo de invertir en bolsa después de 2008. Me explicaron todo con calma, empezamos poco a poco y ahora tengo una cartera diversificada que me da mucha más confianza 💪"
-                    </p>
-                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                      <span>⭐⭐⭐⭐⭐</span>
-                      <span className="ml-2">• hace 2 semanas</span>
                     </div>
                   </div>
-                </div>
 
-                {/* Testimonial 10 */}
-                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
-                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                    <div className="flex items-center mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                        RT
+                  {/* Testimonial 10 */}
+                  <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                    <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                      <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                      <div className="flex items-center mb-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                          RT
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-brand-text-primary">Roberto Torres</h3>
+                          <p className="text-sm text-brand-text-secondary">Empresario, Valencia</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-brand-text-primary">Roberto Torres</h3>
-                        <p className="text-sm text-brand-text-secondary">Empresario, Valencia</p>
+                      <p className="text-brand-text-secondary italic">
+                        "Necesitaba optimizar los impuestos de mi empresa. Su asesoramiento fiscal me ha ahorrado miles de euros y además tengo todo más organizado. Súper recomendable 📊"
+                      </p>
+                      <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                        <span>⭐⭐⭐⭐⭐</span>
+                        <span className="ml-2">• hace 3 días</span>
                       </div>
-                    </div>
-                    <p className="text-brand-text-secondary italic">
-                      "Necesitaba optimizar los impuestos de mi empresa. Su asesoramiento fiscal me ha ahorrado miles de euros y además tengo todo más organizado. Súper recomendable 📊"
-                    </p>
-                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                      <span>⭐⭐⭐⭐⭐</span>
-                      <span className="ml-2">• hace 3 días</span>
                     </div>
                   </div>
-                </div>
 
-                {/* Testimonial 11 */}
-                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
-                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                    <div className="flex items-center mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-rose-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                        CV
+                  {/* Testimonial 11 */}
+                  <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                    <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                      <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                      <div className="flex items-center mb-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-rose-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                          CV
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-brand-text-primary">Carmen Vega</h3>
+                          <p className="text-sm text-brand-text-secondary">Profesora, Granada</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-brand-text-primary">Carmen Vega</h3>
-                        <p className="text-sm text-brand-text-secondary">Profesora, Granada</p>
+                      <p className="text-brand-text-secondary italic">
+                        "Quería empezar a invertir pero no sabía nada. Me explicaron desde lo básico hasta estrategias avanzadas. Ahora entiendo mis inversiones y duermo tranquila 😌"
+                      </p>
+                      <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                        <span>⭐⭐⭐⭐⭐</span>
+                        <span className="ml-2">• hace 10 días</span>
                       </div>
-                    </div>
-                    <p className="text-brand-text-secondary italic">
-                      "Quería empezar a invertir pero no sabía nada. Me explicaron desde lo básico hasta estrategias avanzadas. Ahora entiendo mis inversiones y duermo tranquila 😌"
-                    </p>
-                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                      <span>⭐⭐⭐⭐⭐</span>
-                      <span className="ml-2">• hace 10 días</span>
                     </div>
                   </div>
-                </div>
 
-                {/* Testimonial 12 */}
-                <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
-                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                    <div className="flex items-center mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
-                        AB
+                  {/* Testimonial 12 */}
+                  <div className="flex-shrink-0 w-72 sm:w-80 mx-2 sm:mx-4">
+                    <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                      <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                      <div className="flex items-center mb-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                          AB
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-brand-text-primary">Alejandro Blanco</h3>
+                          <p className="text-sm text-brand-text-secondary">Desarrollador, Madrid</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-brand-text-primary">Alejandro Blanco</h3>
-                        <p className="text-sm text-brand-text-secondary">Desarrollador, Madrid</p>
+                      <p className="text-brand-text-secondary italic">
+                        "Trabajo en tech y quería diversificar más allá de las acciones de mi empresa. Me ayudaron a crear un portfolio balanceado. Mi patrimonio ha crecido un 15% este año 🚀"
+                      </p>
+                      <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                        <span>⭐⭐⭐⭐⭐</span>
+                        <span className="ml-2">• hace 1 mes</span>
                       </div>
-                    </div>
-                    <p className="text-brand-text-secondary italic">
-                      "Trabajo en tech y quería diversificar más allá de las acciones de mi empresa. Me ayudaron a crear un portfolio balanceado. Mi patrimonio ha crecido un 15% este año 🚀"
-                    </p>
-                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                      <span>⭐⭐⭐⭐⭐</span>
-                      <span className="ml-2">• hace 1 mes</span>
                     </div>
                   </div>
-                </div>
 
-                {/* Duplicamos los primeros testimonials para crear loop infinito */}
-                <div className="flex-shrink-0 w-80 mx-4">
-                  <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
-                    <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
-                    <div className="flex items-center mb-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-brand-accent to-brand-primary rounded-full flex items-center justify-center text-white font-bold mr-3">
-                        CM
+                  {/* Duplicamos los primeros testimonials para crear loop infinito */}
+                  <div className="flex-shrink-0 w-80 mx-4">
+                    <div className="bg-card p-6 rounded-xl shadow-sm border relative h-full">
+                      <Quote className="h-8 w-8 text-brand-accent mb-4 opacity-50" />
+                      <div className="flex items-center mb-4">
+                        <div className="w-12 h-12 bg-gradient-to-br from-brand-accent to-brand-primary rounded-full flex items-center justify-center text-white font-bold mr-3">
+                          CM
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-brand-text-primary">Carlos Mendoza</h3>
+                          <p className="text-sm text-brand-text-secondary">Freelancer, Madrid</p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="text-lg font-semibold text-brand-text-primary">Carlos Mendoza</h3>
-                        <p className="text-sm text-brand-text-secondary">Freelancer, Madrid</p>
+                      <p className="text-brand-text-secondary italic">
+                        "Llevaba años sin control de mis finanzas como freelancer. En 2 meses con BSB Capital ya tengo mi fondo de emergencia completo y un plan de inversión que me da tranquilidad. ¡Brutal cómo cambió mi mentalidad financiera! �"
+                      </p>
+                      <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
+                        <span>⭐⭐⭐⭐⭐</span>
+                        <span className="ml-2">• hace 3 semanas</span>
                       </div>
-                    </div>
-                    <p className="text-brand-text-secondary italic">
-                      "Llevaba años sin control de mis finanzas como freelancer. En 2 meses con BSB Capital ya tengo mi fondo de emergencia completo y un plan de inversión que me da tranquilidad. ¡Brutal cómo cambió mi mentalidad financiera! �"
-                    </p>
-                    <div className="flex items-center mt-4 text-sm text-brand-text-secondary">
-                      <span>⭐⭐⭐⭐⭐</span>
-                      <span className="ml-2">• hace 3 semanas</span>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* FAQs Section */}
         <FAQSection />
 
         {/* Final CTA Section */}
-        <section id="agendar-sesion" className="py-12 sm:py-20 md:py-32 text-center bg-brand-green-100">
+        <section id="agendar-sesion" className="py-12 sm:py-20 md:py-32 text-center bg-background">
           <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
@@ -1224,12 +1316,6 @@ const Consultoria = () => {
             </motion.p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
               <BookingModal />
-              <Button asChild variant="outline" size="lg" className="shadow-sm">
-                <a href="mailto:info@bsbcapital.io" className="flex items-center">
-                  <Mail className="mr-2 h-4 w-4" />
-                  Reserva tu consultoría ahora
-                </a>
-              </Button>
             </div>
           </div>
         </section>

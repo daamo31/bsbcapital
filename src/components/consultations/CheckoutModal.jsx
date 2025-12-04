@@ -19,12 +19,31 @@ const CheckoutModal = ({ isOpen, onClose }) => {
       name: 'Plan Mensual',
       price: '20€/mes',
       description: 'Acceso completo a toda la plataforma',
+      idealFor: 'Ideal si quieres flexibilidad mensual y acceso continuo a contenidos actualizados.',
       features: [
-        'Todos los módulos de formación',
-        'Masterclass y Píldoras',
-        'Material descargable',
-        'Soporte y actualizaciones',
-        'Sin permanencia'
+        'Todos los módulos de formación crypto',
+        'Plantillas y checklists descargables',
+        'Soporte por email',
+        'Actualizaciones continuas incluidas',
+        'Acceso a foro de la Academia',
+        'Garantía de devolución'
+      ],
+      popular: false
+    },
+    'plan-anual': {
+      name: 'Plan Anual',
+      price: '200€/año',
+      originalPrice: '240€/año',
+      description: 'Ahorra 2 meses con el plan anual',
+      idealFor: 'Ideal si quieres compromiso anual, aprovechar todo el contenido y maximizar tu aprendizaje pagando menos: ¡2 meses gratis frente a la modalidad mensual!',
+      features: [
+        'Todos los módulos de formación crypto',
+        'Plantillas y checklists descargables',
+        'Soporte por email',
+        'Actualizaciones continuas incluidas',
+        'Acceso a foro de la Academia',
+        'Garantía de devolución',
+        '2 meses gratis incluidos'
       ],
       popular: true
     }
@@ -90,87 +109,66 @@ const CheckoutModal = ({ isOpen, onClose }) => {
           <DialogDescription className="text-muted-foreground">Elige tu plan de acceso</DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4">
-          {Object.entries(plans).map(([key, plan]) => (
-            <div
-              key={key}
-              className={`border rounded-lg p-6 cursor-pointer transition-all ${!plan.isLink && selectedPlan === key
-                ? 'border-primary bg-primary/5 ring-2 ring-primary/20'
-                : 'border-gray-200 hover:border-gray-300'
-                } ${plan.popular ? 'relative' : ''} ${plan.isLink ? 'hover:bg-blue-50 hover:border-blue-300' : ''}`}
-              onClick={() => {
-                if (plan.isLink) {
-                  onClose();
-                  navigate(plan.linkTo);
-                } else {
-                  setSelectedPlan(key);
-                }
-              }}
-            >
-              {plan.popular && (
-                <Badge className="absolute -top-2 left-6 bg-primary">
-                  Más Popular
-                </Badge>
-              )}
-
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <div className="flex items-center space-x-2">
-                    {!plan.isLink && (
-                      <div className={`w-4 h-4 rounded-full border-2 ${selectedPlan === key
-                        ? 'bg-primary border-primary'
-                        : 'border-gray-300'
-                        }`}>
-                        {selectedPlan === key && (
-                          <Check className="w-3 h-3 text-white mx-auto" />
-                        )}
-                      </div>
-                    )}
-                    <h3 className={`font-bold text-lg ${plan.isLink ? 'text-blue-600' : ''}`}>
-                      {plan.name}
-                      {plan.isLink && <span className="ml-2 text-sm">→</span>}
-                    </h3>
-                  </div>
-                  <p className="text-muted-foreground text-sm mt-1">{plan.description}</p>
-                </div>
-                <div className="text-right">
-                  <div className="text-2xl font-bold text-primary">{plan.price}</div>
-                  {plan.originalPrice && (
-                    <div className="text-sm text-muted-foreground line-through">
-                      {plan.originalPrice}
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <ul className="space-y-2">
-                {plan.features.map((feature, index) => (
-                  <li key={index} className="flex items-center text-sm">
-                    <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+        {/* Selector de planes */}
+        <div className="flex gap-2 mb-6">
+          <Button
+            variant={selectedPlan === 'plan-mensual' ? 'default' : 'outline'}
+            className="flex-1"
+            onClick={() => setSelectedPlan('plan-mensual')}
+          >
+            Plan Mensual
+          </Button>
+          <Button
+            variant={selectedPlan === 'plan-anual' ? 'default' : 'outline'}
+            className="flex-1"
+            onClick={() => setSelectedPlan('plan-anual')}
+          >
+            Plan Anual
+            <Badge className="ml-2 bg-brand-gold-600">Más Popular</Badge>
+          </Button>
         </div>
 
-        {/* Seguridad y garantías */}
-        <div className="bg-gray-50 rounded-lg p-4 mt-6">
-          <div className="flex items-center justify-center space-x-6 text-sm text-muted-foreground">
-            <div className="flex items-center">
-              <Shield className="h-4 w-4 mr-1" />
-              Pago seguro
-            </div>
-            <div className="flex items-center">
-              <Clock className="h-4 w-4 mr-1" />
-              Acceso inmediato
-            </div>
-            <div className="flex items-center">
-              <Check className="h-4 w-4 mr-1" />
-              Garantía 30 días
-            </div>
-          </div>
+        {/* Mostrar solo el plan seleccionado */}
+        <div className="space-y-4">
+          {(() => {
+            const plan = plans[selectedPlan];
+            return (
+              <div className="border rounded-lg p-6 border-primary bg-primary/5">
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <h3 className="font-bold text-2xl">{plan.name}</h3>
+                    <p className="text-muted-foreground text-sm mt-1">{plan.description}</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-3xl font-bold text-primary">{plan.price}</div>
+                    {plan.originalPrice && (
+                      <div className="text-sm text-muted-foreground line-through">
+                        {plan.originalPrice}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Ideal para mensaje */}
+                {plan.idealFor && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                    <p className="text-sm text-blue-900 font-medium">
+                      💡 {plan.idealFor}
+                    </p>
+                  </div>
+                )}
+
+                <ul className="space-y-2">
+                  {plan.features.map((feature, index) => (
+                    <li key={index} className="flex items-center text-sm">
+                      <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          })()}
         </div>
 
         {/* Error message */}

@@ -133,12 +133,12 @@ const Formacion = () => {
         </motion.section>
 
         {/* What includes Section */}
-        <motion.section variants={itemVariants} className="py-16 md:py-24 bg-background">
+        <motion.section variants={itemVariants} className="py-16 md:py-24 bg-brand-green-100">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="text-center max-w-3xl mx-auto mb-16">
               <h2 className="text-3xl md:text-4xl font-bold mb-6">¿Qué incluye la Academia?</h2>
               <p className="text-lg text-muted-foreground mb-4">
-                En la plataforma encontrarás 5 módulos que te guiarán desde los fundamentos —comprender el mundo crypto y sus dinámicas— hasta la implementación de estrategias de nivel profesional.
+                En la plataforma encontrarás diferentes módulos que te guiarán desde los fundamentos —comprender el mundo crypto y sus dinámicas— hasta la implementación de estrategias de nivel profesional.
               </p>
               <p className="text-lg text-muted-foreground">
                 Además, la Academia está viva: encontrarás actualizaciones continuas de nuevas narrativas, análisis de proyectos y técnicas de valoración para que tu aprendizaje evolucione al ritmo del mercado.
@@ -158,12 +158,12 @@ const Formacion = () => {
         </motion.section>
 
         {/* Method Section */}
-        <motion.section variants={itemVariants} className="py-16 md:py-24 bg-brand-green-100">
+        <motion.section variants={itemVariants} className="py-16 md:py-24 bg-background">
           <div className="container mx-auto px-4 sm:px-6">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Aprende con un método pensado para ti</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
               {methodPoints.map((point, index) => (
-                <div key={index} className="bg-background p-8 rounded-xl shadow-sm text-center">
+                <div key={index} className="text-center">
                   <div className="inline-flex items-center justify-center p-3 bg-primary/10 rounded-full mb-4">
                     {point.icon}
                   </div>
@@ -176,7 +176,7 @@ const Formacion = () => {
         </motion.section>
 
         {/* FAQs Section */}
-        <motion.section variants={itemVariants} className="py-16 md:py-24">
+        <motion.section variants={itemVariants} className="py-16 md:py-24 bg-brand-green-100">
           <div className="container mx-auto px-4 max-w-3xl">
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Preguntas Frecuentes</h2>
             <Accordion type="single" collapsible className="w-full">
@@ -191,7 +191,7 @@ const Formacion = () => {
         </motion.section>
 
         {/* Guarantee Section */}
-        <motion.section variants={itemVariants} className="py-16 md:py-24 bg-brand-green-100">
+        <motion.section variants={itemVariants} className="py-16 md:py-24 bg-background">
           <div className="container mx-auto px-4 text-center max-w-3xl">
             <ShieldCheck className="h-16 w-16 mx-auto text-brand-gold mb-6" />
             <h2 className="text-3xl md:text-4xl font-bold mb-6">Garantía de satisfacción BSB Capital</h2>
@@ -208,7 +208,7 @@ const Formacion = () => {
         </motion.section>
 
         {/* Contact Section */}
-        <motion.section variants={itemVariants} className="py-16 bg-background">
+        <motion.section variants={itemVariants} className="py-16 bg-brand-green-100">
           <div className="container mx-auto px-4 max-w-2xl text-center">
             <h3 className="text-2xl font-bold mb-4">Cada inversor tiene su propio punto de partida.</h3>
             <p className="text-muted-foreground text-lg">

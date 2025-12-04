@@ -88,7 +88,7 @@ const Empresa = () => {
               </p>
             </motion.div>
             <motion.div variants={fadeIn} className="bg-background p-6 rounded-lg shadow-lg border border-border">
-              <h3 className="text-xl font-bold text-text-primary mb-3">⚖️ Responsabilidad</h3>
+              <h3 className="text-xl font-bold text-text-primary mb-3">⚚️ Responsabilidad</h3>
               <p className="text-text-secondary">
                 El mundo crypto exige criterio: actuamos con rigor y ética.
               </p>

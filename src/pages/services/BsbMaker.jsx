@@ -155,7 +155,7 @@ const BsbMaker = () => {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="text-3xl md:text-5xl font-bold text-foreground"
             >
-              🤖 BSB Maker — Tu Asistente de Inversión con IA
+              BSB Maker — Tu Asistente de Inversión con IA
             </motion.h1>
             <motion.p
               initial={{ y: 20, opacity: 0 }}
@@ -172,24 +172,14 @@ const BsbMaker = () => {
               className="mt-10"
             >
               <Button asChild size="lg" className="shadow-lg">
-                <a href="#preregistro">🚀 Preregistro Exclusivo BSB Maker <ArrowRight className="ml-2" /></a>
+                <a href="#preregistro">Preregistro Exclusivo BSB Maker <ArrowRight className="ml-2" /></a>
               </Button>
             </motion.div>
           </div>
         </div>
 
-        {/* Section 1: Problema */}
+        {/* Section 1: Solución - Analiza, compara y optimiza */}
         <div className="py-24 bg-brand-green-100">
-          <div className="container mx-auto px-4 text-center max-w-3xl">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground">El mercado no espera</h2>
-            <p className="mt-4 text-lg text-text-secondary">
-              Mientras otros dudan, los movimientos ya suceden. Las oportunidades se esfuman en segundos y el exceso de información provoca decisiones tardías o impulsivas.
-            </p>
-          </div>
-        </div>
-
-        {/* Section 2: Solución */}
-        <div className="py-24 bg-background">
           <div className="container mx-auto px-4">
             <div className="text-center max-w-3xl mx-auto mb-16">
               <h2 className="text-3xl md:text-4xl font-bold text-foreground">Analiza, compara y optimiza tus estrategias</h2>
@@ -200,6 +190,16 @@ const BsbMaker = () => {
               <FeatureItem icon={<ShieldCheck />} text="Simulación de escenarios y gestión de riesgo: Anticipa diferentes situaciones del mercado y protege tu cartera." />
               <FeatureItem icon={<BookOpen />} text="Y mucho más: Herramientas avanzadas que evolucionan con el mercado crypto." />
             </div>
+          </div>
+        </div>
+
+        {/* Section 2: Problema - El mercado no espera */}
+        <div className="py-24 bg-background">
+          <div className="container mx-auto px-4 text-center max-w-3xl">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground">El mercado no espera</h2>
+            <p className="mt-4 text-lg text-text-secondary">
+              Mientras otros dudan, los movimientos ya suceden. Las oportunidades se esfuman en segundos y el exceso de información provoca decisiones tardías o impulsivas.
+            </p>
           </div>
         </div>
 
@@ -252,13 +252,7 @@ const BsbMaker = () => {
                   <div className="flex justify-center items-center mb-4 h-16 w-16 bg-primary/10 rounded-full mx-auto text-primary">
                     <BrainCircuit size={32} />
                   </div>
-                  <h3 className="font-bold text-xl text-foreground mb-3">Tu Asistente de Inversión con IA</h3>
-                  <p className="text-base text-text-secondary mb-3">
-                    Lleva tus decisiones al siguiente nivel con nuestra herramienta de Inteligencia Artificial diseñada para inversores crypto.
-                  </p>
-                  <p className="text-sm text-text-secondary">
-                    Analiza, compara y optimiza tus estrategias: backtesting de estrategias, señales e insights personalizados, simulación de escenarios y gestión de riesgo, y mucho más
-                  </p>
+                  <p className="font-semibold text-lg text-foreground">Accede a herramientas avanzadas de análisis y gestión de riesgo.</p>
                 </motion.div>
 
 
@@ -281,35 +275,42 @@ const BsbMaker = () => {
         </div>
 
         {/* Section 3: Exclusividad */}
-        <div className="py-24 bg-brand-green-100 text-brand-green-900">
-          <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-brand-gold-600">Estamos construyendo algo único</h2>
-              <p className="mt-4 text-lg text-white/90">
-                BSB Maker combina nuestra especialización profunda en criptoactivos con tecnología avanzada para crear un asistente de trading único. Forma parte del ecosistema que está transformando la manera de invertir en activos digitales.
-              </p>
-            </div>
-            <motion.div
-              whileHover={{ scale: 1.02 }}
-              className="relative p-8 rounded-xl bg-gradient-to-br from-brand-green-600/30 to-brand-green-900/30 border border-transparent shadow-lg 
-                         before:absolute before:inset-0 before:rounded-xl before:border before:border-yellow-300/50 before:p-2
-                         before:bg-gradient-to-br before:from-yellow-300/20 before:via-transparent before:to-transparent
-                         before:animate-[pulse_4s_cubic-bezier(0.4,0,0.6,1)_infinite]"
-            >
-              <div className="relative">
-                <h3 className="text-2xl font-bold flex items-center gap-3 text-white"><Sparkles className="text-yellow-300" /> Preregistro anticipado:</h3>
-                <ul className="mt-6 space-y-4">
-                  <li className="flex items-start text-white"><Check className="text-yellow-300 mr-3 mt-1 flex-shrink-0" />Acceso temprano a la beta.</li>
-                  <li className="flex items-start text-white"><Check className="text-yellow-300 mr-3 mt-1 flex-shrink-0" />Beneficios exclusivos para los primeros usuarios.</li>
-                  <li className="flex items-start text-white"><Check className="text-yellow-300 mr-3 mt-1 flex-shrink-0" />Participa en dar forma al futuro del trading con IA.</li>
-                </ul>
+        <div className="py-24 bg-background">
+          <div className="container mx-auto px-4">
+            <div className="max-w-5xl mx-auto bg-card border-2 border-brand-gold-600 rounded-2xl shadow-2xl p-8 md:p-12">
+              <div className="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6">Estamos construyendo algo único</h2>
+                  <p className="text-lg text-muted-foreground leading-relaxed">
+                    BSB Maker combina nuestra especialización profunda en cryptoactivos con tecnología avanzada para crear un asistente de trading único. Forma parte del ecosistema que está transformando la manera de invertir en activos digitales.
+                  </p>
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold flex items-center gap-3 text-foreground mb-6">
+                    <Sparkles className="text-brand-gold-600" /> Preregistro anticipado:
+                  </h3>
+                  <ul className="space-y-4">
+                    <li className="flex items-start text-foreground">
+                      <Check className="text-brand-gold-600 mr-3 mt-1 flex-shrink-0" />
+                      Acceso temprano a la beta.
+                    </li>
+                    <li className="flex items-start text-foreground">
+                      <Check className="text-brand-gold-600 mr-3 mt-1 flex-shrink-0" />
+                      Beneficios exclusivos para los primeros usuarios.
+                    </li>
+                    <li className="flex items-start text-foreground">
+                      <Check className="text-brand-gold-600 mr-3 mt-1 flex-shrink-0" />
+                      Participa en dar forma al futuro del trading con IA.
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
 
         {/* Call to Action & Form */}
-        <div id="preregistro" className="py-24">
+        <div id="preregistro" className="py-24 bg-brand-green-100">
           <div className="container mx-auto px-4">
             <div className="text-center max-w-3xl mx-auto mb-12">
               <h2 className="text-3xl md:text-4xl font-bold flex items-center justify-center gap-3"><AlertTriangle className="text-destructive" /> Plazas limitadas</h2>
