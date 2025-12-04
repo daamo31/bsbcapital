@@ -32,7 +32,7 @@ const consultationPrices = {
   "test": "price_1SKG4NJmSk3VG9oi6CjvmqLC", // prod_TGnf81ENbBkghj
 };
 
-const BookingModal = () => {
+const BookingModal = ({ children }) => {
   const { toast } = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -71,6 +71,19 @@ const BookingModal = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Verificar si el usuario está autenticado
+    if (!user) {
+      toast({ 
+        variant: "destructive", 
+        title: "Inicia sesión", 
+        description: "Debes iniciar sesión para reservar una consultoría." 
+      });
+      setOpen(false);
+      navigate('/login');
+      return;
+    }
+    
     if (!date || !selectedTime || !formData.name || !formData.email || !formData.service_interest || !formData.duration) {
       toast({ variant: "destructive", title: "Faltan datos", description: "Por favor, completa todos los campos obligatorios." });
       return;
@@ -117,7 +130,7 @@ const BookingModal = () => {
       });
       setLoading(false);
       // Esperar un momento para que el usuario vea el toast, luego redirigir al login
-      setTimeout(() => navigate('/auth/login'), 1200);
+      setTimeout(() => navigate('/login'), 1200);
       return;
     }
 
@@ -213,7 +226,7 @@ const BookingModal = () => {
         title: "Inicia sesión para continuar",
         description: "Debes iniciar sesión antes de reservar una consultoría."
       });
-      setTimeout(() => navigate('/auth/login'), 1500);
+      setTimeout(() => navigate('/login'), 1000);
       return;
     }
     setOpen(true);
@@ -225,12 +238,21 @@ const BookingModal = () => {
       if (!isOpen) resetForm();
     }}>
       <DialogTrigger asChild>
-        <Button size="lg" onClick={(e) => {
-          e.preventDefault();
-          handleOpenDialog();
-        }}>
-          Reserva tu consultoría crypto ahora <ArrowRight className="ml-2 h-5 w-5" />
-        </Button>
+        {children ? (
+          React.cloneElement(children, {
+            onClick: (e) => {
+              e.preventDefault();
+              handleOpenDialog();
+            }
+          })
+        ) : (
+          <Button size="lg" onClick={(e) => {
+            e.preventDefault();
+            handleOpenDialog();
+          }}>
+            Reserva tu consultoría crypto ahora <ArrowRight className="ml-2 h-5 w-5" />
+          </Button>
+        )}
       </DialogTrigger>
       <DialogContent className="max-w-[95vw] sm:max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
@@ -970,11 +992,11 @@ const Consultoria = () => {
               </div>
 
               <div className="text-center mt-12">
-                <Button asChild size="lg" className="shadow-lg">
-                  <a href="#agendar-sesion">
+                <BookingModal>
+                  <Button size="lg" className="shadow-lg">
                     Agenda tu sesión 1:1 <ArrowRight className="ml-2 h-5 w-5" />
-                  </a>
-                </Button>
+                  </Button>
+                </BookingModal>
               </div>
             </div>
           </div>

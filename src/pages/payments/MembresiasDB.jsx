@@ -139,12 +139,12 @@ const MembresiasDB = () => {
         console.log('❌ Excluyendo Academia por nombre:', plan.name);
         return false;
       }
-      
+
       if (planNameLower.includes('exclusiva') || planNameLower.includes('exclusive')) {
         console.log('❌ Excluyendo Membresía Exclusiva por nombre:', plan.name);
         return false;
       }
-      
+
       if (planNameLower.includes('membresía') || planNameLower.includes('membresia')) {
         console.log('❌ Excluyendo Membresía por nombre:', plan.name);
         return false;
@@ -159,8 +159,8 @@ const MembresiasDB = () => {
       // CUARTO: Incluir por nombre (solo paquetes BSB)
       const isOnboarding = planNameLower.includes('onboarding');
       const isInversor = planNameLower.includes('inversor') && planNameLower.includes('premium');
-      const isTesoreria = (planNameLower.includes('tesorería') || planNameLower.includes('tesoreria')) && 
-                         planNameLower.includes('empresa');
+      const isTesoreria = (planNameLower.includes('tesorería') || planNameLower.includes('tesoreria')) &&
+        planNameLower.includes('empresa');
 
       if (isOnboarding || isInversor || isTesoreria) {
         console.log('✅ Incluyendo por nombre:', plan.name);
@@ -317,17 +317,19 @@ const MembresiasDB = () => {
         throw new Error(`No hay precio de Stripe configurado para el plan ${plan.name} (${cycle}). Por favor, contacta al administrador.`);
       }
 
-      // Determinar el mode según el tipo de plan
-      // Los paquetes (Onboarding, Inversor Premium, Gestión Tesorería) son pagos únicos
-      // Las membresías recurrentes (Academia mensual, Membresía Exclusiva) son suscripciones
+      // Determinar el mode según el tipo de plan y ciclo
+      // - Paquetes (Onboarding, Inversor Premium, Gestión Tesorería): siempre payment (pago único)
+      // - Membresías mensuales (Academia, Membresía Exclusiva): subscription (recurrente mensual)
+      // - Membresías anuales: payment (pago único anual)
       const planNameLower = plan.name.toLowerCase();
-      const isPackage = planNameLower.includes('onboarding') || 
-                       planNameLower.includes('inversor') ||
-                       planNameLower.includes('tesorería') ||
-                       planNameLower.includes('tesoreria');
-      
-      const mode = isPackage ? 'payment' : 'subscription';
-      
+      const isPackage = planNameLower.includes('onboarding') ||
+        planNameLower.includes('inversor') ||
+        planNameLower.includes('tesorería') ||
+        planNameLower.includes('tesoreria');
+
+      // Si es paquete o ciclo anual, usar payment. Si es mensual de membresía, usar subscription
+      const mode = (isPackage || cycle === 'annual') ? 'payment' : 'subscription';
+
       console.log('💳 Payment mode:', {
         plan_name: plan.name,
         isPackage,
@@ -418,9 +420,9 @@ const MembresiasDB = () => {
 
       <div className="container mx-auto px-4 py-16">
         {/* Hero Header */}
-        <div className="text-center max-w-5xl mx-auto mb-20">
+        <div className="text-center max-w-5xl mx-auto mb-16 md:mb-20">
           <motion.h1
-            className="text-4xl md:text-6xl font-extrabold mb-6 text-brand-green-900"
+            className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 text-foreground leading-tight"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5 }}
@@ -430,61 +432,61 @@ const MembresiasDB = () => {
         </div>
 
         {/* Sección 1: Introducción a Paquetes */}
-        <div className="max-w-6xl mx-auto mb-16 py-16 bg-brand-green-100 rounded-3xl">
-          <div className="max-w-6xl mx-auto px-8 md:px-12">
+        <div className="max-w-6xl mx-auto mb-16 py-12 md:py-16 bg-brand-green-100 rounded-2xl md:rounded-3xl">
+          <div className="max-w-6xl mx-auto px-6 md:px-12">
             <div className="flex items-start gap-4 mb-8">
               <div className="flex-1">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4 text-brand-green-900">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-foreground">
                   Paquetes BSB Capital
                 </h2>
-                <p className="text-lg md:text-xl text-gray-700 font-medium leading-relaxed">
+                <p className="text-base sm:text-lg md:text-xl text-muted-foreground leading-relaxed">
                   Soluciones especializadas en crypto y activos digitales, diseñadas según tu perfil. Encuentra el paquete que mejor se adapte a tus necesidades.
                 </p>
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl p-6 md:p-8 shadow-xl border-2 border-brand-green-200 mb-6">
-              <h3 className="text-2xl font-bold mb-4 text-brand-green-900">
+            <div className="bg-card rounded-xl md:rounded-2xl p-5 md:p-8 shadow-lg border border-border mb-6">
+              <h3 className="text-xl sm:text-2xl font-bold mb-4 text-foreground">
                 ¿Qué es un Paquete BSB Capital?
               </h3>
-              <p className="text-base md:text-lg text-gray-800 mb-6 leading-relaxed">
+              <p className="text-sm sm:text-base md:text-lg text-muted-foreground mb-6 leading-relaxed">
                 BSB Capital nace como la primera firma que combina asesoramiento financiero independiente con especialización crypto y activos digitales. Nuestros paquetes ofrecen un conjunto completo de consultorías, formación y herramientas, pensados para corregir los problemas estructurales del sector: falta de rigor, ausencia de metodología y poca transparencia.
               </p>
 
-              <p className="text-base md:text-lg font-semibold text-gray-900 mb-4">
+              <p className="text-sm sm:text-base md:text-lg font-semibold text-foreground mb-4">
                 Cada paquete está diseñado para guiar a inversores y empresas hacia decisiones inteligentes mediante:
               </p>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-start gap-3 bg-white p-4 rounded-xl border-2 border-brand-green-300">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+                <div className="flex items-start gap-3 bg-background p-3 md:p-4 rounded-lg md:rounded-xl border border-brand-green-300">
                   <Check className="h-5 w-5 text-brand-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-base font-medium text-gray-800">
+                  <span className="text-sm sm:text-base font-medium text-foreground">
                     Análisis avanzado y metodología profesional
                   </span>
                 </div>
-                <div className="flex items-start gap-3 bg-white p-4 rounded-xl border-2 border-brand-gold-300">
+                <div className="flex items-start gap-3 bg-background p-3 md:p-4 rounded-lg md:rounded-xl border border-brand-gold-300">
                   <Check className="h-5 w-5 text-brand-gold-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-base font-medium text-gray-800">
+                  <span className="text-sm sm:text-base font-medium text-foreground">
                     Tecnología especializada en activos digitales
                   </span>
                 </div>
-                <div className="flex items-start gap-3 bg-white p-4 rounded-xl border-2 border-brand-green-300">
+                <div className="flex items-start gap-3 bg-background p-3 md:p-4 rounded-lg md:rounded-xl border border-brand-green-300">
                   <Check className="h-5 w-5 text-brand-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-base font-medium text-gray-800">
+                  <span className="text-sm sm:text-base font-medium text-foreground">
                     Formación integral y acompañamiento continuo
                   </span>
                 </div>
-                <div className="flex items-start gap-3 bg-white p-4 rounded-xl border-2 border-brand-gold-300">
+                <div className="flex items-start gap-3 bg-background p-3 md:p-4 rounded-lg md:rounded-xl border border-brand-gold-300">
                   <Check className="h-5 w-5 text-brand-gold-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-base font-medium text-gray-800">
+                  <span className="text-sm sm:text-base font-medium text-foreground">
                     Inversores que buscan optimizar su cartera
                   </span>
                 </div>
               </div>
 
-              <div className="mt-4 flex items-start gap-3 bg-white p-4 rounded-xl border-2 border-brand-green-300">
+              <div className="mt-3 md:mt-4 flex items-start gap-3 bg-background p-3 md:p-4 rounded-lg md:rounded-xl border border-brand-green-300">
                 <Check className="h-5 w-5 text-brand-green-600 flex-shrink-0 mt-0.5" />
-                <span className="text-base font-medium text-gray-800">
+                <span className="text-sm sm:text-base font-medium text-foreground">
                   Empresas que necesitan gestión de tesorería crypto y estructuras corporativas
                 </span>
               </div>
@@ -492,147 +494,147 @@ const MembresiasDB = () => {
           </div>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="mt-8 md:mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
           {filteredPlans.map((plan) => {
             const currentPrice = plan.price_annual;
             const isLoading = loadingPlan === plan.id;
 
             return (
-                <motion.div
-                  key={plan.id}
-                  initial={{ opacity: 0, y: 50 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 0.6,
-                    delay: plans.indexOf(plan) * 0.1,
+              <motion.div
+                key={plan.id}
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.6,
+                  delay: plans.indexOf(plan) * 0.1,
+                  type: "spring",
+                  bounce: 0.4
+                }}
+                whileHover={{
+                  scale: 1.05,
+                  transition: {
                     type: "spring",
-                    bounce: 0.4
-                  }}
-                  whileHover={{
-                    scale: 1.05,
-                    transition: {
-                      type: "spring",
-                      stiffness: 400,
-                      damping: 10
-                    }
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Card className={`h-full flex flex-col transition-all duration-300 ${plan.highlight
-                    ? 'border-brand-gold-600 border-3 shadow-2xl shadow-brand-gold-600/20 relative'
-                    : 'border-brand-green-200 border-2 hover:border-brand-green-600 shadow-lg hover:shadow-xl'
-                    }`}>
-                    {plan.highlight && (
-                      <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                        <Badge className="bg-brand-gold-600 hover:bg-brand-gold-700 text-white px-6 py-2 text-sm font-bold shadow-lg">
-                          ⭐ Más Popular
-                        </Badge>
-                      </div>
-                    )}
+                    stiffness: 400,
+                    damping: 10
+                  }
+                }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <Card className={`h-full flex flex-col transition-all duration-300 ${plan.highlight
+                  ? 'border-brand-gold-600 border-2 md:border-3 shadow-2xl shadow-brand-gold-600/20 relative'
+                  : 'border-border border hover:border-brand-green-600 shadow-lg hover:shadow-xl'
+                  }`}>
+                  {plan.highlight && (
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                      <Badge className="bg-brand-gold-600 hover:bg-brand-gold-700 text-white px-6 py-2 text-sm font-bold shadow-lg">
+                        ⭐ Más Popular
+                      </Badge>
+                    </div>
+                  )}
 
-                    <CardHeader className="text-center pb-6 pt-8 px-6 bg-brand-green-50/30 min-h-[220px] flex flex-col justify-center items-center">
-                      <CardTitle className={`font-extrabold mb-3 text-brand-green-900 ${plan.name.length > 25 ? 'text-xl md:text-2xl' : 'text-2xl md:text-3xl'
-                        }`}>
-                        {plan.name}
-                      </CardTitle>
-                      <CardDescription className="text-base text-gray-700 font-medium">
-                        {plan.description}
-                      </CardDescription>
-                    </CardHeader>
+                  <CardHeader className="text-center pb-4 md:pb-6 pt-6 md:pt-8 px-4 md:px-6 bg-brand-green-50/30 min-h-[180px] md:min-h-[220px] flex flex-col justify-center items-center">
+                    <CardTitle className={`font-bold mb-3 text-foreground ${plan.name.length > 25 ? 'text-lg sm:text-xl md:text-2xl' : 'text-xl sm:text-2xl md:text-3xl'
+                      }`}>
+                      {plan.name}
+                    </CardTitle>
+                    <CardDescription className="text-sm sm:text-base text-muted-foreground">
+                      {plan.description}
+                    </CardDescription>
+                  </CardHeader>
 
-                    <CardContent className="flex-grow px-6 py-6 space-y-6">
-                      {/* Precio */}
-                      <div className="text-center py-6 px-4 bg-white rounded-xl border-2 border-brand-green-100 shadow-sm min-h-[200px] flex flex-col justify-center">
-                        <div className="flex flex-col items-center justify-center gap-2 mb-2">
-                          <div className={`text-5xl md:text-6xl font-black ${plan.highlight ? 'text-brand-gold-600' : 'text-brand-green-600'
-                            }`}>
-                            €{currentPrice || 0}
-                          </div>
-                          <div className="text-sm text-gray-700 font-bold uppercase tracking-wide">
-                            Pago anual único
-                          </div>
-                        </div>
-
-                        {/* Mostrar precio original si existe descuento */}
-                        {plan.price_original && (
-                          <div className="text-sm text-gray-600 mt-3">
-                            <span className="line-through">€{plan.price_original}</span>
-                            <span className="ml-2 text-brand-green-600 font-semibold">
-                              / €{plan.id === 'onboarding-crypto' ? '590' : plan.price_original}
-                            </span>
-                          </div>
-                        )}
-                        {plan.id === 'onboarding-crypto' && (
-                          <div className="text-xs text-brand-green-600 font-medium mt-1">
-                            (antes €500 / €690)
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Incluye */}
-                      <div className="space-y-4">
-                        <h4 className="font-bold text-lg text-brand-green-900 flex items-center gap-2 pb-2 border-b-2 border-brand-green-200">
-                          <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${plan.highlight ? 'bg-brand-gold-600' : 'bg-brand-green-600'
-                            }`}>
-                            <Check className="h-4 w-4 text-white" />
-                          </div>
-                          Incluye:
-                        </h4>
-                        <ul className="space-y-3">
-                          {Array.isArray(plan.features) ? plan.features.map((feature, index) => (
-                            <li key={index} className="flex items-start gap-3">
-                              <Check className="h-5 w-5 text-brand-green-600 flex-shrink-0 mt-0.5" />
-                              <span className="text-base text-gray-800 leading-relaxed font-medium">
-                                {feature}
-                              </span>
-                            </li>
-                          )) : null}
-                        </ul>
-                      </div>
-
-                      {/* Objetivo */}
-                      {plan.objective && (
-                        <div className={`p-5 rounded-xl border-2 ${plan.highlight
-                          ? 'bg-brand-gold-50 border-brand-gold-200'
-                          : 'bg-brand-green-50 border-brand-green-200'
+                  <CardContent className="flex-grow px-4 md:px-6 py-4 md:py-6 space-y-4 md:space-y-6">
+                    {/* Precio */}
+                    <div className="text-center py-4 md:py-6 px-3 md:px-4 bg-card rounded-lg md:rounded-xl border border-border shadow-sm min-h-[160px] md:min-h-[200px] flex flex-col justify-center">
+                      <div className="flex flex-col items-center justify-center gap-2 mb-2">
+                        <div className={`text-4xl sm:text-5xl md:text-6xl font-bold ${plan.highlight ? 'text-brand-gold-600' : 'text-brand-green-600'
                           }`}>
-                          <h4 className="font-bold text-base text-brand-green-900 mb-3 flex items-center gap-2">
-                            <Check className="h-5 w-5 text-brand-green-600" />
-                            Objetivo:
-                          </h4>
-                          <p className="text-sm md:text-base text-gray-800 leading-relaxed">
-                            {plan.objective}
-                          </p>
+                          €{currentPrice || 0}
+                        </div>
+                        <div className="text-xs sm:text-sm text-muted-foreground font-semibold uppercase tracking-wide">
+                          Pago anual único
+                        </div>
+                      </div>
+
+                      {/* Mostrar precio original si existe descuento */}
+                      {plan.price_original && (
+                        <div className="text-xs sm:text-sm text-muted-foreground mt-3">
+                          <span className="line-through">€{plan.price_original}</span>
+                          <span className="ml-2 text-brand-green-600 font-semibold">
+                            / €{plan.id === 'onboarding-crypto' ? '590' : plan.price_original}
+                          </span>
                         </div>
                       )}
-                    </CardContent>
+                      {plan.id === 'onboarding-crypto' && (
+                        <div className="text-xs text-brand-green-600 font-medium mt-1">
+                          (antes €500 / €690)
+                        </div>
+                      )}
+                    </div>
 
-                    <CardFooter className="mt-auto p-6 pt-4">
-                      <Button
-                        className={`w-full py-6 text-lg font-bold shadow-lg transition-all duration-300 ${plan.highlight
-                          ? 'bg-brand-gold-600 hover:bg-brand-gold-700 text-white hover:shadow-xl hover:shadow-brand-gold-600/30'
-                          : 'hover:shadow-xl'
-                          }`}
-                        onClick={() => handleSelectPlan(plan)}
-                        disabled={isLoading}
-                      >
-                        {isLoading ? (
-                          <>
-                            <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                            Procesando...
-                          </>
-                        ) : (
-                          <>
-                            Elegir paquete
-                            <ArrowRight className="ml-2 h-5 w-5" />
-                          </>
-                        )}
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                </motion.div>
-              );
-            })}
+                    {/* Incluye */}
+                    <div className="space-y-3 md:space-y-4">
+                      <h4 className="font-bold text-base md:text-lg text-foreground flex items-center gap-2 pb-2 border-b border-border">
+                        <div className={`w-5 h-5 md:w-6 md:h-6 rounded-lg flex items-center justify-center ${plan.highlight ? 'bg-brand-gold-600' : 'bg-brand-green-600'
+                          }`}>
+                          <Check className="h-3 w-3 md:h-4 md:w-4 text-white" />
+                        </div>
+                        Incluye:
+                      </h4>
+                      <ul className="space-y-2 md:space-y-3">
+                        {Array.isArray(plan.features) ? plan.features.map((feature, index) => (
+                          <li key={index} className="flex items-start gap-2 md:gap-3">
+                            <Check className="h-4 w-4 md:h-5 md:w-5 text-brand-green-600 flex-shrink-0 mt-0.5" />
+                            <span className="text-sm md:text-base text-foreground leading-relaxed">
+                              {feature}
+                            </span>
+                          </li>
+                        )) : null}
+                      </ul>
+                    </div>
+
+                    {/* Objetivo */}
+                    {plan.objective && (
+                      <div className={`p-4 md:p-5 rounded-lg md:rounded-xl border ${plan.highlight
+                        ? 'bg-brand-gold-50 border-brand-gold-200'
+                        : 'bg-brand-green-50 border-brand-green-200'
+                        }`}>
+                        <h4 className="font-bold text-sm md:text-base text-foreground mb-2 md:mb-3 flex items-center gap-2">
+                          <Check className="h-4 w-4 md:h-5 md:w-5 text-brand-green-600" />
+                          Objetivo:
+                        </h4>
+                        <p className="text-xs sm:text-sm md:text-base text-muted-foreground leading-relaxed">
+                          {plan.objective}
+                        </p>
+                      </div>
+                    )}
+                  </CardContent>
+
+                  <CardFooter className="mt-auto p-4 md:p-6 pt-2 md:pt-4">
+                    <Button
+                      className={`w-full py-4 md:py-6 text-base md:text-lg font-bold shadow-lg transition-all duration-300 ${plan.highlight
+                        ? 'bg-brand-gold-600 hover:bg-brand-gold-700 text-white hover:shadow-xl hover:shadow-brand-gold-600/30'
+                        : 'hover:shadow-xl'
+                        }`}
+                      onClick={() => handleSelectPlan(plan)}
+                      disabled={isLoading}
+                    >
+                      {isLoading ? (
+                        <>
+                          <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                          Procesando...
+                        </>
+                      ) : (
+                        <>
+                          Elegir paquete
+                          <ArrowRight className="ml-2 h-5 w-5" />
+                        </>
+                      )}
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </motion.div>
+            );
+          })}
         </div>
 
         {/* Sección 2: Membresía BSB Capital */}
