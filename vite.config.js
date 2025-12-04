@@ -139,136 +139,138 @@ window.fetch = function(...args) {
 `;
 
 const addTransformIndexHtml = {
-	name: 'add-transform-index-html',
-	transformIndexHtml(html) {
-		const tags = [
-			{
-				tag: 'script',
-				attrs: { type: 'module' },
-				children: configHorizonsRuntimeErrorHandler,
-				injectTo: 'head',
-			},
-			{
-				tag: 'script',
-				attrs: { type: 'module' },
-				children: configHorizonsViteErrorHandler,
-				injectTo: 'head',
-			},
-			{
-				tag: 'script',
-				attrs: {type: 'module'},
-				children: configHorizonsConsoleErrroHandler,
-				injectTo: 'head',
-			},
-			{
-				tag: 'script',
-				attrs: { type: 'module' },
-				children: configWindowFetchMonkeyPatch,
-				injectTo: 'head',
-			},
-		];
+  name: 'add-transform-index-html',
+  transformIndexHtml(html) {
+    const tags = [
+      {
+        tag: 'script',
+        attrs: { type: 'module' },
+        children: configHorizonsRuntimeErrorHandler,
+        injectTo: 'head',
+      },
+      {
+        tag: 'script',
+        attrs: { type: 'module' },
+        children: configHorizonsViteErrorHandler,
+        injectTo: 'head',
+      },
+      {
+        tag: 'script',
+        attrs: { type: 'module' },
+        children: configHorizonsConsoleErrroHandler,
+        injectTo: 'head',
+      },
+      {
+        tag: 'script',
+        attrs: { type: 'module' },
+        children: configWindowFetchMonkeyPatch,
+        injectTo: 'head',
+      },
+    ];
 
-		if (!isDev && process.env.TEMPLATE_BANNER_SCRIPT_URL && process.env.TEMPLATE_REDIRECT_URL) {
-			tags.push(
-				{
-					tag: 'script',
-					attrs: {
-						src: process.env.TEMPLATE_BANNER_SCRIPT_URL,
-						'template-redirect-url': process.env.TEMPLATE_REDIRECT_URL,
-					},
-					injectTo: 'head',
-				}
-			);
-		}
+    if (!isDev && process.env.TEMPLATE_BANNER_SCRIPT_URL && process.env.TEMPLATE_REDIRECT_URL) {
+      tags.push({
+        tag: 'script',
+        attrs: {
+          src: process.env.TEMPLATE_BANNER_SCRIPT_URL,
+          'template-redirect-url': process.env.TEMPLATE_REDIRECT_URL,
+        },
+        injectTo: 'head',
+      });
+    }
 
-		return {
-			html,
-			tags,
-		};
-	},
+    return {
+      html,
+      tags,
+    };
+  },
 };
 
 console.warn = () => {};
 
-const logger = createLogger()
-const loggerError = logger.error
+const logger = createLogger();
+const loggerError = logger.error;
 
 logger.error = (msg, options) => {
-	if (options?.error?.toString().includes('CssSyntaxError: [postcss]')) {
-		return;
-	}
+  if (options?.error?.toString().includes('CssSyntaxError: [postcss]')) {
+    return;
+  }
 
-	loggerError(msg, options);
-}
+  loggerError(msg, options);
+};
 
 export default defineConfig({
-	customLogger: logger,
-	plugins: [
-		...(isDev ? [inlineEditPlugin(), editModeDevPlugin(), iframeRouteRestorationPlugin()] : []),
-		react(),
-		addTransformIndexHtml
-	],
-	server: {
-		cors: {
-			origin: [
-				'http://localhost:5173',
-				'http://localhost:3000',
-				'https://bsbcapital.io',
-				'https://www.bsbcapital.io'
-			],
-			credentials: true,
-			methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-			allowedHeaders: [
-				'Content-Type',
-				'Authorization', 
-				'x-client-info',
-				'apikey',
-				'Access-Control-Allow-Origin'
-			]
-		},
-		headers: {
-			'Cross-Origin-Embedder-Policy': 'credentialless',
-			'Access-Control-Allow-Origin': '*',
-			'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-			'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-client-info, apikey'
-		},
-		allowedHosts: ['localhost', 'bsbcapital.io', 'www.bsbcapital.io'],
-	},
-	resolve: {
-		extensions: ['.jsx', '.js', '.tsx', '.ts', '.json', ],
-		alias: {
-			'@': path.resolve(__dirname, './src'),
-		},
-	},
-	build: {
-		rollupOptions: {
-			external: [
-				'@babel/parser',
-				'@babel/traverse',
-				'@babel/generator',
-				'@babel/types'
-			],
-			output: {
-				// Cache busting más agresivo: timestamp único para cada build
-				entryFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
-				chunkFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
-				assetFileNames: (assetInfo) => {
-					const ext = assetInfo.name.split('.').pop();
-					if (ext === 'css') {
-						// CSS con timestamp ultra específico para evitar cache mixing
-						return `assets/[name]-[hash]-${Date.now()}-css.[ext]`;
-					}
-					return `assets/[name]-[hash]-${Date.now()}.[ext]`;
-				}
-			}
-		},
-		// Configuración más agresiva para CSS
-		manifest: true,
-		// Separar completamente el CSS y forzar nuevos archivos
-		cssCodeSplit: true,
-		// Configuración específica para CSS
-		cssTarget: 'esnext',
-		// Asegurar minificación completa
-		cssMinify: true
-	}
+  customLogger: logger,
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.js'],
+    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    coverage: {
+      reporter: ['text', 'json', 'html'],
+    },
+  },
+  plugins: [
+    ...(isDev ? [inlineEditPlugin(), editModeDevPlugin(), iframeRouteRestorationPlugin()] : []),
+    react(),
+    addTransformIndexHtml,
+  ],
+  server: {
+    cors: {
+      origin: [
+        'http://localhost:5173',
+        'http://localhost:3000',
+        'https://bsbcapital.io',
+        'https://www.bsbcapital.io',
+      ],
+      credentials: true,
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+      allowedHeaders: [
+        'Content-Type',
+        'Authorization',
+        'x-client-info',
+        'apikey',
+        'Access-Control-Allow-Origin',
+      ],
+    },
+    headers: {
+      'Cross-Origin-Embedder-Policy': 'credentialless',
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization, x-client-info, apikey',
+    },
+    allowedHosts: ['localhost', 'bsbcapital.io', 'www.bsbcapital.io'],
+  },
+  resolve: {
+    extensions: ['.jsx', '.js', '.tsx', '.ts', '.json'],
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+  build: {
+    rollupOptions: {
+      external: ['@babel/parser', '@babel/traverse', '@babel/generator', '@babel/types'],
+      output: {
+        // Cache busting más agresivo: timestamp único para cada build
+        entryFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
+        chunkFileNames: `assets/[name]-[hash]-${Date.now()}.js`,
+        assetFileNames: (assetInfo) => {
+          const ext = assetInfo.name.split('.').pop();
+          if (ext === 'css') {
+            // CSS con timestamp ultra específico para evitar cache mixing
+            return `assets/[name]-[hash]-${Date.now()}-css.[ext]`;
+          }
+          return `assets/[name]-[hash]-${Date.now()}.[ext]`;
+        },
+      },
+    },
+    // Configuración más agresiva para CSS
+    manifest: true,
+    // Separar completamente el CSS y forzar nuevos archivos
+    cssCodeSplit: true,
+    // Configuración específica para CSS
+    cssTarget: 'esnext',
+    // Asegurar minificación completa
+    cssMinify: true,
+  },
 });
