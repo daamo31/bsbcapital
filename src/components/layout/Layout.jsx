@@ -64,7 +64,7 @@ const Footer = () => {
               <span className="font-bold text-xl text-white">BSB Capital</span>
             </Link>
             <p className="mt-4 text-sm text-brand-green-100/70">
-              La primera firma que combina asesoramiento financiero independiente con especialización profunda en criptoactivos.
+              La primera firma que combina asesoramiento financiero independiente con especialización crypto y activos digitales.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-6 sm:gap-8 lg:col-span-2">

@@ -448,7 +448,7 @@ const MembresiasDB = () => {
                 ¿Qué es un Paquete BSB Capital?
               </h3>
               <p className="text-base md:text-lg text-gray-800 mb-6 leading-relaxed">
-                BSB Capital nace como la primera firma que combina asesoramiento financiero independiente con especialización profunda en criptoactivos. Nuestros paquetes ofrecen un conjunto completo de consultorías, formación y herramientas, pensados para corregir los problemas estructurales del sector: falta de rigor, ausencia de metodología y poca transparencia.
+                BSB Capital nace como la primera firma que combina asesoramiento financiero independiente con especialización crypto y activos digitales. Nuestros paquetes ofrecen un conjunto completo de consultorías, formación y herramientas, pensados para corregir los problemas estructurales del sector: falta de rigor, ausencia de metodología y poca transparencia.
               </p>
 
               <p className="text-base md:text-lg font-semibold text-gray-900 mb-4">

@@ -75,8 +75,8 @@ const Formacion = () => {
     },
     {
       icon: <Mail className="h-10 w-10 text-primary mb-4" />,
-      title: "Soporte y actualizaciones",
-      description: "Soporte por email para tus dudas y acceso a futuras actualizaciones del contenido."
+      title: "Soporte y actualizaciones por comunidad privada",
+      description: "Accederás a nuestros análisis del mercado, en qué estamos invirtiendo en tiempo real y podrás contar con nosotros para resolver tus dudas y validar tus decisiones de inversión."
     }
   ];
 

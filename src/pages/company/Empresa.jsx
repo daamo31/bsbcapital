@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Linkedin } from 'lucide-react';
+import { Linkedin, Search, ShieldCheck, Rocket, BookOpen } from 'lucide-react';
 
 const teamMembers = [
   {
@@ -43,13 +43,13 @@ const Empresa = () => {
             Sobre BSB Capital
           </motion.h1>
           <motion.p variants={fadeIn} className="mt-4 max-w-3xl mx-auto text-lg md:text-xl text-text-secondary">
-            BSB Capital nace como la primera firma que combina asesoramiento financiero independiente con especialización profunda en activos crypto, aportando profesionalidad, claridad y seguridad a un sector que durante años ha estado reservado a perfiles muy técnicos.
+            BSB Capital nace como la primera firma que combina asesoramiento financiero independiente con especialización crypto y activos digitales, aportando profesionalidad, claridad y seguridad a un sector que durante años ha estado reservado a perfiles muy técnicos.
           </motion.p>
         </div>
       </section>
 
       {/* Propósito Section */}
-      <section className="py-16 md:py-24 bg-background">
+      <section className="py-16 md:py-24 bg-brand-green-100">
         <div className="container mx-auto px-4 md:px-6">
           <motion.div variants={fadeIn} className="text-center mb-16">
             <p className="text-lg md:text-xl text-text-secondary max-w-4xl mx-auto">
@@ -75,32 +75,36 @@ const Empresa = () => {
       </section>
 
       {/* Valores Section */}
-      <section className="py-16 md:py-24 bg-brand-green-100">
+      <section className="py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <motion.div variants={fadeIn} className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-text-primary">Nuestros Valores</h2>
           </motion.div>
           <motion.div variants={stagger} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <motion.div variants={fadeIn} className="bg-background p-6 rounded-lg shadow-lg border border-border">
-              <h3 className="text-xl font-bold text-text-primary mb-3">🔍 Transparencia</h3>
+              <Search className="h-10 w-10 text-brand-gold-600 mb-3" />
+              <h3 className="text-xl font-bold text-text-primary mb-3">Transparencia</h3>
               <p className="text-text-secondary">
                 Construimos confianza compartiendo conocimiento y eliminando barreras.
               </p>
             </motion.div>
             <motion.div variants={fadeIn} className="bg-background p-6 rounded-lg shadow-lg border border-border">
-              <h3 className="text-xl font-bold text-text-primary mb-3">⚚️ Responsabilidad</h3>
+              <ShieldCheck className="h-10 w-10 text-brand-gold-600 mb-3" />
+              <h3 className="text-xl font-bold text-text-primary mb-3">Responsabilidad</h3>
               <p className="text-text-secondary">
                 El mundo crypto exige criterio: actuamos con rigor y ética.
               </p>
             </motion.div>
             <motion.div variants={fadeIn} className="bg-background p-6 rounded-lg shadow-lg border border-border">
-              <h3 className="text-xl font-bold text-text-primary mb-3">🚀 Innovación</h3>
+              <Rocket className="h-10 w-10 text-brand-gold-600 mb-3" />
+              <h3 className="text-xl font-bold text-text-primary mb-3">Innovación</h3>
               <p className="text-text-secondary">
                 Integramos tecnologías de vanguardia para impulsar el futuro financiero.
               </p>
             </motion.div>
             <motion.div variants={fadeIn} className="bg-background p-6 rounded-lg shadow-lg border border-border">
-              <h3 className="text-xl font-bold text-text-primary mb-3">📚 Educación</h3>
+              <BookOpen className="h-10 w-10 text-brand-gold-600 mb-3" />
+              <h3 className="text-xl font-bold text-text-primary mb-3">Educación</h3>
               <p className="text-text-secondary">
                 Creemos que formar es la base para transformar.
               </p>
@@ -110,7 +114,7 @@ const Empresa = () => {
       </section>
 
       {/* Liderazgo Section */}
-      <section className="py-16 md:py-24 bg-background">
+      <section className="py-16 md:py-24 bg-brand-green-100">
         <div className="container mx-auto px-4 md:px-6">
           <motion.div variants={fadeIn} className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-text-primary">Liderazgo</h2>
@@ -125,7 +129,7 @@ const Empresa = () => {
       </section>
 
       {/* Equipo Section */}
-      <section className="py-16 md:py-24 bg-brand-green-100">
+      <section className="py-16 md:py-24 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <motion.div variants={fadeIn} className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-text-primary">Juan Salgado Blanco</h2>
