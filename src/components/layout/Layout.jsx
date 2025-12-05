@@ -28,15 +28,17 @@ const Footer = () => {
 
     setLoading(true);
 
-    const { error } = await supabase
-      .from('newsletter_subscriptions')
-      .insert({ email: email });
+    const { error } = await supabase.from('newsletter_subscriptions').insert({ email: email });
 
     setLoading(false);
 
     if (error) {
       if (error.code === '23505') {
-        toast({ variant: "destructive", title: "Ya estás suscrito", description: "Este correo electrónico ya está en nuestra lista." });
+        toast({
+          variant: 'destructive',
+          title: 'Ya estás suscrito',
+          description: 'Este correo electrónico ya está en nuestra lista.',
+        });
       } else {
         toast({
           title: 'Error en la suscripción',
@@ -60,48 +62,123 @@ const Footer = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-12">
           <div className="lg:col-span-1">
             <Link to="/" className="flex items-center gap-3">
-              <img alt="Logotipo de BSB Capital" className="h-13 w-auto" src="/images/black_logo-Photoroom.png" />
+              <img
+                alt="Logotipo de BSB Capital"
+                className="h-13 w-auto"
+                src="/images/black_logo-Photoroom.png"
+              />
               <span className="font-bold text-xl text-white">BSB Capital</span>
             </Link>
             <p className="mt-4 text-sm text-brand-green-100/70">
-              La primera firma que combina asesoramiento financiero independiente con especialización crypto y activos digitales.
+              La primera firma que combina asesoramiento financiero independiente con
+              especialización crypto y activos digitales.
             </p>
           </div>
           <div className="grid grid-cols-2 gap-6 sm:gap-8 lg:col-span-2">
             <div>
               <p className="font-semibold text-white">Servicios</p>
               <ul className="mt-4 space-y-2 text-sm">
-                <li><Link to="/consultoria" className="text-brand-green-100/70 hover:text-white transition-colors">BSB Consulting</Link></li>
-                <li><Link to="/formacion" className="text-brand-green-100/70 hover:text-white transition-colors">BSB Academy</Link></li>
-                <li><Link to="/bsb-maker" className="text-brand-green-100/70 hover:text-white transition-colors">BSB Maker</Link></li>
-                <li><Link to="/otros-servicios" className="text-brand-green-100/70 hover:text-white transition-colors">Otros servicios</Link></li>
+                <li>
+                  <Link
+                    to="/consultoria"
+                    className="text-brand-green-100/70 hover:text-white transition-colors"
+                  >
+                    BSB Consulting
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/formacion"
+                    className="text-brand-green-100/70 hover:text-white transition-colors"
+                  >
+                    BSB Academy
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/bsb-maker"
+                    className="text-brand-green-100/70 hover:text-white transition-colors"
+                  >
+                    BSB Maker
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/otros-servicios"
+                    className="text-brand-green-100/70 hover:text-white transition-colors"
+                  >
+                    Otros servicios
+                  </Link>
+                </li>
               </ul>
             </div>
             <div>
               <p className="font-semibold text-white">Empresa</p>
               <ul className="mt-4 space-y-2 text-sm">
-                <li><Link to="/empresa" className="text-brand-green-100/70 hover:text-white transition-colors">BSB Capital</Link></li>
-                <li><Link to="/contacto" className="text-brand-green-100/70 hover:text-white transition-colors">Contacto</Link></li>
+                <li>
+                  <Link
+                    to="/empresa"
+                    className="text-brand-green-100/70 hover:text-white transition-colors"
+                  >
+                    BSB Capital
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/contacto"
+                    className="text-brand-green-100/70 hover:text-white transition-colors"
+                  >
+                    Contacto
+                  </Link>
+                </li>
               </ul>
             </div>
           </div>
         </div>
         <div className="mt-12 border-t border-brand-green-600 pt-8 flex flex-col items-center text-sm text-center">
-          <p className="text-brand-green-100/50">&copy; {new Date().getFullYear()} BSB Capital. Todos los derechos reservados.</p>
-          <p className="text-brand-green-100/50 mt-1">Oficina en Dubái. Asesores financieros acreditados en España.</p>
+          <p className="text-brand-green-100/50">
+            &copy; {new Date().getFullYear()} BSB Capital. Todos los derechos reservados.
+          </p>
+          <p className="text-brand-green-100/50 mt-1">
+            Oficina en Dubái. Asesores financieros acreditados en España.
+          </p>
           <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 mt-4">
-            <Link to="/legal/aviso-legal" className="text-brand-green-100/50 hover:text-white transition-colors">Aviso Legal</Link>
-            <Link to="/legal/privacidad" className="text-brand-green-100/50 hover:text-white transition-colors">Política de Privacidad</Link>
-            <Link to="/legal/cookies" className="text-brand-green-100/50 hover:text-white transition-colors">Política de Cookies</Link>
-            <Link to="/legal/terminos-de-uso" className="text-brand-green-100/50 hover:text-white transition-colors">Términos de Uso</Link>
-            <Link to="/legal/condiciones-generales" className="text-brand-green-100/50 hover:text-white transition-colors">Condiciones Generales</Link>
+            <Link
+              to="/legal/aviso-legal"
+              className="text-brand-green-100/50 hover:text-white transition-colors"
+            >
+              Aviso Legal
+            </Link>
+            <Link
+              to="/legal/privacidad"
+              className="text-brand-green-100/50 hover:text-white transition-colors"
+            >
+              Política de Privacidad
+            </Link>
+            <Link
+              to="/legal/cookies"
+              className="text-brand-green-100/50 hover:text-white transition-colors"
+            >
+              Política de Cookies
+            </Link>
+            <Link
+              to="/legal/terminos-de-uso"
+              className="text-brand-green-100/50 hover:text-white transition-colors"
+            >
+              Términos de Uso
+            </Link>
+            <Link
+              to="/legal/condiciones-generales"
+              className="text-brand-green-100/50 hover:text-white transition-colors"
+            >
+              Condiciones Generales
+            </Link>
           </div>
         </div>
       </div>
     </footer>
   );
 };
-
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -124,24 +201,36 @@ const Header = () => {
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
       <div className="container mx-auto px-4 sm:px-6 h-16 sm:h-20 flex justify-between items-center">
         <Link to="/" className="flex items-center gap-3" onClick={closeMenu}>
-          <img alt="Logotipo de BSB Capital" className="h-13 w-auto" src="/images/black_logo-Photoroom.png" />
+          <img
+            alt="Logotipo de BSB Capital"
+            className="h-13 w-auto"
+            src="/images/black_logo-Photoroom.png"
+          />
         </Link>
         <nav className="hidden lg:flex items-center gap-8">
           {navLinks.map((link) => (
-            <Link key={link.name} to={link.href} className="text-base lg:text-lg font-semibold text-text-secondary hover:text-primary transition-colors">
+            <Link
+              key={link.name}
+              to={link.href}
+              className="text-base lg:text-lg font-semibold text-text-secondary hover:text-primary transition-colors"
+            >
               {link.name}
             </Link>
           ))}
         </nav>
         <div className="hidden lg:flex items-center gap-4">
-          <Button asChild variant="outline" className="border-brand-green-600 text-gray-700 hover:bg-brand-green-600 hover:text-white">
+          <Button
+            asChild
+            variant="outline"
+            className="border-brand-green-600 text-gray-700 hover:bg-brand-green-600 hover:text-white"
+          >
             <Link to="/contacto">Contactar</Link>
           </Button>
           {user ? (
             <>
               {isAdmin && <AdminDropdown />}
               <Button asChild>
-                <Link to="/dashboard">
+                <Link to="/area-cliente">
                   <User className="mr-2 h-4 w-4" />
                   Mi Cuenta
                 </Link>
@@ -167,12 +256,22 @@ const Header = () => {
         <div className="lg:hidden absolute top-full left-0 right-0 bg-background shadow-lg border-t">
           <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col gap-4">
             {navLinks.map((link) => (
-              <Link key={link.name} to={link.href} onClick={closeMenu} className="text-base sm:text-lg font-semibold text-text-secondary hover:text-primary transition-colors py-2">
+              <Link
+                key={link.name}
+                to={link.href}
+                onClick={closeMenu}
+                className="text-base sm:text-lg font-semibold text-text-secondary hover:text-primary transition-colors py-2"
+              >
                 {link.name}
               </Link>
             ))}
             <div className="border-t pt-6 mt-4 flex flex-col gap-4">
-              <Button asChild className="w-full border-brand-green-600 text-gray-700 hover:bg-brand-green-600 hover:text-white" variant="outline" onClick={closeMenu}>
+              <Button
+                asChild
+                className="w-full border-brand-green-600 text-gray-700 hover:bg-brand-green-600 hover:text-white"
+                variant="outline"
+                onClick={closeMenu}
+              >
                 <Link to="/contacto">Contactar</Link>
               </Button>
               {user ? (
@@ -186,7 +285,7 @@ const Header = () => {
                     </Button>
                   )}
                   <Button asChild className="w-full" onClick={closeMenu}>
-                    <Link to="/dashboard">
+                    <Link to="/area-cliente">
                       <User className="mr-2 h-4 w-4" />
                       Mi Cuenta
                     </Link>
@@ -212,9 +311,7 @@ const Layout = ({ children }) => {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
-      <main className="flex-grow pt-16 sm:pt-20">
-        {children}
-      </main>
+      <main className="flex-grow pt-16 sm:pt-20">{children}</main>
       <Footer />
       <CookieConsent />
     </div>

@@ -36,6 +36,7 @@ import CheckoutPage from '@/pages/payments/CheckoutPage.jsx';
 // Dashboard
 import UserDashboard from '@/pages/dashboard/UserDashboard.jsx';
 import AcademiaDashboard from '@/pages/dashboard/AcademiaDashboard.jsx';
+import AreaCliente from '@/pages/dashboard/AreaCliente.jsx';
 
 // Admin
 import AccessPanel from '@/pages/admin/AccessPanel.jsx';
@@ -89,7 +90,6 @@ function App() {
     '/error-verificacion',
     '/academia-legacy',
     '/app',
-    '/area-cliente',
     '/client-dashboard',
   ];
 
@@ -110,6 +110,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <UserDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/area-cliente"
+              element={
+                <ProtectedRoute>
+                  <AreaCliente />
                 </ProtectedRoute>
               }
             />
