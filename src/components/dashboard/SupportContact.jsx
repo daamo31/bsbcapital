@@ -6,7 +6,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/data-display/card';
-import { Mail, Phone, Clock, MessageSquare } from 'lucide-react';
+import { Mail, Clock, MessageSquare } from 'lucide-react';
 
 const SupportContact = () => {
   return (
@@ -26,23 +26,12 @@ const SupportContact = () => {
             <div>
               <h4 className="font-semibold text-base mb-1">Email</h4>
               <a
-                href="mailto:soporte@bsbcapital.com"
+                href="mailto:info@bsbcapital.io"
                 className="text-brand-accent hover:underline text-base"
               >
-                soporte@bsbcapital.com
+                info@bsbcapital.io
               </a>
               <p className="text-sm text-gray-500 mt-1">Respuesta en 24-48 horas</p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <Phone className="h-6 w-6 text-brand-accent mt-0.5" />
-            <div>
-              <h4 className="font-semibold text-base mb-1">Teléfono</h4>
-              <a href="tel:+34XXXXXXXXX" className="text-brand-accent hover:underline text-base">
-                +34 XXX XXX XXX
-              </a>
-              <p className="text-sm text-gray-500 mt-1">Lunes a Viernes, 9:00 - 18:00</p>
             </div>
           </div>
 
@@ -50,7 +39,7 @@ const SupportContact = () => {
             <Clock className="h-6 w-6 text-brand-accent mt-0.5" />
             <div>
               <h4 className="font-semibold text-base mb-1">Horario de Atención</h4>
-              <p className="text-gray-700">Lunes a Viernes: 9:00 - 18:00</p>
+              <p className="text-gray-700">Lunes a Viernes: 9:00 - 21:00</p>
               <p className="text-sm text-gray-500 mt-1">Fin de semana: Cerrado</p>
             </div>
           </div>

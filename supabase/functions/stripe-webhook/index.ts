@@ -315,20 +315,19 @@ serve(async (req: Request) => {
 
                 console.log('📧 Enviando email de confirmación de membresía a:', clientEmail);
 
-                // Determinar el tipo de email según el plan
-                let emailType = 'academia_bsb'; // por defecto
+                // Determinar el tipo de email según el plan y ciclo de facturación
+                let emailType = 'academia_bsb'; // por defecto para academia
                 if (
-                  planName.toLowerCase().includes('trader') ||
-                  planName.toLowerCase().includes('pro')
+                  planName.toLowerCase().includes('exclusiva') ||
+                  planName.toLowerCase().includes('membresía bsb')
                 ) {
-                  emailType = 'trader_plan_pro';
-                } else if (
-                  planName.toLowerCase().includes('premium') ||
-                  planName.toLowerCase().includes('investor')
-                ) {
-                  emailType = 'premium_investor';
-                } else if (planName.toLowerCase().includes('wealth')) {
-                  emailType = 'wealth_membership';
+                  // Membresía Exclusiva
+                  emailType =
+                    billingCycle === 'annual' || billingCycle === 'year'
+                      ? 'membership_annual'
+                      : 'membership_exclusive_monthly';
+                } else if (planName.toLowerCase().includes('academia')) {
+                  emailType = 'academia_bsb';
                 }
 
                 const emailRes = await fetch(`${supabaseUrl}/functions/v1/resend-email-secure`, {
@@ -457,17 +456,19 @@ serve(async (req: Request) => {
 
           console.log('📧 Enviando email de confirmación de membresía a:', clientEmail);
 
-          // Determinar el tipo de email según el plan
-          let emailType = 'academia_bsb'; // por defecto
-          if (planName.toLowerCase().includes('trader') || planName.toLowerCase().includes('pro')) {
-            emailType = 'trader_plan_pro';
-          } else if (
-            planName.toLowerCase().includes('premium') ||
-            planName.toLowerCase().includes('investor')
+          // Determinar el tipo de email según el plan y ciclo de facturación
+          let emailType = 'academia_bsb'; // por defecto para academia
+          if (
+            planName.toLowerCase().includes('exclusiva') ||
+            planName.toLowerCase().includes('membresía bsb')
           ) {
-            emailType = 'premium_investor';
-          } else if (planName.toLowerCase().includes('wealth')) {
-            emailType = 'wealth_membership';
+            // Membresía Exclusiva
+            emailType =
+              billingCycle === 'annual' || billingCycle === 'year'
+                ? 'membership_annual'
+                : 'membership_exclusive_monthly';
+          } else if (planName.toLowerCase().includes('academia')) {
+            emailType = 'academia_bsb';
           }
 
           const emailRes = await fetch(`${supabaseUrl}/functions/v1/resend-email-secure`, {

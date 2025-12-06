@@ -100,7 +100,7 @@ supabase functions logs stripe-webhook
 
 - [ ] Modo "subscription" (recurrente)
 - [ ] Suscripción creada en Stripe
-- [ ] Email de confirmación
+- [ ] Email `membership_exclusive_monthly` ✉️
 - [ ] Registro en `user_subscriptions` con `stripe_subscription_id`
 
 ---
@@ -124,15 +124,40 @@ supabase functions logs stripe-webhook
 
 ## 📧 Tipos de Email que se Envían
 
-| Evento             | Tipo de Email                     | Destinatario       |
-| ------------------ | --------------------------------- | ------------------ |
-| Consultoría        | `consultation_confirmation`       | Cliente            |
-| Consultoría        | `admin_consultation_notification` | info@bsbcapital.io |
-| Paquete Onboarding | `package_crypto_onboarding`       | Cliente            |
-| Paquete Premium    | `package_investor_premium`        | Cliente            |
-| Paquete Tesorería  | `package_treasury_crypto`         | Cliente            |
-| Membresía Anual    | `membership_annual`               | Cliente            |
-| Academia           | `academia_bsb`                    | Cliente            |
+### Consultorías (Cliente)
+
+| Tipo de Consultoría  | Template Key                          |
+| -------------------- | ------------------------------------- |
+| Optimización Cartera | `consultation_portfolio_optimization` |
+| Crypto & Web3        | `consultation_crypto_web3`            |
+| Onboarding Crypto    | `consultation_crypto_onboarding`      |
+| Tesorería Empresas   | `consultation_treasury_crypto`        |
+| Genérico (fallback)  | `consultation_confirmation`           |
+
+### Consultorías (Admin)
+
+| Tipo de Consultoría  | Template Key                            |
+| -------------------- | --------------------------------------- |
+| Optimización Cartera | `admin_consultation_financial_planning` |
+| Onboarding Crypto    | `admin_consultation_onboarding_crypto`  |
+| Tesorería Empresas   | `admin_consultation_crypto_advanced`    |
+| Genérico (fallback)  | `admin_consultation_notification`       |
+
+### Paquetes BSB
+
+| Paquete           | Template Key                |
+| ----------------- | --------------------------- |
+| Onboarding Crypto | `package_crypto_onboarding` |
+| Inversor Premium  | `package_investor_premium`  |
+| Tesorería Crypto  | `package_treasury_crypto`   |
+
+### Membresías
+
+| Plan                        | Template Key                   |
+| --------------------------- | ------------------------------ |
+| Membresía Exclusiva Mensual | `membership_exclusive_monthly` |
+| Membresía Exclusiva Anual   | `membership_annual`            |
+| Academia BSB                | `academia_bsb`                 |
 
 ---
 

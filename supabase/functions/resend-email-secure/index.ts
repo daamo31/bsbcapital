@@ -1,25 +1,25 @@
-import { serve } from "https://deno.land/std@0.210.0/http/server.ts";
-import "https://deno.land/std@0.210.0/dotenv/load.ts";
+import { serve } from 'https://deno.land/std@0.210.0/http/server.ts';
+import 'https://deno.land/std@0.210.0/dotenv/load.ts';
 
 // 🎨 CONFIGURACIÓN DE LOGOS
 // URL base determinada automáticamente
-const BASE_URL = "https://bsbcapital.io";
+const BASE_URL = 'https://bsbcapital.io';
 
 const LOGO_URLS = {
   // Logo dorado para emails premium
   gold: `${BASE_URL}/images/gold_logo.jpeg`,
-  // Logo negro para emails estándar  
+  // Logo negro para emails estándar
   black: `${BASE_URL}/images/black_logo.jpeg`,
   // Logo blanco para fondos oscuros
   white: `${BASE_URL}/images/white_logo.jpeg`,
   // Logo por defecto (usaremos el dorado)
-  default: `${BASE_URL}/images/gold_logo.jpeg`
+  default: `${BASE_URL}/images/gold_logo.jpeg`,
 };
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-function-secret",
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers':
+    'authorization, x-client-info, apikey, content-type, x-function-secret',
 };
 
 interface EmailRequest {
@@ -35,7 +35,7 @@ interface EmailRequest {
 function formatFormDataForAdmin(formDataJson: string | object): string {
   try {
     let data: any;
-    
+
     if (typeof formDataJson === 'string') {
       data = JSON.parse(formDataJson);
     } else {
@@ -62,7 +62,7 @@ function formatFormDataForAdmin(formDataJson: string | object): string {
     if (data.client_responses && typeof data.client_responses === 'object') {
       formattedHtml += `<div style="margin-bottom: 15px; padding: 10px; background: #f3e5f5; border-radius: 5px;">
         <strong style="color: #7b1fa2;">👤 RESPUESTAS DEL CLIENTE</strong><br><br>`;
-      
+
       for (const [key, value] of Object.entries(data.client_responses)) {
         if (value && value !== '' && value !== 'No especificado') {
           formattedHtml += `<strong>${key}:</strong> ${value}<br>`;
@@ -74,22 +74,39 @@ function formatFormDataForAdmin(formDataJson: string | object): string {
     // Datos técnicos del formulario (solo campos relevantes)
     if (data.form_data && typeof data.form_data === 'object') {
       const relevantFields = [
-        'investment_experience', 'portfolio_size', 'consultation_goals', 
-        'current_investments', 'specific_questions', 'preferred_communication',
-        'telephone', 'country', 'age_range', 'risk_tolerance', 'time_horizon'
+        'investment_experience',
+        'portfolio_size',
+        'consultation_goals',
+        'current_investments',
+        'specific_questions',
+        'preferred_communication',
+        'telephone',
+        'country',
+        'age_range',
+        'risk_tolerance',
+        'time_horizon',
       ];
 
-      const hasRelevantData = relevantFields.some(field => 
-        data.form_data[field] && data.form_data[field] !== '' && data.form_data[field] !== 'No especificado'
+      const hasRelevantData = relevantFields.some(
+        (field) =>
+          data.form_data[field] &&
+          data.form_data[field] !== '' &&
+          data.form_data[field] !== 'No especificado'
       );
 
       if (hasRelevantData) {
         formattedHtml += `<div style="margin-bottom: 15px; padding: 10px; background: #fff3e0; border-radius: 5px;">
           <strong style="color: #ef6c00;">🔧 DATOS TÉCNICOS ADICIONALES</strong><br><br>`;
-        
-        relevantFields.forEach(field => {
-          if (data.form_data[field] && data.form_data[field] !== '' && data.form_data[field] !== 'No especificado') {
-            const friendlyName = field.replace(/_/g, ' ').replace(/\b\w/g, function(l) { return l.toUpperCase(); });
+
+        relevantFields.forEach((field) => {
+          if (
+            data.form_data[field] &&
+            data.form_data[field] !== '' &&
+            data.form_data[field] !== 'No especificado'
+          ) {
+            const friendlyName = field.replace(/_/g, ' ').replace(/\b\w/g, function (l) {
+              return l.toUpperCase();
+            });
             formattedHtml += `<strong>${friendlyName}:</strong> ${data.form_data[field]}<br>`;
           }
         });
@@ -98,7 +115,6 @@ function formatFormDataForAdmin(formDataJson: string | object): string {
     }
 
     return formattedHtml || '<em>No hay datos adicionales disponibles</em>';
-    
   } catch (error: any) {
     console.error('Error formateando datos del formulario:', error);
     return `<em>Error al formatear los datos: ${error?.message || 'Error desconocido'}</em>`;
@@ -110,7 +126,7 @@ const getEmailTemplates = () => {
   return {
     // Template para BIENVENIDA (nuevos usuarios)
     welcome: {
-      subject: "¡Bienvenido a BSB Capital! 🚀 Tu viaje hacia la libertad financiera comienza aquí",
+      subject: '¡Bienvenido a BSB Capital! 🚀 Tu viaje hacia la libertad financiera comienza aquí',
       html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -172,11 +188,11 @@ const getEmailTemplates = () => {
     </tr>
   </table>
 </body>
-</html>`
+</html>`,
     },
     // Templates para CONSULTORIAS - ACTUALIZADOS
     consultation_portfolio_optimization: {
-      subject: "Tu consultoría de Optimización de cartera en BSB Capital está confirmada 🗓",
+      subject: 'Tu consultoría de Optimización de cartera en BSB Capital está confirmada 🗓',
       html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -225,11 +241,11 @@ const getEmailTemplates = () => {
     </tr>
   </table>
 </body>
-</html>`
+</html>`,
     },
 
     consultation_crypto_web3: {
-      subject: "Tu consultoría de Crypto & Web3 ha sido confirmada 🗓",
+      subject: 'Tu consultoría de Crypto & Web3 ha sido confirmada 🗓',
       html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -274,11 +290,11 @@ const getEmailTemplates = () => {
     </tr>
   </table>
 </body>
-</html>`
+</html>`,
     },
 
     consultation_crypto_onboarding: {
-      subject: "Tu consultoría de Crypto & Web3 ha sido confirmada 🗓",
+      subject: 'Tu consultoría de Crypto & Web3 ha sido confirmada 🗓',
       html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -323,11 +339,11 @@ const getEmailTemplates = () => {
     </tr>
   </table>
 </body>
-</html>`
+</html>`,
     },
 
     consultation_treasury_crypto: {
-      subject: "Tu consultoría de Gestión de Tesorería Crypto para empresas ha sido confirmada 🗓",
+      subject: 'Tu consultoría de Gestión de Tesorería Crypto para empresas ha sido confirmada 🗓',
       html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -377,12 +393,12 @@ const getEmailTemplates = () => {
     </tr>
   </table>
 </body>
-</html>`
+</html>`,
     },
 
     // Templates para PAQUETES
     package_crypto_onboarding: {
-      subject: "Tu paquete Onboarding Crypto con BSB Capital está confirmado 🚀",
+      subject: 'Tu paquete Onboarding Crypto con BSB Capital está confirmado 🚀',
       html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -438,11 +454,11 @@ const getEmailTemplates = () => {
     </tr>
   </table>
 </body>
-</html>`
+</html>`,
     },
 
     package_treasury_crypto: {
-      subject: "Tu paquete Gestión de Tesorería Crypto para empresas está confirmado 🚀",
+      subject: 'Tu paquete Gestión de Tesorería Crypto para empresas está confirmado 🚀',
       html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -494,11 +510,11 @@ const getEmailTemplates = () => {
     </tr>
   </table>
 </body>
-</html>`
+</html>`,
     },
 
     package_investor_premium: {
-      subject: "Tu paquete Inversor Premium de BSB Capital está confirmado 🚀",
+      subject: 'Tu paquete Inversor Premium de BSB Capital está confirmado 🚀',
       html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -552,12 +568,12 @@ const getEmailTemplates = () => {
     </tr>
   </table>
 </body>
-</html>`
+</html>`,
     },
 
     // Templates para MEMBRESÍAS
     membership_annual: {
-      subject: "Tu Membresía Anual BSB Capital ya está activa ✅",
+      subject: 'Tu Membresía Anual BSB Capital ya está activa ✅',
       html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -610,12 +626,12 @@ const getEmailTemplates = () => {
     </tr>
   </table>
 </body>
-</html>`
+</html>`,
     },
 
     // Templates para CONSULTORIAS - LEGACY (mantenidos para compatibilidad)
     consultation_financial: {
-      subject: "Tu consultoría en BSB Capital está confirmada 🗓️",
+      subject: 'Tu consultoría en BSB Capital está confirmada 🗓️',
       html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -664,10 +680,10 @@ const getEmailTemplates = () => {
     </tr>
   </table>
 </body>
-</html>`
+</html>`,
     },
     consultation_crypto_advanced: {
-      subject: "Tu consultoría avanzada de Crypto & Web3 ha sido confirmada 🚀",
+      subject: 'Tu consultoría avanzada de Crypto & Web3 ha sido confirmada 🚀',
       html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -713,10 +729,10 @@ const getEmailTemplates = () => {
     </tr>
   </table>
 </body>
-</html>`
+</html>`,
     },
     consultation_confirmation: {
-      subject: "Confirmación de tu consulta en BSB Capital",
+      subject: 'Confirmación de tu consulta en BSB Capital',
       html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -760,10 +776,10 @@ const getEmailTemplates = () => {
     </tr>
   </table>
 </body>
-</html>`
+</html>`,
     },
     onboarding_crypto: {
-      subject: "Bienvenido al mundo cripto con BSB Capital 🌍",
+      subject: 'Bienvenido al mundo cripto con BSB Capital 🌍',
       html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -809,11 +825,11 @@ const getEmailTemplates = () => {
     </tr>
   </table>
 </body>
-</html>`
+</html>`,
     },
     // Template para NOTIFICACIONES A ADMINISTRADORES - OPTIMIZACIÓN DE CARTERA
     admin_consultation_financial_planning: {
-      subject: "🔔 Nueva consultoría de Optimización de Cartera - BSB Capital",
+      subject: '🔔 Nueva consultoría de Optimización de Cartera - BSB Capital',
       html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -901,11 +917,11 @@ const getEmailTemplates = () => {
     </tr>
   </table>
 </body>
-</html>`
+</html>`,
     },
     // Template para NOTIFICACIONES A ADMINISTRADORES - ONBOARDING CRIPTO
     admin_consultation_onboarding_crypto: {
-      subject: "🔔 Nueva consultoría de Onboarding Cripto - BSB Capital",
+      subject: '🔔 Nueva consultoría de Onboarding Cripto - BSB Capital',
       html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -993,11 +1009,11 @@ const getEmailTemplates = () => {
     </tr>
   </table>
 </body>
-</html>`
+</html>`,
     },
     // Template para NOTIFICACIONES A ADMINISTRADORES - TESORERÍA EMPRESARIAL
     admin_consultation_crypto_advanced: {
-      subject: "🔔 Nueva consultoría de Tesorería Cripto Empresarial - BSB Capital",
+      subject: '🔔 Nueva consultoría de Tesorería Cripto Empresarial - BSB Capital',
       html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -1085,11 +1101,11 @@ const getEmailTemplates = () => {
     </tr>
   </table>
 </body>
-</html>`
+</html>`,
     },
     // Template para NOTIFICACIONES A ADMINISTRADORES - GENÉRICO (fallback)
     admin_consultation_notification: {
-      subject: "🔔 Nueva consultoría reservada - BSB Capital",
+      subject: '🔔 Nueva consultoría reservada - BSB Capital',
       html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -1188,11 +1204,11 @@ const getEmailTemplates = () => {
     </tr>
   </table>
 </body>
-</html>`
+</html>`,
     },
     // Templates para MEMBRESÍAS
     academia_bsb: {
-      subject: "Tu acceso a la Academia BSB está activo 🎓",
+      subject: 'Tu acceso a la Academia BSB está activo 🎓',
       html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -1244,16 +1260,17 @@ const getEmailTemplates = () => {
     </tr>
   </table>
 </body>
-</html>`
+</html>`,
     },
-    trader_plan_pro: {
-      subject: "Tu membresía Trader Plan Pro está activa 📈",
+    // Template para MEMBRESÍA EXCLUSIVA MENSUAL
+    membership_exclusive_monthly: {
+      subject: 'Tu Membresía Exclusiva BSB Capital está activa ✅',
       html: `<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trader Plan Pro Activo</title>
+  <title>Membresía Exclusiva Mensual Activa</title>
 </head>
 <body style="margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; background-color:#f5f5f5;">
   <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px; background-color:#ffffff;">
@@ -1268,23 +1285,36 @@ const getEmailTemplates = () => {
       </td>
     </tr>
     <tr>
-      <td align="center" style="padding:10px 30px;">
-        <h2 style="color:#0b1f14; font-weight:600; margin:0;">¡Tu membresía Trader Plan Pro está activa! 📈</h2>
-        <p style="font-size:16px; color:#37493f; line-height:1.6; margin-top:18px; margin-bottom:28px;">
-          Hola [Nombre],<br><br>
-          Bienvenido a Trader Plan Pro.<br>
-          Tu membresía ya está activa y con ella desbloqueas acceso a las herramientas y conocimientos que te ayudarán a llevar tu trading al siguiente nivel.<br><br>
-          A partir de ahora podrás disfrutar de:<br><br>
-          ● Acceso anticipado a BSB Maker, tu copiloto de trading con IA<br>
-          ● Acceso completo a la formación (píldoras + masterclass)<br>
-          ● 20% de descuento en consultorías personalizadas<br>
-          ● 1 consultoría de 30 minutos incluida en tu plan anual<br><br>
-          ✅ <a href="https://bsbcapital.io/bsb-maker" style="color:#C5A019; text-decoration:none;">Explorar BSB Maker</a><br>
-          ✅ <a href="https://bsbcapital.io/academia" style="color:#C5A019; text-decoration:none;">Acceder a la formación</a><br><br>
-          Prepárate para optimizar tus operaciones y entender los mercados con otra perspectiva.<br><br>
-          Gracias por confiar en BSB Capital.<br>
-          El equipo de BSB Capital
-        </p>
+      <td style="padding:20px 30px 40px;">
+        <div style="font-size:16px; color:#37493f; line-height:1.6;">
+          <p>¡Enhorabuena!</p>
+          
+          <p>Tu Membresía Exclusiva BSB Capital ya está activa. A partir de ahora formas parte de nuestra comunidad de inversores comprometidos con su crecimiento financiero.</p>
+          
+          <p><strong>Con tu membresía mensual tienes acceso a:</strong></p>
+          <ul style="margin: 16px 0; padding-left: 20px;">
+            <li>BSB Academy, nuestro entorno formativo especializado en el nuevo sistema financiero.</li>
+            <li>20% de descuento en BSB Consulting, para nuestros servicios de análisis, planificación y acompañamiento financiero.</li>
+            <li>Acceso prioritario a BSB Maker, nuestra herramienta de IA que cambiará las reglas del juego de la inversión.</li>
+            <li>Información prioritaria sobre eventos y encuentros exclusivos.</li>
+          </ul>
+          
+          <p>Tu membresía se renovará automáticamente cada mes. Puedes cancelar en cualquier momento desde tu área de usuario.</p>
+          
+          <p style="text-align:center; margin:25px 0;">
+            <a href="https://bsbcapital.io/academia" 
+               style="background:#C5A019; color:white; padding:12px 24px; text-decoration:none; border-radius:6px; font-weight:600; display:inline-block;">
+              Acceder a la Academia
+            </a>
+          </p>
+          
+          <p>Si tienes cualquier duda, puedes contactar con nosotros en info@bsbcapital.io</p>
+          
+          <p>Gracias por confiar en BSB Capital.</p>
+          
+          <p>Un saludo,</p>
+          <p><strong>Juan Salgado</strong><br>CEO de BSB Capital</p>
+        </div>
       </td>
     </tr>
     <tr>
@@ -1293,173 +1323,61 @@ const getEmailTemplates = () => {
     <tr>
       <td align="center" style="padding:25px 20px 35px 20px; font-size:12px; color:#6a756f; line-height:1.6;">
         <p style="margin:0;">© BSB Capital · <a href="mailto:info@bsbcapital.io" style="color:#C5A019; text-decoration:none;">info@bsbcapital.io</a></p>
-        <p style="margin:5px 0 0 0;">Este es un correo automático enviado desde no-reply@bsbcapital.io</p>
-        <p style="margin:0;">No respondas a este mensaje. Para consultas, contacta: info@bsbcapital.io</p>
+        <p style="margin:5px 0 0 0;">Este es un correo automático de confirmación.</p>
+        <p style="margin:0;">No respondas a este mensaje.</p>
       </td>
     </tr>
   </table>
 </body>
-</html>`
+</html>`,
     },
-    premium_investor: {
-      subject: "Tu membresía Premium Investor está activa 💎",
-      html: `<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Premium Investor Activo</title>
-</head>
-<body style="margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; background-color:#f5f5f5;">
-  <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px; background-color:#ffffff;">
-    <tr>
-      <td align="center" style="padding:40px 20px 20px;">
-        <img
-          src="${LOGO_URLS.default}"
-          alt="BSB Capital"
-          width="110"
-          style="display:block; margin:auto;"
-        />
-      </td>
-    </tr>
-    <tr>
-      <td align="center" style="padding:10px 30px;">
-        <h2 style="color:#0b1f14; font-weight:600; margin:0;">¡Tu membresía Premium Investor está activa! 💎</h2>
-        <p style="font-size:16px; color:#37493f; line-height:1.6; margin-top:18px; margin-bottom:28px;">
-          Hola [Nombre],<br><br>
-          Tu suscripción a Premium Investor está confirmada.<br>
-          A partir de hoy formas parte de una comunidad exclusiva de inversores que buscan claridad, estrategia y crecimiento sostenible.<br><br>
-          Con tu membresía tienes acceso a:<br><br>
-          ● Comunidad privada de inversores BSB<br>
-          ● Acceso completo a la formación avanzada (cursos temáticos + masterclass)<br>
-          ● 20% de descuento en consultorías<br>
-          ● 1 consultoría personalizada de 30 minutos incluida en tu plan anual<br><br>
-          ✅ <a href="https://bsbcapital.io/comunidad" style="color:#C5A019; text-decoration:none;">Acceder a la comunidad</a><br>
-          ✅ <a href="https://bsbcapital.io/consultoria" style="color:#C5A019; text-decoration:none;">Reservar consultoría</a><br><br>
-          Explora, aprende y crece junto a nosotros.<br>
-          El equipo de BSB Capital está contigo en cada paso.
-        </p>
-      </td>
-    </tr>
-    <tr>
-      <td style="padding-top:20px; border-bottom:1px solid #e6ece8;"></td>
-    </tr>
-    <tr>
-      <td align="center" style="padding:25px 20px 35px 20px; font-size:12px; color:#6a756f; line-height:1.6;">
-        <p style="margin:0;">© BSB Capital · <a href="mailto:info@bsbcapital.io" style="color:#C5A019; text-decoration:none;">info@bsbcapital.io</a></p>
-        <p style="margin:5px 0 0 0;">Este es un correo automático enviado desde no-reply@bsbcapital.io</p>
-        <p style="margin:0;">No respondas a este mensaje. Para consultas, contacta: info@bsbcapital.io</p>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>`
-    },
-    wealth_membership: {
-      subject: "Bienvenido a Wealth Membership — Tu gestión patrimonial personalizada ya está activa 🏛️",
-      html: `<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wealth Membership Activo</title>
-</head>
-<body style="margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; background-color:#f5f5f5;">
-  <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px; background-color:#ffffff;">
-    <tr>
-      <td align="center" style="padding:40px 20px 20px;">
-        <img
-          src="${LOGO_URLS.default}"
-          alt="BSB Capital"
-          width="110"
-          style="display:block; margin:auto;"
-        />
-      </td>
-    </tr>
-    <tr>
-      <td align="center" style="padding:10px 30px;">
-        <h2 style="color:#0b1f14; font-weight:600; margin:0;">¡Bienvenido a Wealth Membership! 🏛️</h2>
-        <p style="font-size:16px; color:#37493f; line-height:1.6; margin-top:18px; margin-bottom:28px;">
-          Hola [Nombre],<br><br>
-          Gracias por confiar en BSB Capital para acompañarte en la gestión de tu patrimonio.<br>
-          Tu membresía Wealth Membership ha sido activada con éxito.<br><br>
-          A partir de ahora contarás con un acompañamiento exclusivo y continuo que incluye:<br><br>
-          ● 6 consultorías personalizadas de 1h/año (valoradas en 1.800 €)<br>
-          ● Revisión completa de cartera semestral<br>
-          ● Plan estratégico anual con propuestas de optimización<br>
-          ● Acceso a un canal privado prioritario y comunidad élite con análisis exclusivos y oportunidades de networking<br><br>
-          Este plan está diseñado para ofrecerte claridad, continuidad y control sobre tu estrategia patrimonial, sin ceder la gestión.<br><br>
-          ✅ <a href="https://bsbcapital.io/consultoria" style="color:#C5A019; text-decoration:none;">Reservar primera consultoría</a><br><br>
-          Tu consultor asignado se pondrá en contacto contigo en las próximas 24 h para programar la primera sesión.<br><br>
-          El equipo de BSB Capital
-        </p>
-      </td>
-    </tr>
-    <tr>
-      <td style="padding-top:20px; border-bottom:1px solid #e6ece8;"></td>
-    </tr>
-    <tr>
-      <td align="center" style="padding:25px 20px 35px 20px; font-size:12px; color:#6a756f; line-height:1.6;">
-        <p style="margin:0;">© BSB Capital · <a href="mailto:info@bsbcapital.io" style="color:#C5A019; text-decoration:none;">info@bsbcapital.io</a></p>
-        <p style="margin:5px 0 0 0;">Este es un correo automático enviado desde no-reply@bsbcapital.io</p>
-        <p style="margin:0;">No respondas a este mensaje. Para consultas, contacta: info@bsbcapital.io</p>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>`
-    }
   };
 };
 
 serve(async (req: Request) => {
-  if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: corsHeaders });
   }
 
-  if (req.method !== "POST") {
-    return new Response(
-      JSON.stringify({ error: "Method not allowed. Use POST." }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 405,
-      },
-    );
+  if (req.method !== 'POST') {
+    return new Response(JSON.stringify({ error: 'Method not allowed. Use POST.' }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 405,
+    });
   }
 
   try {
     const { type, to, subject, html, data, email } = (await req.json()) as EmailRequest;
 
     // 🔐 Variables de entorno
-    const resendApiKey = Deno.env.get("RESEND_API_KEY");
-    const defaultFrom =
-      Deno.env.get("DEFAULT_FROM") || "BSB Capital <no-reply@bsbcapital.io>";
-    const adminEmail = Deno.env.get("ADMIN_EMAIL") || "info@bsbcapital.io";
+    const resendApiKey = Deno.env.get('RESEND_API_KEY');
+    const defaultFrom = Deno.env.get('DEFAULT_FROM') || 'BSB Capital <no-reply@bsbcapital.io>';
+    const adminEmail = Deno.env.get('ADMIN_EMAIL') || 'info@bsbcapital.io';
 
     console.log(`🔧 Config - Admin Email: ${adminEmail}, Default From: ${defaultFrom}`);
 
     if (!resendApiKey) {
-      throw new Error("Missing RESEND_API_KEY in environment");
+      throw new Error('Missing RESEND_API_KEY in environment');
     }
 
     // 🛠️ FUNCIONES ESPECIALES DE GESTIÓN DE LISTA DE SUPRESIÓN
-    
+
     // Obtener lista de emails suprimidos
-    if (type === "get_suppressed_emails") {
-      console.log("📋 Obteniendo lista de emails suprimidos...");
-      
-      const suppressionResponse = await fetch("https://api.resend.com/suppressions", {
-        method: "GET",
+    if (type === 'get_suppressed_emails') {
+      console.log('📋 Obteniendo lista de emails suprimidos...');
+
+      const suppressionResponse = await fetch('https://api.resend.com/suppressions', {
+        method: 'GET',
         headers: {
           Authorization: `Bearer ${resendApiKey}`,
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       });
 
       const suppressionData = await suppressionResponse.json();
 
       if (!suppressionResponse.ok) {
-        throw new Error(suppressionData.message || "Error fetching suppression list");
+        throw new Error(suppressionData.message || 'Error fetching suppression list');
       }
 
       return new Response(
@@ -1469,14 +1387,14 @@ serve(async (req: Request) => {
           count: suppressionData.data?.length || 0,
         }),
         {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           status: 200,
-        },
+        }
       );
     }
 
     // Verificar estado de un email específico
-    if (type === "check_email_status") {
+    if (type === 'check_email_status') {
       if (!email) {
         throw new Error("Missing 'email' field for status check");
       }
@@ -1484,35 +1402,33 @@ serve(async (req: Request) => {
       console.log(`🔍 Verificando estado del email: ${email}`);
 
       // Obtener lista de supresión
-      const suppressionResponse = await fetch("https://api.resend.com/suppressions", {
-        method: "GET", 
+      const suppressionResponse = await fetch('https://api.resend.com/suppressions', {
+        method: 'GET',
         headers: {
           Authorization: `Bearer ${resendApiKey}`,
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       });
 
       const suppressionData = await suppressionResponse.json();
-      
+
       if (suppressionResponse.ok && suppressionData.data) {
-        const suppressedEmail = suppressionData.data.find(
-          (item: any) => item.email === email
-        );
+        const suppressedEmail = suppressionData.data.find((item: any) => item.email === email);
 
         if (suppressedEmail) {
           return new Response(
             JSON.stringify({
               success: true,
-              status: "suppressed",
+              status: 'suppressed',
               isSuppressed: true,
-              reason: suppressedEmail.reason || "Account suppression list",
+              reason: suppressedEmail.reason || 'Account suppression list',
               createdAt: suppressedEmail.created_at,
-              details: "Este email está en la lista de supresión de Resend"
+              details: 'Este email está en la lista de supresión de Resend',
             }),
             {
-              headers: { ...corsHeaders, "Content-Type": "application/json" },
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
               status: 200,
-            },
+            }
           );
         }
       }
@@ -1521,37 +1437,40 @@ serve(async (req: Request) => {
       return new Response(
         JSON.stringify({
           success: true,
-          status: "active",
+          status: 'active',
           isSuppressed: false,
-          reason: "Email activo",
-          details: "Este email no está en ninguna lista de supresión"
+          reason: 'Email activo',
+          details: 'Este email no está en ninguna lista de supresión',
         }),
         {
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           status: 200,
-        },
+        }
       );
     }
 
     // Remover email de la lista de supresión
-    if (type === "remove_from_suppression") {
+    if (type === 'remove_from_suppression') {
       if (!email) {
         throw new Error("Missing 'email' field for suppression removal");
       }
 
       console.log(`🗑️ Removiendo email de lista de supresión: ${email}`);
 
-      const removalResponse = await fetch(`https://api.resend.com/suppressions/${encodeURIComponent(email)}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${resendApiKey}`,
-          "Content-Type": "application/json",
-        },
-      });
+      const removalResponse = await fetch(
+        `https://api.resend.com/suppressions/${encodeURIComponent(email)}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${resendApiKey}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
 
       if (removalResponse.status === 204 || removalResponse.status === 200) {
         console.log(`✅ Email ${email} removido exitosamente de la lista de supresión`);
-        
+
         return new Response(
           JSON.stringify({
             success: true,
@@ -1559,9 +1478,9 @@ serve(async (req: Request) => {
             email,
           }),
           {
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
             status: 200,
-          },
+          }
         );
       } else {
         const errorData = await removalResponse.json();
@@ -1583,7 +1502,7 @@ serve(async (req: Request) => {
 
     // 📨 Lógica especial: notificación a administradores
     let recipient;
-    if (type === "admin_consultation_notification") {
+    if (type === 'admin_consultation_notification') {
       // Forzar siempre el email correcto para administradores
       recipient = adminEmail.includes('.com') ? adminEmail.replace('.com', '.io') : adminEmail;
       console.log(`🎯 Email de admin detectado - Enviando a: ${recipient}`);
@@ -1598,15 +1517,15 @@ serve(async (req: Request) => {
 
     console.log(`📧 Enviando email de tipo '${type}' a: ${recipient}`);
     console.log(`🔧 Variables de entorno:`, {
-      adminEmailOriginal: Deno.env.get("ADMIN_EMAIL"),
+      adminEmailOriginal: Deno.env.get('ADMIN_EMAIL'),
       adminEmailFinal: adminEmail,
-      defaultFromOriginal: Deno.env.get("DEFAULT_FROM"),
+      defaultFromOriginal: Deno.env.get('DEFAULT_FROM'),
       defaultFromFinal: defaultFrom,
       originalTo: to,
       finalRecipient: recipient,
-      isAdminNotification: type === "admin_consultation_notification"
+      isAdminNotification: type === 'admin_consultation_notification',
     });
-    
+
     // ⚠️ Validación especial para detectar .com
     if (recipient.includes('.com')) {
       console.warn(`⚠️ ADVERTENCIA: Email con dominio .com detectado: ${recipient}`);
@@ -1616,47 +1535,62 @@ serve(async (req: Request) => {
     // 🎨 Obtener template HTML si existe para este tipo
     const templates = getEmailTemplates();
     const template = templates[type as keyof typeof templates];
-    
+
     let htmlContent: string;
     let emailSubject: string;
-    
+
     if (template) {
       // Usar template profesional y reemplazar placeholders
       htmlContent = template.html
-        .replace(/\[Nombre\]/g, data?.name || data?.clientName || "Usuario")
-        .replace(/\{clientName\}/g, data?.clientName || data?.name || "No especificado")
-        .replace(/\{clientEmail\}/g, data?.clientEmail || data?.email || "No especificado") 
-        .replace(/\{phone\}/g, data?.phone || "No especificado")
-        .replace(/\{consultationType\}/g, data?.consultationType || data?.type || "No especificado")
-        .replace(/\{consultationDate\}/g, data?.consultationDate || "Pendiente de programar")
-        .replace(/\{preferredDate\}/g, data?.preferredDate || data?.date || "Por programar")
-        .replace(/\{preferredTime\}/g, data?.preferredTime || data?.time || "Por confirmar")
-        .replace(/\{duration\}/g, data?.duration || "60 minutos (estándar)")
-        .replace(/\{price\}/g, data?.price || data?.amount || "No especificado")
-        .replace(/\{paymentId\}/g, data?.paymentId || data?.stripePaymentId || "Pendiente")
-        .replace(/\{consultationId\}/g, data?.consultationId || data?.id || "Generando...")
-        .replace(/\{investmentExperience\}/g, data?.investmentExperience || "No especificado")
-        .replace(/\{portfolioSize\}/g, data?.portfolioSize || "No especificado")
-        .replace(/\{riskTolerance\}/g, data?.riskTolerance || "No especificado")
-        .replace(/\{consultationGoals\}/g, data?.consultationGoals || data?.goals || "📝 Por definir durante la consulta")
-        .replace(/\{currentInvestments\}/g, data?.currentInvestments || "📊 Por revisar en la consulta")
-        .replace(/\{specificQuestions\}/g, data?.specificQuestions || data?.questions || "❓ Por definir durante la consulta")
-        .replace(/\{preferredCommunication\}/g, data?.preferredCommunication || "📞 Videollamada (recomendado)")
-        .replace(/\{availability\}/g, data?.availability || "⏰ Por coordinar")
+        .replace(/\[Nombre\]/g, data?.name || data?.clientName || 'Usuario')
+        .replace(/\{clientName\}/g, data?.clientName || data?.name || 'No especificado')
+        .replace(/\{clientEmail\}/g, data?.clientEmail || data?.email || 'No especificado')
+        .replace(/\{phone\}/g, data?.phone || 'No especificado')
+        .replace(/\{consultationType\}/g, data?.consultationType || data?.type || 'No especificado')
+        .replace(/\{consultationDate\}/g, data?.consultationDate || 'Pendiente de programar')
+        .replace(/\{preferredDate\}/g, data?.preferredDate || data?.date || 'Por programar')
+        .replace(/\{preferredTime\}/g, data?.preferredTime || data?.time || 'Por confirmar')
+        .replace(/\{duration\}/g, data?.duration || '60 minutos (estándar)')
+        .replace(/\{price\}/g, data?.price || data?.amount || 'No especificado')
+        .replace(/\{paymentId\}/g, data?.paymentId || data?.stripePaymentId || 'Pendiente')
+        .replace(/\{consultationId\}/g, data?.consultationId || data?.id || 'Generando...')
+        .replace(/\{investmentExperience\}/g, data?.investmentExperience || 'No especificado')
+        .replace(/\{portfolioSize\}/g, data?.portfolioSize || 'No especificado')
+        .replace(/\{riskTolerance\}/g, data?.riskTolerance || 'No especificado')
+        .replace(
+          /\{consultationGoals\}/g,
+          data?.consultationGoals || data?.goals || '📝 Por definir durante la consulta'
+        )
+        .replace(
+          /\{currentInvestments\}/g,
+          data?.currentInvestments || '📊 Por revisar en la consulta'
+        )
+        .replace(
+          /\{specificQuestions\}/g,
+          data?.specificQuestions || data?.questions || '❓ Por definir durante la consulta'
+        )
+        .replace(
+          /\{preferredCommunication\}/g,
+          data?.preferredCommunication || '📞 Videollamada (recomendado)'
+        )
+        .replace(/\{availability\}/g, data?.availability || '⏰ Por coordinar')
         .replace(/\{timestamp\}/g, data?.timestamp || new Date().toISOString())
-        .replace(/\{additionalInfo\}/g, data?.additionalInfo ? 
-          `💭 ${data.additionalInfo}` : "Sin comentarios adicionales")
-        .replace(/\{formDataJson\}/g, formatFormDataForAdmin(data?.formDataJson || "{}"))
-        .replace(/\{amount\}/g, data?.amount?.toString() || "0")
-        .replace(/\{currency\}/g, data?.currency || "EUR");
+        .replace(
+          /\{additionalInfo\}/g,
+          data?.additionalInfo ? `💭 ${data.additionalInfo}` : 'Sin comentarios adicionales'
+        )
+        .replace(/\{formDataJson\}/g, formatFormDataForAdmin(data?.formDataJson || '{}'))
+        .replace(/\{amount\}/g, data?.amount?.toString() || '0')
+        .replace(/\{currency\}/g, data?.currency || 'EUR');
       emailSubject = subject || template.subject;
-      console.log("✨ Usando template profesional para tipo:", type);
+      console.log('✨ Usando template profesional para tipo:', type);
     } else {
       // Fallback básico si no hay template específico
-      htmlContent = html || 
-        `<p>Hola ${data?.name || "usuario"},</p><p>Tu correo de tipo <b>${type}</b> ha sido procesado.</p>`;
+      htmlContent =
+        html ||
+        `<p>Hola ${data?.name || 'usuario'},</p><p>Tu correo de tipo <b>${type}</b> ha sido procesado.</p>`;
       emailSubject = subject || `Mensaje de BSB Capital (${type})`;
-      console.log("📄 Usando fallback básico para tipo:", type);
+      console.log('📄 Usando fallback básico para tipo:', type);
     }
 
     // 📦 Construcción del cuerpo de email
@@ -1667,15 +1601,15 @@ serve(async (req: Request) => {
       html: htmlContent,
     };
 
-    console.log("📨 Enviando correo con Resend...");
-    console.log("→ Tipo:", type);
-    console.log("→ Destinatario:", recipient);
+    console.log('📨 Enviando correo con Resend...');
+    console.log('→ Tipo:', type);
+    console.log('→ Destinatario:', recipient);
 
-    const resendResponse = await fetch("https://api.resend.com/emails", {
-      method: "POST",
+    const resendResponse = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
       headers: {
         Authorization: `Bearer ${resendApiKey}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(emailPayload),
     });
@@ -1683,11 +1617,11 @@ serve(async (req: Request) => {
     const result = await resendResponse.json();
 
     if (!resendResponse.ok) {
-      console.error("❌ Resend API error:", result);
-      throw new Error(result.message || "Unknown Resend API error");
+      console.error('❌ Resend API error:', result);
+      throw new Error(result.message || 'Unknown Resend API error');
     }
 
-    console.log("✅ Correo enviado correctamente:", result.id);
+    console.log('✅ Correo enviado correctamente:', result.id);
 
     return new Response(
       JSON.stringify({
@@ -1697,22 +1631,18 @@ serve(async (req: Request) => {
         type,
       }),
       {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 200,
-      },
+      }
     );
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Unknown internal error";
+    const message = error instanceof Error ? error.message : 'Unknown internal error';
 
-    console.error("❌ Error al enviar correo:", message);
+    console.error('❌ Error al enviar correo:', message);
 
-    return new Response(
-      JSON.stringify({ success: false, error: message }),
-      {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
-      },
-    );
+    return new Response(JSON.stringify({ success: false, error: message }), {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      status: 500,
+    });
   }
 });
