@@ -35,9 +35,7 @@ import emailService from '../../lib/emailService';
 import { useToast } from '@/components/ui/feedback/use-toast';
 
 // Usar la misma clave de Stripe que consultoría (producción)
-const stripePromise = loadStripe(
-  'pk_test_51Rne6NR8VbS7tC1p8b59ILfLQtnFPOnjRGPN1H25jWtltandbeI9JBZIUX9yrIXzlXZlSHQ9fVDWBtngPrD6fgyb00HATqNSOf'
-);
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 const CheckoutPage = () => {
   const [searchParams] = useSearchParams();

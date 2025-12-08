@@ -47,8 +47,7 @@ import {
 import { loadStripe } from '@stripe/stripe-js';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 
-const STRIPE_PUBLISHABLE_KEY =
-  'pk_test_51Rne6NR8VbS7tC1p8b59ILfLQtnFPOnjRGPN1H25jWtltandbeI9JBZIUX9yrIXzlXZlSHQ9fVDWBtngPrD6fgyb00HATqNSOf';
+const STRIPE_PUBLISHABLE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
 
 const availableTimeSlots = ['09:00', '10:00', '11:00', '12:00', '15:00', '16:00', '17:00'];
 
