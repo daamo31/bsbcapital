@@ -16,6 +16,25 @@ build/
 .env.production.local
 .env.production
 
+# Archivos con datos sensibles (keys, secrets, price IDs)
+docs/STRIPE_CONFIG_URGENTE.md
+docs/EMAIL_SECURE_CONFIG.md
+docs/DEPLOY_PRODUCCION.md
+docs/DEPLOYMENT_INSTRUCTIONS.md
+docs/SISTEMA_COMPLETO.md
+docs/RESEND_SETUP.md
+scripts/test-stripe-webhook-local.js
+scripts/test-payments.js
+
+# Migraciones SQL con datos de producción
+migrations/*.sql
+!migrations/.gitkeep
+
+# Archivos de configuración con credenciales
+config.local.*
+*secret*.json
+*credentials*.json
+
 # IDE files
 .vscode/
 .idea/
