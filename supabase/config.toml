@@ -35,3 +35,12 @@ verify_jwt = false
 
 [functions.rate-limit]
 verify_jwt = false
+
+[functions.create-stripe-checkout]
+verify_jwt = false
+
+[functions.stripe-webhook]
+verify_jwt = false
+
+[functions.resend-email-secure]
+verify_jwt = false

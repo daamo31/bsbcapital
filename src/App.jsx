@@ -32,6 +32,8 @@ import ModuloAcademia from '@/pages/academia/ModuloAcademia.jsx';
 import MembresiasDB from '@/pages/payments/MembresiasDB.jsx';
 import CompraExitosa from '@/pages/payments/CompraExitosa.jsx';
 import CheckoutPage from '@/pages/payments/CheckoutPage.jsx';
+import PaqueteConfirmado from '@/pages/payments/PaqueteConfirmado.jsx';
+import MembresiaConfirmada from '@/pages/payments/MembresiaConfirmada.jsx';
 
 // Dashboard
 import UserDashboard from '@/pages/dashboard/UserDashboard.jsx';
@@ -46,7 +48,6 @@ import HotmartSystemStatus from '@/components/admin/HotmartSystemStatus.jsx';
 import ConsultationFormDemo from '@/pages/ConsultationFormDemo.jsx';
 import ConsultationPostPayment from '@/pages/ConsultationPostPayment.jsx';
 import AdminDashboard from '@/pages/AdminDashboard.jsx';
-import ResponsiveTest from '@/pages/ResponsiveTest.jsx';
 
 // Components
 import ProtectedAdminRoute from '@/components/auth/ProtectedAdminRoute.jsx';
@@ -57,7 +58,6 @@ import SignUp from '@/pages/auth/SignUp';
 
 // Testing
 import TestPageSimple from '@/pages/testing/TestPageSimple';
-import TestSystemPage from '@/pages/TestSystemPage';
 import FormularioDemo from '@/pages/testing/FormularioDemo';
 import ContentAccessDemo from '@/components/academy/ContentAccessDemo';
 import HotmartAcademy from '@/pages/content/HotmartAcademy';
@@ -131,7 +131,6 @@ function App() {
             <Route path="/formacion" element={<Formacion />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
-            <Route path="/test" element={<TestSystemPage />} />
             <Route path="/demo-formularios" element={<FormularioDemo />} />
             <Route path="/test-simple" element={<TestPageSimple />} />
             <Route path="/demo-acceso" element={<ContentAccessDemo />} />
@@ -161,6 +160,8 @@ function App() {
             <Route path="/hotmart-status" element={<HotmartSystemStatus />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/compra-exitosa" element={<CompraExitosa />} />
+            <Route path="/academia/paquete-confirmado" element={<PaqueteConfirmado />} />
+            <Route path="/academia/membresia-confirmada" element={<MembresiaConfirmada />} />
 
             <Route
               path="/panel/accesos"
@@ -243,7 +244,6 @@ function App() {
             <Route path="/test/user-status" element={<TestNavigationPage />} />
             <Route path="/demo/consultation-form" element={<ConsultationFormDemo />} />
             <Route path="/test/tools" element={<ContentAccessDemo />} />
-            <Route path="/test/responsive" element={<ResponsiveTest />} />
 
             {oldAcademyRoutes.map((path) => (
               <Route key={path} path={path} element={<Navigate to="/formacion" replace />} />

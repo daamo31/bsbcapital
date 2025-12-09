@@ -47,16 +47,29 @@ const ServicesOverview = () => {
     const fetchUserServices = async () => {
       if (user) {
         setLoading(true);
+        // Cambiar de user_services a user_subscriptions ya que esa es la tabla correcta
         const { data, error } = await supabase
-          .from('user_services')
-          .select('service_name, status, expires_at')
+          .from('user_subscriptions')
+          .select('plan_id, status, current_period_end, metadata')
           .eq('user_id', user.id);
 
         if (error) {
           console.error('Error fetching user services:', error);
         } else {
+          // Mapear las suscripciones a servicios por nombre de plan
           const userServicesMap = new Map(
-            data.map((s) => [s.service_name, { status: s.status, expires_at: s.expires_at }])
+            data.map((s) => [
+              s.metadata?.plan_name || 'Servicio',
+              {
+                status:
+                  s.status === 'active'
+                    ? 'Activo'
+                    : s.status === 'pending'
+                      ? 'Pendiente'
+                      : 'No contratado',
+                expires_at: s.current_period_end,
+              },
+            ])
           );
 
           const mergedServices = allServices.map((s) => ({

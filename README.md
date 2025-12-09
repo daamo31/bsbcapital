@@ -680,6 +680,33 @@ localStorage.setItem('debug', 'app:*');
 - `/docs/GUIA_USUARIO.md` - Guía para usuarios finales
 - `/docs/RUTAS.md` - Documentación de rutas
 - `/docs/TESTING.md` - Guía de testing
+- `/docs/GUIA_TESTING_COMPLETA.md` - Testing exhaustivo del sistema
+- `/docs/STRIPE_TEST_PRICES_SETUP.md` - Configuración de precios de prueba (€1)
+- `/docs/IMPLEMENTACION_PRECIOS_TEST_COMPLETADA.md` - Resumen de implementación de testing
+
+### Testing de Pagos con Stripe
+
+Para probar el flujo completo de pagos sin costos significativos:
+
+1. **Validar configuración de Price IDs de prueba**:
+
+   ```bash
+   node scripts/validate-test-price-ids.js
+   ```
+
+2. **Ejecutar en modo desarrollo**:
+
+   ```bash
+   npm run dev
+   ```
+
+3. **Navegar a paquetes/membresías**:
+   - Ve a: `http://localhost:5173/academia/membresias-db`
+   - Los precios se mostrarán en €1 automáticamente (modo desarrollo)
+   - Completa un pago de prueba con tarjeta real (se cobrará €1)
+   - Verifica la confirmación y registro en base de datos
+
+📚 **Guía completa**: Ver [`docs/STRIPE_TEST_PRICES_SETUP.md`](docs/STRIPE_TEST_PRICES_SETUP.md) para instrucciones paso a paso de creación de productos en Stripe Dashboard.
 
 ### Contacto Técnico
 

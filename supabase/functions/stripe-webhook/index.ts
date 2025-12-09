@@ -94,6 +94,7 @@ serve(async (req: Request) => {
       const clientEmail = session.metadata?.client_email;
       const mode = session.mode;
       const accessType = session.metadata?.access_type;
+      const purchaseType = session.metadata?.purchase_type; // 'package', 'subscription', 'consultation'
 
       // Validación básica de metadatos
       if (!userId) {
@@ -104,8 +105,15 @@ serve(async (req: Request) => {
         });
       }
 
-      // 🎯 PRIORIDAD 1: MANEJAR PAGOS ÚNICOS (CONSULTAS) - Para mantener compatibilidad
-      if (mode === 'payment' || consultationId) {
+      console.log('🎯 Tipo de compra detectado:', {
+        mode,
+        accessType,
+        purchaseType,
+        hasConsultationId: !!consultationId,
+      });
+
+      // 🎯 PRIORIDAD 1: MANEJAR CONSULTAS (payment + consultation_id)
+      if (consultationId || purchaseType === 'consultation') {
         console.log('🔄 Procesando pago único (consulta)...');
 
         // Actualizar la consulta en Supabase solo si tenemos consultationId
@@ -196,9 +204,370 @@ serve(async (req: Request) => {
         });
       }
 
-      // 🎯 PRIORIDAD 2: MANEJAR SUSCRIPCIONES (MEMBRESÍAS) - Solo si no es consulta
-      if (mode === 'subscription' || accessType === 'membership') {
-        console.log('🔄 Procesando nueva suscripción/membresía...');
+      // 🎯 PRIORIDAD 2: MANEJAR MEMBRESÍAS ANUALES (payment sin consultation_id, access_type=membership)
+      if (
+        purchaseType === 'membership_annual' ||
+        (mode === 'payment' && !consultationId && accessType === 'membership')
+      ) {
+        console.log('📅 Procesando membresía anual (pago único)...');
+
+        // Mapeo entre priceId/productId de Stripe y plan_id en la tabla subscription_plans
+        const priceToPlanMap: Record<string, string> = {
+          // Membresía Exclusiva Anual
+          price_1SaXpNJmSk3VG9oifsW4ajZ2: '9e38bc9e-7f4f-424c-87fe-6b4e453301d7',
+          // Academia BSB Anual
+          price_1SDKgoJmSk3VG9oiamJj88De: 'b8f3c5e1-4a2d-4e9f-8c7b-1d5e6f7a8b9c',
+        };
+
+        // Obtener priceId de los line_items
+        let priceId = null;
+        try {
+          const sessionDetails = await fetch(
+            `https://api.stripe.com/v1/checkout/sessions/${session.id}?expand[]=line_items`,
+            {
+              headers: { Authorization: `Bearer ${stripeSecretKey}` },
+            }
+          );
+          const sessionData = await sessionDetails.json();
+          priceId = sessionData.line_items?.data?.[0]?.price?.id;
+          console.log('💰 Price ID de membresía anual:', priceId);
+        } catch (err) {
+          console.error('❌ Error obteniendo detalles de sesión:', err);
+        }
+
+        const planId = priceId ? priceToPlanMap[priceId] : null;
+
+        if (!planId) {
+          console.warn('⚠️ No se pudo mapear priceId a plan_id para membresía anual:', priceId);
+        }
+
+        // Crear registro en user_subscriptions
+        const membershipPayload = {
+          user_id: userId,
+          plan_id: planId || null,
+          stripe_customer_id: session.customer,
+          status: 'active',
+          started_at: new Date().toISOString(),
+          current_period_start: new Date().toISOString(),
+          // Para membresías anuales, el período termina en 1 año
+          current_period_end: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+          auto_renew: false, // Membresías anuales no se renuevan automáticamente (requieren renovación manual)
+          cancel_at_period_end: false,
+          metadata: {
+            client_name: session.metadata?.client_name,
+            client_email: session.metadata?.client_email || session.customer_details?.email,
+            plan_name: session.metadata?.plan_name,
+            billing_cycle: 'annual',
+            stripe_price_id: priceId,
+            stripe_product_id: session.metadata?.stripe_product_id,
+            purchase_type: 'membership_annual',
+            access_type: 'membership',
+          },
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+
+        console.log('📋 Creando registro de membresía anual:', membershipPayload);
+
+        const { data: createdMembership, error: membershipError } = await supabase
+          .from('user_subscriptions')
+          .insert(membershipPayload)
+          .select();
+
+        if (membershipError) {
+          console.error(
+            '❌ Error creando registro de membresía anual en Supabase:',
+            membershipError
+          );
+        } else {
+          console.log(
+            '✅ Registro de membresía anual creado correctamente en Supabase:',
+            createdMembership
+          );
+
+          // ✉️ ENVIAR EMAIL DE CONFIRMACIÓN DE MEMBRESÍA ANUAL
+          if (clientEmail) {
+            console.log('📧 Enviando email de confirmación de membresía anual a:', clientEmail);
+
+            // Determinar el tipo de email según el plan
+            const planName = session.metadata?.plan_name || 'Membresía Anual';
+            const isAcademia =
+              planName.toLowerCase().includes('academia') ||
+              planName.toLowerCase().includes('academy');
+            const emailType = isAcademia ? 'academia_bsb' : 'membership_annual';
+            const adminEmailType = isAcademia
+              ? 'admin_subscription_notification'
+              : 'admin_membership_notification';
+
+            console.log('📧 Plan detectado:', planName, '- Email type:', emailType);
+
+            const emailRes = await fetch(`${supabaseUrl}/functions/v1/resend-email-secure`, {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${serviceRoleKey!}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                type: emailType,
+                to: clientEmail,
+                data: {
+                  name: session.metadata?.client_name || 'Usuario',
+                  email: clientEmail,
+                  planName: planName,
+                  amount: session.amount_total / 100,
+                  currency: session.currency,
+                  sessionId: session.id,
+                },
+              }),
+            });
+
+            if (!emailRes.ok) {
+              console.error('❌ Error enviando email de confirmación:', await emailRes.text());
+            } else {
+              console.log('✅ Email de confirmación enviado correctamente.');
+            }
+
+            // 📧 ENVIAR EMAIL AL ADMIN
+            console.log('📧 Enviando notificación al admin...');
+            const adminEmailRes = await fetch(`${supabaseUrl}/functions/v1/resend-email-secure`, {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${serviceRoleKey!}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                type: adminEmailType,
+                to: 'info@bsbcapital.io',
+                data: {
+                  clientName: session.metadata?.client_name || 'Usuario',
+                  clientEmail,
+                  planName: planName,
+                  purchaseType: isAcademia ? 'academia' : 'membership_annual',
+                  billingCycle: 'annual',
+                  amount: session.amount_total / 100,
+                  currency: session.currency,
+                  sessionId: session.id,
+                  stripeCustomerId: session.customer,
+                },
+              }),
+            });
+
+            if (!adminEmailRes.ok) {
+              console.error('❌ Error enviando email al admin:', await adminEmailRes.text());
+            } else {
+              console.log('✅ Email al admin enviado correctamente.');
+            }
+          }
+
+          // Actualizar perfil del usuario
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .update({
+              subscription_status: 'active',
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', userId);
+
+          if (profileError) {
+            console.error('❌ Error actualizando perfil:', profileError);
+          } else {
+            console.log('✅ Perfil actualizado correctamente.');
+          }
+        }
+
+        return new Response(JSON.stringify({ received: true }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // 🎯 PRIORIDAD 3: MANEJAR PAQUETES (payment sin consultation_id, access_type=package)
+      if (
+        purchaseType === 'package' ||
+        (mode === 'payment' && !consultationId && accessType === 'package')
+      ) {
+        console.log('📦 Procesando compra de paquete (pago único)...');
+
+        // Mapeo entre priceId/productId de Stripe y plan_id en la tabla subscription_plans
+        const priceToPlanMap: Record<string, string> = {
+          // Paquetes crypto
+          price_1SSshWJmSk3VG9oiU1cBNWgf: '98e48de0-7d37-4e0f-afb8-da0e041d2ae2', // Onboarding Crypto
+          price_1SSsfoJmSk3VG9oi70AskCZv: '235cb6d6-e532-4a0f-a657-863a68972851', // Gestión Tesorería Crypto
+          price_1SDKb2JmSk3VG9oiJr1unLZZ: 'd7435ab7-d543-4bdc-9cc4-6874d286aa48', // Inversor Premium
+        };
+
+        // Obtener priceId de los line_items
+        let priceId = null;
+        try {
+          const sessionDetails = await fetch(
+            `https://api.stripe.com/v1/checkout/sessions/${session.id}?expand[]=line_items`,
+            {
+              headers: { Authorization: `Bearer ${stripeSecretKey}` },
+            }
+          );
+          const sessionData = await sessionDetails.json();
+          priceId = sessionData.line_items?.data?.[0]?.price?.id;
+          console.log('💰 Price ID del paquete:', priceId);
+        } catch (err) {
+          console.error('❌ Error obteniendo detalles de sesión:', err);
+        }
+
+        const planId = priceId ? priceToPlanMap[priceId] : null;
+
+        if (!planId) {
+          console.warn('⚠️ No se pudo mapear priceId a plan_id para paquete:', priceId);
+          // Continuar de todas formas, crear registro genérico
+        }
+
+        // Crear registro en user_subscriptions (aunque sea pago único, para mantener historial)
+        const packagePayload = {
+          user_id: userId,
+          plan_id: planId || null,
+          stripe_customer_id: session.customer,
+          status: 'active',
+          started_at: new Date().toISOString(),
+          current_period_start: new Date().toISOString(),
+          // Para paquetes anuales, el período termina en 1 año
+          current_period_end: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+          auto_renew: false, // Paquetes no se renuevan automáticamente
+          cancel_at_period_end: false,
+          metadata: {
+            client_name: session.metadata?.client_name,
+            client_email: session.metadata?.client_email || session.customer_details?.email,
+            plan_name: session.metadata?.plan_name,
+            billing_cycle: session.metadata?.billing_cycle || 'annual',
+            stripe_price_id: priceId,
+            stripe_product_id: session.metadata?.stripe_product_id,
+            purchase_type: 'package',
+            access_type: 'package',
+          },
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+
+        console.log('📋 Creando registro de paquete:', packagePayload);
+
+        const { data: createdPackage, error: packageError } = await supabase
+          .from('user_subscriptions')
+          .insert(packagePayload)
+          .select();
+
+        if (packageError) {
+          console.error('❌ Error creando registro de paquete en Supabase:', packageError);
+        } else {
+          console.log('✅ Registro de paquete creado correctamente en Supabase:', createdPackage);
+
+          // ✉️ ENVIAR EMAIL DE CONFIRMACIÓN DE PAQUETE
+          if (clientEmail) {
+            console.log('📧 Enviando email de confirmación de paquete a:', clientEmail);
+
+            // Determinar el tipo de template según el plan_name (para soportar precios de prueba)
+            const planName = session.metadata?.plan_name || '';
+            let emailType = 'package_crypto_onboarding'; // Fallback
+
+            if (planName.toLowerCase().includes('onboarding')) {
+              emailType = 'package_crypto_onboarding';
+            } else if (
+              planName.toLowerCase().includes('tesorería') ||
+              planName.toLowerCase().includes('treasury')
+            ) {
+              emailType = 'package_treasury_crypto';
+            } else if (
+              planName.toLowerCase().includes('inversor premium') ||
+              planName.toLowerCase().includes('investor premium')
+            ) {
+              emailType = 'package_investor_premium';
+            }
+
+            console.log('📧 Plan detectado:', planName, '- Email type:', emailType);
+
+            const emailRes = await fetch(`${supabaseUrl}/functions/v1/resend-email-secure`, {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${serviceRoleKey!}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                type: emailType,
+                to: clientEmail,
+                data: {
+                  name: session.metadata?.client_name || 'Usuario',
+                  email: clientEmail,
+                  packageName: session.metadata?.plan_name || 'Paquete BSB Capital',
+                  amount: session.amount_total / 100,
+                  currency: session.currency,
+                  sessionId: session.id,
+                },
+              }),
+            });
+
+            if (!emailRes.ok) {
+              console.error(
+                '❌ Error enviando email de confirmación de paquete:',
+                await emailRes.text()
+              );
+            } else {
+              console.log('✅ Email de confirmación de paquete enviado correctamente.');
+            }
+
+            // 📧 ENVIAR EMAIL AL ADMIN
+            console.log('📧 Enviando notificación al admin...');
+            const adminEmailRes = await fetch(`${supabaseUrl}/functions/v1/resend-email-secure`, {
+              method: 'POST',
+              headers: {
+                Authorization: `Bearer ${serviceRoleKey!}`,
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                type: 'admin_package_notification',
+                to: 'info@bsbcapital.io',
+                data: {
+                  clientName: session.metadata?.client_name || 'Usuario',
+                  clientEmail,
+                  packageName: session.metadata?.plan_name || 'Paquete BSB Capital',
+                  purchaseType: 'package',
+                  amount: session.amount_total / 100,
+                  currency: session.currency,
+                  sessionId: session.id,
+                  stripeCustomerId: session.customer,
+                },
+              }),
+            });
+
+            if (!adminEmailRes.ok) {
+              console.error('❌ Error enviando email al admin:', await adminEmailRes.text());
+            } else {
+              console.log('✅ Email al admin enviado correctamente.');
+            }
+          }
+
+          // Actualizar perfil del usuario
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .update({
+              subscription_status: 'active',
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', userId);
+
+          if (profileError) {
+            console.error('❌ Error actualizando perfil:', profileError);
+          } else {
+            console.log('✅ Perfil actualizado correctamente.');
+          }
+        }
+
+        return new Response(JSON.stringify({ received: true }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // 🎯 PRIORIDAD 4: MANEJAR SUSCRIPCIONES MENSUALES (MEMBRESÍAS RECURRENTES)
+      if (
+        mode === 'subscription' ||
+        purchaseType === 'membership_monthly' ||
+        (accessType === 'membership' && !purchaseType?.includes('annual'))
+      ) {
+        console.log('🔄 Procesando nueva suscripción mensual/membresía recurrente...');
 
         // Mapeo entre priceId de Stripe y plan_id en la tabla subscription_plans
         const priceToPlanMap: Record<string, string> = {
@@ -212,7 +581,7 @@ serve(async (req: Request) => {
 
           // Planes legacy (mantener por compatibilidad)
           price_1SDKVXJmSk3VG9oiLEm9JOoD: 'a9097647-e0bc-424c-bacb-7ccbae7a0853', // Premium Investor anual
-          price_1SDKb2JmSk3VG9oiJr1unLZZ: 'd7435ab7-d543-4bdc-9cc4-6874d286aa48', // Wealth Membership (Trader Premium)
+          price_1SDKb2JmSk3VG9oiJr1unLZZ: 'd7435ab7-d543-4bdc-9cc4-6874d286aa48', // Inversor Premium (pago único anual)
 
           // Paquetes crypto
           price_1SSshWJmSk3VG9oiU1cBNWgf: '98e48de0-7d37-4e0f-afb8-da0e041d2ae2', // Onboarding Crypto
@@ -316,8 +685,21 @@ serve(async (req: Request) => {
                 console.log('📧 Enviando email de confirmación de membresía a:', clientEmail);
 
                 // Determinar el tipo de email según el plan y ciclo de facturación
-                let emailType = 'academia_bsb'; // por defecto para academia
+                let emailType = 'membership_monthly'; // por defecto
+                let adminEmailType = 'admin_subscription_notification'; // por defecto para mensuales
+
                 if (
+                  planName.toLowerCase().includes('academia') ||
+                  planName.toLowerCase().includes('academy')
+                ) {
+                  // Academia BSB - mismo template para mensual y anual
+                  emailType = 'academia_bsb';
+                  // Academia anual usa admin_membership_notification, mensual usa admin_subscription_notification
+                  adminEmailType =
+                    billingCycle === 'annual' || billingCycle === 'year'
+                      ? 'admin_membership_notification'
+                      : 'admin_subscription_notification';
+                } else if (
                   planName.toLowerCase().includes('exclusiva') ||
                   planName.toLowerCase().includes('membresía bsb')
                 ) {
@@ -326,9 +708,13 @@ serve(async (req: Request) => {
                     billingCycle === 'annual' || billingCycle === 'year'
                       ? 'membership_annual'
                       : 'membership_exclusive_monthly';
-                } else if (planName.toLowerCase().includes('academia')) {
-                  emailType = 'academia_bsb';
+                  adminEmailType =
+                    billingCycle === 'annual' || billingCycle === 'year'
+                      ? 'admin_membership_notification'
+                      : 'admin_subscription_notification';
                 }
+
+                console.log('📧 Tipo de email a enviar:', emailType);
 
                 const emailRes = await fetch(`${supabaseUrl}/functions/v1/resend-email-secure`, {
                   method: 'POST',
@@ -359,6 +745,43 @@ serve(async (req: Request) => {
                 } else {
                   console.log('✅ Email de confirmación de membresía enviado correctamente.');
                 }
+
+                // 📧 ENVIAR EMAIL AL ADMIN
+                console.log('📧 Enviando notificación al admin...');
+                const adminEmailRes = await fetch(
+                  `${supabaseUrl}/functions/v1/resend-email-secure`,
+                  {
+                    method: 'POST',
+                    headers: {
+                      Authorization: `Bearer ${serviceRoleKey!}`,
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      type: adminEmailType,
+                      to: 'info@bsbcapital.io',
+                      data: {
+                        clientName,
+                        clientEmail,
+                        planName,
+                        purchaseType: planName.toLowerCase().includes('academia')
+                          ? 'academia'
+                          : 'membership_monthly',
+                        billingCycle,
+                        amount: session.amount_total / 100,
+                        currency: session.currency,
+                        sessionId: latestSubscription.id,
+                        subscriptionId: latestSubscription.id,
+                        stripeCustomerId: session.customer,
+                      },
+                    }),
+                  }
+                );
+
+                if (!adminEmailRes.ok) {
+                  console.error('❌ Error enviando email al admin:', await adminEmailRes.text());
+                } else {
+                  console.log('✅ Email al admin enviado correctamente.');
+                }
               }
             }
           } else {
@@ -385,11 +808,9 @@ serve(async (req: Request) => {
             .from('profiles')
             .update({
               subscription_status: 'active',
-              membership_tier: 'premium', // Ajustar según el plan
               updated_at: new Date().toISOString(),
             })
             .eq('id', userId);
-
           if (profileError) {
             console.error('❌ Error actualizando perfil:', profileError);
           } else {
@@ -426,18 +847,25 @@ serve(async (req: Request) => {
           status: subscriptionData.status,
         });
 
+        // Calcular fechas de periodo
+        const now = new Date();
+        const periodStart = subscriptionData.current_period_start
+          ? new Date(subscriptionData.current_period_start * 1000).toISOString()
+          : now.toISOString();
+        const periodEnd = subscriptionData.current_period_end
+          ? new Date(subscriptionData.current_period_end * 1000).toISOString()
+          : new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000).toISOString(); // +30 días por defecto
+
         // Actualizar el registro en user_subscriptions con el stripe_subscription_id
         const { data: updatedSubscription, error: updateError } = await supabase
           .from('user_subscriptions')
           .update({
             stripe_subscription_id: subscriptionId,
             status: 'active',
-            started_at: new Date().toISOString(),
-            current_period_start: new Date(
-              subscriptionData.current_period_start * 1000
-            ).toISOString(),
-            current_period_end: new Date(subscriptionData.current_period_end * 1000).toISOString(),
-            updated_at: new Date().toISOString(),
+            started_at: now.toISOString(),
+            current_period_start: periodStart,
+            current_period_end: periodEnd,
+            updated_at: now.toISOString(),
           })
           .eq('stripe_customer_id', session.customer)
           .eq('user_id', userId)
@@ -525,11 +953,14 @@ serve(async (req: Request) => {
 
       // 🎯 CASO FALLBACK: Si no coincide con ninguno de los casos anteriores
       console.warn(
-        '⚠️ Sesión no procesada - no coincide con los criterios de consulta o suscripción',
+        '⚠️ Sesión no procesada - no coincide con los criterios de consulta, membresía anual, paquete o suscripción mensual',
         {
           mode,
           accessType,
+          purchaseType,
           hasConsultationId: !!consultationId,
+          sessionId: session.id,
+          metadata: session.metadata,
         }
       );
     } else if (event.type === 'invoice.payment_succeeded') {

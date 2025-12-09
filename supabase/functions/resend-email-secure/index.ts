@@ -1331,6 +1331,219 @@ const getEmailTemplates = () => {
 </body>
 </html>`,
     },
+
+    // 📧 TEMPLATES PARA NOTIFICACIONES AL ADMIN
+    admin_package_notification: {
+      subject: '🎯 Nueva Compra de Paquete - BSB Capital',
+      html: `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nueva Compra de Paquete</title>
+</head>
+<body style="margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; background-color:#f5f5f5;">
+  <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px; background-color:#ffffff;">
+    <tr>
+      <td align="center" style="padding:40px 20px 20px; background-color:#0b1f14;">
+        <h2 style="color:#C5A019; font-weight:600; margin:0;">🎯 Nueva Compra de Paquete</h2>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:30px;">
+        <div style="font-size:16px; color:#37493f; line-height:1.6;">
+          <p style="font-weight:600; color:#0b1f14; margin-bottom:20px;">Detalles de la compra:</p>
+          
+          <table style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+            <tr style="background-color:#f9f9f9;">
+              <td style="padding:12px; border:1px solid #e0e0e0;"><strong>Cliente:</strong></td>
+              <td style="padding:12px; border:1px solid #e0e0e0;">{clientName}</td>
+            </tr>
+            <tr>
+              <td style="padding:12px; border:1px solid #e0e0e0;"><strong>Email:</strong></td>
+              <td style="padding:12px; border:1px solid #e0e0e0;">{clientEmail}</td>
+            </tr>
+            <tr style="background-color:#f9f9f9;">
+              <td style="padding:12px; border:1px solid #e0e0e0;"><strong>Paquete:</strong></td>
+              <td style="padding:12px; border:1px solid #e0e0e0;">{packageName}</td>
+            </tr>
+            <tr>
+              <td style="padding:12px; border:1px solid #e0e0e0;"><strong>Monto:</strong></td>
+              <td style="padding:12px; border:1px solid #e0e0e0;">{amount} {currency}</td>
+            </tr>
+            <tr style="background-color:#f9f9f9;">
+              <td style="padding:12px; border:1px solid #e0e0e0;"><strong>ID de Sesión:</strong></td>
+              <td style="padding:12px; border:1px solid #e0e0e0; font-size:12px; word-break:break-all;">{sessionId}</td>
+            </tr>
+            <tr>
+              <td style="padding:12px; border:1px solid #e0e0e0;"><strong>Customer ID:</strong></td>
+              <td style="padding:12px; border:1px solid #e0e0e0; font-size:12px;">{stripeCustomerId}</td>
+            </tr>
+          </table>
+
+          <p style="background-color:#fff3cd; padding:15px; border-left:4px solid:#C5A019; margin-top:20px;">
+            <strong>⚡ Acción requerida:</strong><br>
+            Envía el acceso correspondiente al cliente y verifica su registro en la base de datos.
+          </p>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding-top:20px; border-bottom:1px solid #e6ece8;"></td>
+    </tr>
+    <tr>
+      <td align="center" style="padding:25px 20px 35px 20px; font-size:12px; color:#6a756f;">
+        <p style="margin:0;">Notificación automática de BSB Capital</p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`,
+    },
+
+    admin_membership_notification: {
+      subject: '💎 Nueva Membresía Anual - BSB Capital',
+      html: `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nueva Membresía</title>
+</head>
+<body style="margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; background-color:#f5f5f5;">
+  <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px; background-color:#ffffff;">
+    <tr>
+      <td align="center" style="padding:40px 20px 20px; background-color:#0b1f14;">
+        <h2 style="color:#C5A019; font-weight:600; margin:0;">💎 Nueva Membresía Anual</h2>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:30px;">
+        <div style="font-size:16px; color:#37493f; line-height:1.6;">
+          <p style="font-weight:600; color:#0b1f14; margin-bottom:20px;">Detalles de la membresía:</p>
+          
+          <table style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+            <tr style="background-color:#f9f9f9;">
+              <td style="padding:12px; border:1px solid #e0e0e0;"><strong>Cliente:</strong></td>
+              <td style="padding:12px; border:1px solid #e0e0e0;">{clientName}</td>
+            </tr>
+            <tr>
+              <td style="padding:12px; border:1px solid #e0e0e0;"><strong>Email:</strong></td>
+              <td style="padding:12px; border:1px solid #e0e0e0;">{clientEmail}</td>
+            </tr>
+            <tr style="background-color:#f9f9f9;">
+              <td style="padding:12px; border:1px solid #e0e0e0;"><strong>Plan:</strong></td>
+              <td style="padding:12px; border:1px solid #e0e0e0;">{planName}</td>
+            </tr>
+            <tr>
+              <td style="padding:12px; border:1px solid #e0e0e0;"><strong>Tipo:</strong></td>
+              <td style="padding:12px; border:1px solid #e0e0e0;">Pago Anual Único</td>
+            </tr>
+            <tr style="background-color:#f9f9f9;">
+              <td style="padding:12px; border:1px solid #e0e0e0;"><strong>Monto:</strong></td>
+              <td style="padding:12px; border:1px solid #e0e0e0;">{amount} {currency}</td>
+            </tr>
+            <tr>
+              <td style="padding:12px; border:1px solid #e0e0e0;"><strong>ID de Sesión:</strong></td>
+              <td style="padding:12px; border:1px solid #e0e0e0; font-size:12px; word-break:break-all;">{sessionId}</td>
+            </tr>
+            <tr style="background-color:#f9f9f9;">
+              <td style="padding:12px; border:1px solid #e0e0e0;"><strong>Customer ID:</strong></td>
+              <td style="padding:12px; border:1px solid #e0e0e0; font-size:12px;">{stripeCustomerId}</td>
+            </tr>
+          </table>
+
+          <p style="background-color:#d1f2eb; padding:15px; border-left:4px solid:#0b6e4f; margin-top:20px;">
+            <strong>✅ Membresía activa:</strong><br>
+            El cliente tiene acceso completo durante 12 meses. Verifica su perfil en Supabase.
+          </p>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding-top:20px; border-bottom:1px solid #e6ece8;"></td>
+    </tr>
+    <tr>
+      <td align="center" style="padding:25px 20px 35px 20px; font-size:12px; color:#6a756f;">
+        <p style="margin:0;">Notificación automática de BSB Capital</p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`,
+    },
+
+    admin_subscription_notification: {
+      subject: '🔄 Nueva Suscripción Mensual - BSB Capital',
+      html: `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nueva Suscripción</title>
+</head>
+<body style="margin:0; padding:0; font-family:Arial, Helvetica, sans-serif; background-color:#f5f5f5;">
+  <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width:600px; background-color:#ffffff;">
+    <tr>
+      <td align="center" style="padding:40px 20px 20px; background-color:#0b1f14;">
+        <h2 style="color:#C5A019; font-weight:600; margin:0;">🔄 Nueva Suscripción Mensual</h2>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:30px;">
+        <div style="font-size:16px; color:#37493f; line-height:1.6;">
+          <p style="font-weight:600; color:#0b1f14; margin-bottom:20px;">Detalles de la suscripción:</p>
+          
+          <table style="width:100%; border-collapse:collapse; margin-bottom:20px;">
+            <tr style="background-color:#f9f9f9;">
+              <td style="padding:12px; border:1px solid #e0e0e0;"><strong>Cliente:</strong></td>
+              <td style="padding:12px; border:1px solid #e0e0e0;">{clientName}</td>
+            </tr>
+            <tr>
+              <td style="padding:12px; border:1px solid #e0e0e0;"><strong>Email:</strong></td>
+              <td style="padding:12px; border:1px solid #e0e0e0;">{clientEmail}</td>
+            </tr>
+            <tr style="background-color:#f9f9f9;">
+              <td style="padding:12px; border:1px solid #e0e0e0;"><strong>Plan:</strong></td>
+              <td style="padding:12px; border:1px solid #e0e0e0;">{planName}</td>
+            </tr>
+            <tr>
+              <td style="padding:12px; border:1px solid #e0e0e0;"><strong>Tipo:</strong></td>
+              <td style="padding:12px; border:1px solid #e0e0e0;">Suscripción Recurrente {billingCycle}</td>
+            </tr>
+            <tr style="background-color:#f9f9f9;">
+              <td style="padding:12px; border:1px solid #e0e0e0;"><strong>Monto:</strong></td>
+              <td style="padding:12px; border:1px solid #e0e0e0;">{amount} {currency}/mes</td>
+            </tr>
+            <tr>
+              <td style="padding:12px; border:1px solid #e0e0e0;"><strong>Subscription ID:</strong></td>
+              <td style="padding:12px; border:1px solid #e0e0e0; font-size:12px; word-break:break-all;">{subscriptionId}</td>
+            </tr>
+            <tr style="background-color:#f9f9f9;">
+              <td style="padding:12px; border:1px solid #e0e0e0;"><strong>Customer ID:</strong></td>
+              <td style="padding:12px; border:1px solid #e0e0e0; font-size:12px;">{stripeCustomerId}</td>
+            </tr>
+          </table>
+
+          <p style="background-color:#cfe2ff; padding:15px; border-left:4px solid:#0d6efd; margin-top:20px;">
+            <strong>🔄 Suscripción recurrente:</strong><br>
+            El cliente será cobrado automáticamente cada mes. Monitorea la renovación en Stripe.
+          </p>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding-top:20px; border-bottom:1px solid #e6ece8;"></td>
+    </tr>
+    <tr>
+      <td align="center" style="padding:25px 20px 35px 20px; font-size:12px; color:#6a756f;">
+        <p style="margin:0;">Notificación automática de BSB Capital</p>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`,
+    },
   };
 };
 
