@@ -118,15 +118,18 @@ const MembresiasDB = () => {
   const [membershipCycle, setMembershipCycle] = useState('annual'); // 'monthly' o 'annual' para membresía
 
   // 🧪 Detección automática del modo test (como en consultorías)
-  const isTestMode =
-    import.meta.env.MODE === 'development' || window.location.hostname === 'localhost';
+  // COMENTADO PARA PRODUCCIÓN - Descomentar para testing con €1
+  // const isTestMode =
+  //   import.meta.env.MODE === 'development' || window.location.hostname === 'localhost';
+  const isTestMode = false; // PRODUCCIÓN: Siempre usar precios reales
 
   // 🧪 IDs de precios de prueba (€1) - STRIPE DASHBOARD
-  const TEST_PRICE_IDS = {
-    package_test: 'price_1SKG4NJmSk3VG9oi6CjvmqLC', // Paquete de prueba €1 (one-time) - Mismo que consultorías
-    membership_annual_test: 'price_1SKG4NJmSk3VG9oi6CjvmqLC', // Membresía anual €1 (one-time) - Mismo que consultorías
-    membership_monthly_test: 'price_1ScNpIJmSk3VG9oiYMNPIRXN', // Membresía mensual €1 (recurring) - prod_TZWtvStcgMfmQH
-  };
+  // COMENTADO PARA PRODUCCIÓN - Descomentar para testing con €1
+  // const TEST_PRICE_IDS = {
+  //   package_test: 'price_1SKG4NJmSk3VG9oi6CjvmqLC', // Paquete de prueba €1 (one-time) - Mismo que consultorías
+  //   membership_annual_test: 'price_1SKG4NJmSk3VG9oi6CjvmqLC', // Membresía anual €1 (one-time) - Mismo que consultorías
+  //   membership_monthly_test: 'price_1ScNpIJmSk3VG9oiYMNPIRXN', // Membresía mensual €1 (recurring) - prod_TZWtvStcgMfmQH
+  // };
 
   // IDs de productos permitidos y excluidos
   const ALLOWED_PRODUCT_IDS = useMemo(
@@ -355,27 +358,28 @@ const MembresiasDB = () => {
         let priceId = null;
 
         // 🧪 MODO TEST: Usar precios de prueba de €1 automáticamente en desarrollo
-        if (isTestMode) {
-          console.log('🧪 Modo TEST activado - usando precios de €1');
-
-          if (isPackage) {
-            priceId = TEST_PRICE_IDS.package_test;
-          } else if (isMembershipPlan) {
-            priceId =
-              cycle === 'annual'
-                ? TEST_PRICE_IDS.membership_annual_test
-                : TEST_PRICE_IDS.membership_monthly_test;
-          }
-
-          console.log('🧪 Price ID de TEST seleccionado:', priceId);
+        // COMENTADO PARA PRODUCCIÓN - Descomentar para testing con €1
+        // if (isTestMode) {
+        //   console.log('🧪 Modo TEST activado - usando precios de €1');
+        //
+        //   if (isPackage) {
+        //     priceId = TEST_PRICE_IDS.package_test;
+        //   } else if (isMembershipPlan) {
+        //     priceId =
+        //       cycle === 'annual'
+        //         ? TEST_PRICE_IDS.membership_annual_test
+        //         : TEST_PRICE_IDS.membership_monthly_test;
+        //   }
+        //
+        //   console.log('🧪 Price ID de TEST seleccionado:', priceId);
+        // } else {
+        // Producción: usar precios reales
+        if (cycle === 'annual') {
+          priceId = plan.stripe_price_id_annual || plan.stripe_price_id;
         } else {
-          // Producción: usar precios reales
-          if (cycle === 'annual') {
-            priceId = plan.stripe_price_id_annual || plan.stripe_price_id;
-          } else {
-            priceId = plan.stripe_price_id;
-          }
+          priceId = plan.stripe_price_id;
         }
+        // }
 
         console.log('🔍 Price detection:', {
           plan_name: plan.name,
@@ -642,7 +646,7 @@ const MembresiasDB = () => {
                     </div>
                   )}
 
-                  <CardHeader className="text-center pb-4 md:pb-6 pt-6 md:pt-8 px-4 md:px-6 bg-brand-green-50/30 min-h-[180px] md:min-h-[220px] flex flex-col justify-center items-center">
+                  <CardHeader className="text-center pb-4 md:pb-6 pt-6 md:pt-8 px-4 md:px-6 bg-gradient-to-br from-brand-green-50 to-white min-h-[180px] md:min-h-[220px] flex flex-col justify-center items-center">
                     <CardTitle
                       className={`font-bold mb-3 text-foreground ${
                         plan.name.length > 25
@@ -659,7 +663,7 @@ const MembresiasDB = () => {
 
                   <CardContent className="flex-grow px-4 md:px-6 py-4 md:py-6 space-y-4 md:space-y-6">
                     {/* Precio */}
-                    <div className="text-center py-4 md:py-6 px-3 md:px-4 bg-card rounded-lg md:rounded-xl border border-border shadow-sm min-h-[160px] md:min-h-[200px] flex flex-col justify-center">
+                    <div className="text-center py-4 md:py-6 px-3 md:px-4 bg-gradient-to-br from-gray-50 to-white rounded-lg md:rounded-xl border border-border shadow-sm min-h-[160px] md:min-h-[200px] flex flex-col justify-center">
                       <div className="flex flex-col items-center justify-center gap-2 mb-2">
                         <div
                           className={`text-4xl sm:text-5xl md:text-6xl font-bold ${

@@ -21,14 +21,17 @@ const CheckoutModal = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
 
   // 🧪 Detección automática del modo test
-  const isTestMode =
-    import.meta.env.MODE === 'development' || window.location.hostname === 'localhost';
+  // COMENTADO PARA PRODUCCIÓN - Descomentar para testing con €1
+  // const isTestMode =
+  //   import.meta.env.MODE === 'development' || window.location.hostname === 'localhost';
+  const isTestMode = false; // PRODUCCIÓN: Siempre usar precios reales
 
   // 🧪 IDs de precios de prueba (€1) para Academia
-  const TEST_PRICE_IDS = {
-    academia_monthly_test: 'price_1ScNpIJmSk3VG9oiYMNPIRXN', // Academia mensual €1 (recurring)
-    academia_annual_test: 'price_1SKG4NJmSk3VG9oi6CjvmqLC', // Academia anual €1 (one-time)
-  };
+  // COMENTADO PARA PRODUCCIÓN - Descomentar para testing con €1
+  // const TEST_PRICE_IDS = {
+  //   academia_monthly_test: 'price_1ScNpIJmSk3VG9oiYMNPIRXN', // Academia mensual €1 (recurring)
+  //   academia_annual_test: 'price_1SKG4NJmSk3VG9oi6CjvmqLC', // Academia anual €1 (one-time)
+  // };
 
   const plans = {
     'plan-mensual': {
@@ -92,15 +95,22 @@ const CheckoutModal = ({ isOpen, onClose }) => {
 
     try {
       // Determinar el price_id según el plan seleccionado y modo test
-      const stripePriceIds = isTestMode
-        ? {
-            'plan-mensual': TEST_PRICE_IDS.academia_monthly_test, // €1 mensual (recurring)
-            'plan-anual': TEST_PRICE_IDS.academia_annual_test, // €1 anual (one-time)
-          }
-        : {
-            'plan-mensual': 'price_1SaXVjJmSk3VG9oix0Pu2N9J', // Academia mensual producción
-            'plan-anual': 'price_1SDKgoJmSk3VG9oiamJj88De', // Academia anual producción
-          };
+      // COMENTADO PARA PRODUCCIÓN - Descomentar para testing con €1
+      // const stripePriceIds = isTestMode
+      //   ? {
+      //       'plan-mensual': TEST_PRICE_IDS.academia_monthly_test, // €1 mensual (recurring)
+      //       'plan-anual': TEST_PRICE_IDS.academia_annual_test, // €1 anual (one-time)
+      //     }
+      //   : {
+      //       'plan-mensual': 'price_1SaXVjJmSk3VG9oix0Pu2N9J', // Academia mensual producción
+      //       'plan-anual': 'price_1SDKgoJmSk3VG9oiamJj88De', // Academia anual producción
+      //     };
+
+      // PRODUCCIÓN: Siempre usar precios reales
+      const stripePriceIds = {
+        'plan-mensual': 'price_1SaXVjJmSk3VG9oix0Pu2N9J', // Academia mensual producción
+        'plan-anual': 'price_1SDKgoJmSk3VG9oiamJj88De', // Academia anual producción
+      };
 
       const stripeProductId = 'prod_T9dymUXkbPpeir'; // Academia
       const selectedPlanData = plans[selectedPlan];

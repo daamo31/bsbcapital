@@ -54,8 +54,8 @@ const availableTimeSlots = ['09:00', '10:00', '11:00', '12:00', '15:00', '16:00'
 const consultationPrices = {
   '30min': 'price_1RtYGsJmSk3VG9oicAWmQ4sN',
   '60min': 'price_1RtYFkJmSk3VG9oi8wUdMK5k',
-  // Actualizado: IDs de Stripe para prueba en producción
-  test: 'price_1SKG4NJmSk3VG9oi6CjvmqLC', // prod_TGnf81ENbBkghj
+  // COMENTADO PARA PRODUCCIÓN - Descomentar para testing con €1
+  // test: 'price_1SKG4NJmSk3VG9oi6CjvmqLC', // prod_TGnf81ENbBkghj
 };
 
 const BookingModal = ({ children }) => {
@@ -454,7 +454,8 @@ const BookingModal = ({ children }) => {
                     <span className="font-semibold">45 min - 300€</span>
                     <span className="text-xs opacity-70">Consulta completa</span>
                   </Button>
-                  <Button
+                  {/* COMENTADO PARA PRODUCCIÓN - Descomentar para testing con €1 */}
+                  {/* <Button
                     type="button"
                     variant={formData.duration === 'test' ? 'default' : 'outline'}
                     onClick={() => handleSelectChange('duration', 'test')}
@@ -466,12 +467,13 @@ const BookingModal = ({ children }) => {
                   >
                     <span className="font-semibold text-xs">Prueba</span>
                     <span className="text-xs opacity-70">Test producción</span>
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
 
               {/* Alerta para prueba de producción */}
-              {formData.duration === 'test' && (
+              {/* COMENTADO PARA PRODUCCIÓN - Descomentar para testing con €1 */}
+              {/* {formData.duration === 'test' && (
                 <div className="mt-4 p-4 bg-muted border border-border rounded-lg">
                   <div className="flex items-center">
                     <div className="flex-shrink-0">
@@ -496,7 +498,7 @@ const BookingModal = ({ children }) => {
                     </div>
                   </div>
                 </div>
-              )}
+              )} */}
             </motion.div>
           )}
 
