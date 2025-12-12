@@ -675,7 +675,6 @@ serve(async (req: Request) => {
 
               // ✉️ ENVIAR EMAIL DE CONFIRMACIÓN DE MEMBRESÍA
               if (createdSubscription && createdSubscription.length > 0) {
-                const subscription = createdSubscription[0];
                 const clientEmail =
                   session.metadata?.client_email || session.customer_details?.email;
                 const clientName = session.metadata?.client_name || 'Usuario';

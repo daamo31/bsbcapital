@@ -11,7 +11,7 @@ import {
   CardFooter,
 } from '@/components/ui/data-display/card';
 import { Badge } from '@/components/ui/data-display/badge';
-import { Check, ArrowRight, Loader2 } from 'lucide-react';
+import { Check, ArrowRight, Loader2, Briefcase, BookOpen, Bot, Users } from 'lucide-react';
 import { useToast } from '@/components/ui/feedback/use-toast';
 import { supabase } from '@/lib/customSupabaseClient';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
@@ -523,9 +523,9 @@ const MembresiasDB = () => {
         />
       </Helmet>
 
-      <div className="container mx-auto px-4 py-16">
-        {/* Hero Header */}
-        <div className="text-center max-w-5xl mx-auto mb-16 md:mb-20">
+      {/* Hero Header - Contenido centrado */}
+      <div className="container mx-auto px-4 pt-16 pb-8">
+        <div className="text-center max-w-5xl mx-auto mb-8 md:mb-12">
           <motion.h1
             className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 text-foreground leading-tight"
             initial={{ y: 20, opacity: 0 }}
@@ -535,9 +535,11 @@ const MembresiasDB = () => {
             Paquetes BSB Capital y Membresía Anual
           </motion.h1>
         </div>
+      </div>
 
-        {/* Sección 1: Introducción a Paquetes */}
-        <div className="max-w-6xl mx-auto mb-16 py-12 md:py-16 bg-brand-green-100 rounded-2xl md:rounded-3xl">
+      {/* Sección 1: Introducción a Paquetes - Full Width Background */}
+      <div className="w-full bg-brand-green-100 py-12 md:py-16 mb-16">
+        <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto px-6 md:px-12">
             <div className="flex items-start gap-4 mb-8">
               <div className="flex-1">
@@ -604,8 +606,11 @@ const MembresiasDB = () => {
             </div>
           </div>
         </div>
+      </div>
 
-        <div className="mt-8 md:mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
+      {/* Tarjetas de Paquetes - Contenido centrado */}
+      <div className="container mx-auto px-4 mb-16 md:mb-24">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
           {filteredPlans.map((plan) => {
             const currentPrice = plan.price_annual;
             const isLoading = loadingPlan === plan.id;
@@ -772,9 +777,11 @@ const MembresiasDB = () => {
             );
           })}
         </div>
+      </div>
 
-        {/* Sección 2: Membresía BSB Capital */}
-        <div className="mt-32 py-24 bg-brand-green-100 rounded-3xl">
+      {/* Sección 2: Membresía BSB Capital - Full Width Background */}
+      <div id="membresias-section" className="w-full bg-brand-green-100 py-24">
+        <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto px-6">
             <div className="bg-white p-8 md:p-12 rounded-3xl shadow-xl border-2 border-brand-gold-200 mb-16">
               <div className="text-center mb-8">
@@ -928,8 +935,8 @@ const MembresiasDB = () => {
                   className="bg-white rounded-2xl p-6 shadow-lg border-2 border-brand-green-200 hover:border-brand-green-600 transition-all"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="bg-brand-green-600 text-white p-3 rounded-xl flex-shrink-0">
-                      <Check className="h-8 w-8 text-brand-green-600" />
+                    <div className="flex-shrink-0">
+                      <Briefcase className="h-12 w-12 text-brand-green-600" />
                     </div>
                     <div>
                       <h4 className="text-xl font-bold text-brand-green-900 mb-2">
@@ -949,8 +956,8 @@ const MembresiasDB = () => {
                   className="bg-white rounded-2xl p-6 shadow-lg border-2 border-brand-gold-200 hover:border-brand-gold-400 transition-all"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="bg-brand-gold-600 text-white p-3 rounded-xl flex-shrink-0">
-                      <Check className="h-8 w-8 text-brand-gold-600" />
+                    <div className="flex-shrink-0">
+                      <BookOpen className="h-12 w-12 text-brand-gold-600" />
                     </div>
                     <div>
                       <h4 className="text-xl font-bold text-brand-green-900 mb-2">
@@ -971,8 +978,8 @@ const MembresiasDB = () => {
                   className="bg-white rounded-2xl p-6 shadow-lg border-2 border-brand-green-200 hover:border-brand-green-600 transition-all"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="bg-brand-green-600 text-white p-3 rounded-xl flex-shrink-0">
-                      <Check className="h-8 w-8 text-brand-green-600" />
+                    <div className="flex-shrink-0">
+                      <Bot className="h-12 w-12 text-brand-green-600" />
                     </div>
                     <div>
                       <h4 className="text-xl font-bold text-brand-green-900 mb-2">
@@ -992,8 +999,8 @@ const MembresiasDB = () => {
                   className="bg-white rounded-2xl p-6 shadow-lg border-2 border-brand-gold-200 hover:border-brand-gold-400 transition-all"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="bg-brand-gold-600 text-white p-3 rounded-xl flex-shrink-0">
-                      <Check className="h-8 w-8 text-brand-gold-600" />
+                    <div className="flex-shrink-0">
+                      <Users className="h-12 w-12 text-brand-gold-600" />
                     </div>
                     <div>
                       <h4 className="text-xl font-bold text-brand-green-900 mb-2">
@@ -1056,9 +1063,9 @@ const MembresiasDB = () => {
                 size="lg"
                 className="px-10 py-6 text-lg font-bold bg-brand-gold-600 hover:bg-brand-gold-700 text-white shadow-xl"
                 onClick={() => {
-                  const element = document.getElementById('payment-options');
+                  const element = document.getElementById('membresias-section');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth' });
+                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
                   }
                 }}
               >
@@ -1076,32 +1083,35 @@ const MembresiasDB = () => {
         </div>
 
         {/* Información adicional */}
-        <div className="mt-24 bg-brand-green-100 rounded-3xl p-12 border-2 border-brand-green-200">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4 text-brand-green-900">
-              ¿Necesitas ayuda para elegir?
-            </h2>
-            <p className="text-lg text-brand-green-800 max-w-3xl mx-auto font-medium">
-              Cada plan está diseñado para diferentes perfiles y necesidades. Si no estás seguro de
-              cuál es el mejor para ti, puedes usar nuestro sistema de recomendación o contactarnos
-              directamente.
-            </p>
-          </div>
+        {/* Información adicional */}
+        <div className="container mx-auto px-4">
+          <div className="mt-24 bg-brand-green-100 rounded-3xl p-12 border-2 border-brand-green-200">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl font-bold mb-4 text-brand-green-900">
+                ¿Necesitas ayuda para elegir?
+              </h2>
+              <p className="text-lg text-brand-green-800 max-w-3xl mx-auto font-medium">
+                Cada plan está diseñado para diferentes perfiles y necesidades. Si no estás seguro
+                de cuál es el mejor para ti, puedes usar nuestro sistema de recomendación o
+                contactarnos directamente.
+              </p>
+            </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              asChild
-              variant="outline"
-              size="lg"
-              className="border-brand-green-600 text-gray-700 hover:bg-brand-green-600 hover:text-white"
-            >
-              <a href="/guia-inversion">
-                Encuentra tu plan ideal <ArrowRight className="ml-2 h-4 w-4" />
-              </a>
-            </Button>
-            <Button asChild size="lg" className="shadow-lg">
-              <a href="/consultoria">Hablar con un experto</a>
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Button
+                asChild
+                variant="outline"
+                size="lg"
+                className="border-brand-green-600 text-gray-700 hover:bg-brand-green-600 hover:text-white"
+              >
+                <a href="/guia-inversion">
+                  Encuentra tu plan ideal <ArrowRight className="ml-2 h-4 w-4" />
+                </a>
+              </Button>
+              <Button asChild size="lg" className="shadow-lg">
+                <a href="/consultoria">Hablar con un experto</a>
+              </Button>
+            </div>
           </div>
         </div>
       </div>

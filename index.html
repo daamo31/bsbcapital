@@ -52,6 +52,11 @@
 	<script>
 		// Early CORS error detection
 		window.addEventListener('error', function (e) {
+            // Disable logs in production
+            if (window.location.hostname === 'bsbcapital.io' || window.location.hostname === 'www.bsbcapital.io') {
+                return;
+            }
+
 			if (e.message && (e.message.includes('CORS') || e.message.includes('preflight'))) {
 				console.error('🚨 Error CORS detectado:', {
 					mensaje: e.message,
