@@ -16,10 +16,6 @@ import {
   ArrowRight,
   ChevronDown,
   ChevronUp,
-  Mail,
-  Anchor,
-  Compass,
-  ShieldCheck,
 } from 'lucide-react';
 import { useToast } from '@/components/ui/feedback/use-toast';
 import { Button } from '@/components/ui/button';
@@ -32,18 +28,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogClose,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/forms/input';
 import { Label } from '@/components/ui/forms/label';
 import { Textarea } from '@/components/ui/forms/textarea';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/forms/select';
 import { loadStripe } from '@stripe/stripe-js';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 
@@ -849,7 +837,7 @@ const Consultoria = () => {
                 <h3 className="text-xl font-bold text-foreground mb-3">Optimización de cartera</h3>
                 <p className="text-muted-foreground">
                   Optimizamos tus activos digitales para equilibrar rentabilidad y seguridad,
-                  integrando cripto de forma estratégica.
+                  integrando crypto de forma estratégica.
                 </p>
               </div>
               <div className="bg-card backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border border-border hover:shadow-xl transition-all duration-300 hover:border-primary/30">
@@ -864,7 +852,7 @@ const Consultoria = () => {
               </div>
               <div className="bg-card backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border border-border hover:shadow-xl transition-all duration-300 hover:border-primary/30">
                 <Rocket className="h-12 w-12 text-primary mb-4" />
-                <h3 className="text-xl font-bold text-foreground mb-3">Onboarding cripto</h3>
+                <h3 className="text-xl font-bold text-foreground mb-3">Onboarding crypto</h3>
                 <p className="text-muted-foreground">
                   Tu puerta de entrada segura al universo crypto. Te acompañamos paso a paso para
                   invertir de forma consciente y segura.
@@ -873,7 +861,7 @@ const Consultoria = () => {
               <div className="bg-card backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border border-border hover:shadow-xl transition-all duration-300 hover:border-primary/30">
                 <Briefcase className="h-12 w-12 text-primary mb-4" />
                 <h3 className="text-xl font-bold text-foreground mb-3">
-                  Gestión de tesorería cripto para empresas
+                  Gestión de tesorería crypto para empresas
                 </h3>
                 <p className="text-muted-foreground">
                   Pensado para empresas que ya operan o quieren empezar a operar con activos

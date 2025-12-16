@@ -16,7 +16,6 @@ import { useToast } from '@/components/ui/feedback/use-toast';
 import { supabase } from '@/lib/customSupabaseClient';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useNavigate } from 'react-router-dom';
-import { loadStripe } from '@stripe/stripe-js';
 
 // Nuevos planes especializados en crypto
 const fallbackPlans = [
@@ -112,10 +111,8 @@ const MembresiasDB = () => {
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingPlan, setLoadingPlan] = useState(null);
-  const [loadingData, setLoadingData] = useState(false);
-  const [error, setError] = useState(null);
-  const [billingCycle, setBillingCycle] = useState('annual'); // 'monthly' o 'annual' para paquetes
-  const [membershipCycle, setMembershipCycle] = useState('annual'); // 'monthly' o 'annual' para membresía
+  const [billingCycle] = useState('annual'); // 'monthly' o 'annual' para paquetes
+  const [membershipCycle] = useState('annual'); // 'monthly' o 'annual' para membresía
 
   // 🧪 Detección automática del modo test (como en consultorías)
   // COMENTADO PARA PRODUCCIÓN - Descomentar para testing con €1
@@ -312,7 +309,6 @@ const MembresiasDB = () => {
         isFetching = false;
       });
     }
-    // No dependas de loadingData para evitar bucles
   }, [loadPlans, loadingAuth]);
 
   const handleSelectPlan = useCallback(
@@ -491,7 +487,7 @@ const MembresiasDB = () => {
         }
       } catch (error) {
         console.error('❌ Error in handleSelectPlan:', error);
-        setError(error.message);
+
         toast({
           title: 'Error',
           description: error.message,
@@ -501,7 +497,7 @@ const MembresiasDB = () => {
         setLoadingPlan(null);
       }
     },
-    [user, navigate, loadingPlan, toast, billingCycle, membershipCycle]
+    [user, navigate, loadingPlan, toast, billingCycle, membershipCycle, profile?.full_name]
   );
 
   if (loading) {

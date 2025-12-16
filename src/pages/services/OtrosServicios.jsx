@@ -15,18 +15,18 @@ const ServiceCard = ({ icon, title, children, onActionClick }) => (
     initial={{ opacity: 0, y: 50 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true, amount: 0.3 }}
-    transition={{ duration: 0.6, ease: "easeOut" }}
+    transition={{ duration: 0.6, ease: 'easeOut' }}
   >
     <Card className="h-full flex flex-col">
       <CardHeader className="flex-row items-center gap-4">
-        <div className="bg-primary/10 p-3 rounded-full">
-          {icon}
-        </div>
+        <div className="bg-primary/10 p-3 rounded-full">{icon}</div>
         <CardTitle className="text-xl md:text-2xl">{title}</CardTitle>
       </CardHeader>
       <CardContent className="flex-grow flex flex-col">
         <p className="text-muted-foreground flex-grow">{children}</p>
-        <Button onClick={onActionClick} className="mt-6 w-full md:w-auto self-start">Quiero más información</Button>
+        <Button onClick={onActionClick} className="mt-6 w-full md:w-auto self-start">
+          Quiero más información
+        </Button>
       </CardContent>
     </Card>
   </motion.div>
@@ -93,7 +93,10 @@ const OtrosServicios = () => {
     <>
       <Helmet>
         <title>Otros Servicios - BSB Capital</title>
-        <meta name="description" content="Servicios exclusivos de BSB Capital: residencia en Dubái, inversión inmobiliaria y fiscalidad crypto. Contacta con nosotros para una asesoría personalizada." />
+        <meta
+          name="description"
+          content="Servicios exclusivos de BSB Capital: residencia en Dubái, inversión inmobiliaria y fiscalidad crypto. Contacta con nosotros para una asesoría personalizada."
+        />
       </Helmet>
       <div className="bg-background text-foreground">
         <header className="py-20 md:py-32 text-center bg-background">
@@ -101,7 +104,7 @@ const OtrosServicios = () => {
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
+              transition={{ duration: 0.8, ease: 'easeOut' }}
               className="text-4xl md:text-6xl font-bold text-foreground"
             >
               Otros Servicios
@@ -109,10 +112,11 @@ const OtrosServicios = () => {
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+              transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
               className="mt-4 max-w-3xl mx-auto text-lg md:text-xl text-text-2"
             >
-              Soluciones exclusivas para proteger y hacer crecer tu patrimonio con la máxima seguridad y eficiencia.
+              Soluciones exclusivas para proteger y hacer crecer tu patrimonio con la máxima
+              seguridad y eficiencia.
             </motion.p>
           </div>
         </header>
@@ -125,21 +129,32 @@ const OtrosServicios = () => {
                 title="Traslada tu residencia a Dubái"
                 onActionClick={scrollToForm}
               >
-                ¿Quieres proteger tu patrimonio y pagar menos impuestos? En BSB Capital te acompañamos en todo el proceso de traslado de residencia a Dubái, disfrutando de un entorno fiscal único en el mundo: 0% de impuestos sobre la renta personal. Haz crecer tu libertad financiera en un país diseñado para el éxito.
+                ¿Quieres proteger tu patrimonio y pagar menos impuestos? En BSB Capital te
+                acompañamos en todo el proceso de traslado de residencia a Dubái, disfrutando de un
+                entorno fiscal único en el mundo: 0% de impuestos sobre la renta personal. Haz
+                crecer tu libertad financiera en un país diseñado para el éxito.
               </ServiceCard>
               <ServiceCard
                 icon={<Home className="h-6 w-6 text-primary" />}
                 title="Invierte en el mercado inmobiliario de Dubái"
                 onActionClick={scrollToForm}
               >
-                El sector inmobiliario en Dubái es uno de los más sólidos y rentables a nivel global. Te damos acceso a proyectos exclusivos, con alta demanda y potencial de revalorización. Nuestro equipo te asesora desde la selección hasta la ejecución, para que tu inversión sea segura y estratégica.
+                El sector inmobiliario en Dubái es uno de los más sólidos y rentables a nivel
+                global. Te damos acceso a proyectos exclusivos, con alta demanda y potencial de
+                revalorización. Nuestro equipo te asesora desde la selección hasta la ejecución,
+                para que tu inversión sea segura y estratégica.
               </ServiceCard>
               <ServiceCard
                 icon={<ShieldCheck className="h-6 w-6 text-primary" />}
                 title="Cumplimiento normativo y fiscalidad crypto"
                 onActionClick={scrollToForm}
               >
-                En colaboración con CLCRIPTO, ofrecemos un servicio especializado en fiscalidad de criptoactivos basado en la ética, la transparencia y el cumplimiento normativo. Nuestro objetivo es garantizar que cada operación esté correctamente trazada y alineada con las exigencias fiscales internacionales, para que inviertas con seguridad jurídica y tranquilidad. CLCRIPTO es nuestro socio de confianza en este ámbito, reconocido por su compromiso con la legalidad y la integridad profesional.
+                En colaboración con CLCRIPTO, ofrecemos un servicio especializado en fiscalidad de
+                criptoactivos basado en la ética, la transparencia y el cumplimiento normativo.
+                Nuestro objetivo es garantizar que cada operación esté correctamente trazada y
+                alineada con las exigencias fiscales internacionales, para que inviertas con
+                seguridad jurídica y tranquilidad. CLCRIPTO es nuestro socio de confianza en este
+                ámbito, reconocido por su compromiso con la legalidad y la integridad profesional.
               </ServiceCard>
             </div>
 
@@ -148,30 +163,57 @@ const OtrosServicios = () => {
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
+                transition={{ duration: 0.6, ease: 'easeOut' }}
               >
                 <Card className="shadow-2xl shadow-primary/10">
                   <CardHeader className="text-center">
-                    <CardTitle className="text-3xl">Contacta con un experto</CardTitle>
-                    <p className="text-muted-foreground pt-2">Déjanos tus datos y un asesor se pondrá en contacto contigo.</p>
+                    <CardTitle className="text-3xl">Contacta con nosotros</CardTitle>
+                    <p className="text-muted-foreground pt-2">
+                      Déjanos tus datos y nos pondremos en contacto contigo.
+                    </p>
                   </CardHeader>
                   <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-6">
                       <div className="space-y-2">
                         <Label htmlFor="fullName">Nombre completo</Label>
-                        <Input id="fullName" placeholder="Tu nombre y apellidos" value={formData.fullName} onChange={handleInputChange} required />
+                        <Input
+                          id="fullName"
+                          placeholder="Tu nombre y apellidos"
+                          value={formData.fullName}
+                          onChange={handleInputChange}
+                          required
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="email">Email</Label>
-                        <Input id="email" type="email" placeholder="tu@email.com" value={formData.email} onChange={handleInputChange} required />
+                        <Input
+                          id="email"
+                          type="email"
+                          placeholder="tu@email.com"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          required
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="phone">Teléfono (Opcional)</Label>
-                        <Input id="phone" type="tel" placeholder="+34 600 000 000" value={formData.phone} onChange={handleInputChange} />
+                        <Input
+                          id="phone"
+                          type="tel"
+                          placeholder="+34 600 000 000"
+                          value={formData.phone}
+                          onChange={handleInputChange}
+                        />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="message">Mensaje</Label>
-                        <Textarea id="message" placeholder="Cuéntanos cómo podemos ayudarte..." value={formData.message} onChange={handleInputChange} required />
+                        <Textarea
+                          id="message"
+                          placeholder="Cuéntanos cómo podemos ayudarte..."
+                          value={formData.message}
+                          onChange={handleInputChange}
+                          required
+                        />
                       </div>
                       <Button type="submit" className="w-full" size="lg" disabled={loading}>
                         {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}

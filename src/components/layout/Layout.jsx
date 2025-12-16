@@ -140,7 +140,7 @@ const Footer = () => {
             &copy; {new Date().getFullYear()} BSB Capital. Todos los derechos reservados.
           </p>
           <p className="text-brand-green-100/50 mt-1">
-            Oficina en Dubái. Asesores financieros acreditados en España.
+            Oficina en Dubái. Asesor financiero acreditado en España.
           </p>
           <div className="flex flex-wrap justify-center gap-x-4 gap-y-2 mt-4">
             <Link

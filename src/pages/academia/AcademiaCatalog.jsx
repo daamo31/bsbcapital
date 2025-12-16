@@ -6,11 +6,24 @@ import { supabase } from '@/lib/customSupabaseClient';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
 import { useAdmin } from '@/hooks/useAdmin';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/data-display/card';
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/data-display/card';
 import { Badge } from '@/components/ui/data-display/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/navigation/tabs';
 import { Video, FileText, Layers, Lock, Loader2 } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
 import { loadStripe } from '@stripe/stripe-js';
 
 const containerVariants = {
@@ -29,13 +42,17 @@ const itemVariants = {
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 // Price IDs para la academia con fallbacks
-const ACADEMIA_MEMBERSHIP_PRICE_ID = import.meta.env.VITE_STRIPE_ACADEMY_MEMBERSHIP_PRICE_ID || 'price_default_membership';
-const ACADEMIA_ONETIME_PRICE_ID = import.meta.env.VITE_STRIPE_ACADEMY_ONETIME_PRICE_ID || 'price_default_onetime';
+const ACADEMIA_MEMBERSHIP_PRICE_ID =
+  import.meta.env.VITE_STRIPE_ACADEMY_MEMBERSHIP_PRICE_ID || 'price_default_membership';
+const ACADEMIA_ONETIME_PRICE_ID =
+  import.meta.env.VITE_STRIPE_ACADEMY_ONETIME_PRICE_ID || 'price_default_onetime';
 
-console.log('🏫 Academia Price IDs configurados:', {
-  membership: ACADEMIA_MEMBERSHIP_PRICE_ID,
-  onetime: ACADEMIA_ONETIME_PRICE_ID
-});
+if (import.meta.env.DEV) {
+  console.log('🏫 Academia Price IDs configurados:', {
+    membership: ACADEMIA_MEMBERSHIP_PRICE_ID,
+    onetime: ACADEMIA_ONETIME_PRICE_ID,
+  });
+}
 
 const AcademiaCatalog = () => {
   const { user, session, profile } = useAuth();
@@ -62,7 +79,7 @@ const AcademiaCatalog = () => {
         console.error('Error fetching content:', contentError);
       } else {
         setContent(allContent);
-      };
+      }
       setLoading(false);
     };
 
@@ -103,7 +120,7 @@ const AcademiaCatalog = () => {
   const handleCheckout = async (priceId) => {
     if (!user) {
       // This should be handled by the modal, but as a fallback
-      alert("Please log in or sign up to continue.");
+      alert('Please log in or sign up to continue.');
       return;
     }
 
@@ -122,8 +139,8 @@ const AcademiaCatalog = () => {
             user_id: user.id,
             product_type: 'academia',
             client_name: profile?.name || user.email,
-            client_email: user.email
-          }
+            client_email: user.email,
+          },
         }),
       });
 
@@ -137,7 +154,6 @@ const AcademiaCatalog = () => {
       } else {
         throw new Error('No se recibió URL de checkout válida');
       }
-
     } catch (error) {
       console.error('❌ Error en checkout de academia:', error);
       alert('No se pudo iniciar el pago. Por favor intenta de nuevo.');
@@ -148,19 +164,29 @@ const AcademiaCatalog = () => {
 
   const allContent = useMemo(() => {
     const contentWithRoutes = [
-      ...content.map(c => ({ ...c, item_type: 'content' })),
-      ...routes.map(r => ({ ...r, item_type: 'route' }))
+      ...content.map((c) => ({ ...c, item_type: 'content' })),
+      ...routes.map((r) => ({ ...r, item_type: 'route' })),
     ];
-    return contentWithRoutes.sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+    return contentWithRoutes.sort(
+      (a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0)
+    );
   }, [content, routes]);
 
-  const videos = content.filter(c => c.content_type === 'video');
-  const documents = content.filter(c => c.content_type === 'document');
+  const videos = content.filter((c) => c.content_type === 'video');
+  const documents = content.filter((c) => c.content_type === 'document');
 
   const renderContentCard = (item) => {
     const isRoute = item.item_type === 'route';
-    const icon = isRoute ? <Layers className="h-6 w-6 text-primary" /> : (item.content_type === 'video' ? <Video className="h-6 w-6 text-primary" /> : <FileText className="h-6 w-6 text-primary" />);
-    const link = isRoute ? `/academia/ruta/${item.content_id}` : `/academia/contenido/${item.content_id}`;
+    const icon = isRoute ? (
+      <Layers className="h-6 w-6 text-primary" />
+    ) : item.content_type === 'video' ? (
+      <Video className="h-6 w-6 text-primary" />
+    ) : (
+      <FileText className="h-6 w-6 text-primary" />
+    );
+    const link = isRoute
+      ? `/academia/ruta/${item.content_id}`
+      : `/academia/contenido/${item.content_id}`;
 
     return (
       <motion.div variants={itemVariants} key={item.id}>
@@ -200,7 +226,10 @@ const AcademiaCatalog = () => {
     <>
       <Helmet>
         <title>Academia BSB Capital | Formación en inversión, fiscalidad y crypto</title>
-        <meta name="description" content="Acceso exclusivo a vídeos y documentos. Membresía o pago único. Contenidos sin descarga por defecto." />
+        <meta
+          name="description"
+          content="Acceso exclusivo a vídeos y documentos. Membresía o pago único. Contenidos sin descarga por defecto."
+        />
       </Helmet>
       <div className="bg-background">
         <div className="container mx-auto px-4 py-16 md:py-24">
@@ -210,9 +239,18 @@ const AcademiaCatalog = () => {
             variants={containerVariants}
             className="text-center"
           >
-            <motion.h1 variants={itemVariants} className="text-4xl md:text-5xl font-bold text-foreground">Academia BSB Capital</motion.h1>
-            <motion.p variants={itemVariants} className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto">
-              Formación práctica en inversión, fiscalidad y crypto. Acceso exclusivo para miembros o por compra individual.
+            <motion.h1
+              variants={itemVariants}
+              className="text-4xl md:text-5xl font-bold text-foreground"
+            >
+              Academia BSB Capital
+            </motion.h1>
+            <motion.p
+              variants={itemVariants}
+              className="mt-4 text-lg text-muted-foreground max-w-3xl mx-auto"
+            >
+              Formación práctica en inversión, fiscalidad y crypto. Acceso exclusivo para miembros o
+              por compra individual.
             </motion.p>
           </motion.div>
 
@@ -224,7 +262,9 @@ const AcademiaCatalog = () => {
               className="mt-12 max-w-2xl mx-auto bg-card border rounded-lg p-6 flex flex-col sm:flex-row items-center justify-center gap-4 text-center sm:text-left"
             >
               <p className="font-semibold text-lg flex-grow">Desbloquea todo el conocimiento.</p>
-              <Button onClick={handleGetAccess} size="lg">Obtener Acceso Ahora</Button>
+              <Button onClick={handleGetAccess} size="lg">
+                Obtener Acceso Ahora
+              </Button>
             </motion.div>
           )}
 
@@ -243,23 +283,43 @@ const AcademiaCatalog = () => {
               ) : (
                 <>
                   <TabsContent value="all">
-                    <motion.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <motion.div
+                      variants={containerVariants}
+                      initial="hidden"
+                      animate="visible"
+                      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                    >
                       {allContent.map(renderContentCard)}
                     </motion.div>
                   </TabsContent>
                   <TabsContent value="videos">
-                    <motion.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <motion.div
+                      variants={containerVariants}
+                      initial="hidden"
+                      animate="visible"
+                      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                    >
                       {videos.map(renderContentCard)}
                     </motion.div>
                   </TabsContent>
                   <TabsContent value="documents">
-                    <motion.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <motion.div
+                      variants={containerVariants}
+                      initial="hidden"
+                      animate="visible"
+                      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                    >
                       {documents.map(renderContentCard)}
                     </motion.div>
                   </TabsContent>
                   <TabsContent value="routes">
-                    <motion.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                      {routes.map(item => renderContentCard({ ...item, item_type: 'route' }))}
+                    <motion.div
+                      variants={containerVariants}
+                      initial="hidden"
+                      animate="visible"
+                      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+                    >
+                      {routes.map((item) => renderContentCard({ ...item, item_type: 'route' }))}
                     </motion.div>
                   </TabsContent>
                 </>
@@ -270,7 +330,14 @@ const AcademiaCatalog = () => {
           <div className="mt-24 text-center">
             <h2 className="text-2xl font-bold">¿Problemas con el acceso?</h2>
             <p className="mt-2 text-muted-foreground">
-              Escríbenos a <a href="mailto:info@bsbcapital.io" className="text-primary font-semibold hover:underline">info@bsbcapital.io</a> y te ayudaremos.
+              Escríbenos a{' '}
+              <a
+                href="mailto:info@bsbcapital.io"
+                className="text-primary font-semibold hover:underline"
+              >
+                info@bsbcapital.io
+              </a>{' '}
+              y te ayudaremos.
             </p>
           </div>
         </div>
@@ -281,15 +348,20 @@ const AcademiaCatalog = () => {
           <DialogHeader>
             <DialogTitle>Obtener Acceso a la Academia</DialogTitle>
             <DialogDescription>
-              Para ver este contenido necesitas una membresía activa o comprar el acceso a la Academia.
+              Para ver este contenido necesitas una membresía activa o comprar el acceso a la
+              Academia.
             </DialogDescription>
           </DialogHeader>
           <div className="py-4 space-y-4">
             {!user ? (
               <div className="text-center">
                 <p className="mb-4">Primero, necesitas una cuenta.</p>
-                <Button asChild className="w-full mb-2"><Link to="/login">Iniciar Sesión</Link></Button>
-                <Button asChild variant="outline" className="w-full"><Link to="/signup">Crear Cuenta</Link></Button>
+                <Button asChild className="w-full mb-2">
+                  <Link to="/login">Iniciar Sesión</Link>
+                </Button>
+                <Button asChild variant="outline" className="w-full">
+                  <Link to="/signup">Crear Cuenta</Link>
+                </Button>
               </div>
             ) : (
               <>
@@ -299,7 +371,9 @@ const AcademiaCatalog = () => {
                   size="lg"
                   disabled={!!checkoutLoading}
                 >
-                  {checkoutLoading === ACADEMIA_MEMBERSHIP_PRICE_ID ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  {checkoutLoading === ACADEMIA_MEMBERSHIP_PRICE_ID ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : null}
                   Acceder con Membresía
                 </Button>
                 <Button
@@ -309,7 +383,9 @@ const AcademiaCatalog = () => {
                   size="lg"
                   disabled={!!checkoutLoading}
                 >
-                  {checkoutLoading === ACADEMIA_ONETIME_PRICE_ID ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
+                  {checkoutLoading === ACADEMIA_ONETIME_PRICE_ID ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : null}
                   Comprar Acceso a la Academia
                 </Button>
               </>

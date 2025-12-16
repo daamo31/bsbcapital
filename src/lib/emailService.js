@@ -4,17 +4,16 @@ import { supabase } from './customSupabaseClient.js';
 class EmailService {
   constructor() {
     this.functionName = 'resend-email-secure'; // Solo usar la función segura
-    
+
     // Configuración de URLs para logos
-    this.BASE_URL = typeof window !== 'undefined' 
-      ? window.location.origin 
-      : 'https://horizons-ten.vercel.app';
-    
+    this.BASE_URL =
+      typeof window !== 'undefined' ? window.location.origin : 'https://horizons-ten.vercel.app';
+
     this.LOGO_URLS = {
       gold: `${this.BASE_URL}/public/images/gold_logo.jpeg`,
       black: `${this.BASE_URL}/public/images/black_logo.jpeg`,
       white: `${this.BASE_URL}/public/images/white_logo.jpeg`,
-      default: `${this.BASE_URL}/public/images/gold_logo.jpeg`
+      default: `${this.BASE_URL}/public/images/gold_logo.jpeg`,
     };
   }
 
@@ -69,7 +68,7 @@ class EmailService {
     return {
       // 1.1. Consultoría Optimización de Cartera
       consultation_portfolio_optimization: {
-        subject: "Tu consultoría de Optimización de cartera en BSB Capital está confirmada 🗓",
+        subject: 'Tu consultoría de Optimización de cartera en BSB Capital está confirmada 🗓',
         html: this.buildEmailTemplate(`
           <p>Tu consultoría personalizada ha sido confirmada con éxito.</p>
           <p>En esta sesión trabajaremos contigo para analizar tu situación financiera y diseñar una estrategia clara, realista y adaptada a tus objetivos.</p>
@@ -87,12 +86,12 @@ class EmailService {
           
           <p>Gracias por confiar en BSB Capital y permitirnos acompañarte en tu crecimiento financiero.</p>
           <p><strong>El equipo de BSB Capital</strong></p>
-        `)
+        `),
       },
 
       // 1.2. Consultoría Crypto & Web3
       consultation_crypto_web3: {
-        subject: "Tu consultoría de Crypto & Web3 ha sido confirmada 🗓",
+        subject: 'Tu consultoría de Crypto & Web3 ha sido confirmada 🗓',
         html: this.buildEmailTemplate(`
           <p>Tu consultoría estratégica de Crypto & Web3 con BSB Capital está confirmada.</p>
           
@@ -106,12 +105,12 @@ class EmailService {
           
           <p>Gracias por apostar por el futuro de la inversión.</p>
           <p><strong>El equipo de BSB Capital</strong></p>
-        `)
+        `),
       },
 
       // 1.3. Consultoría Onboarding Crypto
       consultation_crypto_onboarding: {
-        subject: "Tu consultoría de Crypto & Web3 ha sido confirmada 🗓",
+        subject: 'Tu consultoría de Crypto & Web3 ha sido confirmada 🗓',
         html: this.buildEmailTemplate(`
           <p>Tu consultoría de Onboarding Crypto está confirmada.</p>
           
@@ -125,12 +124,13 @@ class EmailService {
           
           <p>Gracias por confiar en BSB Capital para iniciar tu camino en el mundo crypto.</p>
           <p><strong>El equipo de BSB Capital</strong></p>
-        `)
+        `),
       },
 
       // 1.4. Consultoría Gestión de Tesorería Crypto para Empresas
       consultation_treasury_crypto: {
-        subject: "Tu consultoría de Gestión de Tesorería Crypto para empresas ha sido confirmada 🗓",
+        subject:
+          'Tu consultoría de Gestión de Tesorería Crypto para empresas ha sido confirmada 🗓',
         html: this.buildEmailTemplate(`
           <p>Tu consultoría en Gestión de Tesorería Crypto para empresas ha sido confirmada.</p>
           
@@ -149,12 +149,12 @@ class EmailService {
           
           <p>Gracias por confiar en BSB Capital.</p>
           <p><strong>El equipo de BSB Capital</strong></p>
-        `)
+        `),
       },
 
       // 2.1. Academia BSB
       academia_bsb: {
-        subject: "Tu acceso a la BSB Academy está activo 🎓",
+        subject: 'Tu acceso a la BSB Academy está activo 🎓',
         html: this.buildEmailTemplate(`
           <p>¡Bienvenido a la Academia de BSB Capital!</p>
           
@@ -172,12 +172,12 @@ class EmailService {
           
           <p>Gracias por apostar por tu educación financiera.</p>
           <p><strong>El equipo de BSB Capital</strong></p>
-        `)
+        `),
       },
 
       // 3.1. Paquete Onboarding Crypto
       package_crypto_onboarding: {
-        subject: "Tu paquete Onboarding Crypto con BSB Capital está confirmado 🚀",
+        subject: 'Tu paquete Onboarding Crypto con BSB Capital está confirmado 🚀',
         html: this.buildEmailTemplate(`
           <p><strong>Enhorabuena,</strong></p>
           
@@ -202,12 +202,12 @@ class EmailService {
           
           <p>Un saludo,</p>
           <p><strong>Juan Salgado</strong><br>CEO BSB Capital</p>
-        `)
+        `),
       },
 
       // 3.2. Paquete Gestión Tesorería Crypto para Empresas
       package_treasury_crypto: {
-        subject: "Tu paquete Gestión de Tesorería Crypto para empresas está confirmado 🚀",
+        subject: 'Tu paquete Gestión de Tesorería Crypto para empresas está confirmado 🚀',
         html: this.buildEmailTemplate(`
           <p>Gracias por confiar en BSB Capital.</p>
           
@@ -228,12 +228,12 @@ class EmailService {
           
           <p>Un saludo,</p>
           <p><strong>Juan Salgado</strong><br>CEO de BSB Capital</p>
-        `)
+        `),
       },
 
       // 3.3. Paquete Investor Premium
       package_investor_premium: {
-        subject: "Tu paquete Inversor Premium de BSB Capital está confirmado 🚀",
+        subject: 'Tu paquete Inversor Premium de BSB Capital está confirmado 🚀',
         html: this.buildEmailTemplate(`
           <p>Gracias por confiar en BSB Capital y enhorabuena por la decisión que acabas de tomar.</p>
           
@@ -256,12 +256,12 @@ class EmailService {
           
           <p>Un saludo,</p>
           <p><strong>Juan Salgado</strong><br>CEO de BSB Capital</p>
-        `)
+        `),
       },
 
       // 4.1. Membresía Anual BSB Capital
       membership_annual: {
-        subject: "Tu Membresía Anual BSB Capital ya está activa ✅",
+        subject: 'Tu Membresía Anual BSB Capital ya está activa ✅',
         html: this.buildEmailTemplate(`
           <p>Gracias por unirte a la Membresía Anual de BSB Capital. Tu acceso está activado.</p>
           
@@ -283,8 +283,8 @@ class EmailService {
           
           <p>Un saludo,</p>
           <p><strong>Juan Salgado</strong><br>CEO de BSB Capital</p>
-        `)
-      }
+        `),
+      },
     };
   }
 
@@ -299,9 +299,9 @@ class EmailService {
           to: userData.email,
           data: {
             name: userData.name || userData.full_name,
-            email: userData.email
-          }
-        })
+            email: userData.email,
+          },
+        }),
       });
 
       if (error) throw error;
@@ -313,7 +313,7 @@ class EmailService {
   }
 
   /**
-   * Envía confirmación de preregistro para BSB Maker
+   * Envía confirmación de pre-registro para BSB Maker
    */
   async sendPreregistrationConfirmation(userData) {
     try {
@@ -323,9 +323,9 @@ class EmailService {
           to: userData.email,
           data: {
             name: userData.name,
-            email: userData.email
-          }
-        })
+            email: userData.email,
+          },
+        }),
       });
 
       if (error) throw error;
@@ -350,9 +350,9 @@ class EmailService {
             email: purchaseData.email,
             planName: purchaseData.planName,
             amount: purchaseData.amount,
-            transactionId: purchaseData.transactionId
-          }
-        })
+            transactionId: purchaseData.transactionId,
+          },
+        }),
       });
 
       if (error) throw error;
@@ -375,9 +375,9 @@ class EmailService {
           data: {
             name: subscriptionData.name,
             email: subscriptionData.email,
-            planName: subscriptionData.planName
-          }
-        })
+            planName: subscriptionData.planName,
+          },
+        }),
       });
 
       if (error) throw error;
@@ -401,9 +401,9 @@ class EmailService {
             name: formData.name,
             email: formData.email,
             subject: formData.subject,
-            message: formData.message
-          }
-        })
+            message: formData.message,
+          },
+        }),
       });
 
       if (error) throw error;
@@ -427,9 +427,9 @@ class EmailService {
             fullName: inquiryData.fullName,
             email: inquiryData.email,
             phone: inquiryData.phone,
-            message: inquiryData.message
-          }
-        })
+            message: inquiryData.message,
+          },
+        }),
       });
 
       if (error) throw error;
@@ -458,8 +458,8 @@ class EmailService {
           to,
           subject: template.subject,
           html: template.html.replace('[Nombre]', data.name),
-          data
-        })
+          data,
+        }),
       });
 
       if (error) throw error;
@@ -541,17 +541,17 @@ class EmailService {
       // 🎯 Determinar el tipo de template específico según el tipo de consultoría
       const consultationType = consultationData.consultationType || consultationData.type;
       let emailType = 'admin_consultation_notification'; // fallback genérico
-      
+
       // Mapear tipos de consultoría a templates específicos
       const consultationTypeMap = {
-        'financial_planning': 'admin_consultation_financial_planning',
-        'onboarding_crypto': 'admin_consultation_onboarding_crypto', 
-        'crypto_advanced': 'admin_consultation_crypto_advanced',
+        financial_planning: 'admin_consultation_financial_planning',
+        onboarding_crypto: 'admin_consultation_onboarding_crypto',
+        crypto_advanced: 'admin_consultation_crypto_advanced',
         'Optimización de cartera': 'admin_consultation_financial_planning',
         'Onboarding cripto': 'admin_consultation_onboarding_crypto',
-        'Gestión de tesorería cripto para empresas': 'admin_consultation_crypto_advanced'
+        'Gestión de tesorería cripto para empresas': 'admin_consultation_crypto_advanced',
       };
-      
+
       if (consultationTypeMap[consultationType]) {
         emailType = consultationTypeMap[consultationType];
         console.log(`📧 Usando template específico: ${emailType} para tipo: ${consultationType}`);
@@ -586,9 +586,9 @@ class EmailService {
             // 📋 Datos completos del formulario
             clientResponses: consultationData.clientResponses,
             formDataJson: consultationData.formDataJson,
-            timestamp: consultationData.timestamp || new Date().toISOString()
-          }
-        })
+            timestamp: consultationData.timestamp || new Date().toISOString(),
+          },
+        }),
       });
 
       if (error) throw error;
@@ -623,8 +623,8 @@ class EmailService {
         body: JSON.stringify({
           type: 'health_check',
           to: 'test@example.com',
-          data: {}
-        })
+          data: {},
+        }),
       });
 
       return { success: !error, available: !error };
@@ -660,5 +660,5 @@ export const {
   sendMembershipAnnual,
   sendAdminConsultationNotification,
   sendCustomEmail,
-  healthCheck
+  healthCheck,
 } = emailService;

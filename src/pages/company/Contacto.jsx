@@ -2,16 +2,19 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Mail, MapPin, Phone } from 'lucide-react';
+import { Mail, MapPin } from 'lucide-react';
 
 const Contacto = () => {
-  const contactEmail = "info@bsbcapital.io";
+  const contactEmail = 'info@bsbcapital.io';
 
   return (
     <>
       <Helmet>
         <title>Contacto - BSB Capital</title>
-        <meta name="description" content="Ponte en contacto con nuestro equipo para cualquier consulta. Estamos aquí para ayudarte." />
+        <meta
+          name="description"
+          content="Ponte en contacto con nuestro equipo para cualquier consulta. Estamos aquí para ayudarte."
+        />
       </Helmet>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -21,22 +24,33 @@ const Contacto = () => {
         className="container mx-auto px-4 py-16"
       >
         <div className="text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-brand-text-primary">Ponte en Contacto con BSB Capital 💬</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-brand-text-primary">
+            Ponte en Contacto con BSB Capital
+          </h1>
           <p className="mt-4 text-lg text-brand-text-secondary max-w-2xl mx-auto">
-            Tu camino hacia decisiones financieras más inteligentes empieza con una conversación. Estamos aquí para guiarte.
+            Tu camino hacia decisiones financieras más inteligentes empieza con una conversación.
+            Estamos aquí para guiarte.
           </p>
         </div>
 
-        <div className="mt-16 max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <div className="space-y-8">
+        <div className="mt-16 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0 bg-brand-primary/10 text-brand-primary p-3 rounded-full">
                 <Mail className="h-6 w-6" />
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-brand-text-primary">Email – Respuesta inmediata</h3>
-                <p className="text-brand-text-secondary">La forma más rápida de resolver tus dudas o recibir información sobre nuestros servicios.</p>
-                <a href={`mailto:${contactEmail}`} className="text-brand-primary font-medium hover:underline">
+                <h3 className="text-xl font-semibold text-brand-text-primary">
+                  Email – Respuesta inmediata
+                </h3>
+                <p className="text-brand-text-secondary mt-2">
+                  La forma más rápida de resolver tus dudas o recibir información sobre nuestros
+                  servicios.
+                </p>
+                <a
+                  href={`mailto:${contactEmail}`}
+                  className="text-brand-primary font-medium hover:underline mt-2 inline-block"
+                >
                   {contactEmail}
                 </a>
               </div>
@@ -46,19 +60,18 @@ const Contacto = () => {
                 <MapPin className="h-6 w-6" />
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-brand-text-primary">Oficina Principal – Operaciones Globales</h3>
-                <p className="text-brand-text-secondary">Nuestro hub estratégico en Dubái, conectando inversiones y oportunidades alrededor del mundo.</p>
-                <p className="font-medium text-brand-text-primary">Dubái, Emiratos Árabes Unidos</p>
+                <h3 className="text-xl font-semibold text-brand-text-primary">
+                  Oficina Principal – Operaciones Globales
+                </h3>
+                <p className="text-brand-text-secondary mt-2">
+                  Nuestro hub estratégico en Dubái, conectando inversiones y oportunidades alrededor
+                  del mundo.
+                </p>
+                <p className="font-medium text-brand-text-primary mt-2">
+                  Dubái, Emiratos Árabes Unidos
+                </p>
               </div>
             </div>
-          </div>
-
-          <div>
-            <img
-              className="rounded-lg shadow-xl object-cover w-full h-full"
-              alt="Un moderno espacio de oficina con personas colaborando"
-              src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=1974&auto=format&fit=crop"
-            />
           </div>
         </div>
 
@@ -67,7 +80,8 @@ const Contacto = () => {
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-brand-text-primary">💬 Mensaje Directo</h2>
             <p className="text-brand-text-secondary mt-2">
-              ¿Prefieres escribirnos? Envíanos un mensaje y te responderemos con recomendaciones concretas y soluciones prácticas.
+              ¿Prefieres escribirnos? Envíanos un mensaje y te responderemos con recomendaciones
+              concretas y soluciones prácticas.
             </p>
           </div>
 
@@ -82,7 +96,10 @@ const Contacto = () => {
             className="space-y-6"
           >
             <div>
-              <label htmlFor="subject" className="block text-sm font-medium text-brand-text-primary mb-2">
+              <label
+                htmlFor="subject"
+                className="block text-sm font-medium text-brand-text-primary mb-2"
+              >
                 Asunto
               </label>
               <input
@@ -96,7 +113,10 @@ const Contacto = () => {
             </div>
 
             <div>
-              <label htmlFor="message" className="block text-sm font-medium text-brand-text-primary mb-2">
+              <label
+                htmlFor="message"
+                className="block text-sm font-medium text-brand-text-primary mb-2"
+              >
                 Tu mensaje
               </label>
               <textarea
