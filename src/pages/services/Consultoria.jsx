@@ -439,7 +439,7 @@ const BookingModal = ({ children }) => {
                         : 'border-border hover:bg-muted/50 hover:border-primary/30'
                     }`}
                   >
-                    <span className="font-semibold">45 min - 300€</span>
+                    <span className="font-semibold">60 min - 300€</span>
                     <span className="text-xs opacity-70">Consulta completa</span>
                   </Button>
                   {/* COMENTADO PARA PRODUCCIÓN - Descomentar para testing con €1 */}
