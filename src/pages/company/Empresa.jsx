@@ -157,12 +157,12 @@ const Empresa = () => {
             {/* Images Column */}
             <motion.div
               variants={fadeIn}
-              className="relative w-full h-[300px] md:h-[400px] overflow-hidden rounded-xl shadow-xl"
+              className="relative w-full h-auto overflow-hidden rounded-xl shadow-xl"
             >
               <img
-                src="/images/bsb-office-2.jpg"
-                alt="Reunión BSB Capital"
-                className="w-full h-full object-cover transform scale-120"
+                src="/images/juan-liderazgo.png"
+                alt="Juan Salgado Blanco"
+                className="w-full h-auto block"
               />
             </motion.div>
 
