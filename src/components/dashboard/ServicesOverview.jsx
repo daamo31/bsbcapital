@@ -11,7 +11,17 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/data-display/badge';
 import { Alert, AlertDescription } from '@/components/ui/feedback/alert';
-import { Loader2, Package, CheckCircle, ExternalLink, ShoppingCart } from 'lucide-react';
+import {
+  Loader2,
+  Package,
+  CheckCircle,
+  ExternalLink,
+  ShoppingCart,
+  Briefcase,
+  GraduationCap,
+  Bot,
+  Star,
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const ServicesOverview = () => {
@@ -21,25 +31,36 @@ const ServicesOverview = () => {
 
   const allServices = [
     {
-      name: 'BSB Maker',
-      description: 'Tu asistente de inversión con IA: backtesting, señales y gestión de riesgo.',
-      link: '/bsb-maker',
-      category: 'herramienta',
-      icon: '🤖',
-    },
-    {
-      name: 'Algo Fund',
-      description: 'Inversión en nuestro fondo algorítmico de alto rendimiento.',
-      link: '/algo-fund',
-      category: 'inversión',
-      icon: '📈',
-    },
-    {
-      name: 'Consultoría',
-      description: 'Asesoramiento financiero personalizado con expertos.',
+      name: 'BSB Consulting',
+      description:
+        'Asesoramiento profesional especializado en crypto para gestionar, optimizar y estructurar tu cartera.',
       link: '/consultoria',
       category: 'servicio',
-      icon: '💼',
+      icon: Briefcase,
+    },
+    {
+      name: 'BSB Academy',
+      description:
+        'Formación especializada en crypto: masterclasses, píldoras de conocimiento y comunidad privada.',
+      link: '/formacion',
+      category: 'formación',
+      icon: GraduationCap,
+    },
+    {
+      name: 'BSB Maker',
+      description:
+        'Tu asistente de inversión con IA: backtesting, señales, simulación de escenarios y gestión de riesgo.',
+      link: '/bsb-maker',
+      category: 'herramienta',
+      icon: Bot,
+    },
+    {
+      name: 'Membresías',
+      description:
+        'Paquetes exclusivos con descuentos especiales, acceso anticipado y eventos con expertos.',
+      link: '/membresias',
+      category: 'membresía',
+      icon: Star,
     },
   ];
 
@@ -100,8 +121,9 @@ const ServicesOverview = () => {
   const getCategoryBadge = (category) => {
     const colors = {
       herramienta: 'bg-blue-100 text-blue-800',
-      inversión: 'bg-green-100 text-green-800',
-      servicio: 'bg-purple-100 text-purple-800',
+      formación: 'bg-purple-100 text-purple-800',
+      servicio: 'bg-green-100 text-green-800',
+      membresía: 'bg-yellow-100 text-yellow-800',
     };
     return (
       <span
@@ -184,7 +206,7 @@ const ServicesOverview = () => {
                   className="flex items-center justify-between p-4 border rounded-lg hover:shadow-md transition-all bg-green-50/50 border-green-200"
                 >
                   <div className="flex items-start gap-3 flex-1">
-                    <span className="text-3xl">{service.icon}</span>
+                    <service.icon className="h-10 w-10 text-brand-gold-600 flex-shrink-0" />
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <h3 className="font-semibold text-lg">{service.name}</h3>
@@ -230,7 +252,7 @@ const ServicesOverview = () => {
                   className="flex items-center justify-between p-4 border rounded-lg hover:shadow-md transition-all hover:border-brand-accent"
                 >
                   <div className="flex items-start gap-3 flex-1">
-                    <span className="text-3xl opacity-50">{service.icon}</span>
+                    <service.icon className="h-10 w-10 text-brand-gold-600 flex-shrink-0" />
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <h3 className="font-semibold text-lg">{service.name}</h3>

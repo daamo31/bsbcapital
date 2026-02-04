@@ -123,6 +123,46 @@ const OtrosServicios = () => {
 
         <main className="py-16 md:py-24">
           <div className="container mx-auto px-4">
+            {/* Service Images */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.6, ease: 'easeOut' }}
+              >
+                <img
+                  src="/service-image-1.jpg"
+                  alt="Vista panorámica de Dubái"
+                  className="w-full aspect-[3/4] object-cover rounded-lg shadow-lg"
+                />
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
+              >
+                <img
+                  src="/service-image-2.jpg"
+                  alt="Skyline de Dubái al atardecer"
+                  className="w-full aspect-[3/4] object-cover rounded-lg shadow-lg"
+                />
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.3 }}
+                transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
+              >
+                <img
+                  src="/service-image-3.jpg"
+                  alt="CLCRIPTO - Consultoría Legal Cripto"
+                  className="w-full aspect-[3/4] object-cover rounded-lg shadow-lg"
+                />
+              </motion.div>
+            </div>
+
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               <ServiceCard
                 icon={<Building className="h-6 w-6 text-primary" />}

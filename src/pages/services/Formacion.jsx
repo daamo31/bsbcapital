@@ -44,6 +44,30 @@ const Formacion = () => {
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const { isAdmin, loading } = useAdmin();
   const navigate = useNavigate();
+  const videoRef = React.useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          videoRef.current?.play().catch((error) => console.log('Autoplay prevented:', error));
+        } else {
+          videoRef.current?.pause();
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    if (videoRef.current) {
+      observer.observe(videoRef.current);
+    }
+
+    return () => {
+      if (videoRef.current) {
+        observer.unobserve(videoRef.current);
+      }
+    };
+  }, []);
 
   // Redirigir admin directamente a academia
   useEffect(() => {
@@ -213,6 +237,12 @@ const Formacion = () => {
         {/* Method Section */}
         <motion.section variants={itemVariants} className="py-16 md:py-24 bg-background">
           <div className="container mx-auto px-4 sm:px-6">
+            <div className="max-w-4xl mx-auto mb-8 md:mb-16 rounded-xl overflow-hidden shadow-2xl">
+              <video ref={videoRef} controls muted playsInline loop className="w-full h-auto">
+                <source src="/videos/video1.mp4" type="video/mp4" />
+                Tu navegador no soporta el elemento de video.
+              </video>
+            </div>
             <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
               Aprende con un método pensado para ti
             </h2>

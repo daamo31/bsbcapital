@@ -33,6 +33,15 @@ const Contacto = () => {
           </p>
         </div>
 
+        {/* Contact Image */}
+        <div className="my-12 max-w-4xl mx-auto">
+          <img
+            src="/contact-image.jpg"
+            alt="Espacio de trabajo profesional BSB Capital"
+            className="w-full h-auto rounded-lg shadow-lg object-cover"
+          />
+        </div>
+
         <div className="mt-16 max-w-5xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="flex items-start gap-4">

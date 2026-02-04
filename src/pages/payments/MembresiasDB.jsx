@@ -534,7 +534,7 @@ const MembresiasDB = () => {
       </div>
 
       {/* Sección 1: Introducción a Paquetes - Full Width Background */}
-      <div className="w-full bg-brand-green-100 py-12 md:py-16 mb-16">
+      <div className="w-full bg-white py-12 md:py-16 mb-16">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto px-6 md:px-12">
             <div className="flex items-start gap-4 mb-8">
@@ -1081,7 +1081,7 @@ const MembresiasDB = () => {
         {/* Información adicional */}
         {/* Información adicional */}
         <div className="container mx-auto px-4">
-          <div className="mt-24 bg-brand-green-100 rounded-3xl p-12 border-2 border-brand-green-200">
+          <div className="mt-24 bg-white rounded-3xl p-12 border-2 border-brand-green-200">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold mb-4 text-brand-green-900">
                 ¿Necesitas ayuda para elegir?

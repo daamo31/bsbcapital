@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ArrowRight, Menu, X, Loader2, LogIn, User, Settings } from 'lucide-react';
+import {
+  ArrowRight,
+  Menu,
+  X,
+  Loader2,
+  LogIn,
+  User,
+  Settings,
+  Instagram,
+  Linkedin,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/forms/input';
 import { useToast } from '@/components/ui/feedback/use-toast';
@@ -59,13 +69,13 @@ const Footer = () => {
   return (
     <footer className="bg-brand-green-900 text-brand-green-100">
       <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 sm:gap-12">
           <div className="lg:col-span-1">
             <Link to="/" className="flex items-center gap-3">
               <img
                 alt="Logotipo de BSB Capital"
                 className="h-13 w-auto"
-                src="/images/black_logo-Photoroom.png"
+                src="/images/white_logo-Photoroom.png"
               />
               <span className="font-bold text-xl text-white">BSB Capital</span>
             </Link>
@@ -74,7 +84,7 @@ const Footer = () => {
               especialización crypto y activos digitales.
             </p>
           </div>
-          <div className="grid grid-cols-2 gap-6 sm:gap-8 lg:col-span-2">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 lg:col-span-3">
             <div>
               <p className="font-semibold text-white">Servicios</p>
               <ul className="mt-4 space-y-2 text-sm">
@@ -130,6 +140,33 @@ const Footer = () => {
                   >
                     Contacto
                   </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <p className="font-semibold text-white">Redes Sociales</p>
+              <ul className="mt-4 space-y-2 text-sm">
+                <li>
+                  <a
+                    href="https://www.linkedin.com/company/bsb-capital-finance/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-brand-green-100/70 hover:text-white transition-colors"
+                  >
+                    <Linkedin className="h-5 w-5" />
+                    bsbcapital.io
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="https://www.instagram.com/bsbcapital.io"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 text-brand-green-100/70 hover:text-white transition-colors"
+                  >
+                    <Instagram className="h-5 w-5" />
+                    bsbcapital.io
+                  </a>
                 </li>
               </ul>
             </div>
