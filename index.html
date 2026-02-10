@@ -21,22 +21,27 @@
 	<!-- Open Graph / Facebook -->
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://bsbcapital.io/" />
-	<meta property="og:title" content="BSB Capital - Inteligencia Financiera Potenciada por IA" />
+	<meta property="og:title" content="BSB Capital | Consultoría y formación en criptomonedas y activos digitales" />
 	<meta property="og:description"
-		content="Fusionamos experiencia de mercado y tecnología de vanguardia para ofrecer soluciones de inversión fiables, escalables y a tu medida." />
+		content="Transformamos tu forma de invertir en crypto. Asesoramiento financiero independiente y especializado en criptoactivos para individuos y empresas." />
 	<meta property="og:image" content="https://bsbcapital.io/images/black_logo-Photoroom.png" />
 	<meta property="og:image:width" content="1200" />
 	<meta property="og:image:height" content="630" />
+	<meta property="og:image:alt" content="BSB Capital - Consultoría en Criptomonedas y Activos Digitales" />
 	<meta property="og:site_name" content="BSB Capital" />
 	<meta property="og:locale" content="es_ES" />
 
 	<!-- Twitter Card -->
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:url" content="https://bsbcapital.io/" />
-	<meta name="twitter:title" content="BSB Capital - Inteligencia Financiera Potenciada por IA" />
+	<meta name="twitter:title" content="BSB Capital | Consultoría y formación en criptomonedas y activos digitales" />
 	<meta name="twitter:description"
-		content="Fusionamos experiencia de mercado y tecnología de vanguardia para ofrecer soluciones de inversión fiables, escalables y a tu medida." />
+		content="Transformamos tu forma de invertir en crypto. Asesoramiento financiero independiente y especializado en criptoactivos para individuos y empresas." />
 	<meta name="twitter:image" content="https://bsbcapital.io/images/black_logo-Photoroom.png" />
+	<meta name="twitter:image:alt" content="BSB Capital - Consultoría en Criptomonedas y Activos Digitales" />
+	<meta name="twitter:creator" content="@bsbcapital" />
+	<meta name="twitter:site" content="@bsbcapital" />
+
 
 	<!-- Google Fonts - Poppins para texto más redondeado -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -52,10 +57,10 @@
 	<script>
 		// Early CORS error detection
 		window.addEventListener('error', function (e) {
-            // Disable logs in production
-            if (window.location.hostname === 'bsbcapital.io' || window.location.hostname === 'www.bsbcapital.io') {
-                return;
-            }
+			// Disable logs in production
+			if (window.location.hostname === 'bsbcapital.io' || window.location.hostname === 'www.bsbcapital.io') {
+				return;
+			}
 
 			if (e.message && (e.message.includes('CORS') || e.message.includes('preflight'))) {
 				console.error('🚨 Error CORS detectado:', {
@@ -70,6 +75,72 @@
 	<!-- TrustBox script -->
 	<script type="text/javascript" src="//widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js" async></script>
 	<!-- End TrustBox script -->
+
+	<!-- Schema.org JSON-LD for SEO -->
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "FinancialService",
+		"name": "BSB Capital",
+		"description": "Consultoría y formación especializada en criptomonedas y activos digitales. Asesoramiento financiero independiente para individuos y empresas.",
+		"url": "https://bsbcapital.io",
+		"logo": "https://bsbcapital.io/images/black_logo-Photoroom.png",
+		"image": "https://bsbcapital.io/images/black_logo-Photoroom.png",
+		"telephone": "+34-XXX-XXX-XXX",
+		"email": "info@bsbcapital.io",
+		"address": {
+			"@type": "PostalAddress",
+			"addressCountry": "ES"
+		},
+		"sameAs": [
+			"https://www.linkedin.com/company/bsbcapital",
+			"https://www.instagram.com/bsbcapital.io"
+		],
+		"serviceType": [
+			"Consultoría Financiera en Criptoactivos",
+			"Formación en Activos Digitales",
+			"Gestión de Cartera Crypto",
+			"Asesoramiento en Blockchain"
+		],
+		"areaServed": {
+			"@type": "Country",
+			"name": "España"
+		},
+		"hasOfferCatalog": {
+			"@type": "OfferCatalog",
+			"name": "Servicios BSB Capital",
+			"itemListElement": [
+				{
+					"@type": "Offer",
+					"itemOffered": {
+						"@type": "Service",
+						"name": "BSB Consulting",
+						"description": "Consultoría financiera especializada en criptoactivos y activos digitales",
+						"url": "https://bsbcapital.io/consultoria-cripto"
+					}
+				},
+				{
+					"@type": "Offer",
+					"itemOffered": {
+						"@type": "Service",
+						"name": "BSB Academy",
+						"description": "Formación profesional en activos digitales y criptomonedas",
+						"url": "https://bsbcapital.io/formacion-criptoactivos"
+					}
+				},
+				{
+					"@type": "Offer",
+					"itemOffered": {
+						"@type": "Service",
+						"name": "Paquetes y Membresía",
+						"description": "Paquetes integrados de consultoría, formación y herramientas",
+						"url": "https://bsbcapital.io/paquetes-cripto"
+					}
+				}
+			]
+		}
+	}
+	</script>
 </head>
 
 <body>

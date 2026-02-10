@@ -134,7 +134,7 @@ const OtrosServicios = () => {
               >
                 <img
                   src="/service-image-1.jpg"
-                  alt="Vista panorámica de Dubái"
+                  alt="Skyline moderno de Dubái mostrando rascacielos y desarrollo inmobiliario de lujo"
                   className="w-full aspect-[3/4] object-cover rounded-lg shadow-lg"
                 />
               </motion.div>
@@ -146,7 +146,7 @@ const OtrosServicios = () => {
               >
                 <img
                   src="/service-image-2.jpg"
-                  alt="Skyline de Dubái al atardecer"
+                  alt="Servicios de inversión inmobiliaria y traslado de residencia fiscal a Dubái"
                   className="w-full aspect-[3/4] object-cover rounded-lg shadow-lg"
                 />
               </motion.div>
@@ -158,7 +158,7 @@ const OtrosServicios = () => {
               >
                 <img
                   src="/service-image-3.jpg"
-                  alt="CLCRIPTO - Consultoría Legal Cripto"
+                  alt="CLCRIPTO - Consultoría legal y fiscal especializada en criptomonedas e impuestos crypto"
                   className="w-full aspect-[3/4] object-cover rounded-lg shadow-lg"
                 />
               </motion.div>

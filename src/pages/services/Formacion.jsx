@@ -170,7 +170,6 @@ const Formacion = () => {
   return (
     <>
       <Helmet>
-        <title>BSB Academy - Formación Crypto Profesional</title>
         <meta
           name="description"
           content="La plataforma educativa de BSB Capital, especializada en formación en activos digitales, para que aprendas a invertir con confianza y maximices el potencial de tu cartera."
@@ -183,6 +182,9 @@ const Formacion = () => {
           className="bg-background text-center py-12 sm:py-20 md:py-32"
         >
           <div className="container mx-auto px-4 sm:px-6">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground">
+              BSB Academy
+            </h1>
             <p className="mt-6 max-w-3xl mx-auto text-lg md:text-xl text-brand-text-secondary leading-relaxed">
               La plataforma educativa de BSB Capital, especializada en formación en activos
               digitales, para que aprendas a invertir con confianza y maximices el potencial de tu
