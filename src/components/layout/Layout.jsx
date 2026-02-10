@@ -90,7 +90,7 @@ const Footer = () => {
               <ul className="mt-4 space-y-2 text-sm">
                 <li>
                   <Link
-                    to="/consultoria"
+                    to="/consultoria-cripto"
                     className="text-brand-green-100/70 hover:text-white transition-colors"
                   >
                     BSB Consulting
@@ -98,7 +98,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    to="/formacion"
+                    to="/formacion-criptoactivos"
                     className="text-brand-green-100/70 hover:text-white transition-colors"
                   >
                     BSB Academy
@@ -114,7 +114,7 @@ const Footer = () => {
                 </li>
                 <li>
                   <Link
-                    to="/otros-servicios"
+                    to="/servicios-adicionales-cripto"
                     className="text-brand-green-100/70 hover:text-white transition-colors"
                   >
                     Otros servicios
@@ -223,11 +223,11 @@ const Header = () => {
   const { isAdmin } = useAdmin();
 
   const navLinks = [
-    { name: 'BSB Consulting', href: '/consultoria' },
-    { name: 'BSB Academy', href: '/formacion' },
+    { name: 'BSB Consulting', href: '/consultoria-cripto' },
+    { name: 'BSB Academy', href: '/formacion-criptoactivos' },
     { name: 'BSB Maker', href: '/bsb-maker' },
-    { name: 'Paquetes', href: '/membresias' },
-    { name: 'Otros Servicios', href: '/otros-servicios' },
+    { name: 'Paquetes', href: '/paquetes-cripto' },
+    { name: 'Otros Servicios', href: '/servicios-adicionales-cripto' },
     { name: 'BSB Capital', href: '/empresa' },
   ];
 
@@ -290,7 +290,7 @@ const Header = () => {
       </div>
       {/* Mobile menu sin AnimatePresence - FIX para móvil */}
       {isOpen && (
-        <div className="lg:hidden absolute top-full left-0 right-0 bg-background shadow-lg border-t">
+        <div className="lg:hidden absolute top-full left-0 right-0 bg-background shadow-lg border-t max-h-[calc(100vh-4rem)] overflow-y-auto">
           <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col gap-4">
             {navLinks.map((link) => (
               <Link

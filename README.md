@@ -529,6 +529,15 @@ RESEND_API_KEY=tu_resend_api_key
 - **contact_form**: Formularios de contacto (interno)
 - **service_inquiry**: Consultas de servicios (interno)
 - **consultation_summary**: Resumen PDF de consultoría
+- **consultation_portfolio_optimization**: Consultoría Optimización de Cartera
+- **consultation_crypto_web3**: Consultoría Crypto & Web3
+- **consultation_crypto_onboarding**: Consultoría Onboarding Crypto
+- **consultation_treasury_crypto**: Consultoría Gestión de Tesorería Crypto para Empresas
+- **academia_bsb**: Acceso a Academia BSB
+- **package_crypto_onboarding**: Paquete Onboarding Crypto
+- **package_treasury_crypto**: Paquete Gestión Tesorería
+- **package_investor_premium**: Paquete Inversor Premium
+- **membership_annual**: Membresía Anual BSB Capital
 
 ### Uso del Servicio
 
@@ -719,7 +728,8 @@ Para probar el flujo completo de pagos sin costos significativos:
 
 - 🌐 **Sitio Web**: [bsbcapital.io](https://bsbcapital.io)
 - 📧 **Contacto**: info@bsbcapital.io
-- 📱 **LinkedIn**: [BSB Capital](https://linkedin.com/company/bsb-capital)
+- 📱 **LinkedIn**: [BSB Capital](https://www.linkedin.com/company/bsb-capital-finance/)
+- 📷 **Instagram**: [bsbcapital.io](https://www.instagram.com/bsbcapital.io)
 - 💼 **GitHub**: [github.com/daamo31/bsbcapital](https://github.com/daamo31/bsbcapital)
 
 ## 📄 Licencia

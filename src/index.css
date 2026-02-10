@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Roboto+Mono:wght@400;500;700&display=swap');
 
-    /* 
+/* 
     ==========================================
     SISTEMA DE COLORES BSB CAPITAL
     ==========================================
@@ -39,450 +39,480 @@
        .bg-brand-green-100: Fondo verde claro
     */
 
-    @tailwind base;
-    @tailwind components;
-    @tailwind utilities;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-    @layer base {
-      :root {
-        /* === COLORES BASE DE LA APLICACIÓN === */
-        /* Fondo principal de la página */
-        --background: 240 100% 99%; /* #FAFAFA */
-        /* Color de texto principal */
-        --foreground: 0 0% 7%; /* #111111 */
+@layer base {
+  :root {
+    /* === COLORES BASE DE LA APLICACIÓN === */
+    /* Fondo principal de la página */
+    --background: 240 100% 99%; /* #FAFAFA */
+    /* Color de texto principal */
+    --foreground: 0 0% 7%; /* #111111 */
 
-        /* === TARJETAS Y COMPONENTES === */
-        /* Fondo de tarjetas, modales, etc. */
-        --card: 240 100% 99%;
-        /* Texto dentro de tarjetas */
-        --card-foreground: 0 0% 7%;
-    
-        /* Fondo de popovers/tooltips */
-        --popover: 240 100% 99%;
-        /* Texto de popovers/tooltips */
-        --popover-foreground: 0 0% 7%;
-    
-        /* === BOTONES PRINCIPALES === */
-        /* Color de fondo de botones principales (dorado BSB) */
-        --primary: 43 74% 49%; /* #C9A227 */
-        /* Color de texto de botones principales (negro) */
-        --primary-foreground: 0 0% 7%; /* #111111 */
-    
-        /* === BOTONES SECUNDARIOS === */
-        /* Color de fondo de botones secundarios (verde) */
-        --secondary: 165 60% 25%; /* #1A6653 approx from #1E6F5C */
-        /* Color de texto de botones secundarios (blanco) */
-        --secondary-foreground: 0 0% 100%; /* #FFFFFF */
-    
-        /* === ELEMENTOS SUAVIZADOS === */
-        /* Fondo de elementos menos prominentes */
-        --muted: 220 14.3% 95.9%;
-        /* Texto de elementos menos prominentes */
-        --muted-foreground: 0 0% 40%;
-    
-        /* === ELEMENTOS DE ACENTO === */
-        /* Color de acento para highlights */
-        --accent: 165 60% 25%; /* #1E6F5C */
-        /* Texto sobre color de acento */
-        --accent-foreground: 0 0% 100%;
-    
-        /* === ELEMENTOS DE ERROR/PELIGRO === */
-        --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 0 0% 100%;
+    /* === TARJETAS Y COMPONENTES === */
+    /* Fondo de tarjetas, modales, etc. */
+    --card: 240 100% 99%;
+    /* Texto dentro de tarjetas */
+    --card-foreground: 0 0% 7%;
 
-        /* === BORDES Y CAMPOS DE ENTRADA === */
-        /* Color de bordes generales */
-        --border: 0 0% 90%; /* #E6E6E6 */
-        /* Fondo de campos de entrada */
-        --input: 0 0% 90%;
-        /* Color del anillo de enfoque en elementos interactivos */
-        --ring: 43 74% 49%;
-    
-        /* Radio de bordes redondeados */
-        --radius: 0.75rem;
+    /* Fondo de popovers/tooltips */
+    --popover: 240 100% 99%;
+    /* Texto de popovers/tooltips */
+    --popover-foreground: 0 0% 7%;
 
-        /* === PALETA DE MARCA BSB CAPITAL === */
-        /* Verde muy oscuro - Para elementos importantes */
-        --brand-green-900: 165 48% 11%; /* #0E2A1F */
-        /* Verde medio - Para elementos destacados */
-        --brand-green-600: 165 60% 25%; /* #1E6F5C */
-        /* Verde claro - Para fondos sutiles */
-        --brand-green-100: 164 38% 93%; /* #E7F1EC */
-        /* Dorado principal - Para botones y elementos importantes */
-        --brand-gold-600: 43 74% 49%; /* #C9A227 */
-        /* Dorado más oscuro - Para hovers y estados activos */
-        --brand-gold-700: 43 100% 35%; /* #B38B00 */
-        /* Dorado muy claro - Para fondos sutiles */
-        --brand-gold-100: 45 100% 94%; /* #FFF7E0 */
-        
-        /* === VARIABLES LEGACY (mantener compatibilidad) === */
-        --bg: 240 100% 99%; /* #FAFAFA */
-        --text: 0 0% 7%; /* #111111 */
-        --text-2: 0 0% 20%; /* #333333 */
-        
-        --chart-1: 160 70% 40%;
-        --chart-2: 160 60% 55%;
-        --chart-3: 160 50% 70%;
-        --chart-4: 43 80% 60%;
-        --chart-5: 43 90% 45%;
-      }
-    
-      /* === MODO OSCURO === */
-      .dark {
-        /* Fondo principal oscuro */
-        --background: 165 48% 11%;
-        /* Texto principal claro */
-        --foreground: 164 38% 93%;
-        
-        /* Fondo de tarjetas en modo oscuro */
-        --card: 165 48% 11%;
-        /* Texto de tarjetas en modo oscuro */
-        --card-foreground: 164 38% 93%;
-        
-        /* Fondo de popovers en modo oscuro */
-        --popover: 165 48% 11%;
-        /* Texto de popovers en modo oscuro */
-        --popover-foreground: 164 38% 93%;
-        
-        /* Botones principales - mismo dorado con texto oscuro */
-        --primary: 43 74% 49%;
-        --primary-foreground: 0 0% 7%;
-        
-        /* Botones secundarios - verde */
-        --secondary: 165 60% 25%;
-        --secondary-foreground: 0 0% 100%;
-        
-        /* Elementos suavizados en modo oscuro */
-        --muted: 165 60% 25% / 0.5;
-        --muted-foreground: 164 38% 85%;
-        
-        /* Color de acento en modo oscuro */
-        --accent: 43 74% 49%;
-        --accent-foreground: 0 0% 7%;
-        
-        /* Elementos de error en modo oscuro */
-        --destructive: 0 84.2% 60.2%;
-        --destructive-foreground: 0 0% 100%;
-        
-        /* Bordes y campos en modo oscuro */
-        --border: 165 60% 25%;
-        --input: 165 60% 25%;
-        --ring: 43 74% 49%;
+    /* === BOTONES PRINCIPALES === */
+    /* Color de fondo de botones principales (dorado BSB) */
+    --primary: 43 74% 49%; /* #C9A227 */
+    /* Color de texto de botones principales (negro) */
+    --primary-foreground: 0 0% 7%; /* #111111 */
 
-        /* === PALETA DE MARCA BSB CAPITAL === */
-        --brand-green-900: 165 48% 11%;
-        --brand-green-600: 165 60% 25%;
-        --brand-green-100: 164 38% 93%;
-        --brand-gold-600: 43 74% 49%;
-        --brand-gold-700: 43 100% 35%;
-        --brand-gold-100: 45 100% 94%;
-        
-        /* Variables legacy para modo oscuro */
-        --bg: 165 48% 11%;
-        --text: 164 38% 93%;
-        --text-2: 164 38% 80%;
-        
-        --chart-1: 165 60% 25%;
-        --chart-2: 43 74% 49%;
-        --chart-3: 165 48% 11%;
-        --chart-4: 43 100% 35%;
-        --chart-5: 164 38% 93%;
-      }
-    }
-    
-    @layer base {
-      * {
-        @apply border-border;
-      }
-      body {
-        @apply bg-background text-foreground font-sans;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
-      h1, h2, h3, h4, h5, h6 {
-        @apply font-sans font-bold tracking-tight text-foreground;
-      }
-      p, li, span, div {
-        @apply text-foreground;
-      }
-      
-      /* Estilos de selección de texto mejorados */
-      ::selection {
-        background-color: hsl(var(--primary) / 0.2);
-        color: hsl(var(--primary));
-      }
-      
-      ::-moz-selection {
-        background-color: hsl(var(--primary) / 0.2);
-        color: hsl(var(--primary));
-      }
-    }
+    /* === BOTONES SECUNDARIOS === */
+    /* Color de fondo de botones secundarios (verde) */
+    --secondary: 165 60% 25%; /* #1A6653 approx from #1E6F5C */
+    /* Color de texto de botones secundarios (blanco) */
+    --secondary-foreground: 0 0% 100%; /* #FFFFFF */
 
-    /* Componentes personalizados elegantes */
-    .glass-card {
-      @apply bg-card/80 backdrop-blur-md border border-border shadow-lg;
-    }
-    
-    .luxury-button {
-      @apply bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 border border-primary/20;
-    }
-    
-    .elegant-input {
-      @apply bg-card border-border text-foreground placeholder:text-muted-foreground focus:ring-primary focus:border-primary;
-    }
-    
-    /* Selección de texto mejorada para diferentes contextos */
-    .aurora-background ::selection {
-      background-color: hsl(var(--primary) / 0.3);
-      color: hsl(var(--primary));
-    }
-    
-    .aurora-background ::-moz-selection {
-      background-color: hsl(var(--primary) / 0.3);
-      color: hsl(var(--primary));
-    }
-    
-    /* Selección en títulos con gradiente */
-    .main-gradient-text::selection {
-      background-color: hsl(var(--primary) / 0.15);
-      color: hsl(var(--primary));
-      -webkit-text-fill-color: hsl(var(--primary));
-    }
-    
-    .main-gradient-text::-moz-selection {
-      background-color: hsl(var(--primary) / 0.15);
-      color: hsl(var(--primary));
-    }
-    
-    /* Selección en texto con accent */
-    .accent-gradient-text::selection {
-      background-color: hsl(var(--brand-gold-400) / 0.2);
-      color: hsl(var(--brand-gold-600));
-      -webkit-text-fill-color: hsl(var(--brand-gold-600));
-    }
-    
-    .accent-gradient-text::-moz-selection {
-      background-color: hsl(var(--brand-gold-400) / 0.2);
-      color: hsl(var(--brand-gold-600));
-    }
-    
-    /* Selección en botones y enlaces */
-    button ::selection,
-    a ::selection {
-      background-color: rgba(255, 255, 255, 0.3);
-      color: inherit;
-    }
-    
-    button ::-moz-selection,
-    a ::-moz-selection {
-      background-color: rgba(255, 255, 255, 0.3);
-      color: inherit;
-    }
-    
-    /* Selección mejorada para tarjetas */
-    .bg-card ::selection {
-      background-color: hsl(var(--primary) / 0.15);
-      color: hsl(var(--primary));
-    }
-    
-    .bg-card ::-moz-selection {
-      background-color: hsl(var(--primary) / 0.15);
-      color: hsl(var(--primary));
-    }
+    /* === ELEMENTOS SUAVIZADOS === */
+    /* Fondo de elementos menos prominentes */
+    --muted: 220 14.3% 95.9%;
+    /* Texto de elementos menos prominentes */
+    --muted-foreground: 0 0% 40%;
 
-    /* === GRADIENTES DE TEXTO PERSONALIZADOS === */
-    
-    /* Gradiente principal para títulos destacados */
-    /* Uso: className="main-gradient-text" */
-    /* Va de verde oscuro a verde medio */
-    .main-gradient-text {
-        background: linear-gradient(90deg, hsl(var(--brand-green-900)) 0%, hsl(var(--brand-green-600)) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-fill-color: transparent;
-    }
+    /* === ELEMENTOS DE ACENTO === */
+    /* Color de acento para highlights */
+    --accent: 165 60% 25%; /* #1E6F5C */
+    /* Texto sobre color de acento */
+    --accent-foreground: 0 0% 100%;
 
-    /* Gradiente de acento para elementos dorados */
-    /* Uso: className="accent-gradient-text" */
-    /* Va de dorado principal a dorado oscuro */
-    .accent-gradient-text {
-        background: linear-gradient(90deg, hsl(var(--brand-gold-600)), hsl(var(--brand-gold-700)));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        text-fill-color: transparent;
-    }
-    
-    /* === CLASES DE TEXTO DE MARCA === */
-    /* Texto principal negro */
-    .text-brand-text-primary {
-        color: hsl(var(--foreground));
-    }
-    
-    /* Texto secundario gris */
-    .text-brand-text-secondary {
-        color: hsl(var(--muted-foreground));
-    }
-    
-    /* Texto de acento dorado */
-    .text-brand-accent {
-        color: hsl(var(--brand-gold-600));
-    }
-    
-    /* Hover para acento */
-    .hover\:text-brand-accent\/80:hover {
-        color: hsl(var(--brand-gold-600) / 0.8);
-    }
-    
-    /* === FONDOS PERSONALIZADOS === */
-    
-    /* Fondo con color de marca verde claro */
-    /* Uso: className="bg-brand-green-100" */
-    .bg-brand-green-100 {
-        background-color: hsl(var(--brand-green-100));
-    }
-    
-    /* Fondo con efecto aurora para hero sections */
-    /* Uso: className="aurora-background" */
-    .aurora-background {
-      position: relative;
-      overflow: hidden;
-      background-color: hsl(var(--brand-green-100));
-    }
-    
-    /* Efecto de partículas animadas sobre el fondo aurora */
-    .aurora-background::before {
-      content: "";
-      position: absolute;
-      inset: -100px;
-      z-index: 0;
-      /* Gradiente cónico con colores de marca para el efecto */
-      --aurora: conic-gradient(from 90deg at 50% 50%, hsl(var(--brand-green-600) / 0.1) 0%, hsl(var(--brand-gold-600) / 0.1) 25%, transparent 50%, transparent 100%);
-      background-image: var(--aurora), var(--aurora);
-      background-size: 200% 200%, 100% 100%;
-      background-position: 50% 50%;
-      animation: aurora 80s linear infinite;
-      filter: blur(60px);
-      opacity: 0.8;
-    }
+    /* === ELEMENTOS DE ERROR/PELIGRO === */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
 
-    /* Optimización para móviles */
-    @media (max-width: 768px) {
-      .aurora-background::before {
-        filter: blur(20px);
-        opacity: 0.4;
-        animation: aurora 100s linear infinite;
-      }
-      
-      /* Ajuste del carousel para móviles */
-      .pause-animation {
-        animation-duration: 50s;
-      }
-      
-      /* Reducir motion para dispositivos con preferencias de accesibilidad */
-      @media (prefers-reduced-motion: reduce) {
-        .aurora-background::before {
-          animation: none;
-        }
-        .pause-animation {
-          animation: none;
-        }
-      }
-    }
+    /* === BORDES Y CAMPOS DE ENTRADA === */
+    /* Color de bordes generales */
+    --border: 0 0% 90%; /* #E6E6E6 */
+    /* Fondo de campos de entrada */
+    --input: 0 0% 90%;
+    /* Color del anillo de enfoque en elementos interactivos */
+    --ring: 43 74% 49%;
 
-    .glass-card {
-      background: hsl(var(--card) / 0.8);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid hsl(var(--border));
-      box-shadow: 0 8px 32px 0 hsl(var(--primary) / 0.05);
-    }
+    /* Radio de bordes redondeados */
+    --radius: 0.75rem;
 
-    /* Testimonials Carousel Animation */
-    @keyframes scroll {
-      0% {
-        transform: translateX(0);
-      }
-      100% {
-        transform: translateX(calc(-288px * 12)); /* 12 testimonials * avg width (288px for mobile, 320px for desktop) */
-      }
-    }
+    /* === PALETA DE MARCA BSB CAPITAL === */
+    /* Verde muy oscuro - Para elementos importantes */
+    --brand-green-900: 165 48% 11%; /* #0E2A1F */
+    /* Verde medio - Para elementos destacados */
+    --brand-green-600: 165 60% 25%; /* #1E6F5C */
+    /* Verde claro - Para fondos sutiles */
+    --brand-green-100: 164 38% 93%; /* #E7F1EC */
+    /* Dorado principal - Para botones y elementos importantes */
+    --brand-gold-600: 43 74% 49%; /* #C9A227 */
+    /* Dorado más oscuro - Para hovers y estados activos */
+    --brand-gold-700: 43 100% 35%; /* #B38B00 */
+    /* Dorado muy claro - Para fondos sutiles */
+    --brand-gold-100: 45 100% 94%; /* #FFF7E0 */
 
-    .pause-animation:hover {
-      animation-play-state: paused;
-    }
+    /* === VARIABLES LEGACY (mantener compatibilidad) === */
+    --bg: 240 100% 99%; /* #FAFAFA */
+    --text: 0 0% 7%; /* #111111 */
+    --text-2: 0 0% 20%; /* #333333 */
 
-    /* Optimizaciones específicas para formularios móviles */
-    @media (max-width: 768px) {
-      /* Asegurar scroll suave en formularios largos */
-      body {
-        -webkit-overflow-scrolling: touch;
-        overflow-x: hidden;
-      }
-      
-      /* Mejorar el comportamiento de scroll en iOS */
-      .mobile-scroll-container {
-        -webkit-overflow-scrolling: touch;
-        overflow-y: auto;
-        position: relative;
-        height: 100vh;
-      }
-      
-      /* Prevenir problemas de viewport en iOS Safari */
-      .mobile-form-container {
-        min-height: 100vh;
-        min-height: -webkit-fill-available;
-        overflow-y: auto;
-        -webkit-overflow-scrolling: touch;
-      }
-      
-      /* Botones sticky en formularios móviles */
-      .mobile-sticky-button {
-        position: sticky;
-        bottom: 0;
-        z-index: 50;
-        background: white;
-        padding: 1rem;
-        margin: 0 -1rem;
-        border-top: 1px solid hsl(var(--border));
-        box-shadow: 0 -4px 12px 0 hsl(var(--primary) / 0.1);
-      }
-      
-      /* Mejorar táctil para inputs en móvil */
-      input, textarea, select, button {
-        font-size: 16px; /* Previene zoom en iOS */
-      }
-      
-      /* Asegurar que los formularios no se corten */
-      .mobile-form-field {
-        margin-bottom: 1.5rem;
-      }
-      
-      /* Espaciado extra en el último elemento del formulario */
-      .mobile-form-spacing {
-        padding-bottom: 6rem;
-      }
-    }
+    --chart-1: 160 70% 40%;
+    --chart-2: 160 60% 55%;
+    --chart-3: 160 50% 70%;
+    --chart-4: 43 80% 60%;
+    --chart-5: 43 90% 45%;
+  }
 
-    /* Mejoras para el scroll en dispositivos táctiles */
-    @supports (-webkit-touch-callout: none) {
-      /* iOS Safari específico */
-      .ios-scroll-fix {
-        -webkit-overflow-scrolling: touch;
-        overflow-y: scroll;
-        height: 100vh;
-        height: -webkit-fill-available;
-      }
-    }
-    
-    @layer base {
+  /* === MODO OSCURO === */
+  .dark {
+    /* Fondo principal oscuro */
+    --background: 165 48% 11%;
+    /* Texto principal claro */
+    --foreground: 164 38% 93%;
+
+    /* Fondo de tarjetas en modo oscuro */
+    --card: 165 48% 11%;
+    /* Texto de tarjetas en modo oscuro */
+    --card-foreground: 164 38% 93%;
+
+    /* Fondo de popovers en modo oscuro */
+    --popover: 165 48% 11%;
+    /* Texto de popovers en modo oscuro */
+    --popover-foreground: 164 38% 93%;
+
+    /* Botones principales - mismo dorado con texto oscuro */
+    --primary: 43 74% 49%;
+    --primary-foreground: 0 0% 7%;
+
+    /* Botones secundarios - verde */
+    --secondary: 165 60% 25%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Elementos suavizados en modo oscuro */
+    --muted: 165 60% 25% / 0.5;
+    --muted-foreground: 164 38% 85%;
+
+    /* Color de acento en modo oscuro */
+    --accent: 43 74% 49%;
+    --accent-foreground: 0 0% 7%;
+
+    /* Elementos de error en modo oscuro */
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Bordes y campos en modo oscuro */
+    --border: 165 60% 25%;
+    --input: 165 60% 25%;
+    --ring: 43 74% 49%;
+
+    /* === PALETA DE MARCA BSB CAPITAL === */
+    --brand-green-900: 165 48% 11%;
+    --brand-green-600: 165 60% 25%;
+    --brand-green-100: 164 38% 93%;
+    --brand-gold-600: 43 74% 49%;
+    --brand-gold-700: 43 100% 35%;
+    --brand-gold-100: 45 100% 94%;
+
+    /* Variables legacy para modo oscuro */
+    --bg: 165 48% 11%;
+    --text: 164 38% 93%;
+    --text-2: 164 38% 80%;
+
+    --chart-1: 165 60% 25%;
+    --chart-2: 43 74% 49%;
+    --chart-3: 165 48% 11%;
+    --chart-4: 43 100% 35%;
+    --chart-5: 164 38% 93%;
+  }
+}
+
+@layer base {
   * {
     @apply border-border;
-      }
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    overflow-wrap: break-word;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-sans font-bold tracking-tight text-foreground;
+    text-wrap: balance;
+  }
+  p,
+  li,
+  span,
+  div {
+    @apply text-foreground;
+    text-wrap: pretty;
+  }
+
+  /* Estilos de selección de texto mejorados */
+  ::selection {
+    background-color: hsl(var(--primary) / 0.2);
+    color: hsl(var(--primary));
+  }
+
+  ::-moz-selection {
+    background-color: hsl(var(--primary) / 0.2);
+    color: hsl(var(--primary));
+  }
+}
+
+/* Componentes personalizados elegantes */
+.glass-card {
+  @apply bg-card/80 backdrop-blur-md border border-border shadow-lg;
+}
+
+.luxury-button {
+  @apply bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-300 border border-primary/20;
+}
+
+.elegant-input {
+  @apply bg-card border-border text-foreground placeholder:text-muted-foreground focus:ring-primary focus:border-primary;
+}
+
+/* Selección de texto mejorada para diferentes contextos */
+.aurora-background ::selection {
+  background-color: hsl(var(--primary) / 0.3);
+  color: hsl(var(--primary));
+}
+
+.aurora-background ::-moz-selection {
+  background-color: hsl(var(--primary) / 0.3);
+  color: hsl(var(--primary));
+}
+
+/* Selección en títulos con gradiente */
+.main-gradient-text::selection {
+  background-color: hsl(var(--primary) / 0.15);
+  color: hsl(var(--primary));
+  -webkit-text-fill-color: hsl(var(--primary));
+}
+
+.main-gradient-text::-moz-selection {
+  background-color: hsl(var(--primary) / 0.15);
+  color: hsl(var(--primary));
+}
+
+/* Selección en texto con accent */
+.accent-gradient-text::selection {
+  background-color: hsl(var(--brand-gold-400) / 0.2);
+  color: hsl(var(--brand-gold-600));
+  -webkit-text-fill-color: hsl(var(--brand-gold-600));
+}
+
+.accent-gradient-text::-moz-selection {
+  background-color: hsl(var(--brand-gold-400) / 0.2);
+  color: hsl(var(--brand-gold-600));
+}
+
+/* Selección en botones y enlaces */
+button ::selection,
+a ::selection {
+  background-color: rgba(255, 255, 255, 0.3);
+  color: inherit;
+}
+
+button ::-moz-selection,
+a ::-moz-selection {
+  background-color: rgba(255, 255, 255, 0.3);
+  color: inherit;
+}
+
+/* Selección mejorada para tarjetas */
+.bg-card ::selection {
+  background-color: hsl(var(--primary) / 0.15);
+  color: hsl(var(--primary));
+}
+
+.bg-card ::-moz-selection {
+  background-color: hsl(var(--primary) / 0.15);
+  color: hsl(var(--primary));
+}
+
+/* === GRADIENTES DE TEXTO PERSONALIZADOS === */
+
+/* Gradiente principal para títulos destacados */
+/* Uso: className="main-gradient-text" */
+/* Va de verde oscuro a verde medio */
+.main-gradient-text {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--brand-green-900)) 0%,
+    hsl(var(--brand-green-600)) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+
+/* Gradiente de acento para elementos dorados */
+/* Uso: className="accent-gradient-text" */
+/* Va de dorado principal a dorado oscuro */
+.accent-gradient-text {
+  background: linear-gradient(90deg, hsl(var(--brand-gold-600)), hsl(var(--brand-gold-700)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+}
+
+/* === CLASES DE TEXTO DE MARCA === */
+/* Texto principal negro */
+.text-brand-text-primary {
+  color: hsl(var(--foreground));
+}
+
+/* Texto secundario gris */
+.text-brand-text-secondary {
+  color: hsl(var(--muted-foreground));
+}
+
+/* Texto de acento dorado */
+.text-brand-accent {
+  color: hsl(var(--brand-gold-600));
+}
+
+/* Hover para acento */
+.hover\:text-brand-accent\/80:hover {
+  color: hsl(var(--brand-gold-600) / 0.8);
+}
+
+/* === FONDOS PERSONALIZADOS === */
+
+/* Fondo con color de marca verde claro */
+/* Uso: className="bg-brand-green-100" */
+.bg-brand-green-100 {
+  background-color: hsl(var(--brand-green-100));
+}
+
+/* Fondo con efecto aurora para hero sections */
+/* Uso: className="aurora-background" */
+.aurora-background {
+  position: relative;
+  overflow: hidden;
+  background-color: hsl(var(--brand-green-100));
+}
+
+/* Efecto de partículas animadas sobre el fondo aurora */
+.aurora-background::before {
+  content: '';
+  position: absolute;
+  inset: -100px;
+  z-index: 0;
+  /* Gradiente cónico con colores de marca para el efecto */
+  --aurora: conic-gradient(
+    from 90deg at 50% 50%,
+    hsl(var(--brand-green-600) / 0.1) 0%,
+    hsl(var(--brand-gold-600) / 0.1) 25%,
+    transparent 50%,
+    transparent 100%
+  );
+  background-image: var(--aurora), var(--aurora);
+  background-size:
+    200% 200%,
+    100% 100%;
+  background-position: 50% 50%;
+  animation: aurora 80s linear infinite;
+  filter: blur(60px);
+  opacity: 0.8;
+}
+
+/* Optimización para móviles */
+@media (max-width: 768px) {
+  .aurora-background::before {
+    filter: blur(20px);
+    opacity: 0.4;
+    animation: aurora 100s linear infinite;
+  }
+
+  /* Ajuste del carousel para móviles */
+  .pause-animation {
+    animation-duration: 50s;
+  }
+
+  /* Reducir motion para dispositivos con preferencias de accesibilidad */
+  @media (prefers-reduced-motion: reduce) {
+    .aurora-background::before {
+      animation: none;
+    }
+    .pause-animation {
+      animation: none;
+    }
+  }
+}
+
+.glass-card {
+  background: hsl(var(--card) / 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid hsl(var(--border));
+  box-shadow: 0 8px 32px 0 hsl(var(--primary) / 0.05);
+}
+
+/* Testimonials Carousel Animation */
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(
+      calc(-288px * 12)
+    ); /* 12 testimonials * avg width (288px for mobile, 320px for desktop) */
+  }
+}
+
+.pause-animation:hover {
+  animation-play-state: paused;
+}
+
+/* Optimizaciones específicas para formularios móviles */
+@media (max-width: 768px) {
+  /* Asegurar scroll suave en formularios largos */
+  body {
+    -webkit-overflow-scrolling: touch;
+    overflow-x: hidden;
+  }
+
+  /* Mejorar el comportamiento de scroll en iOS */
+  .mobile-scroll-container {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+    position: relative;
+    height: 100vh;
+  }
+
+  /* Prevenir problemas de viewport en iOS Safari */
+  .mobile-form-container {
+    min-height: 100vh;
+    min-height: -webkit-fill-available;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Botones sticky en formularios móviles */
+  .mobile-sticky-button {
+    position: sticky;
+    bottom: 0;
+    z-index: 50;
+    background: white;
+    padding: 1rem;
+    margin: 0 -1rem;
+    border-top: 1px solid hsl(var(--border));
+    box-shadow: 0 -4px 12px 0 hsl(var(--primary) / 0.1);
+  }
+
+  /* Mejorar táctil para inputs en móvil */
+  input,
+  textarea,
+  select,
+  button {
+    font-size: 16px; /* Previene zoom en iOS */
+  }
+
+  /* Asegurar que los formularios no se corten */
+  .mobile-form-field {
+    margin-bottom: 1.5rem;
+  }
+
+  /* Espaciado extra en el último elemento del formulario */
+  .mobile-form-spacing {
+    padding-bottom: 6rem;
+  }
+}
+
+/* Mejoras para el scroll en dispositivos táctiles */
+@supports (-webkit-touch-callout: none) {
+  /* iOS Safari específico */
+  .ios-scroll-fix {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: scroll;
+    height: 100vh;
+    height: -webkit-fill-available;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
   body {
     @apply bg-background text-foreground;
-      }
+    overflow-x: hidden;
+  }
 }
 
 /* === ESTABILIDAD CSS - PREVENIR DISCOTECA DE COLORES === */
@@ -492,13 +522,16 @@
 }
 
 /* Asegurar que los colores base se mantengan estables */
-html, body {
+html,
+body {
   color: hsl(var(--foreground)) !important;
   background-color: hsl(var(--background)) !important;
 }
 
 /* Prevenir transiciones de color no deseadas */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   transition: none !important;
   animation: none !important;
 }
@@ -566,7 +599,8 @@ html, body {
 }
 /* === CUSTOM ANIMATIONS FOR PACKAGES PAGE === */
 @keyframes gradient-x {
-  0%, 100% {
+  0%,
+  100% {
     background-position: 0% 50%;
   }
   50% {
@@ -584,7 +618,7 @@ html, body {
 .animate-spin,
 .animate-gradient-x,
 .group-hover\/button\:animate-pulse,
-[class*="animate-"] {
+[class*='animate-'] {
   animation: revert !important;
 }
 
@@ -597,4 +631,13 @@ html, body {
 .group-hover\/item\:scale-110,
 .group-hover\/button\:translate-x-1 {
   transition: revert !important;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
 }

@@ -92,10 +92,10 @@ const OtrosServicios = () => {
   return (
     <>
       <Helmet>
-        <title>Otros Servicios - BSB Capital</title>
+        <title>Otros Servicios de Inversión y Fiscalidad - BSB Capital</title>
         <meta
           name="description"
-          content="Servicios exclusivos de BSB Capital: residencia en Dubái, inversión inmobiliaria y fiscalidad crypto. Contacta con nosotros para una asesoría personalizada."
+          content="Soluciones exclusivas para proteger y hacer crecer tu patrimonio: traslado de residencia a Dubái, inversiones inmobiliarias estratégicas y cumplimiento normativo en criptoactivos."
         />
       </Helmet>
       <div className="bg-background text-foreground">
@@ -107,7 +107,7 @@ const OtrosServicios = () => {
               transition={{ duration: 0.8, ease: 'easeOut' }}
               className="text-4xl md:text-6xl font-bold text-foreground"
             >
-              Otros Servicios
+              Otros Servicios de Inversión y Fiscalidad
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -115,8 +115,9 @@ const OtrosServicios = () => {
               transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
               className="mt-4 max-w-3xl mx-auto text-lg md:text-xl text-text-2"
             >
-              Soluciones exclusivas para proteger y hacer crecer tu patrimonio con la máxima
-              seguridad y eficiencia.
+              Soluciones exclusivas para proteger y hacer crecer tu patrimonio: traslado de
+              residencia a Dubái, inversiones inmobiliarias estratégicas y cumplimiento normativo en
+              criptoactivos.
             </motion.p>
           </div>
         </header>

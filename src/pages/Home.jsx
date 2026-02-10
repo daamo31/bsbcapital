@@ -73,14 +73,14 @@ const services = [
     title: 'BSB Consulting: Consultoría especializada en crypto',
     description:
       'Asesoramiento profesional diseñado para el nuevo entorno financiero. Te ayudamos a gestionar, optimizar y estructurar tu cartera, construir estrategias sostenibles y reducir riesgos en tus operaciones con activos crypto.',
-    href: '/consultoria',
+    href: '/consultoria-cripto',
   },
   {
     icon: <BookOpen />,
     title: 'BSB Academy: Formación especializada en crypto y activos digitales',
     description:
       'Aprende a invertir con autonomía y criterio. Nuestra formación combina píldoras rápidas, masterclasses especializadas y contenido actualizado para que desarrolles una mentalidad financiera sólida y entiendas realmente cómo funciona el ecosistema crypto.',
-    href: '/formacion',
+    href: '/formacion-criptoactivos',
     buttonText: 'Accede a la Academia',
   },
   {
@@ -98,7 +98,7 @@ const services = [
       'Descubre nuestros paquetes diseñados para tu perfil, combinando consultoría, formación y herramientas con IA según tus necesidades: ya seas empresa, inversor o quieras introducirte en el ecosistema crypto.\n\nAdemás, con nuestra membresía exclusiva tendrás acceso a:',
     details:
       '• Descuentos especiales en nuestros servicios.\n• Acceso anticipado al BSB Maker.\n• Acceso anual a BSB Academy\n• Eventos y reuniones con expertos en crypto.',
-    href: '/membresias',
+    href: '/paquetes-cripto',
     buttonText: 'Explorar paquetes y beneficios',
   },
 ];
@@ -146,10 +146,10 @@ const Home = () => {
   return (
     <>
       <Helmet>
-        <title>BSB Capital - Transformamos tu forma de invertir en crypto</title>
+        <title>BSB Capital | Consultoría y formación en criptomonedas y activos digitales</title>
         <meta
           name="description"
-          content="BSB Capital nace como la primera firma que combina asesoramiento financiero independiente con especialización  en crypto y activos digitale. Profesionalidad, claridad y seguridad."
+          content="Transformamos tu forma de invertir en crypto. Asesoramiento financiero independiente y especializado en criptoactivos para individuos y empresas."
         />
       </Helmet>
 
@@ -202,8 +202,8 @@ const Home = () => {
                 variants={itemVariants}
                 className="mt-4 sm:mt-6 max-w-3xl mx-auto text-base sm:text-lg text-brand-text-secondary"
               >
-                BSB Capital nace como la primera firma que combina asesoramiento financiero
-                independiente con especialización en cypto y activos digitales.
+                Transformamos tu forma de invertir en crypto. Asesoramiento financiero independiente
+                y especializado en criptoactivos para individuos y empresas.
               </motion.p>
               <motion.div variants={itemVariants} className="mt-6 sm:mt-10">
                 <Button asChild size="lg" className="px-8 py-4 shadow-lg">
@@ -245,6 +245,29 @@ const Home = () => {
                   <ServiceCard key={service.title} {...service} />
                 ))}
               </div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* Context Section - Old Subtitle */}
+        <section className="py-12 sm:py-20 md:py-28 bg-background">
+          <div className="container mx-auto px-4 sm:px-6">
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              className="max-w-4xl mx-auto text-center"
+            >
+              <motion.p
+                variants={itemVariants}
+                className="text-lg sm:text-xl text-muted-foreground leading-relaxed"
+              >
+                El mundo crypto se mueve rápido: nuevas oportunidades, nuevas tecnologías y riesgos
+                que cambian cada día. En BSB Capital, te ayudamos a navegar este universo con
+                seguridad, confianza y control, evitando errores comunes y aprovechando las
+                oportunidades.
+              </motion.p>
             </motion.div>
           </div>
         </section>
@@ -315,6 +338,77 @@ const Home = () => {
               </motion.p>
               <motion.div variants={itemVariants} className="mt-6 sm:mt-10 max-w-lg mx-auto">
                 <ContactForm />
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* CTA and Trustpilot Section */}
+        <section className="py-12 sm:py-20 md:py-28 bg-background">
+          <div className="container mx-auto px-4 sm:px-6">
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              className="max-w-4xl mx-auto text-center"
+            >
+              <motion.p
+                variants={itemVariants}
+                className="text-lg sm:text-xl text-muted-foreground leading-relaxed mb-8"
+              >
+                Si quieres llevar tu inversión en crypto al siguiente nivel, nuestros paquetes y
+                membresía exclusiva ofrecen acceso a nuestras consultorías, nuestra comunidad
+                exclusiva y nuestros análisis avanzados de cartera.
+              </motion.p>
+              <motion.div variants={itemVariants} className="mb-8">
+                <Button asChild size="lg" className="px-8 py-4 shadow-lg">
+                  <Link to="/paquetes-cripto">
+                    Descubre los paquetes y la membresía exclusiva{' '}
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+              </motion.div>
+              <motion.div variants={itemVariants} className="mt-12 space-y-8">
+                {/* Trustpilot Carousel - Muestra reseñas de clientes */}
+                <div
+                  className="trustpilot-widget"
+                  data-locale="es-ES"
+                  data-template-id="53aa8912dec7e10d38f59f36"
+                  data-businessunit-id="6989c28052b30924cefa33f1"
+                  data-style-height="140px"
+                  data-style-width="100%"
+                  data-theme="light"
+                  data-stars="4,5"
+                  data-review-languages="es"
+                >
+                  <a
+                    href="https://es.trustpilot.com/review/bsbcapital.io"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Trustpilot
+                  </a>
+                </div>
+
+                {/* Trustpilot Review Collector - Botón para dejar reseñas */}
+                <div
+                  className="trustpilot-widget"
+                  data-locale="es-ES"
+                  data-template-id="56278e9abfbbba0bdcd568bc"
+                  data-businessunit-id="6989c28052b30924cefa33f1"
+                  data-style-height="52px"
+                  data-style-width="100%"
+                  data-token="690d4644-26b6-4a78-97e5-2527cd433205"
+                >
+                  <a
+                    href="https://es.trustpilot.com/review/bsbcapital.io"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Trustpilot
+                  </a>
+                </div>
               </motion.div>
             </motion.div>
           </div>

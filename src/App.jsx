@@ -101,10 +101,10 @@ function App() {
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={<Home />} />
             <Route path="/bsb-maker" element={<BsbMaker />} />
-            <Route path="/consultoria" element={<Consultoria />} />
-            <Route path="/consultoria/precios" element={<ConsultationPricing />} />
+            <Route path="/consultoria-cripto" element={<Consultoria />} />
+            <Route path="/consultoria-cripto/precios" element={<ConsultationPricing />} />
             <Route path="/consultation-post-payment" element={<ConsultationPostPayment />} />
-            <Route path="/membresias" element={<MembresiasDB />} />
+            <Route path="/paquetes-cripto" element={<MembresiasDB />} />
             <Route
               path="/dashboard"
               element={
@@ -123,12 +123,12 @@ function App() {
             />
             <Route path="/empresa" element={<Empresa />} />
             <Route path="/algo-fund" element={<AlgoFund />} />
-            <Route path="/otros-servicios" element={<OtrosServicios />} />
+            <Route path="/servicios-adicionales-cripto" element={<OtrosServicios />} />
             <Route path="/legal/:page" element={<Legal />} />
             <Route path="/blog" element={<Blog />} />
             <Route path="/contacto" element={<Contacto />} />
             <Route path="/guia-inversion" element={<GuiaInversion />} />
-            <Route path="/formacion" element={<Formacion />} />
+            <Route path="/formacion-criptoactivos" element={<Formacion />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/demo-formularios" element={<FormularioDemo />} />
@@ -246,8 +246,25 @@ function App() {
             <Route path="/test/tools" element={<ContentAccessDemo />} />
 
             {oldAcademyRoutes.map((path) => (
-              <Route key={path} path={path} element={<Navigate to="/formacion" replace />} />
+              <Route
+                key={path}
+                path={path}
+                element={<Navigate to="/formacion-criptoactivos" replace />}
+              />
             ))}
+
+            {/* Redirects for old URLs to new SEO-optimized URLs */}
+            <Route path="/consultoria" element={<Navigate to="/consultoria-cripto" replace />} />
+            <Route
+              path="/consultoria/precios"
+              element={<Navigate to="/consultoria-cripto/precios" replace />}
+            />
+            <Route path="/formacion" element={<Navigate to="/formacion-criptoactivos" replace />} />
+            <Route path="/membresias" element={<Navigate to="/paquetes-cripto" replace />} />
+            <Route
+              path="/otros-servicios"
+              element={<Navigate to="/servicios-adicionales-cripto" replace />}
+            />
           </Routes>
         </AnimatePresence>
       </Layout>

@@ -775,10 +775,12 @@ const Consultoria = () => {
   return (
     <>
       <Helmet>
-        <title>BSB Consulting - Consultoría Financiera Especializada en Crypto</title>
+        <title>
+          BSB Consulting - Consultoría Financiera Especializada en Criptoactivos y Activos digitales
+        </title>
         <meta
           name="description"
-          content="Consultoría financiera especializada en crypto y activos digitales. Navega el mundo crypto con seguridad y aprovecha las oportunidades con BSB Capital."
+          content="Descubre los servicios de consultoría de BSB Capital: asesoramiento especializado en inversiones, gestión de portafolios y estrategias en criptomonedas y activos digitales."
         />
       </Helmet>
       <motion.div
@@ -805,7 +807,7 @@ const Consultoria = () => {
               transition={{ duration: 0.8, delay: 0.1, ease: 'easeOut' }}
               className="text-2xl md:text-3xl font-semibold text-foreground mt-4"
             >
-              Consultoría Financiera Especializada en Crypto y Activos digitales
+              Consultoría Financiera Especializada en Criptoactivos
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -813,10 +815,9 @@ const Consultoria = () => {
               transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
               className="mt-6 text-lg text-muted-foreground max-w-4xl mx-auto"
             >
-              El mundo crypto se mueve rápido: nuevas oportunidades, nuevas tecnologías y riesgos
-              que cambian cada día. En BSB Capital, te ayudamos a navegar este universo con
-              seguridad, confianza y control, evitando errores comunes y aprovechando las
-              oportunidades.
+              Descubre los servicios de consultoría de BSB Capital: asesoramiento especializado en
+              inversiones, gestión de portafolios y estrategias en criptomonedas y activos
+              digitales.
             </motion.p>
 
             <div className="mt-8">
