@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 import { motion } from 'framer-motion';
 import { supabase } from '@/lib/customSupabaseClient';
 import { Button } from '@/components/ui/button';
@@ -185,12 +186,33 @@ const BsbMaker = () => {
           name="description"
           content="Lleva tus decisiones al siguiente nivel con nuestra herramienta de Inteligencia Artificial diseñada para inversores crypto. Backtesting, señales personalizadas, simulación de escenarios y mucho más."
         />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Inicio',
+                item: 'https://bsbcapital.io/',
+              },
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'BSB Maker',
+                item: 'https://bsbcapital.io/servicios/bsbmaker',
+              },
+            ],
+          })}
+        </script>
       </Helmet>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
         {/* Hero Section */}
-        <div className="relative bg-background overflow-hidden pt-32 pb-20">
+        <div className="relative bg-background overflow-hidden pt-10 md:pt-16 pb-20">
           <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
           <div className="container mx-auto px-4 text-center relative">
+            <Breadcrumbs items={[{ label: 'BSB Maker' }]} />
             <motion.h1
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}

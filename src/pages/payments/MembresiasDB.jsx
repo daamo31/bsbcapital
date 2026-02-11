@@ -544,7 +544,7 @@ id,
         </script>
       </Helmet>
 
-      <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-background pt-8 pb-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <Breadcrumbs items={[{ label: 'Paquetes y Membresías' }]} />
           <motion.div

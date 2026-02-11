@@ -1,5 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Mail, MapPin } from 'lucide-react';
@@ -11,18 +12,38 @@ const Contacto = () => {
     <>
       <Helmet>
         <title>Contacto - BSB Capital</title>
-        <meta
-          name="description"
-          content="Ponte en contacto con nuestro equipo para cualquier consulta. Estamos aquí para ayudarte."
-        />
+        <meta content="Ponte en contacto con nuestro equipo para cualquier consulta. Estamos aquí para ayudarte." />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Inicio',
+                item: 'https://bsbcapital.io/',
+              },
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Contacto',
+                item: 'https://bsbcapital.io/contacto',
+              },
+            ],
+          })}
+        </script>
       </Helmet>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.5 }}
-        className="container mx-auto px-4 py-16"
+        className="container mx-auto px-4 pt-10 pb-16"
       >
+        <div className="max-w-4xl mx-auto mb-8">
+          <Breadcrumbs items={[{ label: 'Contacto' }]} />
+        </div>
         <div className="text-center">
           <h1 className="text-4xl md:text-5xl font-bold text-brand-text-primary">
             Ponte en Contacto con BSB Capital

@@ -79,7 +79,7 @@ const Empresa = () => {
         className="bg-background text-text-primary"
       >
         {/* Hero Section */}
-        <section className="py-20 md:py-32 bg-background">
+        <section className="pt-10 md:pt-16 pb-20 md:pb-32 bg-background">
           <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
             <Breadcrumbs items={[{ label: 'Sobre BSB Capital' }]} />
             <motion.h1 variants={fadeIn} className="text-4xl md:text-6xl font-bold text-foreground">

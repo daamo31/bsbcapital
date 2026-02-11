@@ -23,6 +23,15 @@ Plataforma completa de servicios financieros especializada en criptomonedas e in
 - **Routing**: React Router con protección de rutas
 - **Estado**: Context API para autenticación y configuración
 - **PDF Generation**: jsPDF para informes automáticos
+  26:
+  27: ### 🚀 **SEO & Web Performance**
+  28:
+  29: - **Dynamic Meta Tags**: Gestión avanzada con React Helmet para cada página
+  30: - **Canonicals & Open Graph**: URLs canónicas y etiquetas OG específicas para social media
+  31: - **Structured Data (JSON-LD)**: Implementación de BreadcrumbList Schema.org
+  32: - **Sitemap & Robots**: Generación automática de `sitemap.xml` y configuración de `robots.txt`
+  33: - **WPO (Web Performance Optimization)**: Carga perezosa (Lazy Loading) de imágenes no críticas
+  34: - **Clean URLs**: Estructura de enlaces optimizada para motores de búsqueda
 
 ## 🏗️ Arquitectura del Sistema
 

@@ -208,7 +208,7 @@ const Formacion = () => {
         {/* Hero Section */}
         <motion.section
           variants={itemVariants}
-          className="bg-background text-center py-12 sm:py-20 md:py-32"
+          className="bg-background text-center pt-8 pb-12 sm:pt-12 sm:pb-20 md:pt-16 md:pb-32"
         >
           <div className="container mx-auto px-4 sm:px-6">
             <Breadcrumbs items={[{ label: 'BSB Academy' }]} />

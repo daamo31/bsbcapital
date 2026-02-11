@@ -822,7 +822,7 @@ const Consultoria = () => {
         className="min-h-screen bg-background"
       >
         {/* Hero Section */}
-        <header className="py-12 md:py-32 text-center bg-background relative overflow-hidden">
+        <header className="pt-8 md:pt-16 pb-12 md:pb-32 text-center bg-background relative overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6 relative z-10">
             <Breadcrumbs items={[{ label: 'Consultoría Cripto' }]} />
             <motion.h1

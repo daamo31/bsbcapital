@@ -130,7 +130,7 @@ const OtrosServicios = () => {
         </script>
       </Helmet>
       <div className="bg-background text-foreground">
-        <header className="py-20 md:py-32 text-center bg-background">
+        <header className="pt-10 md:pt-16 pb-20 md:pb-32 text-center bg-background">
           <div className="container mx-auto px-4 relative z-10">
             <Breadcrumbs items={[{ label: 'Otros Servicios' }]} />
             <motion.h1

@@ -305,6 +305,61 @@ proyecto/
 
 ---
 
+# 5️⃣ SEO & Web Performance (WPO)
+
+La plataforma está optimizada para motores de búsqueda y alto rendimiento.
+
+### Estrategia de SEO On-Page
+
+| Técnica                 | Implementación           | Propósito                                             |
+| ----------------------- | ------------------------ | ----------------------------------------------------- |
+| **Meta Tags Dinámicos** | `react-helmet`           | Títulos y descripciones únicas por página             |
+| **URLs Canónicas**      | `<link rel="canonical">` | Prevenir contenido duplicado                          |
+| **Social Media**        | Open Graph (og:)         | Previsualizaciones profesionales en WhatsApp/LinkedIn |
+| **Breadcrumbs**         | Componente + Schema.org  | Mejorar navegación e indexación                       |
+| **Sitemaps**            | `public/sitemap.xml`     | Facilitar el rastreo de Google                        |
+
+### Optimización de Rendimiento (WPO)
+
+1. **Lazy Loading**:
+   - Todas las imágenes no críticas (fuera del primer scroll) usan `loading="lazy"`.
+   - Mejora el tiempo hasta que la página es interactiva (TTI).
+
+2. **Breadcrumbs con Datos Estructurados**:
+   - El componente `Breadcrumbs.jsx` genera automáticamente un script `ld+json` con el esquema `BreadcrumbList`.
+   - Permite que Google muestre las migas de pan directamente en los resultados de búsqueda.
+
+3. **Control de Rastreo**:
+   - `robots.txt` configurado para desautorizar áreas sensibles (`/dashboard`, `/login`) y apuntar al sitemap.
+
+### Cómo añadir SEO a una nueva página
+
+```jsx
+import { Helmet } from 'react-helmet';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
+
+const NuevaPagina = () => (
+  <>
+    <Helmet>
+      <title>Título Optimizado | BSB Capital</title>
+      <meta name="description" content="Descripción relevante para SEO" />
+      <link rel="canonical" href="https://bsbcapital.io/nueva-pagina" />
+      <script type="application/ld+json">
+        {JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          "itemListElement": [...]
+        })}
+      </script>
+    </Helmet>
+    <Breadcrumbs items={[{ label: 'Nueva Página' }]} />
+    {/* Contenido */}
+  </>
+);
+```
+
+---
+
 ## 4️⃣ Testing de Stripe (Sistema de Pagos)
 
 ### Estado: ✅ Todo Configurado para Probar

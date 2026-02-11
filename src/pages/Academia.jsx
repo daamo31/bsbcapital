@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
@@ -23,7 +24,7 @@ import {
   Calendar,
   TrendingUp,
   Shield,
-  X
+  X,
 } from 'lucide-react';
 
 const Academia = () => {
@@ -44,7 +45,7 @@ const Academia = () => {
       accessLevel,
       userRole,
       hasAccess,
-      loading: adminLoading
+      loading: adminLoading,
     });
   }, [user, isAdmin, accessLevel, userRole, hasAccess, adminLoading]);
 
@@ -77,7 +78,7 @@ const Academia = () => {
               title: courseId === 'general' ? 'Contenido General' : `Curso ${courseId}`,
               contents: [],
               totalDuration: 0,
-              requiredPlans: new Set()
+              requiredPlans: new Set(),
             };
           }
 
@@ -86,7 +87,7 @@ const Academia = () => {
 
           // Agregar planes requeridos
           if (content.required_plans) {
-            content.required_plans.forEach(planId => {
+            content.required_plans.forEach((planId) => {
               acc[courseId].requiredPlans.add(planId);
             });
           }
@@ -94,23 +95,24 @@ const Academia = () => {
           return acc;
         }, {});
 
-        const coursesArray = Object.values(groupedCourses).map(course => ({
+        const coursesArray = Object.values(groupedCourses).map((course) => ({
           ...course,
-          requiredPlans: Array.from(course.requiredPlans)
+          requiredPlans: Array.from(course.requiredPlans),
         }));
 
         setCourses(coursesArray);
 
         // Calcular estadísticas
-        const totalVideos = coursesData.filter(c => c.content_type === 'video').length;
-        const totalHours = Math.round(coursesData.reduce((sum, c) => sum + (c.duration_minutes || 0), 0) / 60);
+        const totalVideos = coursesData.filter((c) => c.content_type === 'video').length;
+        const totalHours = Math.round(
+          coursesData.reduce((sum, c) => sum + (c.duration_minutes || 0), 0) / 60
+        );
 
         setStats({
           totalCourses: coursesArray.length,
           totalVideos,
-          totalHours
+          totalHours,
         });
-
       } catch (error) {
         console.error('Error fetching academy data:', error);
       } finally {
@@ -130,7 +132,7 @@ const Academia = () => {
       userRole,
       accessLevel,
       courseAccessLevel: course.required_access_level,
-      isFree: course.is_free
+      isFree: course.is_free,
     });
 
     // Los admins pueden acceder a todo
@@ -147,27 +149,38 @@ const Academia = () => {
 
     // Verificar acceso según nivel requerido
     const requiredLevel = course.required_access_level || 'basic';
-    console.log(`🔍 Checking access for ${course.title}: required=${requiredLevel}, hasAccess=${hasAccess}`);
+    console.log(
+      `🔍 Checking access for ${course.title}: required=${requiredLevel}, hasAccess=${hasAccess}`
+    );
 
     return hasAccess || (userSubscription && userSubscription.status === 'active');
   };
 
   const getContentTypeIcon = (type) => {
     switch (type) {
-      case 'video': return <Play className="h-4 w-4" />;
-      case 'document': return <FileText className="h-4 w-4" />;
-      case 'live': return <Users className="h-4 w-4" />;
-      default: return <BookOpen className="h-4 w-4" />;
+      case 'video':
+        return <Play className="h-4 w-4" />;
+      case 'document':
+        return <FileText className="h-4 w-4" />;
+      case 'live':
+        return <Users className="h-4 w-4" />;
+      default:
+        return <BookOpen className="h-4 w-4" />;
     }
   };
 
   const getContentTypeLabel = (type) => {
     switch (type) {
-      case 'video': return 'Video';
-      case 'document': return 'Documento';
-      case 'live': return 'En Vivo';
-      case 'quiz': return 'Quiz';
-      default: return 'Contenido';
+      case 'video':
+        return 'Video';
+      case 'document':
+        return 'Documento';
+      case 'live':
+        return 'En Vivo';
+      case 'quiz':
+        return 'Quiz';
+      default:
+        return 'Contenido';
     }
   };
 
@@ -183,45 +196,64 @@ const Academia = () => {
     <>
       <Helmet>
         <title>Academia BSB Capital - Formación Financiera Profesional</title>
-        <meta name="description" content="Accede a contenido exclusivo de formación financiera y algoritmos de inversión en la Academia BSB Capital." />
+        <meta
+          name="description"
+          content="Accede a contenido exclusivo de formación financiera y algoritmos de inversión en la Academia BSB Capital."
+        />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Inicio',
+                item: 'https://bsbcapital.io/',
+              },
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Academia',
+                item: 'https://bsbcapital.io/academia',
+              },
+            ],
+          })}
+        </script>
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
         {/* Hero Section */}
-        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16">
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white pt-10 pb-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="mb-8">
+              <Breadcrumbs items={[{ label: 'Academia' }]} />
+            </div>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               className="text-center"
             >
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">
-                Academia BSB Capital
-              </h1>
+              <h1 className="text-4xl md:text-5xl font-bold mb-6">Academia BSB Capital</h1>
               <p className="text-xl md:text-2xl mb-8 opacity-90">
                 Formación profesional en criptoactivos con metodología y rigor
               </p>
 
               {/* Estado del usuario y debug info */}
               <div className="mb-8 flex flex-wrap justify-center gap-2">
-                {isAdmin && (
-                  <Badge className="bg-red-500 text-white">
-                    👨‍💼 ADMIN ACCESS
-                  </Badge>
-                )}
-                {hasAccess && (
-                  <Badge className="bg-green-500 text-white">
-                    ✓ Premium Access
-                  </Badge>
-                )}
+                {isAdmin && <Badge className="bg-red-500 text-white">👨‍💼 ADMIN ACCESS</Badge>}
+                {hasAccess && <Badge className="bg-green-500 text-white">✓ Premium Access</Badge>}
                 {userSubscription && (
                   <Badge variant="outline" className="bg-white/20 text-white border-white/40">
                     {userSubscription.subscription_type || 'Subscription Active'}
                   </Badge>
                 )}
                 {!hasAccess && !isAdmin && (
-                  <Badge variant="outline" className="bg-yellow-500/20 text-white border-yellow-400">
+                  <Badge
+                    variant="outline"
+                    className="bg-yellow-500/20 text-white border-yellow-400"
+                  >
                     ⚠️ Limited Access
                   </Badge>
                 )}
@@ -270,8 +302,8 @@ const Academia = () => {
                 Acceso Exclusivo para Miembros
               </h2>
               <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-                Únete a nuestra comunidad de inversores y accede a formación especializada,
-                análisis de mercado y estrategias algoritmos de inversión.
+                Únete a nuestra comunidad de inversores y accede a formación especializada, análisis
+                de mercado y estrategias algoritmos de inversión.
               </p>
               <div className="space-x-4">
                 <Button asChild size="lg" className="shadow-lg">
@@ -295,8 +327,8 @@ const Academia = () => {
                 ¡Hola {user.email}! Activa tu Membresía
               </h2>
               <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-                Para acceder al contenido exclusivo de la Academia BSB Capital,
-                necesitas una membresía activa. Elige el plan que mejor se adapte a tus objetivos.
+                Para acceder al contenido exclusivo de la Academia BSB Capital, necesitas una
+                membresía activa. Elige el plan que mejor se adapte a tus objetivos.
               </p>
               <Button asChild size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600">
                 <Link to="/membresias">Activar Membresía</Link>
@@ -310,10 +342,13 @@ const Academia = () => {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               {/* Welcome Message */}
-              <div className={`rounded-lg p-6 mb-8 ${isAdmin
-                ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
-                : 'bg-gradient-to-r from-green-500 to-blue-500 text-white'
-                }`}>
+              <div
+                className={`rounded-lg p-6 mb-8 ${
+                  isAdmin
+                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+                    : 'bg-gradient-to-r from-green-500 to-blue-500 text-white'
+                }`}
+              >
                 <div className="flex items-center">
                   {isAdmin ? (
                     <Shield className="h-8 w-8 mr-3" />
@@ -322,16 +357,12 @@ const Academia = () => {
                   )}
                   <div>
                     <h3 className="text-xl font-bold">
-                      {isAdmin
-                        ? `¡Bienvenido Admin!`
-                        : `¡Bienvenido a la Academia, ${user.email}!`
-                      }
+                      {isAdmin ? `¡Bienvenido Admin!` : `¡Bienvenido a la Academia, ${user.email}!`}
                     </h3>
                     <p className="opacity-90">
                       {isAdmin
                         ? 'Acceso completo como administrador'
-                        : `Membresía: ${userSubscription?.subscription_plans?.name || 'Activa'}`
-                      }
+                        : `Membresía: ${userSubscription?.subscription_plans?.name || 'Activa'}`}
                     </p>
                   </div>
                 </div>
@@ -349,8 +380,11 @@ const Academia = () => {
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.6, delay: 0.1 * index }}
                     >
-                      <Card className={`h-full transition-all duration-300 hover:shadow-lg ${canAccess ? 'hover:shadow-blue-100 border-green-200' : 'opacity-60'
-                        }`}>
+                      <Card
+                        className={`h-full transition-all duration-300 hover:shadow-lg ${
+                          canAccess ? 'hover:shadow-blue-100 border-green-200' : 'opacity-60'
+                        }`}
+                      >
                         <CardHeader>
                           <div className="flex items-center justify-between mb-2">
                             <CardTitle className="text-lg line-clamp-2">{content.title}</CardTitle>
@@ -422,8 +456,7 @@ const Academia = () => {
                   <p className="text-lg text-gray-600">
                     {isAdmin
                       ? 'Ejecuta las migraciones para agregar contenido a la base de datos.'
-                      : 'Estamos preparando contenido exclusivo para ti. ¡Mantente atento!'
-                    }
+                      : 'Estamos preparando contenido exclusivo para ti. ¡Mantente atento!'}
                   </p>
                 </div>
               )}
