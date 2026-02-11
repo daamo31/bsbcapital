@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import {
@@ -182,6 +183,26 @@ const Formacion = () => {
           property="og:description"
           content="Aprende a invertir en criptoactivos con seguridad y criterio. Formación profesional para maximizar tu impacto en el mercado."
         />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Inicio',
+                item: 'https://bsbcapital.io/',
+              },
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Formación Criptoactivos',
+                item: 'https://bsbcapital.io/formacion-criptoactivos',
+              },
+            ],
+          })}
+        </script>
       </Helmet>
       <motion.div initial="hidden" animate="visible" variants={containerVariants}>
         {/* Hero Section */}
@@ -190,6 +211,7 @@ const Formacion = () => {
           className="bg-background text-center py-12 sm:py-20 md:py-32"
         >
           <div className="container mx-auto px-4 sm:px-6">
+            <Breadcrumbs items={[{ label: 'BSB Academy' }]} />
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-foreground">
               BSB Academy
             </h1>

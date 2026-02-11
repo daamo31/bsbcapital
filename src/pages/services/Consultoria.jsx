@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Link, useNavigate } from 'react-router-dom';
@@ -792,6 +793,26 @@ const Consultoria = () => {
           property="og:description"
           content="Asesoramiento financiero independiente y especializado en criptomonedas para optimizar tu cartera de inversiones."
         />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Inicio',
+                item: 'https://bsbcapital.io/',
+              },
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Consultoría Cripto',
+                item: 'https://bsbcapital.io/consultoria-cripto',
+              },
+            ],
+          })}
+        </script>
       </Helmet>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -803,6 +824,7 @@ const Consultoria = () => {
         {/* Hero Section */}
         <header className="py-12 md:py-32 text-center bg-background relative overflow-hidden">
           <div className="container mx-auto px-4 sm:px-6 relative z-10">
+            <Breadcrumbs items={[{ label: 'Consultoría Cripto' }]} />
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Helmet } from 'react-helmet';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 import { motion } from 'framer-motion';
 import { Linkedin, Search, ShieldCheck, Rocket, BookOpen } from 'lucide-react';
 
@@ -49,6 +50,26 @@ const Empresa = () => {
           property="og:description"
           content="Descubre la visión y el equipo detrás de BSB Capital. Asesoramiento con rigor, ética e innovación."
         />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Inicio',
+                item: 'https://bsbcapital.io/',
+              },
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Empresa',
+                item: 'https://bsbcapital.io/empresa',
+              },
+            ],
+          })}
+        </script>
       </Helmet>
       <motion.div
         initial="hidden"
@@ -60,6 +81,7 @@ const Empresa = () => {
         {/* Hero Section */}
         <section className="py-20 md:py-32 bg-background">
           <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
+            <Breadcrumbs items={[{ label: 'Sobre BSB Capital' }]} />
             <motion.h1 variants={fadeIn} className="text-4xl md:text-6xl font-bold text-foreground">
               Sobre BSB Capital
             </motion.h1>
@@ -184,6 +206,7 @@ const Empresa = () => {
                   src="/images/juan-liderazgo.png"
                   alt="Juan Salgado Blanco - Fundador y CEO de BSB Capital, Asesor Financiero Certificado EFA especializado en criptomonedas"
                   className="w-full h-auto block"
+                  loading="lazy"
                 />
               </motion.div>
 
@@ -231,6 +254,7 @@ const Empresa = () => {
                         className="rounded-full w-full h-full object-cover border-4 border-brand-gold-600"
                         src={teamMembers[0].imageUrl}
                         alt={`Foto de ${teamMembers[0].name}`}
+                        loading="lazy"
                       />
                     </div>
                     <h3 className="text-2xl font-bold text-text-primary">{teamMembers[0].name}</h3>

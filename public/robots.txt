@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://bsbcapital.io/sitemap.xml
+
+# Disallow sensitive area
+Disallow: /dashboard
+Disallow: /area-cliente
+Disallow: /login
+Disallow: /signup
+Disallow: /demo-formularios
+Disallow: /test-simple

@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/data-display/card';
 import { Input } from '@/components/ui/forms/input';
@@ -107,10 +108,31 @@ const OtrosServicios = () => {
           property="og:description"
           content="Soluciones patrimoniales avanzadas: Dubái, Real Estate y asesoría legal especializada en activos digitales."
         />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Inicio',
+                item: 'https://bsbcapital.io/',
+              },
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Servicios Adicionales',
+                item: 'https://bsbcapital.io/servicios-adicionales-cripto',
+              },
+            ],
+          })}
+        </script>
       </Helmet>
       <div className="bg-background text-foreground">
         <header className="py-20 md:py-32 text-center bg-background">
           <div className="container mx-auto px-4 relative z-10">
+            <Breadcrumbs items={[{ label: 'Otros Servicios' }]} />
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -146,6 +168,7 @@ const OtrosServicios = () => {
                   src="/service-image-1.jpg"
                   alt="Skyline moderno de Dubái mostrando rascacielos y desarrollo inmobiliario de lujo"
                   className="w-full aspect-[3/4] object-cover rounded-lg shadow-lg"
+                  loading="lazy"
                 />
               </motion.div>
               <motion.div
@@ -158,6 +181,7 @@ const OtrosServicios = () => {
                   src="/service-image-2.jpg"
                   alt="Servicios de inversión inmobiliaria y traslado de residencia fiscal a Dubái"
                   className="w-full aspect-[3/4] object-cover rounded-lg shadow-lg"
+                  loading="lazy"
                 />
               </motion.div>
               <motion.div
@@ -170,6 +194,7 @@ const OtrosServicios = () => {
                   src="/service-image-3.jpg"
                   alt="CLCRIPTO - Consultoría legal y fiscal especializada en criptomonedas e impuestos crypto"
                   className="w-full aspect-[3/4] object-cover rounded-lg shadow-lg"
+                  loading="lazy"
                 />
               </motion.div>
             </div>

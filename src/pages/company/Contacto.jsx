@@ -37,8 +37,9 @@ const Contacto = () => {
         <div className="my-12 max-w-4xl mx-auto">
           <img
             src="/contact-image.jpg"
-            alt="Espacio de trabajo profesional BSB Capital"
-            className="w-full h-auto rounded-lg shadow-lg object-cover"
+            alt="Oficina moderna de BSB Capital con ambiente profesional para consultoría financiera"
+            className="w-full h-full object-cover"
+            loading="lazy"
           />
         </div>
 

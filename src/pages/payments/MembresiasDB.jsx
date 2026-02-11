@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
+import Breadcrumbs from '@/components/common/Breadcrumbs';
 import {
   Card,
   CardHeader,
@@ -221,19 +222,19 @@ const MembresiasDB = () => {
         .from('subscription_plans')
         .select(
           `
-          id,
-          name,
-          description,
-          price,
-          price_annual,
-          currency,
-          stripe_price_id,
-          stripe_price_id_annual,
-          stripe_product_id,
-          features,
-          is_active,
-          duration_months
-        `
+id,
+  name,
+  description,
+  price,
+  price_annual,
+  currency,
+  stripe_price_id,
+  stripe_price_id_annual,
+  stripe_product_id,
+  features,
+  is_active,
+  duration_months
+    `
         )
         .eq('is_active', true)
         .order('price', { ascending: true });
@@ -468,7 +469,7 @@ const MembresiasDB = () => {
             context: error.context,
             stack: error.stack,
           });
-          throw new Error(`Error de Stripe: ${error.message || 'Error desconocido'}`);
+          throw new Error(`Error de Stripe: ${error.message || 'Error desconocido'} `);
         }
 
         if (data?.error) {
@@ -517,596 +518,553 @@ const MembresiasDB = () => {
           name="description"
           content="Soluciones especializadas en crypto y activos digitales, diseñadas según tu perfil. Encuentra el paquete que mejor se adapte a tus necesidades."
         />
+        <meta
+          property="og:description"
+          content="Accede a herramientas exclusivas, señales de mercado y soporte prioritario para llevar tus inversiones al siguiente nivel."
+        />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Inicio',
+                item: 'https://bsbcapital.io/',
+              },
+              {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Paquetes Cripto',
+                item: 'https://bsbcapital.io/paquetes-cripto',
+              },
+            ],
+          })}
+        </script>
       </Helmet>
 
-      {/* Hero Header - Contenido centrado */}
-      <div className="container mx-auto px-4 pt-16 pb-8">
-        <div className="text-center max-w-5xl mx-auto mb-8 md:mb-12">
-          <motion.h1
-            className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 text-foreground leading-tight"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 0.5 }}
+      <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <Breadcrumbs items={[{ label: 'Paquetes y Membresías' }]} />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center mb-16"
           >
-            Paquetes BSB Capital y Membresía Anual
-          </motion.h1>
-        </div>
-      </div>
+            <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold mb-6 text-foreground leading-tight">
+              Paquetes BSB Capital y Membresía Anual
+            </h1>
+            <p className="text-base sm:text-lg md:text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto">
+              Soluciones especializadas en crypto y activos digitales, diseñadas según tu perfil.
+              Encuentra el paquete que mejor se adapte a tus necesidades.
+            </p>
+          </motion.div>
 
-      {/* Sección 1: Introducción a Paquetes - Full Width Background */}
-      <div className="w-full bg-white py-12 md:py-16 mb-16">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto px-6 md:px-12">
-            <div className="flex items-start gap-4 mb-8">
-              <div className="flex-1">
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 text-foreground">
-                  Paquetes BSB Capital
-                </h2>
-                <p className="text-base sm:text-lg md:text-xl text-muted-foreground leading-relaxed">
-                  Soluciones especializadas en crypto y activos digitales, diseñadas según tu
-                  perfil. Encuentra el paquete que mejor se adapte a tus necesidades.
-                </p>
-              </div>
-            </div>
+          {/* Tarjetas de Paquetes */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto mb-24">
+            {filteredPlans.map((plan) => {
+              const currentPrice = plan.price_annual;
+              const isLoading = loadingPlan === plan.id;
 
-            <div className="bg-card rounded-xl md:rounded-2xl p-5 md:p-8 shadow-lg border border-border mb-6">
-              <h3 className="text-xl sm:text-2xl font-bold mb-4 text-foreground">
-                ¿Qué es un Paquete BSB Capital?
-              </h3>
-              <p className="text-sm sm:text-base md:text-lg text-muted-foreground mb-6 leading-relaxed">
-                BSB Capital nace como la primera firma que combina asesoramiento financiero
-                independiente con especialización crypto y activos digitales. Nuestros paquetes
-                ofrecen un conjunto completo de consultorías, formación y herramientas, pensados
-                para corregir los problemas estructurales del sector: falta de rigor, ausencia de
-                metodología y poca transparencia.
-              </p>
-
-              <p className="text-sm sm:text-base md:text-lg font-semibold text-foreground mb-4">
-                Cada paquete está diseñado para guiar a inversores y empresas hacia decisiones
-                inteligentes mediante:
-              </p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
-                <div className="flex items-start gap-3 bg-background p-3 md:p-4 rounded-lg md:rounded-xl border border-brand-green-300">
-                  <Check className="h-5 w-5 text-brand-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm sm:text-base font-medium text-foreground">
-                    Análisis avanzado y metodología profesional
-                  </span>
-                </div>
-                <div className="flex items-start gap-3 bg-background p-3 md:p-4 rounded-lg md:rounded-xl border border-brand-gold-300">
-                  <Check className="h-5 w-5 text-brand-gold-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm sm:text-base font-medium text-foreground">
-                    Tecnología especializada en activos digitales
-                  </span>
-                </div>
-                <div className="flex items-start gap-3 bg-background p-3 md:p-4 rounded-lg md:rounded-xl border border-brand-green-300">
-                  <Check className="h-5 w-5 text-brand-green-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm sm:text-base font-medium text-foreground">
-                    Formación integral y acompañamiento continuo
-                  </span>
-                </div>
-                <div className="flex items-start gap-3 bg-background p-3 md:p-4 rounded-lg md:rounded-xl border border-brand-gold-300">
-                  <Check className="h-5 w-5 text-brand-gold-600 flex-shrink-0 mt-0.5" />
-                  <span className="text-sm sm:text-base font-medium text-foreground">
-                    Inversores que buscan optimizar su cartera
-                  </span>
-                </div>
-              </div>
-
-              <div className="mt-3 md:mt-4 flex items-start gap-3 bg-background p-3 md:p-4 rounded-lg md:rounded-xl border border-brand-green-300">
-                <Check className="h-5 w-5 text-brand-green-600 flex-shrink-0 mt-0.5" />
-                <span className="text-sm sm:text-base font-medium text-foreground">
-                  Empresas que necesitan gestión de tesorería crypto y estructuras corporativas
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Tarjetas de Paquetes - Contenido centrado */}
-      <div className="container mx-auto px-4 mb-16 md:mb-24">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto">
-          {filteredPlans.map((plan) => {
-            const currentPrice = plan.price_annual;
-            const isLoading = loadingPlan === plan.id;
-
-            return (
-              <motion.div
-                key={plan.id}
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.6,
-                  delay: plans.indexOf(plan) * 0.1,
-                  type: 'spring',
-                  bounce: 0.4,
-                }}
-                whileHover={{
-                  scale: 1.05,
-                  transition: {
+              return (
+                <motion.div
+                  key={plan.id}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.6,
+                    delay: plans.indexOf(plan) * 0.1,
                     type: 'spring',
-                    stiffness: 400,
-                    damping: 10,
-                  },
-                }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Card
-                  className={`h-full flex flex-col transition-all duration-300 ${
-                    plan.highlight
-                      ? 'border-brand-gold-600 border-2 md:border-3 shadow-2xl shadow-brand-gold-600/20 relative'
-                      : 'border-border border hover:border-brand-green-600 shadow-lg hover:shadow-xl'
-                  }`}
+                    bounce: 0.4,
+                  }}
+                  whileHover={{
+                    scale: 1.05,
+                    transition: {
+                      type: 'spring',
+                      stiffness: 400,
+                      damping: 10,
+                    },
+                  }}
+                  whileTap={{ scale: 0.95 }}
                 >
-                  {plan.highlight && (
-                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                      <Badge className="bg-brand-gold-600 hover:bg-brand-gold-700 text-white px-6 py-2 text-sm font-bold shadow-lg">
-                        ⭐ Más Popular
-                      </Badge>
-                    </div>
-                  )}
-
-                  <CardHeader className="text-center pb-4 md:pb-6 pt-6 md:pt-8 px-4 md:px-6 bg-gradient-to-br from-brand-green-50 to-white min-h-[180px] md:min-h-[220px] flex flex-col justify-center items-center">
-                    <CardTitle
-                      className={`font-bold mb-3 text-foreground ${
-                        plan.name.length > 25
-                          ? 'text-lg sm:text-xl md:text-2xl'
-                          : 'text-xl sm:text-2xl md:text-3xl'
-                      }`}
-                    >
-                      {plan.name}
-                    </CardTitle>
-                    <CardDescription className="text-sm sm:text-base text-muted-foreground">
-                      {plan.description}
-                    </CardDescription>
-                  </CardHeader>
-
-                  <CardContent className="flex-grow px-4 md:px-6 py-4 md:py-6 space-y-4 md:space-y-6">
-                    {/* Precio */}
-                    <div className="text-center py-4 md:py-6 px-3 md:px-4 bg-gradient-to-br from-gray-50 to-white rounded-lg md:rounded-xl border border-border shadow-sm min-h-[160px] md:min-h-[200px] flex flex-col justify-center">
-                      <div className="flex flex-col items-center justify-center gap-2 mb-2">
-                        <div
-                          className={`text-4xl sm:text-5xl md:text-6xl font-bold ${
-                            plan.highlight ? 'text-brand-gold-600' : 'text-brand-green-600'
-                          }`}
-                        >
-                          €{isTestMode ? '1' : currentPrice || 0}
-                        </div>
-                        <div className="text-xs sm:text-sm text-muted-foreground font-semibold uppercase tracking-wide">
-                          {isTestMode ? 'PRUEBA (€1)' : 'Pago anual único'}
-                        </div>
-                      </div>
-
-                      {/* Mostrar precio original si existe descuento y NO está en modo test */}
-                      {!isTestMode && plan.price_original && (
-                        <div className="text-xs sm:text-sm text-muted-foreground mt-3">
-                          <span className="line-through">€{plan.price_original}</span>
-                          <span className="ml-2 text-brand-green-600 font-semibold">
-                            / €{plan.id === 'onboarding-crypto' ? '590' : plan.price_original}
-                          </span>
-                        </div>
-                      )}
-                      {!isTestMode && plan.id === 'onboarding-crypto' && (
-                        <div className="text-xs text-brand-green-600 font-medium mt-1">
-                          (antes €500 / €690)
-                        </div>
-                      )}
-                      {isTestMode && (
-                        <div className="text-xs text-orange-600 font-medium mt-2 flex items-center gap-1 justify-center">
-                          🧪 Modo Prueba - Pago real de €1
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Incluye */}
-                    <div className="space-y-3 md:space-y-4">
-                      <h4 className="font-bold text-base md:text-lg text-foreground flex items-center gap-2 pb-2 border-b border-border">
-                        <div
-                          className={`w-5 h-5 md:w-6 md:h-6 rounded-lg flex items-center justify-center ${
-                            plan.highlight ? 'bg-brand-gold-600' : 'bg-brand-green-600'
-                          }`}
-                        >
-                          <Check className="h-3 w-3 md:h-4 md:w-4 text-white" />
-                        </div>
-                        Incluye:
-                      </h4>
-                      <ul className="space-y-2 md:space-y-3">
-                        {Array.isArray(plan.features)
-                          ? plan.features.map((feature, index) => (
-                              <li key={index} className="flex items-start gap-2 md:gap-3">
-                                <Check className="h-4 w-4 md:h-5 md:w-5 text-brand-green-600 flex-shrink-0 mt-0.5" />
-                                <span className="text-sm md:text-base text-foreground leading-relaxed">
-                                  {feature}
-                                </span>
-                              </li>
-                            ))
-                          : null}
-                      </ul>
-                    </div>
-
-                    {/* Objetivo */}
-                    {plan.objective && (
-                      <div
-                        className={`p-4 md:p-5 rounded-lg md:rounded-xl border ${
-                          plan.highlight
-                            ? 'bg-brand-gold-50 border-brand-gold-200'
-                            : 'bg-brand-green-50 border-brand-green-200'
-                        }`}
-                      >
-                        <h4 className="font-bold text-sm md:text-base text-foreground mb-2 md:mb-3 flex items-center gap-2">
-                          <Check className="h-4 w-4 md:h-5 md:w-5 text-brand-green-600" />
-                          Objetivo:
-                        </h4>
-                        <p className="text-xs sm:text-sm md:text-base text-muted-foreground leading-relaxed">
-                          {plan.objective}
-                        </p>
+                  <Card
+                    className={`h-full flex flex-col transition-all duration-300 ${
+                      plan.highlight
+                        ? 'border-brand-gold-600 border-2 md:border-3 shadow-2xl shadow-brand-gold-600/20 relative'
+                        : 'border-border border hover:border-brand-green-600 shadow-lg hover:shadow-xl'
+                    }`}
+                  >
+                    {plan.highlight && (
+                      <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                        <Badge className="bg-brand-gold-600 hover:bg-brand-gold-700 text-white px-6 py-2 text-sm font-bold shadow-lg">
+                          ⭐ Más Popular
+                        </Badge>
                       </div>
                     )}
-                  </CardContent>
 
-                  <CardFooter className="mt-auto p-4 md:p-6 pt-2 md:pt-4">
-                    <Button
-                      className={`w-full py-4 md:py-6 text-base md:text-lg font-bold shadow-lg transition-all duration-300 ${
-                        plan.highlight
-                          ? 'bg-brand-gold-600 hover:bg-brand-gold-700 text-white hover:shadow-xl hover:shadow-brand-gold-600/30'
-                          : 'hover:shadow-xl'
-                      }`}
-                      onClick={() => handleSelectPlan(plan)}
-                      disabled={isLoading}
-                    >
-                      {isLoading ? (
-                        <>
-                          <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                          Procesando...
-                        </>
-                      ) : (
-                        <>
-                          Elegir paquete
-                          <ArrowRight className="ml-2 h-5 w-5" />
-                        </>
+                    <CardHeader className="text-center pb-4 md:pb-6 pt-6 md:pt-8 px-4 md:px-6 bg-gradient-to-br from-brand-green-50 to-white min-h-[180px] md:min-h-[220px] flex flex-col justify-center items-center">
+                      <CardTitle
+                        className={`font - bold mb - 3 text - foreground ${
+                          plan.name.length > 25
+                            ? 'text-lg sm:text-xl md:text-2xl'
+                            : 'text-xl sm:text-2xl md:text-3xl'
+                        } `}
+                      >
+                        {plan.name}
+                      </CardTitle>
+                      <CardDescription className="text-sm sm:text-base text-muted-foreground">
+                        {plan.description}
+                      </CardDescription>
+                    </CardHeader>
+
+                    <CardContent className="flex-grow px-4 md:px-6 py-4 md:py-6 space-y-4 md:space-y-6">
+                      {/* Precio */}
+                      <div className="text-center py-4 md:py-6 px-3 md:px-4 bg-gradient-to-br from-gray-50 to-white rounded-lg md:rounded-xl border border-border shadow-sm min-h-[160px] md:min-h-[200px] flex flex-col justify-center">
+                        <div className="flex flex-col items-center justify-center gap-2 mb-2">
+                          <div
+                            className={`text - 4xl sm: text - 5xl md: text - 6xl font - bold ${
+                              plan.highlight ? 'text-brand-gold-600' : 'text-brand-green-600'
+                            } `}
+                          >
+                            €{isTestMode ? '1' : currentPrice || 0}
+                          </div>
+                          <div className="text-xs sm:text-sm text-muted-foreground font-semibold uppercase tracking-wide">
+                            {isTestMode ? 'PRUEBA (€1)' : 'Pago anual único'}
+                          </div>
+                        </div>
+
+                        {/* Mostrar precio original si existe descuento y NO está en modo test */}
+                        {!isTestMode && plan.price_original && (
+                          <div className="text-xs sm:text-sm text-muted-foreground mt-3">
+                            <span className="line-through">€{plan.price_original}</span>
+                            <span className="ml-2 text-brand-green-600 font-semibold">
+                              / €{plan.id === 'onboarding-crypto' ? '590' : plan.price_original}
+                            </span>
+                          </div>
+                        )}
+                        {!isTestMode && plan.id === 'onboarding-crypto' && (
+                          <div className="text-xs text-brand-green-600 font-medium mt-1">
+                            (antes €500 / €690)
+                          </div>
+                        )}
+                        {isTestMode && (
+                          <div className="text-xs text-orange-600 font-medium mt-2 flex items-center gap-1 justify-center">
+                            🧪 Modo Prueba - Pago real de €1
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Incluye */}
+                      <div className="space-y-3 md:space-y-4">
+                        <h4 className="font-bold text-base md:text-lg text-foreground flex items-center gap-2 pb-2 border-b border-border">
+                          <div
+                            className={`w - 5 h - 5 md: w - 6 md: h - 6 rounded - lg flex items - center justify - center ${
+                              plan.highlight ? 'bg-brand-gold-600' : 'bg-brand-green-600'
+                            } `}
+                          >
+                            <Check className="h-3 w-3 md:h-4 md:w-4 text-white" />
+                          </div>
+                          Incluye:
+                        </h4>
+                        <ul className="space-y-2 md:space-y-3">
+                          {Array.isArray(plan.features)
+                            ? plan.features.map((feature, index) => (
+                                <li key={index} className="flex items-start gap-2 md:gap-3">
+                                  <Check className="h-4 w-4 md:h-5 md:w-5 text-brand-green-600 flex-shrink-0 mt-0.5" />
+                                  <span className="text-sm md:text-base text-foreground leading-relaxed">
+                                    {feature}
+                                  </span>
+                                </li>
+                              ))
+                            : null}
+                        </ul>
+                      </div>
+
+                      {/* Objetivo */}
+                      {plan.objective && (
+                        <div
+                          className={`p - 4 md: p - 5 rounded - lg md: rounded - xl border ${
+                            plan.highlight
+                              ? 'bg-brand-gold-50 border-brand-gold-200'
+                              : 'bg-brand-green-50 border-brand-green-200'
+                          } `}
+                        >
+                          <h4 className="font-bold text-sm md:text-base text-foreground mb-2 md:mb-3 flex items-center gap-2">
+                            <Check className="h-4 w-4 md:h-5 md:w-5 text-brand-green-600" />
+                            Objetivo:
+                          </h4>
+                          <p className="text-xs sm:text-sm md:text-base text-muted-foreground leading-relaxed">
+                            {plan.objective}
+                          </p>
+                        </div>
                       )}
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </motion.div>
-            );
-          })}
-        </div>
-      </div>
+                    </CardContent>
 
-      {/* Sección 2: Membresía BSB Capital - Full Width Background */}
-      <div id="membresias-section" className="w-full bg-brand-green-100 py-24">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto px-6">
-            <div className="bg-white p-8 md:p-12 rounded-3xl shadow-xl border-2 border-brand-gold-200 mb-16">
-              <div className="text-center mb-8">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4 text-brand-green-900">
-                  Membresía BSB Capital
-                </h2>
-                <h3 className="text-2xl md:text-3xl font-semibold text-brand-gold-700 mb-6">
-                  Tu evolución financiera no termina en una consultoría. Empieza aquí.
-                </h3>
-                <p className="text-lg md:text-xl text-gray-800 leading-relaxed max-w-4xl mx-auto">
-                  En un entorno donde las oportunidades financieras cambian cada semana, mantenerse
-                  al día no es opcional: es la clave para avanzar con seguridad.
-                </p>
-                <p className="text-lg md:text-xl text-gray-800 leading-relaxed max-w-4xl mx-auto mt-4 font-medium">
-                  La Membresía es tu acceso directo a una comunidad, formación y acompañamiento
-                  continuo.
-                </p>
-              </div>
-
-              {/* Tarjetas de membresía - Mensual y Anual lado a lado */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 max-w-4xl mx-auto">
-                {/* Tarjeta Mensual */}
-                {(() => {
-                  const monthlyPlan = plans.find((p) => {
-                    const nameLower = p.name.toLowerCase();
-                    return (
-                      (nameLower.includes('membresía') || nameLower.includes('membresia')) &&
-                      nameLower.includes('mensual')
-                    );
-                  });
-
-                  if (!monthlyPlan) return null;
-
-                  const price = monthlyPlan.price_monthly || monthlyPlan.price || 40;
-
-                  return (
-                    <Card className="border-brand-green-400 border-2 shadow-xl">
-                      <CardHeader className="text-center pb-4 bg-gradient-to-br from-brand-green-50 to-white">
-                        <CardTitle className="text-2xl font-bold text-brand-green-900">
-                          Plan Mensual
-                        </CardTitle>
-                        <CardDescription className="text-base text-gray-700 mt-2">
-                          Flexibilidad mes a mes
-                        </CardDescription>
-                      </CardHeader>
-
-                      <CardContent className="py-6">
-                        <div className="text-center mb-4">
-                          <div className="text-5xl font-black text-brand-green-600 mb-2">
-                            €{price}
-                            <span className="text-xl text-gray-600">/mes</span>
-                          </div>
-                          <div className="text-sm text-gray-600 mt-2">Permanencia: 12 meses</div>
-                        </div>
-                      </CardContent>
-
-                      <CardFooter className="p-6 pt-0">
-                        <Button
-                          className="w-full py-5 text-base font-bold bg-brand-green-600 hover:bg-brand-green-700 text-white shadow-lg"
-                          onClick={() => handleSelectPlan(monthlyPlan, 'monthly')}
-                          disabled={loadingPlan === monthlyPlan.id}
-                        >
-                          {loadingPlan === monthlyPlan.id ? (
-                            <>
-                              <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                              Procesando...
-                            </>
-                          ) : (
-                            <>
-                              Contratar Mensual
-                              <ArrowRight className="ml-2 h-5 w-5" />
-                            </>
-                          )}
-                        </Button>
-                      </CardFooter>
-                    </Card>
-                  );
-                })()}
-
-                {/* Tarjeta Anual */}
-                {(() => {
-                  const annualPlan = plans.find((p) => {
-                    const nameLower = p.name.toLowerCase();
-                    return (
-                      (nameLower.includes('membresía') || nameLower.includes('membresia')) &&
-                      nameLower.includes('anual')
-                    );
-                  });
-
-                  if (!annualPlan) return null;
-
-                  const price = annualPlan.price_annual || annualPlan.price || 400;
-
-                  return (
-                    <Card className="border-brand-gold-600 border-3 shadow-2xl relative">
-                      <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-brand-gold-600 text-white px-4 py-1">
-                        Recomendado - Ahorra 80€
-                      </Badge>
-                      <CardHeader className="text-center pb-4 bg-gradient-to-br from-brand-gold-50 to-white pt-8">
-                        <CardTitle className="text-2xl font-bold text-brand-green-900">
-                          Plan Anual
-                        </CardTitle>
-                        <CardDescription className="text-base text-gray-700 mt-2">
-                          Máximo ahorro
-                        </CardDescription>
-                      </CardHeader>
-
-                      <CardContent className="py-6">
-                        <div className="text-center mb-4">
-                          <div className="text-5xl font-black text-brand-gold-600 mb-2">
-                            €{price}
-                          </div>
-                          <div className="text-sm text-gray-600 mt-2">Pago único anual</div>
-                        </div>
-                      </CardContent>
-
-                      <CardFooter className="p-6 pt-0">
-                        <Button
-                          className="w-full py-5 text-base font-bold bg-brand-gold-600 hover:bg-brand-gold-700 text-white shadow-lg"
-                          onClick={() => handleSelectPlan(annualPlan, 'annual')}
-                          disabled={loadingPlan === annualPlan.id}
-                        >
-                          {loadingPlan === annualPlan.id ? (
-                            <>
-                              <Loader2 className="h-5 w-5 animate-spin mr-2" />
-                              Procesando...
-                            </>
-                          ) : (
-                            <>
-                              Contratar Anual
-                              <ArrowRight className="ml-2 h-5 w-5" />
-                            </>
-                          )}
-                        </Button>
-                      </CardFooter>
-                    </Card>
-                  );
-                })()}
-              </div>
-            </div>
-
-            {/* Qué incluye tu membresía */}
-            <div className="max-w-6xl mx-auto mb-16">
-              <h3 className="text-3xl font-bold text-center mb-10 text-brand-green-900">
-                Qué incluye tu membresía
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Beneficio 1 */}
-                <motion.div
-                  whileHover={{ y: -4 }}
-                  className="bg-white rounded-2xl p-6 shadow-lg border-2 border-brand-green-200 hover:border-brand-green-600 transition-all"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0">
-                      <Briefcase className="h-12 w-12 text-brand-green-600" />
-                    </div>
-                    <div>
-                      <h4 className="text-xl font-bold text-brand-green-900 mb-2">
-                        20% de descuento en BSB Consulting
-                      </h4>
-                      <p className="text-base text-gray-700 leading-relaxed">
-                        Ahorra en todos nuestros servicios de análisis, planificación y
-                        asesoramiento financiero.
-                      </p>
-                    </div>
-                  </div>
+                    <CardFooter className="mt-auto p-4 md:p-6 pt-2 md:pt-4">
+                      <Button
+                        className={`w - full py - 4 md: py - 6 text - base md: text - lg font - bold shadow - lg transition - all duration - 300 ${
+                          plan.highlight
+                            ? 'bg-brand-gold-600 hover:bg-brand-gold-700 text-white hover:shadow-xl hover:shadow-brand-gold-600/30'
+                            : 'hover:shadow-xl'
+                        } `}
+                        onClick={() => handleSelectPlan(plan)}
+                        disabled={isLoading}
+                      >
+                        {isLoading ? (
+                          <>
+                            <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                            Procesando...
+                          </>
+                        ) : (
+                          <>
+                            Elegir paquete
+                            <ArrowRight className="ml-2 h-5 w-5" />
+                          </>
+                        )}
+                      </Button>
+                    </CardFooter>
+                  </Card>
                 </motion.div>
-
-                {/* Beneficio 2 */}
-                <motion.div
-                  whileHover={{ y: -4 }}
-                  className="bg-white rounded-2xl p-6 shadow-lg border-2 border-brand-gold-200 hover:border-brand-gold-400 transition-all"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0">
-                      <BookOpen className="h-12 w-12 text-brand-gold-600" />
-                    </div>
-                    <div>
-                      <h4 className="text-xl font-bold text-brand-green-900 mb-2">
-                        Acceso a la BSB Academy
-                      </h4>
-                      <p className="text-base text-gray-700 leading-relaxed">
-                        La plataforma educativa de BSB Capital, especializada en formación crypto,
-                        para que aprendas a invertir con confianza y maximices el potencial de tu
-                        cartera.
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Beneficio 3 */}
-                <motion.div
-                  whileHover={{ y: -4 }}
-                  className="bg-white rounded-2xl p-6 shadow-lg border-2 border-brand-green-200 hover:border-brand-green-600 transition-all"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0">
-                      <Bot className="h-12 w-12 text-brand-green-600" />
-                    </div>
-                    <div>
-                      <h4 className="text-xl font-bold text-brand-green-900 mb-2">
-                        Acceso prioritario a BSB Maker
-                      </h4>
-                      <p className="text-base text-gray-700 leading-relaxed">
-                        Sé el primero en probar nuestro asistente de trading con IA antes de su
-                        lanzamiento público.
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-
-                {/* Beneficio 4 */}
-                <motion.div
-                  whileHover={{ y: -4 }}
-                  className="bg-white rounded-2xl p-6 shadow-lg border-2 border-brand-gold-200 hover:border-brand-gold-400 transition-all"
-                >
-                  <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0">
-                      <Users className="h-12 w-12 text-brand-gold-600" />
-                    </div>
-                    <div>
-                      <h4 className="text-xl font-bold text-brand-green-900 mb-2">
-                        Eventos y encuentros exclusivos
-                      </h4>
-                      <p className="text-base text-gray-700 leading-relaxed">
-                        Conecta con expertos del sector y otros inversores de la comunidad.
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-              </div>
-            </div>
-
-            {/* Sección adicional según especificaciones */}
-            <div className="max-w-5xl mx-auto text-center mb-16">
-              <div className="bg-white rounded-3xl p-8 md:p-10 mb-8 border-2 border-brand-green-200 shadow-lg">
-                <h3 className="text-2xl md:text-3xl font-bold text-brand-green-900 mb-6">
-                  Ideal para ti si...
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-left">
-                  <div className="flex items-start gap-3">
-                    <Check className="h-5 w-5 text-brand-green-600 flex-shrink-0 mt-1" />
-                    <p className="text-base md:text-lg text-gray-800 font-medium">
-                      Buscas mantenerte actualizado en un sector en constante cambio.
-                    </p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Check className="h-5 w-5 text-brand-green-600 flex-shrink-0 mt-1" />
-                    <p className="text-base md:text-lg text-gray-800 font-medium">
-                      Valoras el acceso directo a profesionales y a una comunidad activa.
-                    </p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Check className="h-5 w-5 text-brand-green-600 flex-shrink-0 mt-1" />
-                    <p className="text-base md:text-lg text-gray-800 font-medium">
-                      Quieres formarte y actuar con estrategia, no solo reaccionar ante el mercado.
-                    </p>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <Check className="h-5 w-5 text-brand-green-600 flex-shrink-0 mt-1" />
-                    <p className="text-base md:text-lg text-gray-800 font-medium">
-                      Crees en la educación como la base de la libertad financiera.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-3xl p-8 md:p-10 mb-10 border-2 border-brand-gold-200 shadow-lg">
-                <h3 className="text-2xl md:text-3xl font-bold text-brand-green-900 mb-4">
-                  Tu ventaja competitiva está en la información.
-                </h3>
-                <p className="text-base md:text-lg text-gray-800 leading-relaxed">
-                  La membresía te da algo más que descuentos: te conecta a una red, una guía y un
-                  flujo constante de conocimiento que se traduce en mejores decisiones.
-                </p>
-              </div>
-
-              <Button
-                size="lg"
-                className="px-10 py-6 text-lg font-bold bg-brand-gold-600 hover:bg-brand-gold-700 text-white shadow-xl"
-                onClick={() => {
-                  const element = document.getElementById('membresias-section');
-                  if (element) {
-                    element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }
-                }}
-              >
-                Hazte miembro
-              </Button>
-
-              <p className="text-xs text-gray-500 mt-4">Acceso inmediato tras la inscripción.</p>
-              <p className="text-xs text-gray-400 mt-2">
-                La membresía tiene una duración anual. En caso de pago mensual, se establece una
-                permanencia de 12 meses. Los beneficios estarán activos mientras la suscripción esté
-                al corriente de pago.
-              </p>
-            </div>
+              );
+            })}
           </div>
         </div>
 
-        {/* Información adicional */}
-        {/* Información adicional */}
-        <div className="container mx-auto px-4">
-          <div className="mt-24 bg-white rounded-3xl p-12 border-2 border-brand-green-200">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold mb-4 text-brand-green-900">
-                ¿Necesitas ayuda para elegir?
-              </h2>
-              <p className="text-lg text-brand-green-800 max-w-3xl mx-auto font-medium">
-                Cada plan está diseñado para diferentes perfiles y necesidades. Si no estás seguro
-                de cuál es el mejor para ti, puedes usar nuestro sistema de recomendación o
-                contactarnos directamente.
-              </p>
-            </div>
+        {/* Sección 2: Membresía BSB Capital - Full Width Background */}
+        <div id="membresias-section" className="w-full bg-brand-green-100 py-24">
+          <div className="container mx-auto px-4">
+            <div className="max-w-6xl mx-auto px-6">
+              <div className="bg-white p-8 md:p-12 rounded-3xl shadow-xl border-2 border-brand-gold-200 mb-16">
+                <div className="text-center mb-8">
+                  <h2 className="text-3xl md:text-4xl font-bold mb-4 text-brand-green-900">
+                    Membresía BSB Capital
+                  </h2>
+                  <h3 className="text-2xl md:text-3xl font-semibold text-brand-gold-700 mb-6">
+                    Tu evolución financiera no termina en una consultoría. Empieza aquí.
+                  </h3>
+                  <p className="text-lg md:text-xl text-gray-800 leading-relaxed max-w-4xl mx-auto">
+                    En un entorno donde las oportunidades financieras cambian cada semana,
+                    mantenerse al día no es opcional: es la clave para avanzar con seguridad.
+                  </p>
+                  <p className="text-lg md:text-xl text-gray-800 leading-relaxed max-w-4xl mx-auto mt-4 font-medium">
+                    La Membresía es tu acceso directo a una comunidad, formación y acompañamiento
+                    continuo.
+                  </p>
+                </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                asChild
-                variant="outline"
-                size="lg"
-                className="border-brand-green-600 text-gray-700 hover:bg-brand-green-600 hover:text-white"
-              >
-                <a href="/guia-inversion">
-                  Encuentra tu plan ideal <ArrowRight className="ml-2 h-4 w-4" />
-                </a>
-              </Button>
-              <Button asChild size="lg" className="shadow-lg">
-                <a href="/consultoria">Hablar con un experto</a>
-              </Button>
+                {/* Tarjetas de membresía - Mensual y Anual lado a lado */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8 max-w-4xl mx-auto">
+                  {/* Tarjeta Mensual */}
+                  {(() => {
+                    const monthlyPlan = plans.find((p) => {
+                      const nameLower = p.name.toLowerCase();
+                      return (
+                        (nameLower.includes('membresía') || nameLower.includes('membresia')) &&
+                        nameLower.includes('mensual')
+                      );
+                    });
+
+                    if (!monthlyPlan) return null;
+
+                    const price = monthlyPlan.price_monthly || monthlyPlan.price || 40;
+
+                    return (
+                      <Card className="border-brand-green-400 border-2 shadow-xl">
+                        <CardHeader className="text-center pb-4 bg-gradient-to-br from-brand-green-50 to-white">
+                          <CardTitle className="text-2xl font-bold text-brand-green-900">
+                            Plan Mensual
+                          </CardTitle>
+                          <CardDescription className="text-base text-gray-700 mt-2">
+                            Flexibilidad mes a mes
+                          </CardDescription>
+                        </CardHeader>
+
+                        <CardContent className="py-6">
+                          <div className="text-center mb-4">
+                            <div className="text-5xl font-black text-brand-green-600 mb-2">
+                              €{price}
+                              <span className="text-xl text-gray-600">/mes</span>
+                            </div>
+                            <div className="text-sm text-gray-600 mt-2">Permanencia: 12 meses</div>
+                          </div>
+                        </CardContent>
+
+                        <CardFooter className="p-6 pt-0">
+                          <Button
+                            className="w-full py-5 text-base font-bold bg-brand-green-600 hover:bg-brand-green-700 text-white shadow-lg"
+                            onClick={() => handleSelectPlan(monthlyPlan, 'monthly')}
+                            disabled={loadingPlan === monthlyPlan.id}
+                          >
+                            {loadingPlan === monthlyPlan.id ? (
+                              <>
+                                <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                                Procesando...
+                              </>
+                            ) : (
+                              <>
+                                Contratar Mensual
+                                <ArrowRight className="ml-2 h-5 w-5" />
+                              </>
+                            )}
+                          </Button>
+                        </CardFooter>
+                      </Card>
+                    );
+                  })()}
+
+                  {/* Tarjeta Anual */}
+                  {(() => {
+                    const annualPlan = plans.find((p) => {
+                      const nameLower = p.name.toLowerCase();
+                      return (
+                        (nameLower.includes('membresía') || nameLower.includes('membresia')) &&
+                        nameLower.includes('anual')
+                      );
+                    });
+
+                    if (!annualPlan) return null;
+
+                    const price = annualPlan.price_annual || annualPlan.price || 400;
+
+                    return (
+                      <Card className="border-brand-gold-600 border-3 shadow-2xl relative">
+                        <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-brand-gold-600 text-white px-4 py-1">
+                          Recomendado - Ahorra 80€
+                        </Badge>
+                        <CardHeader className="text-center pb-4 bg-gradient-to-br from-brand-gold-50 to-white pt-8">
+                          <CardTitle className="text-2xl font-bold text-brand-green-900">
+                            Plan Anual
+                          </CardTitle>
+                          <CardDescription className="text-base text-gray-700 mt-2">
+                            Máximo ahorro
+                          </CardDescription>
+                        </CardHeader>
+
+                        <CardContent className="py-6">
+                          <div className="text-center mb-4">
+                            <div className="text-5xl font-black text-brand-gold-600 mb-2">
+                              €{price}
+                            </div>
+                            <div className="text-sm text-gray-600 mt-2">Pago único anual</div>
+                          </div>
+                        </CardContent>
+
+                        <CardFooter className="p-6 pt-0">
+                          <Button
+                            className="w-full py-5 text-base font-bold bg-brand-gold-600 hover:bg-brand-gold-700 text-white shadow-lg"
+                            onClick={() => handleSelectPlan(annualPlan, 'annual')}
+                            disabled={loadingPlan === annualPlan.id}
+                          >
+                            {loadingPlan === annualPlan.id ? (
+                              <>
+                                <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                                Procesando...
+                              </>
+                            ) : (
+                              <>
+                                Contratar Anual
+                                <ArrowRight className="ml-2 h-5 w-5" />
+                              </>
+                            )}
+                          </Button>
+                        </CardFooter>
+                      </Card>
+                    );
+                  })()}
+                </div>
+              </div>
+
+              {/* Qué incluye tu membresía */}
+              <div className="max-w-6xl mx-auto mb-16">
+                <h3 className="text-3xl font-bold text-center mb-10 text-brand-green-900">
+                  Qué incluye tu membresía
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Beneficio 1 */}
+                  <motion.div
+                    whileHover={{ y: -4 }}
+                    className="bg-white rounded-2xl p-6 shadow-lg border-2 border-brand-green-200 hover:border-brand-green-600 transition-all"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0">
+                        <Briefcase className="h-12 w-12 text-brand-green-600" />
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-bold text-brand-green-900 mb-2">
+                          20% de descuento en BSB Consulting
+                        </h4>
+                        <p className="text-base text-gray-700 leading-relaxed">
+                          Ahorra en todos nuestros servicios de análisis, planificación y
+                          asesoramiento financiero.
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Beneficio 2 */}
+                  <motion.div
+                    whileHover={{ y: -4 }}
+                    className="bg-white rounded-2xl p-6 shadow-lg border-2 border-brand-gold-200 hover:border-brand-gold-400 transition-all"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0">
+                        <BookOpen className="h-12 w-12 text-brand-gold-600" />
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-bold text-brand-green-900 mb-2">
+                          Acceso a la BSB Academy
+                        </h4>
+                        <p className="text-base text-gray-700 leading-relaxed">
+                          La plataforma educativa de BSB Capital, especializada en formación crypto,
+                          para que aprendas a invertir con confianza y maximices el potencial de tu
+                          cartera.
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Beneficio 3 */}
+                  <motion.div
+                    whileHover={{ y: -4 }}
+                    className="bg-white rounded-2xl p-6 shadow-lg border-2 border-brand-green-200 hover:border-brand-green-600 transition-all"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0">
+                        <Bot className="h-12 w-12 text-brand-green-600" />
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-bold text-brand-green-900 mb-2">
+                          Acceso prioritario a BSB Maker
+                        </h4>
+                        <p className="text-base text-gray-700 leading-relaxed">
+                          Sé el primero en probar nuestro asistente de trading con IA antes de su
+                          lanzamiento público.
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+
+                  {/* Beneficio 4 */}
+                  <motion.div
+                    whileHover={{ y: -4 }}
+                    className="bg-white rounded-2xl p-6 shadow-lg border-2 border-brand-gold-200 hover:border-brand-gold-400 transition-all"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0">
+                        <Users className="h-12 w-12 text-brand-gold-600" />
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-bold text-brand-green-900 mb-2">
+                          Eventos y encuentros exclusivos
+                        </h4>
+                        <p className="text-base text-gray-700 leading-relaxed">
+                          Conecta con expertos del sector y otros inversores de la comunidad.
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                </div>
+              </div>
+
+              {/* Sección adicional según especificaciones */}
+              <div className="max-w-5xl mx-auto text-center mb-16">
+                <div className="bg-white rounded-3xl p-8 md:p-10 mb-8 border-2 border-brand-green-200 shadow-lg">
+                  <h3 className="text-2xl md:text-3xl font-bold text-brand-green-900 mb-6">
+                    Ideal para ti si...
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-left">
+                    <div className="flex items-start gap-3">
+                      <Check className="h-5 w-5 text-brand-green-600 flex-shrink-0 mt-1" />
+                      <p className="text-base md:text-lg text-gray-800 font-medium">
+                        Buscas mantenerte actualizado en un sector en constante cambio.
+                      </p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Check className="h-5 w-5 text-brand-green-600 flex-shrink-0 mt-1" />
+                      <p className="text-base md:text-lg text-gray-800 font-medium">
+                        Valoras el acceso directo a profesionales y a una comunidad activa.
+                      </p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Check className="h-5 w-5 text-brand-green-600 flex-shrink-0 mt-1" />
+                      <p className="text-base md:text-lg text-gray-800 font-medium">
+                        Quieres formarte y actuar con estrategia, no solo reaccionar ante el
+                        mercado.
+                      </p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Check className="h-5 w-5 text-brand-green-600 flex-shrink-0 mt-1" />
+                      <p className="text-base md:text-lg text-gray-800 font-medium">
+                        Crees en la educación como la base de la libertad financiera.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-3xl p-8 md:p-10 mb-10 border-2 border-brand-gold-200 shadow-lg">
+                  <h3 className="text-2xl md:text-3xl font-bold text-brand-green-900 mb-4">
+                    Tu ventaja competitiva está en la información.
+                  </h3>
+                  <p className="text-base md:text-lg text-gray-800 leading-relaxed">
+                    La membresía te da algo más que descuentos: te conecta a una red, una guía y un
+                    flujo constante de conocimiento que se traduce en mejores decisiones.
+                  </p>
+                </div>
+
+                <Button
+                  size="lg"
+                  className="px-10 py-6 text-lg font-bold bg-brand-gold-600 hover:bg-brand-gold-700 text-white shadow-xl"
+                  onClick={() => {
+                    const element = document.getElementById('membresias-section');
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                  }}
+                >
+                  Hazte miembro
+                </Button>
+
+                <p className="text-xs text-gray-500 mt-4">Acceso inmediato tras la inscripción.</p>
+                <p className="text-xs text-gray-400 mt-2">
+                  La membresía tiene una duración anual. En caso de pago mensual, se establece una
+                  permanencia de 12 meses. Los beneficios estarán activos mientras la suscripción
+                  esté al corriente de pago.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Información adicional */}
+          {/* Información adicional */}
+          <div className="container mx-auto px-4">
+            <div className="mt-24 bg-white rounded-3xl p-12 border-2 border-brand-green-200">
+              <div className="text-center mb-8">
+                <h2 className="text-3xl font-bold mb-4 text-brand-green-900">
+                  ¿Necesitas ayuda para elegir?
+                </h2>
+                <p className="text-lg text-brand-green-800 max-w-3xl mx-auto font-medium">
+                  Cada plan está diseñado para diferentes perfiles y necesidades. Si no estás seguro
+                  de cuál es el mejor para ti, puedes usar nuestro sistema de recomendación o
+                  contactarnos directamente.
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  className="border-brand-green-600 text-gray-700 hover:bg-brand-green-600 hover:text-white"
+                >
+                  <a href="/guia-inversion">
+                    Encuentra tu plan ideal <ArrowRight className="ml-2 h-4 w-4" />
+                  </a>
+                </Button>
+                <Button asChild size="lg" className="shadow-lg">
+                  <a href="/consultoria">Hablar con un experto</a>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
