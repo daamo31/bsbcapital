@@ -102,8 +102,8 @@ const fallbackPlans = [
   },
 ];
 
-const MembresiasDB = () => {
-  console.log('🔥🔥🔥 MembresiasDB: Component rendering - VERSION CON FILTROS MEJORADOS 🔥🔥🔥');
+const Paquetes = () => {
+  console.log('🔥🔥🔥 Paquetes: Component rendering - VERSION CON FILTROS MEJORADOS 🔥🔥🔥');
 
   const { user, profile, loading: loadingAuth } = useAuth();
   const navigate = useNavigate();
@@ -1073,4 +1073,4 @@ id,
   );
 };
 
-export default MembresiasDB;
+export default Paquetes;

@@ -41,7 +41,7 @@ const itemVariants = {
   visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 100 } },
 };
 
-const Formacion = () => {
+const Academia = () => {
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
   const { isAdmin, loading } = useAdmin();
   const navigate = useNavigate();
@@ -367,4 +367,4 @@ const Formacion = () => {
   );
 };
 
-export default Formacion;
+export default Academia;

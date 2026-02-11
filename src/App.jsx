@@ -10,7 +10,7 @@ import Consultoria from '@/pages/services/Consultoria';
 import ConsultationPricing from '@/pages/ConsultationPricing';
 import AlgoFund from '@/pages/services/AlgoFund.jsx';
 import OtrosServicios from '@/pages/services/OtrosServicios.jsx';
-import Formacion from '@/pages/services/Formacion.jsx';
+import Academia from '@/pages/services/Academia.jsx';
 
 // Company
 import Empresa from '@/pages/company/Empresa.jsx';
@@ -29,7 +29,7 @@ import AcademiaAdmin from '@/pages/academia/AcademiaAdmin.jsx';
 import ModuloAcademia from '@/pages/academia/ModuloAcademia.jsx';
 
 // Payments
-import MembresiasDB from '@/pages/payments/MembresiasDB.jsx';
+import Paquetes from '@/pages/payments/Paquetes.jsx';
 import CompraExitosa from '@/pages/payments/CompraExitosa.jsx';
 import CheckoutPage from '@/pages/payments/CheckoutPage.jsx';
 import PaqueteConfirmado from '@/pages/payments/PaqueteConfirmado.jsx';
@@ -104,7 +104,7 @@ function App() {
             <Route path="/consultoria-cripto" element={<Consultoria />} />
             <Route path="/consultoria-cripto/precios" element={<ConsultationPricing />} />
             <Route path="/consultation-post-payment" element={<ConsultationPostPayment />} />
-            <Route path="/paquetes-cripto" element={<MembresiasDB />} />
+            <Route path="/paquetes-cripto" element={<Paquetes />} />
             <Route
               path="/dashboard"
               element={
@@ -128,7 +128,7 @@ function App() {
             <Route path="/blog" element={<Blog />} />
             <Route path="/contacto" element={<Contacto />} />
             <Route path="/guia-inversion" element={<GuiaInversion />} />
-            <Route path="/formacion-criptoactivos" element={<Formacion />} />
+            <Route path="/formacion-criptoactivos" element={<Academia />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/demo-formularios" element={<FormularioDemo />} />
