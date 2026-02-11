@@ -97,6 +97,16 @@ const OtrosServicios = () => {
           name="description"
           content="Soluciones exclusivas para proteger y hacer crecer tu patrimonio: traslado de residencia a Dubái, inversiones inmobiliarias estratégicas y cumplimiento normativo en criptoactivos."
         />
+        <link rel="canonical" href="https://bsbcapital.io/servicios-adicionales-cripto" />
+        <meta property="og:url" content="https://bsbcapital.io/servicios-adicionales-cripto" />
+        <meta
+          property="og:title"
+          content="Servicios de Inversión y Fiscalidad Crypto | BSB Capital"
+        />
+        <meta
+          property="og:description"
+          content="Soluciones patrimoniales avanzadas: Dubái, Real Estate y asesoría legal especializada en activos digitales."
+        />
       </Helmet>
       <div className="bg-background text-foreground">
         <header className="py-20 md:py-32 text-center bg-background">

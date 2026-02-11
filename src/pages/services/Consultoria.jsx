@@ -782,6 +782,16 @@ const Consultoria = () => {
           name="description"
           content="Descubre los servicios de consultoría de BSB Capital: asesoramiento especializado en inversiones, gestión de portafolios y estrategias en criptomonedas y activos digitales."
         />
+        <link rel="canonical" href="https://bsbcapital.io/consultoria-cripto" />
+        <meta property="og:url" content="https://bsbcapital.io/consultoria-cripto" />
+        <meta
+          property="og:title"
+          content="BSB Consulting | Asesoría especializada en Criptoactivos"
+        />
+        <meta
+          property="og:description"
+          content="Asesoramiento financiero independiente y especializado en criptomonedas para optimizar tu cartera de inversiones."
+        />
       </Helmet>
       <motion.div
         initial={{ opacity: 0, y: 20 }}

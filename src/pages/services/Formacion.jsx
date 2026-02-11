@@ -170,9 +170,17 @@ const Formacion = () => {
   return (
     <>
       <Helmet>
+        <title>BSB Academy | Formación en Activos Digitales</title>
         <meta
           name="description"
           content="La plataforma educativa de BSB Capital, especializada en formación en activos digitales, para que aprendas a invertir con confianza y maximices el potencial de tu cartera."
+        />
+        <link rel="canonical" href="https://bsbcapital.io/formacion-criptoactivos" />
+        <meta property="og:url" content="https://bsbcapital.io/formacion-criptoactivos" />
+        <meta property="og:title" content="BSB Academy | Formación en Activos Digitales" />
+        <meta
+          property="og:description"
+          content="Aprende a invertir en criptoactivos con seguridad y criterio. Formación profesional para maximizar tu impacto en el mercado."
         />
       </Helmet>
       <motion.div initial="hidden" animate="visible" variants={containerVariants}>

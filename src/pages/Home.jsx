@@ -151,6 +151,16 @@ const Home = () => {
           name="description"
           content="Transformamos tu forma de invertir en crypto. Asesoramiento financiero independiente y especializado en criptoactivos para individuos y empresas."
         />
+        <link rel="canonical" href="https://bsbcapital.io/" />
+        <meta property="og:url" content="https://bsbcapital.io/" />
+        <meta
+          property="og:title"
+          content="BSB Capital | Consultoría y formación en criptomonedas y activos digitales"
+        />
+        <meta
+          property="og:description"
+          content="Transformamos tu forma de invertir en crypto. Asesoramiento financiero independiente y especializado en criptoactivos para individuos y empresas."
+        />
       </Helmet>
 
       {/* Barra de notificación para administradores */}

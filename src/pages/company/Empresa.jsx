@@ -35,6 +35,20 @@ const Empresa = () => {
     <>
       <Helmet>
         <title>BSB Capital | Consultoría y formación en criptoactivos</title>
+        <meta
+          name="description"
+          content="Conoce a la primera firma que combina asesoramiento financiero independiente con especialización crypto y tecnología de vanguardia."
+        />
+        <link rel="canonical" href="https://bsbcapital.io/empresa" />
+        <meta property="og:url" content="https://bsbcapital.io/empresa" />
+        <meta
+          property="og:title"
+          content="Sobre BSB Capital | Profesionalidad en el mundo Crypto"
+        />
+        <meta
+          property="og:description"
+          content="Descubre la visión y el equipo detrás de BSB Capital. Asesoramiento con rigor, ética e innovación."
+        />
       </Helmet>
       <motion.div
         initial="hidden"
