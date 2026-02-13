@@ -102,7 +102,15 @@ const fallbackPlans = [
   },
 ];
 
+/**
+ * Paquetes and Membresías Page.
+ *
+ * Displays available investment packages and membership options.
+ * It reconciles local plan definitions (fallbackPlans) with dynamic data from Supabase.
+ * Integrates directly with Stripe via Edge Functions for multiple payment modes.
+ */
 const Paquetes = () => {
+  // Debug log to trace component mount/updates in complex environments.
   console.log('🔥🔥🔥 Paquetes: Component rendering - VERSION CON FILTROS MEJORADOS 🔥🔥🔥');
 
   const { user, profile, loading: loadingAuth } = useAuth();
@@ -111,25 +119,21 @@ const Paquetes = () => {
 
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
+  /** @type {string|null} ID of the plan currently in the checkout process. */
   const [loadingPlan, setLoadingPlan] = useState(null);
-  const [billingCycle] = useState('annual'); // 'monthly' o 'annual' para paquetes
-  const [membershipCycle] = useState('annual'); // 'monthly' o 'annual' para membresía
+  const [billingCycle] = useState('annual'); // Default cycle fixed to 'annual' for packages
+  const [membershipCycle] = useState('annual'); // Default cycle for broad memberships
 
-  // 🧪 Detección automática del modo test (como en consultorías)
-  // COMENTADO PARA PRODUCCIÓN - Descomentar para testing con €1
-  // const isTestMode =
-  //   import.meta.env.MODE === 'development' || window.location.hostname === 'localhost';
-  const isTestMode = false; // PRODUCCIÓN: Siempre usar precios reales
+  /**
+   * TEST MODE:
+   * If true, the checkout will use fixed €1 prices instead of real ones.
+   */
+  const isTestMode = false; // PRODUCTION: Always false to ensure real prices.
 
-  // 🧪 IDs de precios de prueba (€1) - STRIPE DASHBOARD
-  // COMENTADO PARA PRODUCCIÓN - Descomentar para testing con €1
-  // const TEST_PRICE_IDS = {
-  //   package_test: 'price_1SKG4NJmSk3VG9oi6CjvmqLC', // Paquete de prueba €1 (one-time) - Mismo que consultorías
-  //   membership_annual_test: 'price_1SKG4NJmSk3VG9oi6CjvmqLC', // Membresía anual €1 (one-time) - Mismo que consultorías
-  //   membership_monthly_test: 'price_1ScNpIJmSk3VG9oiYMNPIRXN', // Membresía mensual €1 (recurring) - prod_TZWtvStcgMfmQH
-  // };
-
-  // IDs de productos permitidos y excluidos
+  /**
+   * PRODUCT FILTERING CONFIGURATION
+   * We use explicit lists of IDs to avoid showing overlapping or legacy services.
+   */
   const ALLOWED_PRODUCT_IDS = useMemo(
     () => [
       'prod_TPi7iCVtydt3Cw', // Onboarding Cripto
@@ -141,53 +145,41 @@ const Paquetes = () => {
 
   const EXCLUDED_PRODUCT_IDS = useMemo(
     () => [
-      'prod_T9dymUXkbPpeir', // Academia
-      'prod_TXd41kG8ddpyDP', // Membresía Exclusiva Mensual
-      'prod_TXd5JJfHRg8ZTx', // Membresía Exclusiva Anual
+      'prod_T9dymUXkbPpeir', // Academy (already sold in /formacion)
+      'prod_TXd41kG8ddpyDP', // Monthly Exclusive Membership
+      'prod_TXd5JJfHRg8ZTx', // Annual Exclusive Membership
     ],
     []
   );
 
-  // Filtrado de planes con useMemo para evitar ciclos de renderizado
+  /**
+   * MEMOIZED FILTERING LOGIC
+   * Consolidates visibility rules based on product IDs and keywords.
+   */
   const filteredPlans = useMemo(() => {
-    console.log('🔍 Total planes antes de filtrar:', plans.length);
-    console.log(
-      '🔍 Nombres de todos los planes:',
-      plans.map((p) => p.name)
-    );
-
     const filtered = plans.filter((plan) => {
       const planNameLower = plan.name.toLowerCase();
 
-      // PRIMERO: Excluir explícitamente por product ID
+      // 1. HARD EXCLUSION by Product ID
       if (plan.stripe_product_id && EXCLUDED_PRODUCT_IDS.includes(plan.stripe_product_id)) {
-        console.log('❌ Excluyendo por product_id:', plan.name, plan.stripe_product_id);
         return false;
       }
 
-      // SEGUNDO: Excluir por nombre
-      if (planNameLower.includes('academia')) {
-        console.log('❌ Excluyendo Academia por nombre:', plan.name);
+      // 2. KEYWORD EXCLUSION to keep the page clean
+      if (
+        planNameLower.includes('academia') ||
+        planNameLower.includes('exclusiva') ||
+        planNameLower.includes('membresía')
+      ) {
         return false;
       }
 
-      if (planNameLower.includes('exclusiva') || planNameLower.includes('exclusive')) {
-        console.log('❌ Excluyendo Membresía Exclusiva por nombre:', plan.name);
-        return false;
-      }
-
-      if (planNameLower.includes('membresía') || planNameLower.includes('membresia')) {
-        console.log('❌ Excluyendo Membresía por nombre:', plan.name);
-        return false;
-      }
-
-      // TERCERO: Incluir solo por ID de producto permitido
+      // 3. HARD INCLUSION for specifically designed packages
       if (plan.stripe_product_id && ALLOWED_PRODUCT_IDS.includes(plan.stripe_product_id)) {
-        console.log('✅ Incluyendo por product_id:', plan.name, plan.stripe_product_id);
         return plan.price_annual && plan.price_annual > 0;
       }
 
-      // CUARTO: Incluir por nombre (solo paquetes BSB)
+      // 4. FALLBACK keyword-based inclusion
       const isOnboarding = planNameLower.includes('onboarding');
       const isInversor = planNameLower.includes('inversor') && planNameLower.includes('premium');
       const isTesoreria =
@@ -195,63 +187,42 @@ const Paquetes = () => {
         planNameLower.includes('empresa');
 
       if (isOnboarding || isInversor || isTesoreria) {
-        console.log('✅ Incluyendo por nombre:', plan.name);
         return plan.price_annual && plan.price_annual > 0;
       }
 
-      console.log('❌ Excluyendo (no coincide con criterios):', plan.name);
       return false;
     });
-
-    console.log('📊 Paquetes filtrados finales:', filtered.length);
-    console.log(
-      '📊 Nombres filtrados:',
-      filtered.map((p) => p.name)
-    );
 
     return filtered;
   }, [plans, ALLOWED_PRODUCT_IDS, EXCLUDED_PRODUCT_IDS]);
 
+  /**
+   * Fetches plans from Supabase and reconciles recurring prices into unified objects.
+   */
   const loadPlans = useCallback(async () => {
     try {
       setLoading(true);
-      console.log('Loading plans from Supabase...');
 
-      // Consulta directa a subscription_plans con las columnas correctas
       const { data, error } = await supabase
         .from('subscription_plans')
         .select(
           `
-id,
-  name,
-  description,
-  price,
-  price_annual,
-  currency,
-  stripe_price_id,
-  stripe_price_id_annual,
-  stripe_product_id,
-  features,
-  is_active,
-  duration_months
-    `
+          id, name, description, price, price_annual, currency,
+          stripe_price_id, stripe_price_id_annual, stripe_product_id,
+          features, is_active, duration_months
+        `
         )
         .eq('is_active', true)
         .order('price', { ascending: true });
 
-      console.log('Response from subscription_plans:', { data, error });
-
       if (error) {
-        console.error('Error loading plans from Supabase:', error);
-        console.log('Using fallback plans due to Supabase error');
+        console.error('Error loading plans, using fallbacks');
         setPlans(fallbackPlans);
         return;
       }
 
       if (data?.length > 0) {
-        console.log('📋 Raw data from database:', data);
-
-        // Agrupar planes por producto (consolidar mensuales y anuales)
+        // Group multiple price variants (monthly/annual) back into single product objects
         const planMap = new Map();
 
         data.forEach((plan) => {
@@ -264,18 +235,13 @@ id,
               price_monthly: plan.price,
               price_annual: plan.price_annual,
               currency: plan.currency || 'EUR',
-              features: Array.isArray(plan.features)
-                ? plan.features
-                : typeof plan.features === 'string'
-                  ? JSON.parse(plan.features)
-                  : [],
+              features: Array.isArray(plan.features) ? plan.features : [],
               highlight: plan.name.includes('Premium') || plan.name.includes('Exclusiva'),
               stripe_price_id: plan.stripe_price_id,
               stripe_price_id_annual: plan.stripe_price_id_annual,
               stripe_product_id: plan.stripe_product_id,
             });
           } else {
-            // Si ya existe, combinar los precios
             const existing = planMap.get(productId);
             existing.price_monthly = existing.price_monthly || plan.price;
             existing.price_annual = existing.price_annual || plan.price_annual;
@@ -285,16 +251,12 @@ id,
           }
         });
 
-        const consolidatedPlans = Array.from(planMap.values());
-        console.log('Consolidated plans:', consolidatedPlans);
-        setPlans(consolidatedPlans);
+        setPlans(Array.from(planMap.values()));
       } else {
-        console.log('No plans found in database, using fallback');
         setPlans(fallbackPlans);
       }
     } catch (error) {
-      console.error('Error in loadPlans:', error);
-      console.log('Using fallback plans due to exception');
+      console.error('Exception in loadPlans:', error);
       setPlans(fallbackPlans);
     } finally {
       setLoading(false);
@@ -303,15 +265,18 @@ id,
 
   useEffect(() => {
     if (loadingAuth) return;
-    let isFetching = false;
-    if (!isFetching) {
-      isFetching = true;
-      loadPlans().finally(() => {
-        isFetching = false;
-      });
-    }
+    loadPlans();
   }, [loadPlans, loadingAuth]);
 
+  /**
+   * Initiates the Stripe Checkout process via a Supabase Edge Function.
+   * Logic handles:
+   * - One-time payments (payment mode) for packets.
+   * - Recurring subscriptions (subscription mode) for monthly memberships.
+   *
+   * @param {Object} plan - The consolidated plan object.
+   * @param {string} [overrideCycle] - Optional forced billing cycle.
+   */
   const handleSelectPlan = useCallback(
     async (plan, overrideCycle = null) => {
       if (!user) {
@@ -323,25 +288,12 @@ id,
       setLoadingPlan(plan.id);
 
       try {
-        console.log('🏁 Selecting plan:', plan);
-
-        // Determinar si es membresía o paquete
         const isMembership =
           plan.name.toLowerCase().includes('membresía') ||
           plan.name.toLowerCase().includes('membresia');
-
-        // Usar el ciclo override si se proporciona, si no usar el estado
         const cycle = overrideCycle || (isMembership ? membershipCycle : billingCycle);
 
-        console.log(
-          '🔄 Billing cycle:',
-          cycle,
-          '(Type:',
-          isMembership ? 'membership' : 'package',
-          ')'
-        );
-
-        // Determinar el tipo de plan PRIMERO (antes de usarlo)
+        // Identify the nature of the product for metadata and payment mode
         const planNameLower = plan.name.toLowerCase();
         const isPackage =
           planNameLower.includes('onboarding') ||
@@ -349,91 +301,25 @@ id,
           planNameLower.includes('tesorería') ||
           planNameLower.includes('tesoreria');
 
-        const isMembershipPlan = isMembership && !isPackage;
-
-        // Usar el ciclo de facturación seleccionado
-        let priceId = null;
-
-        // 🧪 MODO TEST: Usar precios de prueba de €1 automáticamente en desarrollo
-        // COMENTADO PARA PRODUCCIÓN - Descomentar para testing con €1
-        // if (isTestMode) {
-        //   console.log('🧪 Modo TEST activado - usando precios de €1');
-        //
-        //   if (isPackage) {
-        //     priceId = TEST_PRICE_IDS.package_test;
-        //   } else if (isMembershipPlan) {
-        //     priceId =
-        //       cycle === 'annual'
-        //         ? TEST_PRICE_IDS.membership_annual_test
-        //         : TEST_PRICE_IDS.membership_monthly_test;
-        //   }
-        //
-        //   console.log('🧪 Price ID de TEST seleccionado:', priceId);
-        // } else {
-        // Producción: usar precios reales
-        if (cycle === 'annual') {
-          priceId = plan.stripe_price_id_annual || plan.stripe_price_id;
-        } else {
-          priceId = plan.stripe_price_id;
-        }
-        // }
-
-        console.log('🔍 Price detection:', {
-          plan_name: plan.name,
-          cycle,
-          isMembership,
-          isPackage,
-          isMembershipPlan,
-          price_monthly: plan.price_monthly,
-          price_annual: plan.price_annual,
-          stripe_price_id: plan.stripe_price_id,
-          stripe_price_id_annual: plan.stripe_price_id_annual,
-          selected_priceId: priceId,
-        });
+        let priceId =
+          cycle === 'annual'
+            ? plan.stripe_price_id_annual || plan.stripe_price_id
+            : plan.stripe_price_id;
 
         if (!priceId) {
-          console.error('❌ Plan sin precio de Stripe para el ciclo seleccionado:', {
-            plan,
-            cycle,
-          });
           throw new Error(
-            `No hay precio de Stripe configurado para el plan ${plan.name} (${cycle}). Por favor, contacta al administrador.`
+            `No hay precio de Stripe configurado para el plan ${plan.name} (${cycle}).`
           );
         }
 
-        // Determinar el mode según el tipo de plan y ciclo
-        // - Paquetes (Onboarding, Inversor Premium, Gestión Tesorería): siempre payment (pago único)
-        // - Membresías mensuales (Academia, Membresía Exclusiva): subscription (recurrente mensual)
-        // - Membresías anuales: payment (pago único anual)
-
-        // Si es paquete o ciclo anual, usar payment. Si es mensual de membresía, usar subscription
+        /**
+         * Payment Mode:
+         * - 'payment': one-time (packages or annual paid once)
+         * - 'subscription': recurring (monthly memberships)
+         */
         const mode = isPackage || cycle === 'annual' ? 'payment' : 'subscription';
 
-        // Determinar el tipo de acceso correcto
-        let accessType = 'membership';
-        let purchaseType = 'subscription';
-
-        if (isPackage) {
-          accessType = 'package';
-          purchaseType = 'package';
-        } else if (isMembershipPlan && cycle === 'annual') {
-          accessType = 'membership';
-          purchaseType = 'membership_annual';
-        } else if (isMembershipPlan && cycle === 'monthly') {
-          accessType = 'membership';
-          purchaseType = 'membership_monthly';
-        }
-
-        console.log('💳 Payment mode:', {
-          plan_name: plan.name,
-          isPackage,
-          isMembershipPlan,
-          mode,
-          cycle,
-          accessType,
-          purchaseType,
-        });
-
+        // Prepare data for the Edge Function
         const checkoutData = {
           priceId: priceId,
           mode: mode,
@@ -441,59 +327,35 @@ id,
           email: user.email,
           metadata: {
             supabase_user_id: user.id,
-            client_email: user.email,
             client_name: profile?.full_name || user.user_metadata?.full_name || user.email,
             plan_id: plan.id,
             plan_name: plan.name,
             billing_cycle: cycle,
-            access_type: accessType,
-            purchase_type: purchaseType,
-            package_type: isPackage ? 'crypto_package' : 'membership',
+            access_type: isPackage ? 'package' : 'membership',
+            purchase_type: isPackage
+              ? 'package'
+              : cycle === 'annual'
+                ? 'membership_annual'
+                : 'membership_monthly',
             stripe_product_id: plan.stripe_product_id,
           },
         };
-
-        console.log('📤 Sending to create-stripe-checkout:', checkoutData);
 
         const { data, error } = await supabase.functions.invoke('create-stripe-checkout', {
           body: checkoutData,
         });
 
-        console.log('📥 Response from create-stripe-checkout:', { data, error });
+        if (error) throw new Error(error.message);
+        if (data?.error) throw new Error(data.error);
 
-        if (error) {
-          console.error('❌ Supabase function error:', error);
-          console.error('❌ Error details:', {
-            message: error.message,
-            name: error.name,
-            context: error.context,
-            stack: error.stack,
-          });
-          throw new Error(`Error de Stripe: ${error.message || 'Error desconocido'} `);
-        }
-
-        if (data?.error) {
-          console.error('❌ Edge function returned error:', data.error);
-          console.error('❌ Full error data:', data);
-          throw new Error(data.error);
-        }
-
-        // La respuesta debe tener una URL para redirigir a Stripe Checkout
-        if (data && data.url) {
-          console.log('✅ URL de checkout recibida, redirigiendo...');
+        if (data?.url) {
           window.location.href = data.url;
         } else {
-          console.error('❌ Respuesta sin URL:', data);
           throw new Error('No se recibió URL de checkout de Stripe');
         }
       } catch (error) {
         console.error('❌ Error in handleSelectPlan:', error);
-
-        toast({
-          title: 'Error',
-          description: error.message,
-          variant: 'destructive',
-        });
+        toast({ title: 'Error', description: error.message, variant: 'destructive' });
       } finally {
         setLoadingPlan(null);
       }

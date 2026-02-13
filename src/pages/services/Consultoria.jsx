@@ -1,3 +1,9 @@
+/**
+ * Consultoria (Consultancy) Page.
+ *
+ * Provides information about different consultancy services (30min, 60min, etc.).
+ * Includes a multi-step BookingModal for scheduling and payment.
+ */
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { motion } from 'framer-motion';
@@ -40,6 +46,10 @@ const STRIPE_PUBLISHABLE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
 
 const availableTimeSlots = ['09:00', '10:00', '11:00', '12:00', '15:00', '16:00', '17:00'];
 
+/**
+ * Price mapping for different consultancy durations.
+ * Matches Stripe Product/Price IDs in the dashboard.
+ */
 const consultationPrices = {
   '30min': 'price_1RtYGsJmSk3VG9oicAWmQ4sN',
   '60min': 'price_1RtYFkJmSk3VG9oi8wUdMK5k',
@@ -47,56 +57,91 @@ const consultationPrices = {
   // test: 'price_1SKG4NJmSk3VG9oi6CjvmqLC', // prod_TGnf81ENbBkghj
 };
 
+/**
+ * BookingModal Component.
+ *
+ * Logic flow:
+ * 1. Step 1: User info & Service selection.
+ * 2. Step 2: Date & Time selection.
+ * 3. Submission: Sync with Supabase DB -> Redirect to Stripe Checkout.
+ *
+ * @param {Object} props - Includes children (the trigger button).
+ */
 const BookingModal = ({ children }) => {
-  const { toast } = useToast();
   const { user } = useAuth();
+  const { toast } = useToast();
   const navigate = useNavigate();
 
+  // --- Core Modal States ---
+  /** @type {boolean} Control visibility of the booking dialog. */
   const [open, setOpen] = useState(false);
+  /** @type {boolean} True while processing form submission and Stripe redirection. */
   const [loading, setLoading] = useState(false);
+  /** @type {number} Current step in the multi-stage booking process (1-4). */
   const [currentStep, setCurrentStep] = useState(1);
-  const [date, setDate] = useState();
+  /** @type {Date|undefined} Selected date for the consultancy session. */
+  const [date, setDate] = useState(undefined);
+  /** @type {string} Selected time slot (HH:MM). */
   const [selectedTime, setSelectedTime] = useState('');
+
+  // --- Form Data ---
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
-    service_interest: '',
-    duration: '',
+    email: user?.email || '',
+    whatsapp: '',
+    country: '',
+    service_interest: '60min', // Default to 60min
+    duration: '60min',
     more_info: '',
   });
 
   const handleChange = (e) => setFormData({ ...formData, [e.target.id]: e.target.value });
   const handleSelectChange = (name, value) => setFormData({ ...formData, [name]: value });
 
+  // --- Navigation Logic ---
   const nextStep = () => setCurrentStep((prev) => Math.min(prev + 1, 4));
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
 
   const resetForm = () => {
     setCurrentStep(1);
-    setDate(null);
+    setDate(undefined);
     setSelectedTime('');
-    setFormData({ name: '', email: '', service_interest: '', duration: '', more_info: '' });
+    setFormData({
+      name: '',
+      email: user?.email || '',
+      whatsapp: '',
+      country: '',
+      service_interest: '60min',
+      duration: '60min',
+      more_info: '',
+    });
   };
 
+  /**
+   * Validates each step before proceeding to the next one.
+   */
   const isStepValid = (step) => {
     switch (step) {
       case 1:
-        return formData.service_interest && formData.duration;
+        // Step 1: Duration selection (implicit in this version)
+        return true;
       case 2:
-        return date;
+        return !!date;
       case 3:
-        return selectedTime;
+        return !!selectedTime;
       case 4:
-        return formData.name && formData.email;
+        return formData.name && formData.email && formData.whatsapp && formData.country;
       default:
         return true;
     }
   };
 
+  /**
+   * Final submission to Supabase and Stripe.
+   */
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
 
-    // Verificar si el usuario está autenticado
     if (!user) {
       toast({
         variant: 'destructive',
@@ -108,78 +153,71 @@ const BookingModal = ({ children }) => {
       return;
     }
 
-    if (
-      !date ||
-      !selectedTime ||
-      !formData.name ||
-      !formData.email ||
-      !formData.service_interest ||
-      !formData.duration
-    ) {
+    if (!date || !selectedTime) {
       toast({
         variant: 'destructive',
-        title: 'Faltan datos',
-        description: 'Por favor, completa todos los campos obligatorios.',
+        title: 'Selecciona fecha y hora',
+        description: 'Por favor, elige un día y horario para tu consultoría.',
       });
       return;
     }
+
     setLoading(true);
-
-    const bookingDateTime = new Date(date);
-    const [hours, minutes] = selectedTime.split(':');
-    bookingDateTime.setHours(parseInt(hours), parseInt(minutes));
-
-    const priceId = consultationPrices[formData.duration];
-    const serviceDescription = `${formData.service_interest} (${
-      formData.duration === '30min'
-        ? '30 min'
-        : formData.duration === '60min'
-          ? '1 hora'
-          : formData.duration === 'test'
-            ? 'Prueba'
-            : formData.duration
-    })`;
-
-    // DEBUG: Log all data before sending
-    console.log('🔍 DEBUGGING CONSULTORIA CHECKOUT:', {
-      formData,
-      priceId,
-      bookingDateTime: bookingDateTime.toISOString(),
-      consultationPrices,
-    });
-
-    // Validation before sending
-    if (!priceId) {
-      console.error('❌ Missing priceId for duration:', formData.duration);
-      toast({
-        variant: 'destructive',
-        title: 'Error de configuración',
-        description: `No se encontró precio para ${formData.duration}`,
-      });
-      setLoading(false);
-      return;
-    }
-
-    // Asegurarnos de que el usuario esté autenticado y tenga un id
-    if (!user?.id) {
-      console.error('❌ Intento de checkout sin usuario autenticado');
-      toast({
-        variant: 'destructive',
-        title: 'Debes iniciar sesión',
-        description: 'Inicia sesión para completar la reserva.',
-      });
-      setLoading(false);
-      // Esperar un momento para que el usuario vea el toast, luego redirigir al login
-      setTimeout(() => navigate('/login'), 1200);
-      return;
-    }
-
+    let priceId = '';
     try {
+      const bookingDateTime = new Date(date);
+      const [hours, minutes] = selectedTime.split(':');
+      bookingDateTime.setHours(parseInt(hours), parseInt(minutes));
+
+      priceId = consultationPrices[formData.duration];
+      const serviceDescription = `${formData.service_interest} (${
+        formData.duration === '30min'
+          ? '30 min'
+          : formData.duration === '60min'
+            ? '1 hora'
+            : formData.duration === 'test'
+              ? 'Prueba'
+              : formData.duration
+      })`;
+
+      // DEBUG: Log all data before sending
+      console.log('🔍 DEBUGGING CONSULTORIA CHECKOUT:', {
+        formData,
+        priceId,
+        bookingDateTime: bookingDateTime.toISOString(),
+        consultationPrices,
+      });
+
+      // Validation before sending
+      if (!priceId) {
+        console.error('❌ Missing priceId for duration:', formData.duration);
+        toast({
+          variant: 'destructive',
+          title: 'Error de configuración',
+          description: `No se encontró precio para ${formData.duration}`,
+        });
+        setLoading(false);
+        return;
+      }
+
+      // Asegurarnos de que el usuario esté autenticado y tenga un id
+      if (!user?.id) {
+        console.error('❌ Intento de checkout sin usuario autenticado');
+        toast({
+          variant: 'destructive',
+          title: 'Debes iniciar sesión',
+          description: 'Inicia sesión para completar la reserva.',
+        });
+        setLoading(false);
+        setTimeout(() => navigate('/login'), 1200);
+        return;
+      }
+
       const checkoutData = {
         priceId,
         mode: 'payment',
         email: formData.email,
-        userId: user?.id, // <-- Agregamos el userId aquí
+        userId: user?.id,
         metadata: {
           client_name: formData.name,
           client_email: formData.email,
@@ -195,7 +233,6 @@ const BookingModal = ({ children }) => {
                   : '30',
           description: formData.more_info,
           status: 'scheduled',
-          // Mantenemos campos originales para compatibilidad
           service: serviceDescription,
           booking_date: bookingDateTime.toISOString(),
           notes: formData.more_info,
@@ -203,9 +240,6 @@ const BookingModal = ({ children }) => {
       };
 
       console.log('📤 Sending to create-stripe-checkout:', checkoutData);
-
-      // Diagnosticar función Edge antes de la llamada
-      console.log('🔍 Diagnosing create-stripe-checkout function...');
 
       const { data, error } = await supabase.functions.invoke('create-stripe-checkout', {
         body: JSON.stringify(checkoutData),
@@ -215,12 +249,6 @@ const BookingModal = ({ children }) => {
 
       if (error) {
         console.error('❌ Supabase function error:', error);
-        console.error('❌ Error details:', {
-          name: error.name,
-          message: error.message,
-          stack: error.stack,
-          cause: error.cause,
-        });
         throw new Error(`Edge Function Error: ${error.message}`);
       }
       if (data?.error) {
@@ -312,7 +340,7 @@ const BookingModal = ({ children }) => {
           <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
             <div
               className="bg-green-600 h-2 rounded-full transition-all duration-300"
-              style={{ width: `${(currentStep / 4) * 100}%` }}
+              style={{ width: `${(currentStep / 4) * 100}% ` }}
             />
           </div>
         </DialogHeader>
@@ -343,11 +371,11 @@ const BookingModal = ({ children }) => {
                     onClick={() =>
                       handleSelectChange('service_interest', 'Optimización de cartera')
                     }
-                    className={`h-20 flex flex-col items-center justify-center p-3 text-center ${
+                    className={`h - 20 flex flex - col items - center justify - center p - 3 text - center ${
                       formData.service_interest === 'Optimización de cartera'
                         ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
                         : 'border-border hover:bg-muted/50 hover:border-primary/30'
-                    }`}
+                    } `}
                   >
                     <BarChart3 className="h-5 w-5 mb-1" />
                     <span className="text-sm font-medium">Optimización de cartera</span>
@@ -359,11 +387,11 @@ const BookingModal = ({ children }) => {
                       formData.service_interest === 'Onboarding crypto' ? 'default' : 'outline'
                     }
                     onClick={() => handleSelectChange('service_interest', 'Onboarding crypto')}
-                    className={`h-20 flex flex-col items-center justify-center p-3 text-center ${
+                    className={`h - 20 flex flex - col items - center justify - center p - 3 text - center ${
                       formData.service_interest === 'Onboarding crypto'
                         ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
                         : 'border-border hover:bg-muted/50 hover:border-primary/30'
-                    }`}
+                    } `}
                   >
                     <Rocket className="h-5 w-5 mb-1" />
                     <span className="text-sm font-medium">Onboarding crypto</span>
@@ -379,11 +407,11 @@ const BookingModal = ({ children }) => {
                     onClick={() =>
                       handleSelectChange('service_interest', 'Estrategias Crypto & Web3')
                     }
-                    className={`h-20 flex flex-col items-center justify-center p-3 text-center ${
+                    className={`h - 20 flex flex - col items - center justify - center p - 3 text - center ${
                       formData.service_interest === 'Estrategias Crypto & Web3'
                         ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
                         : 'border-border hover:bg-muted/50 hover:border-primary/30'
-                    }`}
+                    } `}
                   >
                     <Globe className="h-5 w-5 mb-1" />
                     <span className="text-sm font-medium">Estrategias Crypto & Web3</span>
@@ -402,11 +430,11 @@ const BookingModal = ({ children }) => {
                         'Gestión de tesorería crypto para empresas'
                       )
                     }
-                    className={`h-20 flex flex-col items-center justify-center p-3 text-center ${
+                    className={`h - 20 flex flex - col items - center justify - center p - 3 text - center ${
                       formData.service_interest === 'Gestión de tesorería crypto para empresas'
                         ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
                         : 'border-border hover:bg-muted/50 hover:border-primary/30'
-                    }`}
+                    } `}
                   >
                     <Briefcase className="h-5 w-5 mb-1" />
                     <span className="text-sm font-medium">Tesorería empresarial</span>
@@ -421,11 +449,11 @@ const BookingModal = ({ children }) => {
                     type="button"
                     variant={formData.duration === '30min' ? 'default' : 'outline'}
                     onClick={() => handleSelectChange('duration', '30min')}
-                    className={`h-16 flex flex-col ${
+                    className={`h - 16 flex flex - col ${
                       formData.duration === '30min'
                         ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
                         : 'border-border hover:bg-muted/50 hover:border-primary/30'
-                    }`}
+                    } `}
                   >
                     <span className="font-semibold">30 min - 200€</span>
                     <span className="text-xs opacity-70">Consulta rápida</span>
@@ -434,11 +462,11 @@ const BookingModal = ({ children }) => {
                     type="button"
                     variant={formData.duration === '60min' ? 'default' : 'outline'}
                     onClick={() => handleSelectChange('duration', '60min')}
-                    className={`h-16 flex flex-col ${
+                    className={`h - 16 flex flex - col ${
                       formData.duration === '60min'
                         ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
                         : 'border-border hover:bg-muted/50 hover:border-primary/30'
-                    }`}
+                    } `}
                   >
                     <span className="font-semibold">60 min - 300€</span>
                     <span className="text-xs opacity-70">Consulta completa</span>
@@ -448,11 +476,11 @@ const BookingModal = ({ children }) => {
                     type="button"
                     variant={formData.duration === 'test' ? 'default' : 'outline'}
                     onClick={() => handleSelectChange('duration', 'test')}
-                    className={`h-16 flex flex-col ${
-                      formData.duration === 'test'
-                        ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
-                        : 'bg-muted/30 border-border hover:bg-muted/50 hover:border-primary/30'
-                    }`}
+                    className={`h - 16 flex flex - col ${
+  formData.duration === 'test'
+    ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
+    : 'bg-muted/30 border-border hover:bg-muted/50 hover:border-primary/30'
+} `}
                   >
                     <span className="font-semibold text-xs">Prueba</span>
                     <span className="text-xs opacity-70">Test producción</span>
@@ -719,7 +747,7 @@ const FAQSection = () => {
 
               return (
                 <div
-                  key={`faq-${index}`}
+                  key={`faq - ${index} `}
                   className="bg-white rounded-lg shadow-sm border overflow-hidden"
                   style={{ position: 'relative', zIndex: 1 }}
                 >
@@ -728,7 +756,7 @@ const FAQSection = () => {
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      console.log(`FAQ ${index} clicked! Current state:`, openIndex);
+                      console.log(`FAQ ${index} clicked! Current state: `, openIndex);
                       setOpenIndex(isOpen ? null : index);
                     }}
                     className="w-full px-6 py-4 text-left flex justify-between items-start hover:bg-gray-50 transition-colors cursor-pointer"
@@ -1063,7 +1091,7 @@ const Consultoria = () => {
                               type: 'spring',
                               stiffness: 200,
                             }}
-                            className={`w-20 h-20 rounded-full ${step.color} border-4 border-white shadow-xl flex items-center justify-center z-20 relative`}
+                            className={`w - 20 h - 20 rounded - full ${step.color} border - 4 border - white shadow - xl flex items - center justify - center z - 20 relative`}
                           >
                             <span className="text-3xl font-bold text-white">0{step.id}</span>
                           </motion.div>

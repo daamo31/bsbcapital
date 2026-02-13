@@ -5,16 +5,12 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import {
   ArrowRight,
-  CheckCircle,
   Film,
-  FileText,
-  LifeBuoy,
   ShieldCheck,
   Video,
   Download,
   Mail,
   GraduationCap,
-  Clock,
   Smartphone,
   Award,
 } from 'lucide-react';
@@ -41,16 +37,31 @@ const itemVariants = {
   visible: { y: 0, opacity: 1, transition: { type: 'spring', stiffness: 100 } },
 };
 
+/**
+ * Academia Page (BSB Academy)
+ *
+ * Public-facing landing page for the BSB Academy.
+ * It provides a summary of features, method, and pricing.
+ * Includes a CheckoutModal for purchasing access.
+ */
 const Academia = () => {
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+
+  // Use custom hook to check for admin status
   const { isAdmin, loading } = useAdmin();
   const navigate = useNavigate();
+
+  /** @type {React.RefObject<HTMLVideoElement>} Ref for the hero masterclass video. */
   const videoRef = React.useRef(null);
 
+  /**
+   * Intersection Observer to auto-play/pause the masterclass video when it becomes visible.
+   */
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
+          // Play only if visible more than 50%
           videoRef.current?.play().catch((error) => console.log('Autoplay prevented:', error));
         } else {
           videoRef.current?.pause();
@@ -59,24 +70,32 @@ const Academia = () => {
       { threshold: 0.5 }
     );
 
-    if (videoRef.current) {
-      observer.observe(videoRef.current);
+    const currentVideo = videoRef.current;
+    if (currentVideo) {
+      observer.observe(currentVideo);
     }
 
     return () => {
-      if (videoRef.current) {
-        observer.unobserve(videoRef.current);
+      if (currentVideo) {
+        observer.unobserve(currentVideo);
       }
     };
   }, []);
 
-  // Redirigir admin directamente a academia
+  /**
+   * ADMIN BRIDGE:
+   * If an admin enters this landing page, they are redirected automatically
+   * to the internal content catalog, as they already have permission.
+   */
   useEffect(() => {
     if (!loading && isAdmin) {
       navigate('/academia');
     }
   }, [isAdmin, loading, navigate]);
 
+  /**
+   * Specialized button component that changes behavior for Admins.
+   */
   const ComprarCursoButton = ({ children, ...props }) => {
     if (isAdmin) {
       return (
