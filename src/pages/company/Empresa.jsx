@@ -35,7 +35,7 @@ const Empresa = () => {
   return (
     <>
       <Helmet>
-        <title>BSB Capital | Consultoría y formación en criptoactivos</title>
+        <title>BSB Capital | Consultoría y formación en activos digitales.</title>
         <meta
           name="description"
           content="Conoce a la primera firma que combina asesoramiento financiero independiente con especialización crypto y tecnología de vanguardia."
@@ -311,6 +311,32 @@ const Empresa = () => {
                   </div>
                 </div>
               </motion.div>
+            </motion.div>
+          </div>
+        </section>
+
+        {/* CTA Section */}
+        <section className="py-16 md:py-24 bg-brand-green-100">
+          <div className="container mx-auto px-4 md:px-6 text-center">
+            <motion.div
+              variants={fadeIn}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+            >
+              <p className="text-xl md:text-2xl text-text-secondary max-w-4xl mx-auto mb-8 font-medium">
+                Si quieres llevar tu inversión en crypto al siguiente nivel, nuestros paquetes y
+                membresía exclusiva ofrecen acceso a nuestras consultorías, nuestra comunidad
+                exclusiva y nuestros análisis avanzados de cartera.
+              </p>
+              <div className="flex justify-center">
+                <a
+                  href="/paquetes-cripto"
+                  className="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-brand-gold-600 rounded-lg hover:bg-brand-gold-700 hover:shadow-lg hover:-translate-y-1"
+                >
+                  Descubre los paquetes y la membresía exclusiva
+                </a>
+              </div>
             </motion.div>
           </div>
         </section>

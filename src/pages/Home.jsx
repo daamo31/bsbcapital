@@ -146,7 +146,7 @@ const Home = () => {
   return (
     <>
       <Helmet>
-        <title>BSB Capital | Consultoría y formación en criptomonedas y activos digitales</title>
+        <title>BSB capital | Consultoría y formación en activos digitales |</title>
         <meta
           name="description"
           content="Transformamos tu forma de invertir en crypto. Asesoramiento financiero independiente y especializado en criptoactivos para individuos y empresas."
@@ -198,16 +198,13 @@ const Home = () => {
             <motion.div variants={containerVariants} initial="hidden" animate="visible">
               <motion.h1
                 variants={itemVariants}
-                className="text-3xl sm:text-4xl md:text-6xl font-bold leading-tight text-foreground"
+                className="font-bold leading-tight text-foreground mb-6"
               >
-                Transformamos tu forma
+                <span className="block text-4xl sm:text-5xl md:text-7xl mb-2">BSB Capital</span>
+                <span className="block text-2xl sm:text-3xl md:text-5xl leading-tight">
+                  Consultoría y formación en activos digitales
+                </span>
               </motion.h1>
-              <motion.h2
-                variants={itemVariants}
-                className="text-3xl sm:text-4xl md:text-6xl font-bold leading-tight text-foreground mt-1"
-              >
-                de invertir en crypto
-              </motion.h2>
               <motion.p
                 variants={itemVariants}
                 className="mt-4 sm:mt-6 max-w-3xl mx-auto text-base sm:text-lg text-brand-text-secondary"
