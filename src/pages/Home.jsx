@@ -161,6 +161,10 @@ const Home = () => {
           property="og:description"
           content="Transformamos tu forma de invertir en crypto. Asesoramiento financiero independiente y especializado en criptoactivos para individuos y empresas."
         />
+        <meta
+          name="keywords"
+          content="consultoría crypto, formación activos digitales, inversión criptomonedas, asesoramiento financiero, blockchain, bsb capital"
+        />
       </Helmet>
 
       {/* Barra de notificación para administradores */}

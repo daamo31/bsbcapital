@@ -205,23 +205,46 @@ const Academia = () => {
         <script type="application/ld+json">
           {JSON.stringify({
             '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
-            itemListElement: [
+            '@graph': [
               {
-                '@type': 'ListItem',
-                position: 1,
-                name: 'Inicio',
-                item: 'https://bsbcapital.io/',
+                '@type': 'BreadcrumbList',
+                itemListElement: [
+                  {
+                    '@type': 'ListItem',
+                    position: 1,
+                    name: 'Inicio',
+                    item: 'https://bsbcapital.io/',
+                  },
+                  {
+                    '@type': 'ListItem',
+                    position: 2,
+                    name: 'Formación Criptoactivos',
+                    item: 'https://bsbcapital.io/formacion-criptoactivos',
+                  },
+                ],
               },
               {
-                '@type': 'ListItem',
-                position: 2,
-                name: 'Formación Criptoactivos',
-                item: 'https://bsbcapital.io/formacion-criptoactivos',
+                '@type': 'Course',
+                name: 'BSB Academy',
+                description:
+                  'Formación profesional en activos digitales para aprender a invertir con confianza.',
+                provider: {
+                  '@type': 'Organization',
+                  name: 'BSB Capital',
+                  sameAs: 'https://bsbcapital.io',
+                },
+                offers: {
+                  '@type': 'Offer',
+                  category: 'Subscription',
+                },
               },
             ],
           })}
         </script>
+        <meta
+          name="keywords"
+          content="curso criptomonedas, formación blockchain, academia de inversión, aprender bitcoin, educación financiera, trading, análisis técnico"
+        />
       </Helmet>
       <motion.div initial="hidden" animate="visible" variants={containerVariants}>
         {/* Hero Section */}

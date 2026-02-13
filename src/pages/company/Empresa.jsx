@@ -70,6 +70,10 @@ const Empresa = () => {
             ],
           })}
         </script>
+        <meta
+          name="keywords"
+          content="empresa crypto, equipo bsb capital, consultores blockchain, visión financiera, activos digitales, asesoramiento ético"
+        />
       </Helmet>
       <motion.div
         initial="hidden"

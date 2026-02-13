@@ -1,6 +1,7 @@
 import path from 'node:path';
 import react from '@vitejs/plugin-react';
 import { createLogger, defineConfig } from 'vite';
+import { ViteImageOptimizer } from 'vite-plugin-image-optimizer';
 import inlineEditPlugin from './plugins/visual-editor/vite-plugin-react-inline-editor.js';
 import editModeDevPlugin from './plugins/visual-editor/vite-plugin-edit-mode.js';
 import iframeRouteRestorationPlugin from './plugins/vite-plugin-iframe-route-restoration.js';
@@ -214,6 +215,15 @@ export default defineConfig({
     ...(isDev ? [inlineEditPlugin(), editModeDevPlugin(), iframeRouteRestorationPlugin()] : []),
     react(),
     addTransformIndexHtml,
+    ViteImageOptimizer({
+      png: { quality: 80 },
+      jpeg: { quality: 80 },
+      webp: { quality: 80 },
+      avif: { quality: 70 },
+      svg: {
+        plugins: [{ name: 'removeViewBox', active: false }, { name: 'sortAttrs' }],
+      },
+    }),
   ],
   server: {
     cors: {

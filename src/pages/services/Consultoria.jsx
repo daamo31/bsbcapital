@@ -824,23 +824,45 @@ const Consultoria = () => {
         <script type="application/ld+json">
           {JSON.stringify({
             '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
-            itemListElement: [
+            '@graph': [
               {
-                '@type': 'ListItem',
-                position: 1,
-                name: 'Inicio',
-                item: 'https://bsbcapital.io/',
+                '@type': 'BreadcrumbList',
+                itemListElement: [
+                  {
+                    '@type': 'ListItem',
+                    position: 1,
+                    name: 'Inicio',
+                    item: 'https://bsbcapital.io/',
+                  },
+                  {
+                    '@type': 'ListItem',
+                    position: 2,
+                    name: 'Consultoría Cripto',
+                    item: 'https://bsbcapital.io/consultoria-cripto',
+                  },
+                ],
               },
               {
-                '@type': 'ListItem',
-                position: 2,
-                name: 'Consultoría Cripto',
-                item: 'https://bsbcapital.io/consultoria-cripto',
+                '@type': 'FinancialService',
+                name: 'BSB Consulting',
+                description:
+                  'Asesoramiento financiero independiente y especializado en criptomonedas y activos digitales.',
+                provider: {
+                  '@type': 'Organization',
+                  name: 'BSB Capital',
+                  url: 'https://bsbcapital.io',
+                },
+                areaServed: 'Global',
+                url: 'https://bsbcapital.io/consultoria-cripto',
+                serviceType: 'Investment Advice',
               },
             ],
           })}
         </script>
+        <meta
+          name="keywords"
+          content="consultoría cripto, asesoramiento financiero, inversión en criptomonedas, gestión de cartera, asesor independiente, bitcoin, ethereum, blockchain"
+        />
       </Helmet>
       <motion.div
         initial={{ opacity: 0, y: 20 }}

@@ -387,23 +387,47 @@ const Paquetes = () => {
         <script type="application/ld+json">
           {JSON.stringify({
             '@context': 'https://schema.org',
-            '@type': 'BreadcrumbList',
-            itemListElement: [
+            '@graph': [
               {
-                '@type': 'ListItem',
-                position: 1,
-                name: 'Inicio',
-                item: 'https://bsbcapital.io/',
+                '@type': 'BreadcrumbList',
+                itemListElement: [
+                  {
+                    '@type': 'ListItem',
+                    position: 1,
+                    name: 'Inicio',
+                    item: 'https://bsbcapital.io/',
+                  },
+                  {
+                    '@type': 'ListItem',
+                    position: 2,
+                    name: 'Paquetes Cripto',
+                    item: 'https://bsbcapital.io/paquetes-cripto',
+                  },
+                ],
               },
               {
-                '@type': 'ListItem',
-                position: 2,
-                name: 'Paquetes Cripto',
-                item: 'https://bsbcapital.io/paquetes-cripto',
+                '@type': 'Product',
+                name: 'Paquetes BSB Capital',
+                description:
+                  'Soluciones especializadas en gestión de criptoactivos y membresía anual.',
+                brand: {
+                  '@type': 'Brand',
+                  name: 'BSB Capital',
+                },
+                offers: {
+                  '@type': 'AggregateOffer',
+                  priceCurrency: 'EUR',
+                  lowPrice: '390',
+                  highPrice: '2400',
+                },
               },
             ],
           })}
         </script>
+        <meta
+          name="keywords"
+          content="paquetes de inversión, membresía cripto, gestión de patrimonio, asesoría premium, servicios para empresas, onboarding cripto"
+        />
       </Helmet>
 
       <div className="min-h-screen bg-background pt-8 pb-12 px-4 sm:px-6 lg:px-8">
