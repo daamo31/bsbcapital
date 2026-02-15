@@ -211,6 +211,8 @@ const Empresa = () => {
                   alt="Juan Salgado Blanco - Fundador y CEO de BSB Capital, Asesor Financiero Certificado EFA especializado en criptomonedas"
                   className="w-full h-auto block"
                   loading="lazy"
+                  width="1024"
+                  height="904"
                 />
               </motion.div>
 
@@ -259,6 +261,8 @@ const Empresa = () => {
                         src={teamMembers[0].imageUrl}
                         alt={`Foto de ${teamMembers[0].name}`}
                         loading="lazy"
+                        width="192"
+                        height="192"
                       />
                     </div>
                     <h3 className="text-2xl font-bold text-text-primary">{teamMembers[0].name}</h3>

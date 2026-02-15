@@ -37,7 +37,7 @@ RewriteRule ^ index.html [L]
     Header set X-Frame-Options "SAMEORIGIN"
     
     # Configuración CSP para iframes de Hotmart y Stripe
-    Header set Content-Security-Policy "frame-src 'self' https://player.hotmart.com https://embed.hotmart.com https://content.hotmart.com https://*.hotmart.com https://js.stripe.com https://checkout.stripe.com https://*.stripe.com; frame-ancestors 'self'"
+    Header set Content-Security-Policy "frame-src 'self' https://player.hotmart.com https://embed.hotmart.com https://content.hotmart.com https://*.hotmart.com https://js.stripe.com https://checkout.stripe.com https://*.stripe.com https://widget.trustpilot.com https://*.trustpilot.com; frame-ancestors 'self'"
     
     # Headers específicos para páginas con iframes
     <FilesMatch "\.(html|htm|php)$">

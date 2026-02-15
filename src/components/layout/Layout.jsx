@@ -76,6 +76,8 @@ const Footer = () => {
                 alt="Logotipo de BSB Capital"
                 className="h-13 w-auto"
                 src="/images/white_logo-Photoroom.png"
+                width="1081"
+                height="1080"
               />
               <span className="font-bold text-xl text-white">BSB Capital</span>
             </Link>
@@ -242,6 +244,8 @@ const Header = () => {
             alt="Logotipo de BSB Capital"
             className="h-13 w-auto"
             src="/images/black_logo-Photoroom.png"
+            width="1081"
+            height="1080"
           />
         </Link>
         <nav className="hidden lg:flex items-center gap-8">
