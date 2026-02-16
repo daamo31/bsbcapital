@@ -33,7 +33,7 @@ const fallbackPlans = [
       'Dossier de buenas prácticas',
       'Estructura de cartera recomendada',
     ],
-    highlight: false,
+    highlight: true,
     description: 'Paquete anual - Introducción al ecosistema cripto',
     objective:
       'Introducción al ecosistema cripto, optimización de primeras inversiones y base estratégica de gestión.',
@@ -54,7 +54,7 @@ const fallbackPlans = [
       'Comunidad y acceso exclusivo',
       'Soporte prioritario',
     ],
-    highlight: true,
+    highlight: false,
     description: 'Paquete anual popular',
     objective:
       'Acompañamiento continuo y personalizado para la gestión avanzada de inversiones en cripto y Web3.',
@@ -236,7 +236,8 @@ const Paquetes = () => {
               price_annual: plan.price_annual,
               currency: plan.currency || 'EUR',
               features: Array.isArray(plan.features) ? plan.features : [],
-              highlight: plan.name.includes('Premium') || plan.name.includes('Exclusiva'),
+              highlight:
+                plan.highlight !== undefined ? plan.highlight : plan.name.includes('Onboarding'),
               stripe_price_id: plan.stripe_price_id,
               stripe_price_id_annual: plan.stripe_price_id_annual,
               stripe_product_id: plan.stripe_product_id,
@@ -491,11 +492,11 @@ const Paquetes = () => {
 
                     <CardHeader className="text-center pb-4 md:pb-6 pt-6 md:pt-8 px-4 md:px-6 bg-gradient-to-br from-brand-green-50 to-white min-h-[180px] md:min-h-[220px] flex flex-col justify-center items-center">
                       <CardTitle
-                        className={`font - bold mb - 3 text - foreground ${
+                        className={`font-bold mb-3 text-foreground ${
                           plan.name.length > 25
                             ? 'text-lg sm:text-xl md:text-2xl'
                             : 'text-xl sm:text-2xl md:text-3xl'
-                        } `}
+                        }`}
                       >
                         {plan.name}
                       </CardTitle>
@@ -509,9 +510,9 @@ const Paquetes = () => {
                       <div className="text-center py-4 md:py-6 px-3 md:px-4 bg-gradient-to-br from-gray-50 to-white rounded-lg md:rounded-xl border border-border shadow-sm min-h-[160px] md:min-h-[200px] flex flex-col justify-center">
                         <div className="flex flex-col items-center justify-center gap-2 mb-2">
                           <div
-                            className={`text - 4xl sm: text - 5xl md: text - 6xl font - bold ${
+                            className={`text-4xl sm:text-5xl md:text-6xl font-bold ${
                               plan.highlight ? 'text-brand-gold-600' : 'text-brand-green-600'
-                            } `}
+                            }`}
                           >
                             €{isTestMode ? '1' : currentPrice || 0}
                           </div>
@@ -545,9 +546,9 @@ const Paquetes = () => {
                       <div className="space-y-3 md:space-y-4">
                         <h4 className="font-bold text-base md:text-lg text-foreground flex items-center gap-2 pb-2 border-b border-border">
                           <div
-                            className={`w - 5 h - 5 md: w - 6 md: h - 6 rounded - lg flex items - center justify - center ${
+                            className={`w-5 h-5 md:w-6 md:h-6 rounded-lg flex items-center justify-center ${
                               plan.highlight ? 'bg-brand-gold-600' : 'bg-brand-green-600'
-                            } `}
+                            }`}
                           >
                             <Check className="h-3 w-3 md:h-4 md:w-4 text-white" />
                           </div>
@@ -570,11 +571,11 @@ const Paquetes = () => {
                       {/* Objetivo */}
                       {plan.objective && (
                         <div
-                          className={`p - 4 md: p - 5 rounded - lg md: rounded - xl border ${
+                          className={`p-4 md:p-5 rounded-lg md:rounded-xl border ${
                             plan.highlight
                               ? 'bg-brand-gold-50 border-brand-gold-200'
                               : 'bg-brand-green-50 border-brand-green-200'
-                          } `}
+                          }`}
                         >
                           <h4 className="font-bold text-sm md:text-base text-foreground mb-2 md:mb-3 flex items-center gap-2">
                             <Check className="h-4 w-4 md:h-5 md:w-5 text-brand-green-600" />
@@ -589,11 +590,11 @@ const Paquetes = () => {
 
                     <CardFooter className="mt-auto p-4 md:p-6 pt-2 md:pt-4">
                       <Button
-                        className={`w - full py - 4 md: py - 6 text - base md: text - lg font - bold shadow - lg transition - all duration - 300 ${
+                        className={`w-full py-4 md:py-6 text-base md:text-lg font-bold shadow-lg transition-all duration-300 ${
                           plan.highlight
                             ? 'bg-brand-gold-600 hover:bg-brand-gold-700 text-white hover:shadow-xl hover:shadow-brand-gold-600/30'
                             : 'hover:shadow-xl'
-                        } `}
+                        }`}
                         onClick={() => handleSelectPlan(plan)}
                         disabled={isLoading}
                       >
@@ -615,6 +616,19 @@ const Paquetes = () => {
               );
             })}
           </div>
+        </div>
+
+        {/* Sección 1.5: Imagen Onboarding - Full Width */}
+        <div className="w-full my-12">
+          <motion.img
+            src="/onboarding.jpeg"
+            alt="Onboarding Cripto"
+            className="w-full h-auto object-cover rounded-lg shadow-xl"
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          />
         </div>
 
         {/* Sección 2: Membresía BSB Capital - Full Width Background */}

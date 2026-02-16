@@ -297,9 +297,9 @@ const Academia = () => {
               {features.map((feature, index) => (
                 <div
                   key={index}
-                  className="bg-card p-8 rounded-xl border shadow-sm hover:shadow-md transition-shadow"
+                  className="bg-card p-8 rounded-xl border shadow-sm hover:shadow-md transition-shadow text-center"
                 >
-                  {feature.icon}
+                  <div className="flex justify-center">{feature.icon}</div>
                   <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
                   <p className="text-muted-foreground">{feature.description}</p>
                 </div>
@@ -308,7 +308,160 @@ const Academia = () => {
           </div>
         </motion.section>
 
-        {/* Method Section */}
+        {/* Method Section - El Método BSB */}
+        <motion.section
+          variants={itemVariants}
+          className="py-20 md:py-32 bg-gradient-to-b from-white via-brand-green-50 to-white"
+        >
+          <div className="container mx-auto px-4 sm:px-6">
+            <div className="max-w-5xl mx-auto">
+              {/* Main Title */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                viewport={{ once: true }}
+                className="text-center mb-12"
+              >
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-2 leading-tight">
+                  El método <span className="text-brand-green-600">BSB</span>:
+                </h2>
+                <p className="text-2xl md:text-3xl font-bold text-brand-green-700">
+                  invierte en activos digitales como un profesional
+                </p>
+              </motion.div>
+
+              {/* Introduction Paragraphs */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                viewport={{ once: true }}
+                className="space-y-6 mb-16"
+              >
+                <p className="text-lg md:text-xl text-gray-700 leading-relaxed text-center max-w-3xl mx-auto">
+                  <span className="font-bold text-brand-green-700">
+                    "El método BSB: inversión en crypto"
+                  </span>{' '}
+                  es el primer paso dentro de un recorrido formativo diseñado para evolucionar
+                  contigo y con el mercado.
+                </p>
+
+                <div className="bg-white border-l-4 border-brand-green-600 rounded-lg p-6 md:p-8 shadow-sm max-w-3xl mx-auto">
+                  <p className="text-lg font-bold text-foreground mb-2">
+                    No es una formación aislada.
+                  </p>
+                  <p className="text-lg text-gray-700">
+                    Es la base sobre la que construirás tu criterio y tu estrategia como inversor.
+                  </p>
+                </div>
+              </motion.div>
+
+              {/* Modules Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
+                {[
+                  {
+                    num: 1,
+                    title: 'El porqué de crypto',
+                    text: 'En este módulo construyes la base conceptual de crypto: entiendes el origen del dinero, las limitaciones del sistema financiero tradicional y cómo la tecnología blockchain da lugar a un nuevo modelo económico y digital.',
+                  },
+                  {
+                    num: 2,
+                    title: 'La entrada al mundo crypto',
+                    text: 'Un módulo orientado a la parte operativa de crypto: aprendes a interactuar con el ecosistema crypto de forma segura, a gestionar tus propios activos y a moverte con autonomía, entendiendo los riesgos reales y cómo proteger tu capital desde el primer día.',
+                  },
+                  {
+                    num: 3,
+                    title: 'Invierte tú mismo: Análisis de proyectos',
+                    text: 'En este módulo aprendes a evaluar proyectos crypto por ti mismo con la metodología que nos ha llevado a ser rentables en el mercado crypto por más de 4 años. Entenderás cómo identificar oportunidades o descartar proyectos desarrollando un criterio propio.',
+                  },
+                  {
+                    num: 4,
+                    title: 'Finanzas personales: Crypto como alternativa a tu banco',
+                    text: 'Este módulo te enseña a integrar crypto en tu vida financiera de forma práctica y sostenible. Aprenderás a planificar ahorro, inversión y liquidez, usar herramientas DeFi para tus objetivos, y aplicar diferentes estrategias.',
+                  },
+                  {
+                    num: 5,
+                    title: 'Confecciona tu cartera: Estructura, equilibrio y diversificación',
+                    text: 'Aquí aprendes a construir y gestionar tu cartera crypto basándote en métricas y datos, no en narrativas o tendencias. Comprenderás cómo repartir tu dinero entre diferentes activos y cómo implementar herramientas que faciliten la gestión.',
+                  },
+                  {
+                    num: 6,
+                    title: 'Cómo modificar tu cartera: Inteligencia de mercado y lectura de ciclos',
+                    text: 'Este módulo te desarrolla no solo como inversor estratégico, sino como gestor: aprenderás a interpretar ciclos de mercado, analizar datos on-chain y off-chain y ajustar tu cartera ante cambios en métricas clave, desarrollando tu propio criterio.',
+                  },
+                ].map((module, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: index * 0.08 }}
+                    viewport={{ once: true }}
+                    className="bg-white rounded-lg border-2 border-brand-green-200 p-6 md:p-7 hover:border-brand-green-400 hover:shadow-lg transition-all duration-300"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0">
+                        <div className="flex items-center justify-center w-10 h-10 rounded-full bg-brand-green-600 text-white font-bold text-lg shadow-md">
+                          {module.num}
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-lg font-bold text-foreground mb-2">{module.title}</h3>
+                        <p className="text-gray-700 leading-relaxed text-sm md:text-base">
+                          {module.text}
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Conclusion Section */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                viewport={{ once: true }}
+                className="space-y-6"
+              >
+                <p className="text-xl text-gray-700 leading-relaxed text-center font-semibold">
+                  Este es el punto de partida de tu evolución dentro de la{' '}
+                  <span className="text-brand-green-700">BSB Academy</span>.
+                </p>
+
+                <p className="text-lg text-gray-700 leading-relaxed text-center max-w-3xl mx-auto">
+                  Cada módulo significa un paso más para invertir en crypto de forma segura y
+                  rentable. A medida que avances, irás desbloqueando nuevas formaciones diseñadas
+                  para seguir elevando tu nivel como inversor: desde análisis avanzado de proyectos
+                  y estrategias de inversión, hasta técnicas de gestión de cartera, narrativas
+                  emergentes y herramientas DeFi cada vez más sofisticadas.
+                </p>
+
+                <div className="bg-gradient-to-r from-brand-green-100 to-brand-gold-100 rounded-lg p-8 md:p-10 border border-brand-green-300 my-8">
+                  <p className="text-center text-xl md:text-2xl font-bold text-brand-green-900 leading-tight">
+                    La BSB Academy no es un curso más:
+                    <br />
+                    <span className="text-brand-green-700">
+                      es un recorrido formativo vivo, que crece contigo y con el mercado.
+                    </span>
+                  </p>
+                </div>
+
+                <div className="text-center space-y-4">
+                  <p className="text-xl md:text-2xl font-bold text-gray-800">
+                    El mercado seguirá avanzando.
+                    <br />
+                    <span className="text-brand-green-700">
+                      La única pregunta es: ¿avanzas tú con método o improvisando?
+                    </span>
+                  </p>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </motion.section>
+
+        {/* Method Section - Video y puntos */}
         <motion.section variants={itemVariants} className="py-16 md:py-24 bg-background">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-4xl mx-auto mb-8 md:mb-16 rounded-xl overflow-hidden shadow-2xl">
@@ -343,7 +496,7 @@ const Academia = () => {
             <Accordion type="single" collapsible className="w-full">
               {faqs.map((faq, index) => (
                 <AccordionItem value={`item-${index + 1}`} key={index}>
-                  <AccordionTrigger className="text-lg font-semibold">
+                  <AccordionTrigger className="text-lg font-semibold text-center">
                     {faq.question}
                   </AccordionTrigger>
                   <AccordionContent className="text-base text-muted-foreground">

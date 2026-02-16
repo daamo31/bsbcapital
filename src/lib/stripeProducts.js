@@ -54,6 +54,7 @@ export const PACKAGE_PRICES = {
     stripe_price_id_annual: 'price_1SSshWJmSk3VG9oiU1cBNWgf',
     stripe_product_id: 'prod_TPi7iCVtydt3Cw',
     mode: 'payment', // pago único
+    highlight: true,
   },
   inversor_premium: {
     name: 'Inversor Premium',
@@ -61,7 +62,6 @@ export const PACKAGE_PRICES = {
     stripe_price_id_annual: 'price_1SDKb2JmSk3VG9oiJr1unLZZ',
     stripe_product_id: 'prod_T9dspdTkGGM7Sy',
     mode: 'payment',
-    highlight: true,
   },
   gestion_tesoreria: {
     name: 'Gestión Tesorería Cripto para Empresas',

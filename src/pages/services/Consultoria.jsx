@@ -371,7 +371,7 @@ const BookingModal = ({ children }) => {
                     onClick={() =>
                       handleSelectChange('service_interest', 'Optimización de cartera')
                     }
-                    className={`h - 20 flex flex - col items - center justify - center p - 3 text - center ${
+                    className={`h - 20 flex - col items - center justify - center p - 3 text - center ${
                       formData.service_interest === 'Optimización de cartera'
                         ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
                         : 'border-border hover:bg-muted/50 hover:border-primary/30'
@@ -387,7 +387,7 @@ const BookingModal = ({ children }) => {
                       formData.service_interest === 'Onboarding crypto' ? 'default' : 'outline'
                     }
                     onClick={() => handleSelectChange('service_interest', 'Onboarding crypto')}
-                    className={`h - 20 flex flex - col items - center justify - center p - 3 text - center ${
+                    className={`h - 20 flex - col items - center justify - center p - 3 text - center ${
                       formData.service_interest === 'Onboarding crypto'
                         ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
                         : 'border-border hover:bg-muted/50 hover:border-primary/30'
@@ -407,7 +407,7 @@ const BookingModal = ({ children }) => {
                     onClick={() =>
                       handleSelectChange('service_interest', 'Estrategias Crypto & Web3')
                     }
-                    className={`h - 20 flex flex - col items - center justify - center p - 3 text - center ${
+                    className={`h - 20 flex - col items - center justify - center p - 3 text - center ${
                       formData.service_interest === 'Estrategias Crypto & Web3'
                         ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
                         : 'border-border hover:bg-muted/50 hover:border-primary/30'
@@ -430,7 +430,7 @@ const BookingModal = ({ children }) => {
                         'Gestión de tesorería crypto para empresas'
                       )
                     }
-                    className={`h - 20 flex flex - col items - center justify - center p - 3 text - center ${
+                    className={`h - 20 flex - col items - center justify - center p - 3 text - center ${
                       formData.service_interest === 'Gestión de tesorería crypto para empresas'
                         ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
                         : 'border-border hover:bg-muted/50 hover:border-primary/30'
@@ -449,7 +449,7 @@ const BookingModal = ({ children }) => {
                     type="button"
                     variant={formData.duration === '30min' ? 'default' : 'outline'}
                     onClick={() => handleSelectChange('duration', '30min')}
-                    className={`h - 16 flex flex - col ${
+                    className={`h - 16 flex - col ${
                       formData.duration === '30min'
                         ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
                         : 'border-border hover:bg-muted/50 hover:border-primary/30'
@@ -462,7 +462,7 @@ const BookingModal = ({ children }) => {
                     type="button"
                     variant={formData.duration === '60min' ? 'default' : 'outline'}
                     onClick={() => handleSelectChange('duration', '60min')}
-                    className={`h - 16 flex flex - col ${
+                    className={`h - 16 flex - col ${
                       formData.duration === '60min'
                         ? 'bg-primary text-primary-foreground border-primary hover:bg-primary/90'
                         : 'border-border hover:bg-muted/50 hover:border-primary/30'
@@ -930,7 +930,7 @@ const Consultoria = () => {
                 </h3>
                 <p className="text-muted-foreground">
                   Te guiamos para aprovechar oportunidades con fundamentos sólidos y control del
-                  riesgo.
+                  riesgo. Para inversores y asesores profesionales que buscan una visión experta.
                 </p>
               </div>
               <div className="bg-card backdrop-blur-sm p-4 sm:p-6 rounded-xl shadow-lg border border-border hover:shadow-xl transition-all duration-300 hover:border-primary/30">
@@ -1113,7 +1113,7 @@ const Consultoria = () => {
                               type: 'spring',
                               stiffness: 200,
                             }}
-                            className={`w - 20 h - 20 rounded - full ${step.color} border - 4 border - white shadow - xl flex items - center justify - center z - 20 relative`}
+                            className={`w - 20 h - 20 rounded - full ${step.color} - 4 border - white shadow - xl flex items - center justify - center z - 20 relative`}
                           >
                             <span className="text-3xl font-bold text-white">0{step.id}</span>
                           </motion.div>
