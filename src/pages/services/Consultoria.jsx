@@ -801,6 +801,36 @@ const FAQSection = () => {
 };
 
 const Consultoria = () => {
+  /** @type {React.RefObject<HTMLVideoElement>} Ref for the consultancy intro video. */
+  const videoRef = React.useRef(null);
+
+  /**
+   * Intersection Observer to auto-play/pause the video when it becomes visible.
+   */
+  React.useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          // Play only if visible more than 50%
+          videoRef.current?.play().catch((error) => console.log('Autoplay prevented:', error));
+        } else {
+          videoRef.current?.pause();
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    const currentVideo = videoRef.current;
+    if (currentVideo) {
+      observer.observe(currentVideo);
+    }
+
+    return () => {
+      if (currentVideo) {
+        observer.unobserve(currentVideo);
+      }
+    };
+  }, []);
   return (
     <>
       <Helmet>
@@ -979,6 +1009,19 @@ const Consultoria = () => {
         <div className="py-16 sm:py-24 md:py-32 bg-background">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-6xl mx-auto">
+              <div className="mb-16 md:mb-20 rounded-2xl overflow-hidden shadow-2xl border-4 border-brand-green-600/20 max-w-4xl mx-auto">
+                <video
+                  ref={videoRef}
+                  controls
+                  loop
+                  muted
+                  playsInline
+                  className="w-full h-full object-cover"
+                >
+                  <source src="/videos/video2.mp4" type="video/mp4" />
+                  Tu navegador no soporta el elemento de vídeo.
+                </video>
+              </div>
               <h2 className="text-3xl md:text-4xl font-bold text-center text-foreground mb-16 md:mb-20">
                 Nuestro enfoque y metodología:
               </h2>

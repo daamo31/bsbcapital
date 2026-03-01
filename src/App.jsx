@@ -29,6 +29,7 @@ const Contacto = lazy(() => import('@/pages/company/Contacto.jsx'));
 
 // Content
 const Blog = lazy(() => import('@/pages/content/Blog.jsx'));
+const BlogPost = lazy(() => import('@/pages/content/BlogPost.jsx'));
 const GuiaInversion = lazy(() => import('@/pages/content/GuiaInversion.jsx'));
 
 // Academia
@@ -138,6 +139,7 @@ function App() {
               <Route path="/servicios-adicionales-cripto" element={<OtrosServicios />} />
               <Route path="/legal/:page" element={<Legal />} />
               <Route path="/blog" element={<Blog />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/contacto" element={<Contacto />} />
               <Route path="/guia-inversion" element={<GuiaInversion />} />
               <Route path="/formacion-criptoactivos" element={<Academia />} />

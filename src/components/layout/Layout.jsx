@@ -143,6 +143,14 @@ const Footer = () => {
                     Contacto
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    to="/blog"
+                    className="text-brand-green-100/70 hover:text-white transition-colors"
+                  >
+                    Blog
+                  </Link>
+                </li>
               </ul>
             </div>
             <div>
@@ -231,6 +239,7 @@ const Header = () => {
     { name: 'Paquetes', href: '/paquetes-cripto' },
     { name: 'Otros Servicios', href: '/servicios-adicionales-cripto' },
     { name: 'BSB Capital', href: '/empresa' },
+    { name: 'Blog', href: '/blog' },
   ];
 
   const toggleMenu = () => setIsOpen(!isOpen);
@@ -248,40 +257,55 @@ const Header = () => {
             height="1080"
           />
         </Link>
-        <nav className="hidden lg:flex items-center gap-8">
+        <nav className="hidden xl:flex items-center gap-5">
           {navLinks.map((link) => (
             <Link
               key={link.name}
               to={link.href}
-              className="text-base lg:text-lg font-semibold text-text-secondary hover:text-primary transition-colors"
+              className="text-sm xl:text-base font-semibold text-text-secondary hover:text-primary transition-colors whitespace-nowrap"
             >
               {link.name}
             </Link>
           ))}
         </nav>
-        <div className="hidden lg:flex items-center gap-4">
+        {/* Support for 1024px to 1280px range with even more compact nav */}
+        <nav className="hidden lg:flex xl:hidden items-center gap-3">
+          {navLinks.map((link) => (
+            <Link
+              key={link.name}
+              to={link.href}
+              className="text-xs font-bold text-text-secondary hover:text-primary transition-colors whitespace-nowrap"
+            >
+              {link.name}
+            </Link>
+          ))}
+        </nav>
+        <div className="hidden lg:flex items-center gap-2 xl:gap-3">
           <Button
             asChild
             variant="outline"
-            className="border-brand-green-600 text-gray-700 hover:bg-brand-green-600 hover:text-white"
+            size="sm"
+            className="border-brand-green-600 text-gray-700 hover:bg-brand-green-600 hover:text-white h-9 px-3"
           >
-            <Link to="/contacto">Contactar</Link>
+            <Link to="/contacto">Contacto</Link>
           </Button>
           {user ? (
             <>
               {isAdmin && <AdminDropdown />}
-              <Button asChild>
+              <Button asChild size="sm" className="h-9 px-3">
                 <Link to="/area-cliente">
                   <User className="mr-2 h-4 w-4" />
-                  Mi Cuenta
+                  <span className="hidden xl:inline">Mi Cuenta</span>
+                  <span className="xl:hidden">Cuenta</span>
                 </Link>
               </Button>
             </>
           ) : (
-            <Button asChild>
+            <Button asChild size="sm" className="h-9 px-3">
               <Link to="/login">
                 <LogIn className="mr-2 h-4 w-4" />
-                Iniciar Sesión
+                <span className="hidden xl:inline">Iniciar Sesión</span>
+                <span className="xl:hidden">Login</span>
               </Link>
             </Button>
           )}

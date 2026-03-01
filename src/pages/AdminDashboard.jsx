@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/data-display/card';
 import { Badge } from '@/components/ui/data-display/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/navigation/tabs';
@@ -8,19 +14,21 @@ import { fetchWithTimeout } from '@/lib/fetchWithTimeout';
 import UserManagement from '@/components/admin/UserManagement';
 import AdminCalendar from '@/components/admin/AdminCalendar';
 import ConsultationManagement from '@/components/admin/ConsultationManagement';
-import { 
-  Users, 
-  Calendar, 
-  BarChart3, 
-  Settings, 
-  FileText, 
-  Mail, 
-  TrendingUp, 
+import BlogManagement from '@/components/admin/BlogManagement';
+import {
+  Users,
+  Calendar,
+  BarChart3,
+  Settings,
+  FileText,
+  Mail,
+  TrendingUp,
   Activity,
   Shield,
   Database,
   Play,
-  DollarSign
+  DollarSign,
+  BookOpen,
 } from 'lucide-react';
 
 import { useAuth } from '@/contexts/SupabaseAuthContext';
@@ -44,7 +52,7 @@ const AdminDashboard = () => {
       await loadDashboardData(isMounted);
     };
     fetchData();
-    
+
     // Listen for tab change events from admin dropdown
     const handleTabChange = (event) => {
       setActiveTab(event.detail);
@@ -54,16 +62,20 @@ const AdminDashboard = () => {
     // Suscripción en tiempo real a cambios en consultations para actualizar métricas
     const consultationsSubscription = supabase
       .channel('consultations_metrics_updates')
-      .on('postgres_changes', { 
-        event: '*', 
-        schema: 'public', 
-        table: 'consultations' 
-      }, (payload) => {
-        // Recargar métricas cuando hay cambios en consultations
-        if (isMounted) {
-          loadDashboardData(isMounted);
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'consultations',
+        },
+        (payload) => {
+          // Recargar métricas cuando hay cambios en consultations
+          if (isMounted) {
+            loadDashboardData(isMounted);
+          }
         }
-      })
+      )
       .subscribe();
 
     return () => {
@@ -81,7 +93,10 @@ const AdminDashboard = () => {
       try {
         // Get dashboard metrics
         const callMetrics = () => supabase.rpc('get_dashboard_metrics');
-        const { data: metricsData, error: metricsError } = await fetchWithTimeout(callMetrics, 10000);
+        const { data: metricsData, error: metricsError } = await fetchWithTimeout(
+          callMetrics,
+          10000
+        );
         if (!isMounted) return;
         if (metricsError) throw metricsError;
 
@@ -96,18 +111,22 @@ const AdminDashboard = () => {
         // Merge metrics with unassigned count
         const finalMetrics = {
           ...metricsData,
-          pending_consultations: unassignedCount || 0
+          pending_consultations: unassignedCount || 0,
         };
 
         setMetrics(finalMetrics);
 
         // Get recent activity
-        const callActivity = () => supabase
-          .from('admin_activity_log')
-          .select('*')
-          .order('created_at', { ascending: false })
-          .limit(10);
-        const { data: activityData, error: activityError } = await fetchWithTimeout(callActivity, 10000);
+        const callActivity = () =>
+          supabase
+            .from('admin_activity_log')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(10);
+        const { data: activityData, error: activityError } = await fetchWithTimeout(
+          callActivity,
+          10000
+        );
         if (!isMounted) return;
         if (activityError) throw activityError;
         setRecentActivity(activityData || []);
@@ -117,7 +136,7 @@ const AdminDashboard = () => {
         lastError = error;
         console.error(`Intento ${i + 1} fallido:`, error);
         if (i < MAX_RETRIES - 1) {
-          await new Promise(resolve => setTimeout(resolve, 500 * (i + 1)));
+          await new Promise((resolve) => setTimeout(resolve, 500 * (i + 1)));
         }
       } finally {
         if (i === MAX_RETRIES - 1 && isMounted) {
@@ -146,7 +165,8 @@ const AdminDashboard = () => {
             <span className={`mr-1 ${trend > 0 ? 'text-green-600' : 'text-red-600'}`}>
               {trend > 0 ? '↗' : '↘'}
             </span>
-            {trend > 0 ? '+' : ''}{trend}% desde el mes pasado
+            {trend > 0 ? '+' : ''}
+            {trend}% desde el mes pasado
           </p>
         )}
         {description && (
@@ -190,9 +210,14 @@ const AdminDashboard = () => {
                 <Shield className="h-6 w-6 sm:h-7 sm:w-7 lg:h-8 lg:w-8 mr-2 sm:mr-3 text-blue-600 flex-shrink-0" />
                 <span className="truncate">Panel de Administración BSB Capital</span>
               </h1>
-              <p className="text-sm sm:text-base text-gray-600 mt-1">Gestión completa del negocio</p>
+              <p className="text-sm sm:text-base text-gray-600 mt-1">
+                Gestión completa del negocio
+              </p>
             </div>
-            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 self-start sm:self-auto">
+            <Badge
+              variant="outline"
+              className="bg-green-50 text-green-700 border-green-200 self-start sm:self-auto"
+            >
               <Activity className="h-3 w-3 mr-1" />
               Sistema Activo
             </Badge>
@@ -203,14 +228,31 @@ const AdminDashboard = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
           <div className="overflow-x-auto">
-            <TabsList className="grid w-full min-w-[640px] sm:min-w-0 grid-cols-7 gap-1 sm:gap-0">
-              <TabsTrigger value="overview" className="text-xs sm:text-sm px-2 sm:px-3">Vista General</TabsTrigger>
-              <TabsTrigger value="users" className="text-xs sm:text-sm px-2 sm:px-3">Usuarios</TabsTrigger>
-              <TabsTrigger value="consultations" className="text-xs sm:text-sm px-2 sm:px-3">Consultorías</TabsTrigger>
-              <TabsTrigger value="calendar" className="text-xs sm:text-sm px-2 sm:px-3">Calendario</TabsTrigger>
-              <TabsTrigger value="content" className="text-xs sm:text-sm px-2 sm:px-3">Contenido</TabsTrigger>
-              <TabsTrigger value="analytics" className="text-xs sm:text-sm px-2 sm:px-3">Análisis</TabsTrigger>
-              <TabsTrigger value="settings" className="text-xs sm:text-sm px-2 sm:px-3">Config.</TabsTrigger>
+            <TabsList className="grid w-full min-w-[760px] sm:min-w-0 grid-cols-8 gap-1 sm:gap-0">
+              <TabsTrigger value="overview" className="text-xs sm:text-sm px-2 sm:px-3">
+                Vista General
+              </TabsTrigger>
+              <TabsTrigger value="users" className="text-xs sm:text-sm px-2 sm:px-3">
+                Usuarios
+              </TabsTrigger>
+              <TabsTrigger value="consultations" className="text-xs sm:text-sm px-2 sm:px-3">
+                Consultorías
+              </TabsTrigger>
+              <TabsTrigger value="calendar" className="text-xs sm:text-sm px-2 sm:px-3">
+                Calendario
+              </TabsTrigger>
+              <TabsTrigger value="blog" className="text-xs sm:text-sm px-2 sm:px-3">
+                Blog
+              </TabsTrigger>
+              <TabsTrigger value="content" className="text-xs sm:text-sm px-2 sm:px-3">
+                Contenido
+              </TabsTrigger>
+              <TabsTrigger value="analytics" className="text-xs sm:text-sm px-2 sm:px-3">
+                Análisis
+              </TabsTrigger>
+              <TabsTrigger value="settings" className="text-xs sm:text-sm px-2 sm:px-3">
+                Config.
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -254,7 +296,7 @@ const AdminDashboard = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                  <Button 
+                  <Button
                     onClick={() => setActiveTab('users')}
                     className="h-14 sm:h-16 flex flex-col p-2 sm:p-3"
                     variant="outline"
@@ -262,7 +304,7 @@ const AdminDashboard = () => {
                     <Users className="h-4 w-4 sm:h-5 sm:w-5 mb-1" />
                     <span className="text-xs sm:text-sm">Gestionar Usuarios</span>
                   </Button>
-                  <Button 
+                  <Button
                     onClick={() => setActiveTab('calendar')}
                     className="h-14 sm:h-16 flex flex-col p-2 sm:p-3"
                     variant="outline"
@@ -270,7 +312,7 @@ const AdminDashboard = () => {
                     <Calendar className="h-4 w-4 sm:h-5 sm:w-5 mb-1" />
                     <span className="text-xs sm:text-sm">Ver Calendario</span>
                   </Button>
-                  <Button 
+                  <Button
                     onClick={() => setActiveTab('content')}
                     className="h-14 sm:h-16 flex flex-col p-2 sm:p-3"
                     variant="outline"
@@ -278,7 +320,7 @@ const AdminDashboard = () => {
                     <FileText className="h-4 w-4 sm:h-5 sm:w-5 mb-1" />
                     <span className="text-xs sm:text-sm">Subir Contenido</span>
                   </Button>
-                  <Button 
+                  <Button
                     onClick={() => setActiveTab('analytics')}
                     className="h-14 sm:h-16 flex flex-col p-2 sm:p-3"
                     variant="outline"
@@ -304,7 +346,9 @@ const AdminDashboard = () => {
                         <div key={index} className="flex items-start space-x-3 text-sm">
                           <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
                           <div className="flex-1 min-w-0">
-                            <p className="font-medium truncate sm:whitespace-normal">{activity.action}</p>
+                            <p className="font-medium truncate sm:whitespace-normal">
+                              {activity.action}
+                            </p>
                             <p className="text-gray-500 text-xs sm:text-sm">
                               {new Date(activity.created_at).toLocaleString()}
                             </p>
@@ -359,6 +403,10 @@ const AdminDashboard = () => {
 
           <TabsContent value="calendar">
             <AdminCalendar />
+          </TabsContent>
+
+          <TabsContent value="blog">
+            <BlogManagement />
           </TabsContent>
 
           <TabsContent value="content">

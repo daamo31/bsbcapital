@@ -28,10 +28,10 @@ const fallbackPlans = [
     price_original: 500, // Precio original para mostrar descuento
     currency: 'EUR',
     features: [
-      '2 consultorías personalizadas (1h cada una)',
-      'Acceso anual a BSB Academy',
-      'Dossier de buenas prácticas',
-      'Estructura de cartera recomendada',
+      '2 consultorías (1h cada una): desde apertura de exchange hasta compra y custodia',
+      'Diseño de estructura de cartera recomendada',
+      'Acceso anual a BSB Academy: plataforma educativa de contenido sobre activos digitales para que maximices el potencial de tu cartera',
+      'Dossier de buenas prácticas.',
     ],
     highlight: true,
     description: 'Paquete anual - Introducción al ecosistema cripto',
@@ -69,9 +69,9 @@ const fallbackPlans = [
     price_annual: 1200,
     currency: 'EUR',
     features: [
-      '2 consultorías personalizadas (1h cada una)',
-      'Plan de tesorería y estructura de cartera corporativa',
-      'Seguimiento mensual (6 meses)',
+      '2 consultarías (1 hora cada una) para diagnóstico de situación actual.',
+      'Diseño plan de tesorería y estructura de cartera corporativa.',
+      'Implementación y seguimiento mensual durante primer semestre.',
     ],
     highlight: false,
     description: 'Paquete anual para empresas',
