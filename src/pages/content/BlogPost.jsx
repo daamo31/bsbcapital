@@ -223,7 +223,13 @@ const BlogPost = () => {
                   allowFullScreen
                 />
               ) : (
-                <video src={post.video_url} className="w-full h-full" controls>
+                <video
+                  src={post.video_url}
+                  className="w-full h-full"
+                  controls
+                  controlsList="nodownload"
+                  onContextMenu={(e) => e.preventDefault()}
+                >
                   Tu navegador no soporta el elemento de vídeo.
                 </video>
               )}

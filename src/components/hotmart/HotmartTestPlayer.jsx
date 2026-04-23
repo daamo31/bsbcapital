@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/data-display/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/data-display/badge';
 import { Alert, AlertDescription } from '@/components/ui/feedback/alert';
 import { useUserAccess } from '@/hooks/useUserAccess';
-import { 
-  Play, 
-  CheckCircle, 
-  Lock, 
+import {
+  Play,
+  CheckCircle,
+  Lock,
   AlertCircle,
   ExternalLink,
   Video,
@@ -15,13 +21,13 @@ import {
   Clock,
   Users,
   Star,
-  Zap
+  Zap,
 } from 'lucide-react';
 
 const HotmartTestPlayer = ({ contentId, title, description, mockContent = false }) => {
   const { hasAccess, isLoading, error, hotmartData, userSubscription } = useUserAccess(contentId);
   const [testMode, setTestMode] = useState('demo'); // 'demo', 'mock', 'real'
-  
+
   // Detectar si estamos en modo premium simulado
   const isPremiumMockMode = hotmartData?.mockMode || userSubscription?.id === 'mock-premium-sub';
 
@@ -32,22 +38,22 @@ const HotmartTestPlayer = ({ contentId, title, description, mockContent = false 
         id: 'video_001',
         title: 'Introducción al módulo',
         duration: '15:30',
-        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+        stream_url:
+          'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
       },
       {
-        id: 'video_002', 
+        id: 'video_002',
         title: 'Conceptos fundamentales',
         duration: '22:45',
-        stream_url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'
-      }
+        stream_url:
+          'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+      },
     ],
     documents: [
       { title: 'Manual del curso PDF', type: 'PDF', size: '2.5 MB' },
-      { title: 'Plantilla Excel', type: 'XLSX', size: '1.2 MB' }
+      { title: 'Plantilla Excel', type: 'XLSX', size: '1.2 MB' },
     ],
-    audios: [
-      { title: 'Podcast bonus', duration: '18:30' }
-    ]
+    audios: [{ title: 'Podcast bonus', duration: '18:30' }],
   };
 
   const renderTestControls = () => (
@@ -109,9 +115,12 @@ const HotmartTestPlayer = ({ contentId, title, description, mockContent = false 
       <Alert>
         <AlertCircle className="h-4 w-4" />
         <AlertDescription>
-          <strong>Estado Demo:</strong> Este es un simulador visual. 
-          {isLoading ? ' Verificando acceso...' : 
-           hasAccess ? ' ✅ Acceso confirmado' : ' ❌ Sin acceso'}
+          <strong>Estado Demo:</strong> Este es un simulador visual.
+          {isLoading
+            ? ' Verificando acceso...'
+            : hasAccess
+              ? ' ✅ Acceso confirmado'
+              : ' ❌ Sin acceso'}
         </AlertDescription>
       </Alert>
     </div>
@@ -139,10 +148,12 @@ const HotmartTestPlayer = ({ contentId, title, description, mockContent = false 
           </div>
         </CardHeader>
         <CardContent>
-          <video 
-            controls 
+          <video
+            controls
             className="w-full rounded-lg"
             poster="https://via.placeholder.com/800x450/4F46E5/FFFFFF?text=BSB+Capital+Academy"
+            controlsList="nodownload"
+            onContextMenu={(e) => e.preventDefault()}
           >
             <source src={mockVideoData.videos[0].stream_url} type="video/mp4" />
             Tu navegador no soporta video HTML5.
@@ -160,7 +171,10 @@ const HotmartTestPlayer = ({ contentId, title, description, mockContent = false 
         </CardHeader>
         <CardContent className="space-y-3">
           {mockVideoData.videos.map((video, index) => (
-            <div key={video.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div
+              key={video.id}
+              className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+            >
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
                   <Play className="h-5 w-5 text-blue-600" />
@@ -188,14 +202,19 @@ const HotmartTestPlayer = ({ contentId, title, description, mockContent = false 
         </CardHeader>
         <CardContent className="space-y-3">
           {mockVideoData.documents.map((doc, index) => (
-            <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div
+              key={index}
+              className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+            >
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
                   <Download className="h-5 w-5 text-green-600" />
                 </div>
                 <div>
                   <p className="font-medium">{doc.title}</p>
-                  <p className="text-sm text-gray-600">{doc.type} • {doc.size}</p>
+                  <p className="text-sm text-gray-600">
+                    {doc.type} • {doc.size}
+                  </p>
                 </div>
               </div>
               <Button size="sm" variant="outline">
@@ -256,9 +275,7 @@ const HotmartTestPlayer = ({ contentId, title, description, mockContent = false 
             <p className="text-gray-600 mb-4">
               No se encontró una suscripción activa para este contenido
             </p>
-            <Button onClick={() => window.location.href = '/membresias'}>
-              Ver Planes
-            </Button>
+            <Button onClick={() => (window.location.href = '/membresias')}>Ver Planes</Button>
           </CardContent>
         </Card>
       )}
@@ -274,12 +291,14 @@ const HotmartTestPlayer = ({ contentId, title, description, mockContent = false 
             <span className="text-2xl">👑</span>
             <div>
               <p className="text-purple-800 font-semibold">¡Modo Premium Simulado Activo!</p>
-              <p className="text-purple-600 text-sm">Acceso completo a todo el contenido de prueba</p>
+              <p className="text-purple-600 text-sm">
+                Acceso completo a todo el contenido de prueba
+              </p>
             </div>
           </div>
         </div>
       )}
-      
+
       <div className="mb-6">
         <h1 className="text-2xl font-bold mb-2">Prueba de Integración Hotmart</h1>
         <p className="text-gray-600">
@@ -299,12 +318,26 @@ const HotmartTestPlayer = ({ contentId, title, description, mockContent = false 
           <CardTitle className="text-sm">Debug Info</CardTitle>
         </CardHeader>
         <CardContent className="text-xs space-y-2">
-          <p><strong>Content ID:</strong> {contentId}</p>
-          <p><strong>Has Access:</strong> {hasAccess ? '✅' : '❌'}</p>
-          <p><strong>Loading:</strong> {isLoading ? '⏳' : '✅'}</p>
-          <p><strong>Error:</strong> {error || 'None'}</p>
-          <p><strong>Client ID:</strong> {import.meta.env.VITE_HOTMART_CLIENT_ID ? '✅ Configurado' : '❌ Falta'}</p>
-          <p><strong>Product ID:</strong> {import.meta.env.VITE_HOTMART_PRODUCT_ID || 'No configurado'}</p>
+          <p>
+            <strong>Content ID:</strong> {contentId}
+          </p>
+          <p>
+            <strong>Has Access:</strong> {hasAccess ? '✅' : '❌'}
+          </p>
+          <p>
+            <strong>Loading:</strong> {isLoading ? '⏳' : '✅'}
+          </p>
+          <p>
+            <strong>Error:</strong> {error || 'None'}
+          </p>
+          <p>
+            <strong>Client ID:</strong>{' '}
+            {import.meta.env.VITE_HOTMART_CLIENT_ID ? '✅ Configurado' : '❌ Falta'}
+          </p>
+          <p>
+            <strong>Product ID:</strong>{' '}
+            {import.meta.env.VITE_HOTMART_PRODUCT_ID || 'No configurado'}
+          </p>
         </CardContent>
       </Card>
     </div>

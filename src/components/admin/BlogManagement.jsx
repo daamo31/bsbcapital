@@ -588,6 +588,8 @@ const BlogManagement = () => {
                           src={form.video_url}
                           className="w-full h-full object-contain"
                           controls
+                          controlsList="nodownload"
+                          onContextMenu={(e) => e.preventDefault()}
                         />
                         <div className="absolute top-2 right-2 flex gap-2">
                           <Button

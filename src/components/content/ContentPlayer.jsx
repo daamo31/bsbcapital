@@ -1,15 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/data-display/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/data-display/badge';
 import { useContentAccess } from '@/hooks/useContentAccess';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
-import { 
-  Play, 
-  Pause, 
-  Volume2, 
-  VolumeX, 
-  Maximize, 
+import {
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Maximize,
   Settings,
   Download,
   BookOpen,
@@ -17,22 +23,22 @@ import {
   Headphones,
   Clock,
   CheckCircle,
-  Lock
+  Lock,
 } from 'lucide-react';
 
 const ContentPlayer = ({ contentId, showModuleContent = false, className = '' }) => {
   const { user } = useAuth();
-  const { 
-    hasAccess, 
-    isLoading, 
-    content, 
-    videoStreamURL, 
+  const {
+    hasAccess,
+    isLoading,
+    content,
+    videoStreamURL,
     downloadURL,
     userProgress,
     accessReason,
     updateWatchTime,
     markAsCompleted,
-    error 
+    error,
   } = useContentAccess(contentId);
 
   // Estados para el reproductor de video
@@ -65,7 +71,7 @@ const ContentPlayer = ({ contentId, showModuleContent = false, className = '' })
     if (videoRef.current) {
       const current = videoRef.current.currentTime;
       setCurrentTime(current);
-      
+
       // Auto-guardar progreso cada 30 segundos
       if (Math.floor(current) % 30 === 0 && current > 0) {
         updateWatchTime(Math.floor(current), Math.floor(current));
@@ -130,7 +136,7 @@ const ContentPlayer = ({ contentId, showModuleContent = false, className = '' })
     if (isLoading) return <Badge variant="outline">Verificando...</Badge>;
     if (!user) return <Badge variant="destructive">Inicia sesión</Badge>;
     if (hasAccess) return <Badge variant="success">Acceso permitido</Badge>;
-    
+
     switch (accessReason) {
       case 'free_content':
         return <Badge variant="success">Contenido gratuito</Badge>;
@@ -175,9 +181,7 @@ const ContentPlayer = ({ contentId, showModuleContent = false, className = '' })
                 <Lock className="h-5 w-5 mr-2 text-red-500" />
                 {content?.title || 'Contenido Restringido'}
               </CardTitle>
-              {content?.description && (
-                <CardDescription>{content.description}</CardDescription>
-              )}
+              {content?.description && <CardDescription>{content.description}</CardDescription>}
             </div>
             {getAccessStatusBadge()}
           </div>
@@ -187,12 +191,14 @@ const ContentPlayer = ({ contentId, showModuleContent = false, className = '' })
             <Lock className="h-16 w-16 text-red-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold mb-2">Acceso Restringido</h3>
             <p className="text-gray-600 mb-4">
-              {accessReason === 'no_subscription' && 'Necesitas una suscripción activa para ver este contenido.'}
-              {accessReason === 'insufficient_subscription_level' && 'Tu suscripción actual no incluye este contenido.'}
+              {accessReason === 'no_subscription' &&
+                'Necesitas una suscripción activa para ver este contenido.'}
+              {accessReason === 'insufficient_subscription_level' &&
+                'Tu suscripción actual no incluye este contenido.'}
               {accessReason === 'content_not_found' && 'El contenido solicitado no fue encontrado.'}
               {!accessReason && 'No tienes permisos para acceder a este contenido.'}
             </p>
-            <Button onClick={() => window.location.href = '/membresias'}>
+            <Button onClick={() => (window.location.href = '/membresias')}>
               Ver Planes de Suscripción
             </Button>
           </div>
@@ -224,9 +230,7 @@ const ContentPlayer = ({ contentId, showModuleContent = false, className = '' })
                 {content.content_type === 'audio' && <Headphones className="h-5 w-5 mr-2" />}
                 {content.title}
               </CardTitle>
-              {content.description && (
-                <CardDescription>{content.description}</CardDescription>
-              )}
+              {content.description && <CardDescription>{content.description}</CardDescription>}
             </div>
             <div className="flex items-center space-x-2">
               {getAccessStatusBadge()}
@@ -252,8 +256,10 @@ const ContentPlayer = ({ contentId, showModuleContent = false, className = '' })
                 onEnded={handleVideoEnd}
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}
+                controlsList="nodownload"
+                onContextMenu={(e) => e.preventDefault()}
               />
-              
+
               {/* Controles personalizados */}
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
                 <div className="flex items-center space-x-4 text-white">
@@ -265,18 +271,18 @@ const ContentPlayer = ({ contentId, showModuleContent = false, className = '' })
                   >
                     {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
                   </Button>
-                  
+
                   <div className="flex-1 flex items-center space-x-2 text-sm">
                     <span>{formatTime(currentTime)}</span>
                     <div className="flex-1 bg-white/30 rounded-full h-1">
-                      <div 
+                      <div
                         className="bg-white rounded-full h-1 transition-all duration-300"
                         style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
                       />
                     </div>
                     <span>{formatTime(duration)}</span>
                   </div>
-                  
+
                   <Button
                     onClick={toggleMute}
                     size="sm"
@@ -285,7 +291,7 @@ const ContentPlayer = ({ contentId, showModuleContent = false, className = '' })
                   >
                     {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
                   </Button>
-                  
+
                   <input
                     type="range"
                     min="0"
@@ -307,7 +313,7 @@ const ContentPlayer = ({ contentId, showModuleContent = false, className = '' })
               <h3 className="text-lg font-semibold mb-2">{content.title}</h3>
               <p className="text-gray-600 mb-4">{content.description}</p>
               <Button asChild>
-                <a href={downloadURL} download target="_blank">
+                <a href={downloadURL} download target="_blank" rel="noreferrer">
                   <Download className="h-4 w-4 mr-2" />
                   Descargar {content.content_type.toUpperCase()}
                 </a>
@@ -325,7 +331,7 @@ const ContentPlayer = ({ contentId, showModuleContent = false, className = '' })
                 </span>
               </div>
               <div className="w-full bg-gray-200 rounded-full h-2">
-                <div 
+                <div
                   className="bg-blue-500 h-2 rounded-full transition-all duration-300"
                   style={{ width: `${userProgress.progress_percentage || 0}%` }}
                 />

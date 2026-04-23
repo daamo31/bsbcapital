@@ -309,10 +309,7 @@ const Academia = () => {
         </motion.section>
 
         {/* Method Section - El Método BSB */}
-        <motion.section
-          variants={itemVariants}
-          className="py-20 md:py-32 bg-gradient-to-b from-white via-brand-green-50 to-white"
-        >
+        <motion.section variants={itemVariants} className="py-20 md:py-32 bg-white">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-5xl mx-auto">
               {/* Main Title */}
@@ -429,7 +426,7 @@ const Academia = () => {
                   <span className="text-brand-green-700">BSB Academy</span>.
                 </p>
 
-                <p className="text-lg text-gray-700 leading-relaxed text-center max-w-3xl mx-auto">
+                <p className="text-lg md:text-xl text-gray-800 font-bold leading-relaxed text-center max-w-4xl mx-auto mb-8">
                   Cada módulo significa un paso más para invertir en crypto de forma segura y
                   rentable. A medida que avances, irás desbloqueando nuevas formaciones diseñadas
                   para seguir elevando tu nivel como inversor: desde análisis avanzado de proyectos
@@ -437,15 +434,13 @@ const Academia = () => {
                   emergentes y herramientas DeFi cada vez más sofisticadas.
                 </p>
 
-                <div className="bg-gradient-to-r from-brand-green-100 to-brand-gold-100 rounded-lg p-8 md:p-10 border border-brand-green-300 my-8">
-                  <p className="text-center text-xl md:text-2xl font-bold text-brand-green-900 leading-tight">
-                    La BSB Academy no es un curso más:
-                    <br />
-                    <span className="text-brand-green-700">
-                      es un recorrido formativo vivo, que crece contigo y con el mercado.
-                    </span>
-                  </p>
-                </div>
+                <p className="text-center text-xl md:text-3xl font-bold text-brand-green-800 leading-tight mb-12">
+                  La BSB Academy no es un curso más:
+                  <br />
+                  <span className="text-brand-green-700">
+                    es un recorrido formativo vivo, que crece contigo y con el mercado.
+                  </span>
+                </p>
 
                 <div className="text-center space-y-4">
                   <p className="text-xl md:text-2xl font-bold text-gray-800">
@@ -465,7 +460,16 @@ const Academia = () => {
         <motion.section variants={itemVariants} className="py-16 md:py-24 bg-background">
           <div className="container mx-auto px-4 sm:px-6">
             <div className="max-w-4xl mx-auto mb-8 md:mb-16 rounded-xl overflow-hidden shadow-2xl">
-              <video ref={videoRef} controls muted playsInline loop className="w-full h-auto">
+              <video
+                ref={videoRef}
+                controls
+                muted
+                playsInline
+                loop
+                className="w-full h-auto"
+                controlsList="nodownload"
+                onContextMenu={(e) => e.preventDefault()}
+              >
                 <source src="/videos/video1.mp4" type="video/mp4" />
                 Tu navegador no soporta el elemento de video.
               </video>

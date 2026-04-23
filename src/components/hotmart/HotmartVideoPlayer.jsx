@@ -1,19 +1,25 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/data-display/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/data-display/badge';
 import { useUserAccess } from '@/hooks/useUserAccess';
-import { 
-  Play, 
-  Pause, 
-  Volume2, 
-  VolumeX, 
-  Maximize, 
+import {
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Maximize,
   Settings,
   Download,
   BookOpen,
   FileText,
-  Headphones
+  Headphones,
 } from 'lucide-react';
 
 const HotmartVideoPlayer = ({ contentId, title, description }) => {
@@ -96,7 +102,7 @@ const HotmartVideoPlayer = ({ contentId, title, description }) => {
           <p className="text-red-600 mb-4">
             {error ? 'Error verificando acceso' : 'Requiere suscripción activa'}
           </p>
-          <Button onClick={() => window.location.href = '/membresias'}>
+          <Button onClick={() => (window.location.href = '/membresias')}>
             Ver Planes de Suscripción
           </Button>
         </CardContent>
@@ -123,58 +129,56 @@ const HotmartVideoPlayer = ({ contentId, title, description }) => {
                 onLoadedMetadata={handleLoadedMetadata}
                 onPlay={() => setIsPlaying(true)}
                 onPause={() => setIsPlaying(false)}
+                controlsList="nodownload"
+                onContextMenu={(e) => e.preventDefault()}
               />
-              
+
               {/* Controles personalizados */}
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
                 {/* Barra de progreso */}
-                <div 
+                <div
                   className="w-full h-2 bg-white/30 rounded-full mb-4 cursor-pointer"
                   onClick={handleSeek}
                 >
-                  <div 
+                  <div
                     className="h-full bg-blue-500 rounded-full transition-all"
                     style={{ width: `${(currentTime / duration) * 100}%` }}
                   />
                 </div>
-                
+
                 {/* Controles */}
                 <div className="flex items-center justify-between text-white">
                   <div className="flex items-center space-x-4">
-                    <Button 
-                      variant="ghost" 
+                    <Button
+                      variant="ghost"
                       size="sm"
                       onClick={togglePlay}
                       className="text-white hover:bg-white/20"
                     >
                       {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
                     </Button>
-                    
-                    <Button 
-                      variant="ghost" 
+
+                    <Button
+                      variant="ghost"
                       size="sm"
                       onClick={toggleMute}
                       className="text-white hover:bg-white/20"
                     >
                       {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
                     </Button>
-                    
+
                     <span className="text-sm">
                       {formatTime(currentTime)} / {formatTime(duration)}
                     </span>
                   </div>
-                  
+
                   <div className="flex items-center space-x-2">
-                    <Button 
-                      variant="ghost" 
-                      size="sm"
-                      className="text-white hover:bg-white/20"
-                    >
+                    <Button variant="ghost" size="sm" className="text-white hover:bg-white/20">
                       <Settings className="h-5 w-5" />
                     </Button>
-                    
-                    <Button 
-                      variant="ghost" 
+
+                    <Button
+                      variant="ghost"
                       size="sm"
                       onClick={() => videoRef.current?.requestFullscreen()}
                       className="text-white hover:bg-white/20"
@@ -212,8 +216,8 @@ const HotmartVideoPlayer = ({ contentId, title, description }) => {
                 <div
                   key={video.id}
                   className={`p-3 rounded-lg cursor-pointer transition-colors ${
-                    index === selectedVideo 
-                      ? 'bg-blue-100 border-blue-300 border' 
+                    index === selectedVideo
+                      ? 'bg-blue-100 border-blue-300 border'
                       : 'bg-gray-50 hover:bg-gray-100'
                   }`}
                   onClick={() => setSelectedVideo(index)}
@@ -223,9 +227,7 @@ const HotmartVideoPlayer = ({ contentId, title, description }) => {
                       <p className="font-medium">{video.title}</p>
                       <p className="text-sm text-gray-600">{video.duration}</p>
                     </div>
-                    {index === selectedVideo && (
-                      <Badge variant="default">Reproduciendo</Badge>
-                    )}
+                    {index === selectedVideo && <Badge variant="default">Reproduciendo</Badge>}
                   </div>
                 </div>
               ))}
@@ -255,7 +257,7 @@ const HotmartVideoPlayer = ({ contentId, title, description }) => {
                   </Button>
                 </div>
               ))}
-              
+
               {/* Audios */}
               {contentData.audios?.map((audio, index) => (
                 <div key={index} className="flex items-center p-3 bg-gray-50 rounded-lg">

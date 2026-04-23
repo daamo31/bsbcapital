@@ -1017,6 +1017,8 @@ const Consultoria = () => {
                   muted
                   playsInline
                   className="w-full h-full object-cover"
+                  controlsList="nodownload"
+                  onContextMenu={(e) => e.preventDefault()}
                 >
                   <source src="/videos/video2.mp4" type="video/mp4" />
                   Tu navegador no soporta el elemento de vídeo.

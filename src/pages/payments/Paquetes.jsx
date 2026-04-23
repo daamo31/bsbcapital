@@ -621,7 +621,7 @@ const Paquetes = () => {
         {/* Sección 1.5: Imagen Onboarding - Full Width */}
         <div className="w-full my-12">
           <motion.img
-            src="/onboarding.jpeg"
+            src="/images/onboarding.jpeg"
             alt="Onboarding Cripto"
             className="w-full h-auto object-cover rounded-lg shadow-xl"
             initial={{ opacity: 0, scale: 0.95 }}
