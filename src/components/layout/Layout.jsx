@@ -73,11 +73,12 @@ const Footer = () => {
           <div className="lg:col-span-1">
             <Link to="/" className="flex items-center gap-3">
               <img
-                alt="Logotipo de BSB Capital"
+                alt="Logotipo de BSB Capital - Inteligencia financiera en criptoactivos"
                 className="h-13 w-auto"
                 src="/images/white_logo-Photoroom.png"
                 width="1081"
                 height="1080"
+                loading="lazy"
               />
               <span className="font-bold text-xl text-white">BSB Capital</span>
             </Link>
@@ -250,11 +251,12 @@ const Header = () => {
       <div className="container mx-auto px-4 sm:px-6 h-16 sm:h-20 flex justify-between items-center">
         <Link to="/" className="flex items-center gap-3" onClick={closeMenu}>
           <img
-            alt="Logotipo de BSB Capital"
+            alt="Logotipo de BSB Capital - Consultoría y soluciones en criptoactivos"
             className="h-13 w-auto"
             src="/images/black_logo-Photoroom.png"
             width="1081"
             height="1080"
+            loading="lazy"
           />
         </Link>
         <nav className="hidden xl:flex items-center gap-5">

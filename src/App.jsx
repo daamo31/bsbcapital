@@ -82,6 +82,10 @@ const HotmartProfessionalIntegration = lazy(
 const EjemploUsoHotmart = lazy(() => import('@/pages/examples/EjemploUsoHotmart'));
 const AcademiaTestPage = lazy(() => import('@/pages/testing/AcademiaTestPage'));
 
+// Error & Success Pages
+const NotFound = lazy(() => import('@/pages/NotFound'));
+const ThanksPage = lazy(() => import('@/pages/ThanksPage'));
+
 // Loading Component
 const PageLoader = () => (
   <div className="flex items-center justify-center min-h-[60vh]">
@@ -282,6 +286,12 @@ function App() {
                 path="/otros-servicios"
                 element={<Navigate to="/servicios-adicionales-cripto" replace />}
               />
+
+              {/* Success/Thanks Page - for various conversion events */}
+              <Route path="/gracias" element={<ThanksPage />} />
+
+              {/* 404 - Catch all - MUST BE LAST */}
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>
         </AnimatePresence>
