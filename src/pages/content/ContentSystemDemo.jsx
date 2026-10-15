@@ -1,18 +1,17 @@
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/data-display/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/data-display/card';
 import { Badge } from '@/components/ui/data-display/badge';
 import { Button } from '@/components/ui/button';
 import ContentPlayer from '@/components/content/ContentPlayer';
 import ModuleViewer from '@/components/content/ModuleViewer';
 import { useAuth } from '@/contexts/SupabaseAuthContext';
-import { 
-  Database, 
-  Shield, 
-  Video, 
-  CheckCircle,
-  Users,
-  BookOpen
-} from 'lucide-react';
+import { Database, Shield, Video, CheckCircle, Users, BookOpen } from 'lucide-react';
 
 const ContentSystemDemo = () => {
   const { user } = useAuth();
@@ -21,23 +20,23 @@ const ContentSystemDemo = () => {
     {
       icon: <Database className="h-6 w-6 text-blue-500" />,
       title: 'Supabase como Control',
-      description: 'Permisos y autenticación gestionados completamente en Supabase'
+      description: 'Permisos y autenticación gestionados completamente en Supabase',
     },
     {
       icon: <Video className="h-6 w-6 text-purple-500" />,
-      title: 'Hotmart como CDN',
-      description: 'Videos y archivos almacenados en Hotmart, solo para distribución'
+      title: 'Contenido desde Supabase',
+      description: 'Vídeos y archivos servidos desde las URL configuradas en Supabase',
     },
     {
       icon: <Shield className="h-6 w-6 text-green-500" />,
       title: 'Control Total',
-      description: 'Gestión completa de usuarios y accesos desde tu base de datos'
+      description: 'Gestión completa de usuarios y accesos desde tu base de datos',
     },
     {
       icon: <CheckCircle className="h-6 w-6 text-orange-500" />,
       title: 'Progreso Trackeable',
-      description: 'Seguimiento detallado del progreso de cada usuario'
-    }
+      description: 'Seguimiento detallado del progreso de cada usuario',
+    },
   ];
 
   const sampleContent = [
@@ -45,20 +44,20 @@ const ContentSystemDemo = () => {
       contentId: 'free_intro',
       title: 'Contenido Gratuito',
       description: 'Este video es accesible para todos los usuarios',
-      type: 'free'
+      type: 'free',
     },
     {
       contentId: 'video_1_1',
       title: 'Contenido Básico',
       description: 'Requiere suscripción básica o superior',
-      type: 'basic'
+      type: 'basic',
     },
     {
       contentId: 'video_2_1',
       title: 'Contenido Premium',
       description: 'Requiere suscripción premium o superior',
-      type: 'premium'
-    }
+      type: 'premium',
+    },
   ];
 
   return (
@@ -70,11 +69,10 @@ const ContentSystemDemo = () => {
             Sistema de Contenido con Supabase
           </Badge>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Permisos con Supabase, Contenido desde Hotmart
+            Permisos y contenidos con Supabase
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Sistema híbrido donde Supabase controla completamente los permisos y accesos, 
-            mientras Hotmart actúa solo como CDN para distribuir el contenido.
+            Supabase controla los permisos, metadatos, progreso y URL de cada recurso.
           </p>
         </div>
 
@@ -101,7 +99,7 @@ const ContentSystemDemo = () => {
                   <p className="font-medium">No autenticado</p>
                   <p className="text-sm text-gray-600">Solo verás contenido gratuito</p>
                 </div>
-                <Button onClick={() => window.location.href = '/auth/login'}>
+                <Button onClick={() => (window.location.href = '/auth/login')}>
                   Iniciar Sesión
                 </Button>
               </div>
@@ -112,11 +110,12 @@ const ContentSystemDemo = () => {
         {/* Features */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {features.map((feature, index) => (
-            <Card key={index} className="text-center border-2 hover:border-green-200 transition-colors">
+            <Card
+              key={index}
+              className="text-center border-2 hover:border-green-200 transition-colors"
+            >
               <CardContent className="pt-6">
-                <div className="flex justify-center mb-4">
-                  {feature.icon}
-                </div>
+                <div className="flex justify-center mb-4">{feature.icon}</div>
                 <h3 className="font-semibold text-lg mb-2">{feature.title}</h3>
                 <p className="text-gray-600 text-sm">{feature.description}</p>
               </CardContent>
@@ -126,29 +125,33 @@ const ContentSystemDemo = () => {
 
         {/* Ejemplos de Contenido Individual */}
         <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">
-            Ejemplos de Control de Acceso
-          </h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Ejemplos de Control de Acceso</h2>
           <p className="text-gray-600 mb-8">
             Cada elemento se verifica individualmente según la suscripción del usuario en Supabase.
           </p>
-          
+
           <div className="space-y-8">
             {sampleContent.map((content) => (
               <div key={content.contentId}>
                 <div className="mb-4">
                   <div className="flex items-center space-x-3">
                     <h3 className="text-lg font-semibold">{content.title}</h3>
-                    <Badge 
-                      variant={content.type === 'free' ? 'success' : content.type === 'basic' ? 'default' : 'destructive'}
+                    <Badge
+                      variant={
+                        content.type === 'free'
+                          ? 'success'
+                          : content.type === 'basic'
+                            ? 'default'
+                            : 'destructive'
+                      }
                     >
                       {content.type}
                     </Badge>
                   </div>
                   <p className="text-gray-600 text-sm">{content.description}</p>
                 </div>
-                
-                <ContentPlayer 
+
+                <ContentPlayer
                   contentId={content.contentId}
                   className="border-l-4 border-l-green-500"
                 />
@@ -159,13 +162,11 @@ const ContentSystemDemo = () => {
 
         {/* Ejemplo de Módulo Completo */}
         <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">
-            Ejemplo de Módulo Completo
-          </h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Ejemplo de Módulo Completo</h2>
           <p className="text-gray-600 mb-8">
             Vista completa de un módulo con múltiples elementos y diferentes niveles de acceso.
           </p>
-          
+
           <ModuleViewer moduleId="module_1" />
         </div>
 
@@ -177,7 +178,7 @@ const ContentSystemDemo = () => {
               ¿Cómo funciona el nuevo sistema?
             </CardTitle>
             <CardDescription className="text-blue-700">
-              Flujo técnico del sistema híbrido Supabase + Hotmart
+              Flujo técnico del sistema de contenidos de Supabase
             </CardDescription>
           </CardHeader>
           <CardContent className="text-blue-800">
@@ -185,20 +186,18 @@ const ContentSystemDemo = () => {
               <div>
                 <h4 className="font-semibold mb-3">Control de Permisos (Supabase)</h4>
                 <ul className="space-y-2 text-sm">
-                  <li>• <strong>Autenticación:</strong> Usuarios gestionados en Supabase Auth</li>
-                  <li>• <strong>Suscripciones:</strong> Verificación en tabla `user_subscriptions`</li>
-                  <li>• <strong>Contenido:</strong> Metadatos en tabla `course_content`</li>
-                  <li>• <strong>Progreso:</strong> Tracking en tabla `user_progress`</li>
-                </ul>
-              </div>
-              
-              <div>
-                <h4 className="font-semibold mb-3">Distribución de Contenido (Hotmart)</h4>
-                <ul className="space-y-2 text-sm">
-                  <li>• <strong>Solo CDN:</strong> Hotmart almacena y sirve archivos</li>
-                  <li>• <strong>Sin autenticación:</strong> No verificamos con API Hotmart</li>
-                  <li>• <strong>URLs directas:</strong> Obtenemos links de streaming</li>
-                  <li>• <strong>Sin dependencias:</strong> Funciona aunque Hotmart falle</li>
+                  <li>
+                    • <strong>Autenticación:</strong> Usuarios gestionados en Supabase Auth
+                  </li>
+                  <li>
+                    • <strong>Suscripciones:</strong> Verificación en tabla `user_subscriptions`
+                  </li>
+                  <li>
+                    • <strong>Contenido:</strong> Metadatos en tabla `course_content`
+                  </li>
+                  <li>
+                    • <strong>Progreso:</strong> Tracking en tabla `user_progress`
+                  </li>
                 </ul>
               </div>
             </div>
@@ -208,11 +207,9 @@ const ContentSystemDemo = () => {
         {/* Ventajas del Sistema */}
         <Card className="bg-green-50 border-green-200">
           <CardHeader>
-            <CardTitle className="text-green-900">
-              Ventajas del Sistema Híbrido
-            </CardTitle>
+            <CardTitle className="text-green-900">Ventajas del Sistema Híbrido</CardTitle>
             <CardDescription className="text-green-700">
-              Beneficios de usar Supabase para permisos y Hotmart como CDN
+              Beneficios del sistema de contenidos de Supabase
             </CardDescription>
           </CardHeader>
           <CardContent className="text-green-800">
@@ -226,11 +223,11 @@ const ContentSystemDemo = () => {
                   <li>✅ Sin dependencias externas para auth</li>
                 </ul>
               </div>
-              
+
               <div>
                 <h4 className="font-semibold mb-3 text-green-600">Eficiencia de Contenido</h4>
                 <ul className="space-y-1 text-sm">
-                  <li>✅ CDN global de Hotmart</li>
+                  <li>✅ URLs directas de contenido gestionadas en Supabase</li>
                   <li>✅ Videos optimizados</li>
                   <li>✅ Sin costos de storage</li>
                   <li>✅ Escalabilidad automática</li>

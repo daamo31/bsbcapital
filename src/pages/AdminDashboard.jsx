@@ -378,10 +378,6 @@ const AdminDashboard = () => {
                       <Badge className="bg-green-100 text-green-800 text-xs">Funcionando</Badge>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span>Hotmart API</span>
-                      <Badge className="bg-yellow-100 text-yellow-800">Sincronizando</Badge>
-                    </div>
-                    <div className="flex justify-between items-center">
                       <span>Stripe</span>
                       <Badge className="bg-green-100 text-green-800">Operativo</Badge>
                     </div>
@@ -413,7 +409,7 @@ const AdminDashboard = () => {
             <Card>
               <CardHeader>
                 <CardTitle>Gestión de Contenido</CardTitle>
-                <CardDescription>Subir y gestionar contenido de Hotmart</CardDescription>
+                <CardDescription>Gestionar el contenido de la Academia</CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">Módulo de gestión de contenido en desarrollo...</p>

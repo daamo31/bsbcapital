@@ -60,6 +60,7 @@ const mockStripeEvents = {
         metadata: {
           user_id: 'user_uuid_456',
           plan_type: 'membership_monthly',
+          client_email: 'member@example.com',
         },
       },
     },

@@ -2,7 +2,6 @@
  * Stripe Products Configuration
  * Archivo centralizado con todos los Price IDs de Stripe
  *
- * Para testing usa el price_id "test" de consultorías: price_1SKG4NJmSk3VG9oi6CjvmqLC
  */
 
 // Consultorías
@@ -18,14 +17,6 @@ export const CONSULTATION_PRICES = {
     price: 300,
     price_id: 'price_1RtYFkJmSk3VG9oi8wUdMK5k',
     duration_minutes: 60,
-  },
-  test: {
-    name: 'Consultoría Test',
-    price: 1, // Precio mínimo para testing
-    price_id: 'price_1SKG4NJmSk3VG9oi6CjvmqLC',
-    product_id: 'prod_TGnf81ENbBkghj',
-    duration_minutes: 5,
-    is_test: true,
   },
 };
 
@@ -62,6 +53,7 @@ export const PACKAGE_PRICES = {
     stripe_price_id_annual: 'price_1SDKb2JmSk3VG9oiJr1unLZZ',
     stripe_product_id: 'prod_T9dspdTkGGM7Sy',
     mode: 'payment',
+    highlight: true,
   },
   gestion_tesoreria: {
     name: 'Gestión Tesorería Cripto para Empresas',
@@ -110,9 +102,6 @@ export const ACADEMY_PRICES = {
   },
 };
 
-// Price ID de test para usar en cualquier flujo
-export const TEST_PRICE_ID = 'price_1SKG4NJmSk3VG9oi6CjvmqLC';
-
 // Exportar todos los productos
 export const ALL_PRODUCTS = {
   consultations: CONSULTATION_PRICES,
@@ -121,12 +110,6 @@ export const ALL_PRODUCTS = {
   membership: MEMBERSHIP_PRICES,
   academy: ACADEMY_PRICES,
 };
-
-/**
- * Helper para obtener el Price ID de test
- * Útil para probar cualquier flujo de checkout sin pagar de verdad
- */
-export const getTestPriceId = () => TEST_PRICE_ID;
 
 /**
  * Valida que un price_id tenga el formato correcto de Stripe

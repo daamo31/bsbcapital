@@ -24,20 +24,11 @@ major_version = 17
 [studio]
 enabled = true
 
-[functions.hotmart-checkout]
-verify_jwt = false
-
-[functions.verify-access]
-verify_jwt = false
-
-[functions.hotmart-webhook]
-verify_jwt = false
-
 [functions.rate-limit]
 verify_jwt = false
 
 [functions.create-stripe-checkout]
-verify_jwt = false
+verify_jwt = true
 
 [functions.stripe-webhook]
 verify_jwt = false

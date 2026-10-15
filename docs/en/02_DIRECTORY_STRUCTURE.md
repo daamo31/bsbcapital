@@ -31,7 +31,6 @@ Reusable UI components organized by domain.
 - **`common/`**: General-purpose components used across multiple pages.
 - **`academy/`**: Components specific to the educational platform (video players, course lists).
 - **`consultations/`**: Forms and widgets for the consultancy service.
-- **`hotmart/`**: Integrations with Hotmart video player and content.
 
 ### `src/contexts/`
 
@@ -55,7 +54,6 @@ Libraries, service integrations, and configuration files.
 
 - **`supabaseClient.js`**: Supabase client initialization.
 - **`stripe.js`**: Stripe configuration.
-- **`hotmartService.js`**: API wrapper for Hotmart interactions.
 - **`emailService.js`**: Functions for sending emails via Resend.
 - **`consultationPDFService.js`**: Logic for generating PDF reports.
 
@@ -86,5 +84,5 @@ Translation files for i18n.
 
 ## Supabase (`supabase/`)
 
-- **`functions/`**: Deno-based Edge Functions for backend logic (e.g., `hotmart-webhook`, `send-email`).
+- **`functions/`**: Deno-based Edge Functions for backend logic (e.g., Stripe webhooks and email).
 - **`migrations/`**: SQL files for database schema changes.

@@ -31,7 +31,7 @@ Tracks user subscriptions and their status.
 
 Metadata for educational content (videos, courses).
 
-- **`hotmart_content_id`**: Link to Hotmart asset.
+- **`content_url`**: URL for the configured content asset.
 - **`required_plan_level`**: Minimum plan level required to access.
 
 #### `consultations`
@@ -59,18 +59,14 @@ Serverless functions written in TypeScript (Deno) for backend logic that require
 
 - **`create-stripe-checkout`**: Generates a Stripe Checkout session for payments.
 - **`stripe-webhook`**: Listens for Stripe events (payment success, subscription updates) to update the database.
-- **`create-subscription`**: Handles manual subscription creation logic if needed.
 - **`stripe-diagnostics`**: Tool for debugging Stripe configuration.
 
 ### Integrations
 
-- **`hotmart-webhook`**: Receives events from Hotmart (e.g., course purchase) to grant access.
-- **`get-hotmart-video`**: Securely fetches video URLs from Hotmart, ensuring the user has permission before returning the link.
 - **`resend-email-secure`**: Sends transactional emails via Resend (hiding the API key from the client).
 
 ### Access Control
 
-- **`verify-access`**: A utility function to check if a user has access to specific content (used by other functions).
 - **`rate-limit`**: Implements rate limiting for API endpoints to prevent abuse.
 
 ### Testing

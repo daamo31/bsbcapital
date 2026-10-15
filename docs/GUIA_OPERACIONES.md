@@ -15,7 +15,6 @@ Asegúrate de que estas variables estén en el panel de control de tu proveedor 
 - `VITE_SUPABASE_URL`: Endpoint de tu proyecto Supabase.
 - `VITE_SUPABASE_ANON_KEY`: Clave pública para el cliente web.
 - `VITE_STRIPE_PUBLISHABLE_KEY`: Clave de Stripe para el frontend.
-- `VITE_HOTMART_PRODUCT_ID`: ID del curso principal en Hotmart (e.g., `6308462`).
 
 ---
 
@@ -62,40 +61,14 @@ select net.http_post(
 
 Si necesitas dar acceso VIP sin pasar por Stripe:
 
-1.  Tabla: `user_academy_access`.
-2.  Añade una fila con el `user_id` del usuario y `status: 'active'`.
-3.  El hook `useUserAccess` le dará acceso instantáneo en el siguiente refresco de página.
-
----
-
-## 🐛 4. Guía Avanzada de Troubleshooting
-
-### Escenario: Un usuario dice que tiene acceso pero los videos no cargan
-
-**Diagnóstico**:
-
-1.  Verifica si el `user.id` existe en la tabla `user_subscriptions` con estado `active`.
-2.  Abre la consola del navegador del usuario (o pide captura) y busca errores de `HotmartService`.
-3.  **Solución**: Si el error es `403 Forbidden` desde Hotmart, es probable que el email del usuario en Supabase no coincida exactamente con el email usado en la compra de Hotmart.
-
-### Escenario: El formulario post-pago no se guarda
-
-**Diagnóstico**:
-
-1.  Verifica los logs de la consola: `supabase functions logs resend-email-secure`.
-2.  Busca el evento `admin_consultation_notification`. Si falla el envío de email, a veces la transacción de la DB se revierte.
-3.  **Comando de verificación**:
-
-```bash
-# Ver logs en tiempo real para detectar errores de sintaxis en el JSON enviado
-supabase functions logs resend-email-secure --follow
-```
+1.  Usa el flujo administrativo aprobado para actualizar la suscripción Stripe del usuario.
+2.  Verifica que la suscripción quede activa y asociada al `user_id` correcto.
+3.  El hook `useUserAccess` detectará la suscripción en el siguiente refresco.
 
 ---
 
 ## 🧪 5. Plan de Testing (Manual & Auto)
 
-- **Test de Salud**: Ejecuta `hotmartService.getDiagnosticInfo()` en la consola del navegador para verificar credenciales y modo de acceso.
 - **Test de Emails**: Usa `/test/email` para enviar ráfagas de prueba de todos los templates disponibles.
 - **Checklist de Checkout**:
   - [ ] ¿Redirige a Stripe?

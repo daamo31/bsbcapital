@@ -11,8 +11,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@/components/ui/navigation/tooltip";
-import HotmartIframePlayer from '@/components/hotmart/HotmartIframePlayer';
+} from '@/components/ui/navigation/tooltip';
 
 const AcademiaContent = () => {
   const { slug } = useParams();
@@ -50,24 +49,12 @@ const AcademiaContent = () => {
 
   const renderContent = () => {
     if (content.content_type === 'video') {
-      // Prioritize Hotmart Video
-      if (content.hotmart_video_id) {
+      if (!content.content_url) {
         return (
-          <div className="w-full">
-            <HotmartIframePlayer
-              contentId={content.content_id}
-              title={content.title}
-              description={content.description}
-              hotmartVideoId={content.hotmart_video_id}
-              customHeight="600px"
-            />
+          <div className="p-4 bg-yellow-100 text-yellow-800 rounded">
+            Este vídeo aún no tiene una URL configurada.
           </div>
         );
-      }
-
-      // Fallback to URL-based video (YouTube, Vimeo, etc.)
-      if (!content.content_url) {
-        return <div className="p-4 bg-yellow-100 text-yellow-800 rounded">Este video no tiene URL ni ID de Hotmart configurado.</div>;
       }
 
       let embedUrl = '';
@@ -85,7 +72,11 @@ const AcademiaContent = () => {
         }
       } catch (e) {
         console.error('Invalid video URL:', content.content_url);
-        return <div className="p-4 bg-red-100 text-red-700 rounded">Error: URL de video inválida ({content.content_url})</div>;
+        return (
+          <div className="p-4 bg-red-100 text-red-700 rounded">
+            Error: URL de video inválida ({content.content_url})
+          </div>
+        );
       }
 
       return (
@@ -113,9 +104,13 @@ const AcademiaContent = () => {
             src={embedUrl}
             className="w-full h-full"
             frameBorder="0"
+            title={content.title}
           ></iframe>
           {!content.is_downloadable && (
-            <div className="absolute inset-0 bg-transparent" title="La descarga está deshabilitada para este documento."></div>
+            <div
+              className="absolute inset-0 bg-transparent"
+              title="La descarga está deshabilitada para este documento."
+            ></div>
           )}
         </div>
       );
@@ -125,7 +120,11 @@ const AcademiaContent = () => {
   };
 
   if (loading) {
-    return <div className="flex justify-center items-center h-screen"><Loader2 className="h-16 w-16 animate-spin text-primary" /></div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader2 className="h-16 w-16 animate-spin text-primary" />
+      </div>
+    );
   }
 
   if (error) {
@@ -145,14 +144,14 @@ const AcademiaContent = () => {
       >
         <div className="max-w-4xl mx-auto">
           <Button asChild variant="ghost" className="mb-4">
-            <Link to="/academia"><ArrowLeft className="mr-2 h-4 w-4" /> Volver al catálogo</Link>
+            <Link to="/academia">
+              <ArrowLeft className="mr-2 h-4 w-4" /> Volver al catálogo
+            </Link>
           </Button>
           <h1 className="text-4xl font-bold mb-4">{content.title}</h1>
           <p className="text-lg text-muted-foreground mb-8">{content.description}</p>
 
-          <div className="mb-8">
-            {renderContent()}
-          </div>
+          <div className="mb-8">{renderContent()}</div>
 
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             {content.is_downloadable ? (
@@ -175,7 +174,10 @@ const AcademiaContent = () => {
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p className="max-w-xs">El bloqueo de descarga es de mejores esfuerzos. No garantizamos impedir capturas de pantalla o descargas avanzadas.</p>
+                        <p className="max-w-xs">
+                          El bloqueo de descarga es de mejores esfuerzos. No garantizamos impedir
+                          capturas de pantalla o descargas avanzadas.
+                        </p>
                       </TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
@@ -185,7 +187,15 @@ const AcademiaContent = () => {
           </div>
 
           <div className="mt-12 border-t pt-6 text-center text-sm text-muted-foreground">
-            <p><strong>Disclaimer Financiero:</strong> La información tiene carácter informativo y educativo. No constituye garantía de resultados. Las decisiones de inversión corresponden exclusivamente al cliente. <Link to="/legal/condiciones-generales" className="underline hover:text-primary">Ver Condiciones y Disclaimer</Link>.</p>
+            <p>
+              <strong>Disclaimer Financiero:</strong> La información tiene carácter informativo y
+              educativo. No constituye garantía de resultados. Las decisiones de inversión
+              corresponden exclusivamente al cliente.{' '}
+              <Link to="/legal/condiciones-generales" className="underline hover:text-primary">
+                Ver Condiciones y Disclaimer
+              </Link>
+              .
+            </p>
           </div>
         </div>
       </motion.div>

@@ -94,11 +94,13 @@ const AcademiaCatalog = () => {
         setHasAccess(false);
         return;
       }
-      const { data, error } = await supabase
-        .from('user_academy_access')
-        .select('*')
+      const { data } = await supabase
+        .from('user_subscriptions')
+        .select('id')
         .eq('user_id', user.id)
         .eq('status', 'active')
+        .or('expired_at.is.null,expired_at.gt.now()')
+        .limit(1)
         .maybeSingle();
 
       // Admins should always have access

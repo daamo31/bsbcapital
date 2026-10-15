@@ -5,7 +5,65 @@ const STRIPE_SECRET_KEY = Deno.env.get('STRIPE_SECRET_KEY');
 const STRIPE_API = 'https://api.stripe.com/v1';
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY');
 const SITE_URL = Deno.env.get('SITE_URL');
+const PRICE_CATALOG: Record<string, { mode: string; purchaseType: string; accessType: string }> = {
+  price_1RtYGsJmSk3VG9oicAWmQ4sN: {
+    mode: 'payment',
+    purchaseType: 'consultation',
+    accessType: 'one_time',
+  },
+  price_1RtYFkJmSk3VG9oi8wUdMK5k: {
+    mode: 'payment',
+    purchaseType: 'consultation',
+    accessType: 'one_time',
+  },
+  price_1SHoSzJmSk3VG9oiEF2xRHNp: {
+    mode: 'payment',
+    purchaseType: 'consultation',
+    accessType: 'one_time',
+  },
+  price_1SHoU8JmSk3VG9oiiMmypJRJ: {
+    mode: 'payment',
+    purchaseType: 'consultation',
+    accessType: 'one_time',
+  },
+  price_1SSshWJmSk3VG9oiU1cBNWgf: {
+    mode: 'payment',
+    purchaseType: 'package',
+    accessType: 'package',
+  },
+  price_1SDKb2JmSk3VG9oiJr1unLZZ: {
+    mode: 'payment',
+    purchaseType: 'package',
+    accessType: 'package',
+  },
+  price_1SSsfoJmSk3VG9oi70AskCZv: {
+    mode: 'payment',
+    purchaseType: 'package',
+    accessType: 'package',
+  },
+  price_1SaXofJmSk3VG9oigjDZtcF6: {
+    mode: 'subscription',
+    purchaseType: 'membership_monthly',
+    accessType: 'membership',
+  },
+  price_1SaXpNJmSk3VG9oifsW4ajZ2: {
+    mode: 'payment',
+    purchaseType: 'membership_annual',
+    accessType: 'membership',
+  },
+  price_1SaXVjJmSk3VG9oix0Pu2N9J: {
+    mode: 'subscription',
+    purchaseType: 'membership_monthly',
+    accessType: 'membership',
+  },
+  price_1SDKgoJmSk3VG9oiamJj88De: {
+    mode: 'payment',
+    purchaseType: 'membership_annual',
+    accessType: 'membership',
+  },
+};
 
 Deno.serve({ port: 8000 }, async (req) => {
   if (req.method === 'OPTIONS') {
@@ -13,51 +71,54 @@ Deno.serve({ port: 8000 }, async (req) => {
   }
 
   try {
+    if (req.method !== 'POST') {
+      return new Response(JSON.stringify({ error: 'Method not allowed' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 405,
+      });
+    }
+
     console.log('🚀 === INICIO CREATE-STRIPE-CHECKOUT ===');
     console.log('🔍 Método:', req.method);
     console.log('🔍 URL:', req.url);
 
     // Inicializar Supabase client para obtener usuario autenticado
     console.log('📡 Inicializando cliente Supabase...');
-    const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
-
-    // Obtener token de autenticación del header
-    console.log('🔐 Obteniendo token de autenticación...');
     const authHeader = req.headers.get('Authorization');
-    console.log('🔐 Authorization header presente:', !!authHeader);
-
-    let authenticatedUser = null;
-
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      console.log('🔐 Procesando token Bearer...');
-      const token = authHeader.substring(7);
-      try {
-        console.log('🔐 Validando token con Supabase...');
-        const {
-          data: { user },
-          error,
-        } = await supabase.auth.getUser(token);
-        if (!error && user) {
-          authenticatedUser = user;
-          console.log('✅ Usuario autenticado obtenido:', { id: user.id, email: user.email });
-        } else {
-          console.log('⚠️ Error o usuario no encontrado:', error);
-        }
-      } catch (error) {
-        console.log('❌ Excepción obteniendo usuario del token:', error);
-      }
-    } else {
-      console.log('⚠️ No hay Authorization header o no es Bearer');
+    if (!authHeader?.startsWith('Bearer ') || !SUPABASE_ANON_KEY) {
+      return new Response(JSON.stringify({ error: 'Authentication required' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 401,
+      });
     }
+
+    const authClient = createClient(SUPABASE_URL!, SUPABASE_ANON_KEY, {
+      global: { headers: { Authorization: authHeader } },
+    });
+    const {
+      data: { user: authenticatedUser },
+      error: authError,
+    } = await authClient.auth.getUser();
+    if (authError || !authenticatedUser?.id || !authenticatedUser.email) {
+      return new Response(JSON.stringify({ error: 'Authentication required' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 401,
+      });
+    }
+
+    if (!STRIPE_SECRET_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+      console.error('Stripe checkout is missing required server configuration');
+      return new Response(JSON.stringify({ error: 'Server misconfiguration' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 500,
+      });
+    }
+
+    const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!);
 
     // Parse body safely once (supports JSON, double-encoded JSON, and form-encoded)
     console.log('📝 Parseando cuerpo de la request...');
     const rawBody = await req.text();
-    console.log('📝 Raw body length:', rawBody.length);
-    console.log(
-      '📝 Raw body preview:',
-      rawBody.substring(0, 200) + (rawBody.length > 200 ? '...' : '')
-    );
 
     const contentType = req.headers.get('content-type') || '';
     console.log('📝 Content-Type:', contentType);
@@ -94,30 +155,13 @@ Deno.serve({ port: 8000 }, async (req) => {
       console.log('⚠️ Body vacío');
     }
 
-    // Also accept query params as a last resort
-    const url = new URL(req.url);
-    const queryParams = Object.fromEntries(url.searchParams.entries());
-    if (Object.keys(queryParams).length > 0) {
-      requestBody = { ...queryParams, ...requestBody };
-      if (typeof requestBody.metadata === 'string') {
-        try {
-          requestBody.metadata = JSON.parse(requestBody.metadata);
-        } catch (_) {
-          /* ignore */
-        }
-      }
-    }
-
     // Normalize/alias common field names coming from different callers
     const metadata = (requestBody?.metadata as Record<string, unknown> | undefined) ?? {};
     const priceId = (requestBody?.priceId || requestBody?.price_id || requestBody?.price) as
       | string
       | undefined;
-    const mode = (requestBody?.mode as string | undefined) ?? 'subscription';
+    const requestedMode = (requestBody?.mode as string | undefined) ?? 'subscription';
     const userId = (requestBody?.userId || requestBody?.user_id) as string | undefined;
-    const email = (requestBody?.email ||
-      (metadata as any)?.email ||
-      (metadata as any)?.client_email) as string | undefined;
 
     console.log('🔍 Field extraction debug:', {
       'requestBody.priceId': requestBody?.priceId,
@@ -127,105 +171,35 @@ Deno.serve({ port: 8000 }, async (req) => {
       'requestBody keys': Object.keys(requestBody || {}),
     });
 
-    // ✅ RESOLVER AUTOMÁTICAMENTE DESDE USUARIO AUTENTICADO
-    const resolvedUserId =
-      userId ||
-      (metadata as any).user_id ||
-      (metadata as any).supabase_user_id ||
-      authenticatedUser?.id;
-    const resolvedEmail = email || (metadata as any).client_email || authenticatedUser?.email;
+    if (
+      (userId && userId !== authenticatedUser.id) ||
+      ((metadata as any).user_id && (metadata as any).user_id !== authenticatedUser.id) ||
+      ((metadata as any).supabase_user_id &&
+        (metadata as any).supabase_user_id !== authenticatedUser.id)
+    ) {
+      return new Response(JSON.stringify({ error: 'User identity mismatch' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 403,
+      });
+    }
+
+    const resolvedUserId = authenticatedUser.id;
+    const resolvedEmail = authenticatedUser.email;
+    const clientEmail = authenticatedUser.email;
 
     console.log('🔍 Valores resueltos:', {
-      authenticatedUser: authenticatedUser
-        ? { id: authenticatedUser.id, email: authenticatedUser.email }
-        : null,
+      authenticatedUserId: authenticatedUser.id,
       originalUserId: userId,
       resolvedUserId,
-      originalEmail: email,
-      resolvedEmail,
-      metadata,
-      requestHeaders: Object.fromEntries(req.headers.entries()),
-      requestBody: JSON.stringify(requestBody),
-    });
-
-    // Debug específico para client_name
-    console.log('🔍 CLIENT_NAME DEBUG:', {
-      'metadata.client_name': (metadata as any).client_name,
-      'metadata type': typeof (metadata as any).client_name,
-      'metadata keys': Object.keys(metadata),
-      'full metadata': metadata,
     });
 
     console.log('create-stripe-checkout request received', {
       priceId,
-      mode,
-      userId,
-      email,
+      mode: requestedMode,
       contentType,
       rawLength: rawBody?.length || 0,
     });
-    console.log('Payload recibido en create-stripe-checkout:', requestBody);
-
-    // ✅ VALIDAR PRICEID PARA SUSCRIPCIONES
-    if (mode === 'subscription') {
-      console.log('🔍 Validando priceId para suscripción:', priceId);
-
-      // Verificar que el priceId existe en Stripe y es recurrente
-      const priceRes = await fetch(`https://api.stripe.com/v1/prices/${priceId}`, {
-        headers: { Authorization: `Bearer ${STRIPE_SECRET_KEY}` },
-      });
-      const priceData = await priceRes.json();
-
-      if (!priceRes.ok) {
-        console.error('❌ Error obteniendo precio de Stripe:', priceData);
-        return new Response(JSON.stringify({ error: 'Invalid priceId' }), {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          status: 400,
-        });
-      }
-
-      console.log('💰 Datos del precio:', {
-        id: priceData.id,
-        type: priceData.type,
-        recurring: priceData.recurring,
-        unit_amount: priceData.unit_amount,
-        currency: priceData.currency,
-      });
-
-      if (priceData.type !== 'recurring') {
-        console.error('❌ El priceId no es recurrente:', priceData.type);
-        return new Response(
-          JSON.stringify({ error: 'PriceId must be recurring for subscriptions' }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
-        );
-      }
-    }
-
-    // Registrar información adicional para depuración
-    console.log('Método HTTP:', req.method);
-    console.log('Encabezados de la solicitud:', Object.fromEntries(req.headers));
-    console.log('Cuerpo completo recibido:', requestBody);
-
-    // Registrar valores desestructurados
-    console.log('Valores desestructurados:', { priceId, mode, userId, email });
-
-    // SITE_URL es opcional (tenemos fallback)
-    if (!STRIPE_SECRET_KEY || !SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-      console.error('Missing one of required env vars:', {
-        STRIPE_SECRET_KEY: !!STRIPE_SECRET_KEY,
-        SUPABASE_URL: !!SUPABASE_URL,
-        SUPABASE_SERVICE_ROLE_KEY: !!SUPABASE_SERVICE_ROLE_KEY,
-        SITE_URL: !!SITE_URL,
-      });
-      return new Response(
-        JSON.stringify({ error: 'Server misconfiguration: missing environment variables.' }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
-      );
-    }
-
     // Validar parámetros obligatorios y registrar valores
-    console.log('🧪 Validating parameters:', { priceId, resolvedUserId, resolvedEmail });
-
     if (!priceId) {
       console.error('❌ Missing priceId in request payload.', { priceId });
       return new Response(JSON.stringify({ error: 'priceId is required.' }), {
@@ -234,60 +208,39 @@ Deno.serve({ port: 8000 }, async (req) => {
       });
     }
 
-    if (!resolvedUserId) {
-      console.error('❌ Missing userId in request payload or metadata.', {
-        userId,
-        metadata,
-        authenticatedUser: authenticatedUser?.id,
-      });
-      return new Response(JSON.stringify({ error: 'userId is required.' }), {
+    const priceConfiguration = PRICE_CATALOG[priceId];
+    if (!priceConfiguration) {
+      return new Response(JSON.stringify({ error: 'Price is not available for checkout' }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 400,
       });
     }
 
-    if (!resolvedEmail) {
-      console.error('❌ Missing email in request payload or metadata.', {
-        email,
-        metadata,
-        authenticatedUser: authenticatedUser?.email,
-      });
-      return new Response(JSON.stringify({ error: 'email is required.' }), {
+    if (requestedMode !== priceConfiguration.mode) {
+      return new Response(JSON.stringify({ error: 'Invalid checkout mode' }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         status: 400,
       });
     }
+    const mode = priceConfiguration.mode;
 
     // Crear pre-reserva de consulta si es un checkout de consultoría (mode === 'payment' Y no es un plan)
     let consultationId: string | undefined;
 
     // 🎯 Usar purchase_type del metadata para determinar el tipo de compra
-    const purchaseType = (metadata as any)?.purchase_type || '';
-    const accessType = (metadata as any)?.access_type || '';
+    const purchaseType = priceConfiguration.purchaseType;
+    const accessType = priceConfiguration.accessType;
 
-    console.log('🔍 TIPO DE COMPRA:', {
-      purchaseType,
-      accessType,
-      mode,
-      metadata: metadata,
-    });
+    console.log('🔍 TIPO DE COMPRA:', { purchaseType, accessType, mode });
 
     // Clasificar el tipo de compra basándose en purchase_type
-    const isConsultationPurchase = Boolean(
-      purchaseType === 'consultation' ||
-      (metadata as any)?.consultation_type ||
-      (metadata as any)?.scheduled_at ||
-      (metadata as any)?.duration_minutes
-    );
+    const isConsultationPurchase = purchaseType === 'consultation';
 
-    const isPackagePurchase = Boolean(purchaseType === 'package' || accessType === 'package');
+    const isPackagePurchase = purchaseType === 'package';
 
-    const isMembershipAnnualPurchase = Boolean(purchaseType === 'membership_annual');
+    const isMembershipAnnualPurchase = purchaseType === 'membership_annual';
 
-    const isMembershipMonthlyPurchase = Boolean(
-      purchaseType === 'membership_monthly' ||
-      (mode === 'subscription' && accessType === 'membership')
-    );
+    const isMembershipMonthlyPurchase = Boolean(purchaseType === 'membership_monthly');
 
     console.log('🔍 CLASIFICACIÓN DE COMPRA:', {
       isConsultationPurchase,
@@ -333,7 +286,7 @@ Deno.serve({ port: 8000 }, async (req) => {
           Number((metadata as any).duration || (metadata as any).consultation_duration) || 30,
         status: 'scheduled',
         client_name: (metadata as any).client_name || null,
-        client_email: (metadata as any).client_email || resolvedEmail || null,
+        client_email: resolvedEmail,
         notes: (metadata as any).description || (metadata as any).notes || null,
         title: `Consulta: ${normalizedType}`, // Reflejar el tipo de consulta en el título
         stripe_session_id: null,
@@ -390,9 +343,10 @@ Deno.serve({ port: 8000 }, async (req) => {
 
     // Para pagos únicos, el precio debe ser one_time
     if (mode === 'payment' && priceInfo.type !== 'one_time') {
-      console.warn(
-        `⚠️ ADVERTENCIA: Para modo 'payment', se recomienda usar precio 'one_time', pero es '${priceInfo.type}'`
-      );
+      return new Response(JSON.stringify({ error: 'Price must be one-time for payment mode' }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        status: 400,
+      });
     }
 
     console.log(
@@ -400,7 +354,10 @@ Deno.serve({ port: 8000 }, async (req) => {
     );
 
     // Buscar o crear cliente Stripe
-    const searchParams = new URLSearchParams({ email: resolvedEmail, limit: '1' });
+    const searchParams = new URLSearchParams({
+      query: `metadata['supabase_user_id']:'${resolvedUserId}'`,
+      limit: '1',
+    });
     const customersRes = await fetch(`https://api.stripe.com/v1/customers?${searchParams}`, {
       headers: { Authorization: `Bearer ${STRIPE_SECRET_KEY}` },
     });
@@ -418,7 +375,7 @@ Deno.serve({ port: 8000 }, async (req) => {
         },
         body: new URLSearchParams({
           email: resolvedEmail,
-          ...(resolvedUserId ? { 'metadata[supabase_user_id]': resolvedUserId } : ({} as any)),
+          'metadata[supabase_user_id]': resolvedUserId,
         }),
       });
       const customer = await createRes.json();
@@ -495,45 +452,13 @@ Deno.serve({ port: 8000 }, async (req) => {
       params.set('metadata[supabase_user_id]', resolvedUserId);
     }
 
-    if (resolvedEmail) {
-      params.set('metadata[client_email]', resolvedEmail);
+    if (clientEmail) {
+      params.set('metadata[client_email]', clientEmail);
     }
 
     // ✅ USAR purchase_type y access_type del metadata si vienen del frontend
-    const purchaseTypeFromMetadata = (metadata as any)?.purchase_type;
-    const accessTypeFromMetadata = (metadata as any)?.access_type;
-
-    if (purchaseTypeFromMetadata) {
-      params.set('metadata[purchase_type]', purchaseTypeFromMetadata);
-      console.log('📋 Using purchase_type from frontend:', purchaseTypeFromMetadata);
-    } else {
-      // Fallback: detectar automáticamente
-      if (isPackagePurchase) {
-        params.set('metadata[purchase_type]', 'package');
-      } else if (isMembershipMonthlyPurchase) {
-        params.set('metadata[purchase_type]', 'membership_monthly');
-      } else if (isMembershipAnnualPurchase) {
-        params.set('metadata[purchase_type]', 'membership_annual');
-      } else if (isConsultationPurchase) {
-        params.set('metadata[purchase_type]', 'consultation');
-      }
-    }
-
-    if (accessTypeFromMetadata) {
-      params.set('metadata[access_type]', accessTypeFromMetadata);
-      console.log('📋 Using access_type from frontend:', accessTypeFromMetadata);
-    } else {
-      // Fallback: detectar automáticamente
-      if (isPackagePurchase) {
-        params.set('metadata[access_type]', 'package');
-      } else if (isMembershipAnnualPurchase || isMembershipMonthlyPurchase) {
-        params.set('metadata[access_type]', 'membership');
-      } else if (isConsultationPurchase) {
-        params.set('metadata[access_type]', 'one_time');
-      } else {
-        params.set('metadata[access_type]', mode === 'subscription' ? 'membership' : 'one_time');
-      }
-    }
+    params.set('metadata[purchase_type]', purchaseType);
+    params.set('metadata[access_type]', accessType);
 
     // Pasar metadatos importantes del plan
     if ((metadata as any)?.plan_id) {
@@ -580,8 +505,6 @@ Deno.serve({ port: 8000 }, async (req) => {
     }
 
     // Log adicional para verificar los parámetros enviados a Stripe
-    console.log('Enviando parámetros a Stripe para crear la sesión:', Object.fromEntries(params));
-
     console.log('Iniciando creación de sesión de Stripe...');
     const stripeStart = Date.now();
     const sessionRes = await fetch('https://api.stripe.com/v1/checkout/sessions', {
@@ -597,8 +520,6 @@ Deno.serve({ port: 8000 }, async (req) => {
     const session = await sessionRes.json();
 
     // Log adicional para verificar la respuesta de Stripe
-    console.log('Respuesta de Stripe al crear la sesión:', session);
-
     if (session?.error || !session?.id) {
       console.error('Stripe API returned error when creating checkout session', {
         status: sessionRes.status,

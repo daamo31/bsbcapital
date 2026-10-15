@@ -22,7 +22,7 @@ BSB Capital is a comprehensive financial services platform specializing in crypt
 
 - **Database & Auth**: Supabase (PostgreSQL, Auth, Realtime, Edge Functions)
 - **Payments**: Stripe
-- **Educational Content**: Hotmart API
+- **Educational Content**: Supabase `course_content` and configured content URLs
 - **Email**: Resend
 - **PDF Generation**: jsPDF
 
@@ -43,7 +43,7 @@ BSB Capital is a comprehensive financial services platform specializing in crypt
 ### 3. Services
 
 - **Consultancy**: Dynamic booking forms with pricing calculation and PDF summary generation.
-- **Academy**: Educational platform with video streaming (Hotmart integration) and progress tracking.
+- **Academy**: Educational platform with subscription-gated content and progress tracking.
 - **BSB Maker**: Investment strategy analysis tools.
 - **AlgoFund**: Information and integration with Darwinex for algorithmic trading.
 

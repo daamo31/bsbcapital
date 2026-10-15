@@ -8,7 +8,6 @@ This guide covers the steps to deploy the BSB Capital application to a productio
 2.  **Domain Name**: A configured domain (e.g., `bsbcapital.io`).
 3.  **Hosting Provider**: Vercel, Netlify, or similar for the frontend.
 4.  **Stripe Live Keys**: Production API keys from Stripe.
-5.  **Hotmart Production Credentials**: Live API credentials.
 
 ## Environment Variables
 
@@ -21,11 +20,6 @@ VITE_SUPABASE_ANON_KEY=your-public-anon-key
 
 # Stripe (Live)
 VITE_STRIPE_PUBLISHABLE_KEY=pk_live_...
-
-# Hotmart (Production)
-VITE_HOTMART_CLIENT_ID=your-client-id
-VITE_HOTMART_CLIENT_SECRET=your-client-secret
-VITE_HOTMART_PRODUCT_ID=your-product-id
 
 # Resend
 RESEND_API_KEY=re_...
@@ -65,4 +59,4 @@ VITE_APP_URL=https://bsbcapital.io
 1.  **Verify Domain**: Ensure the custom domain is propagating correctly.
 2.  **Test Auth**: Sign up a new user and verify the confirmation email is received.
 3.  **Test Payments**: Make a real payment (or use a 100% off coupon) to verify the Stripe webhook triggers the subscription update.
-4.  **Check Content**: Verify that Hotmart content loads correctly for authorized users.
+4.  **Check Content**: Verify that configured Supabase content loads only for authorized users.

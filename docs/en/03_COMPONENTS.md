@@ -50,7 +50,7 @@ These components define the overall structure of the application pages.
 
 Components used exclusively within the educational platform.
 
-- **Video Players**: Custom wrappers for Hotmart or native video playback.
+- **Video Players**: Protected content players for configured video URLs.
 - **Course Cards**: Display summaries of available courses.
 - **Progress Trackers**: Visual indicators of course completion.
 
@@ -61,13 +61,6 @@ Components for the consultancy booking flow.
 - **Booking Forms**: Multi-step forms for scheduling.
 - **Pricing Widgets**: Dynamic price calculators based on selected options.
 - **Calendar Integration**: Date and time pickers.
-
-### Hotmart (`src/components/hotmart/`)
-
-Specific integrations for Hotmart services.
-
-- **`HotmartVideoPlayer`**: Embeds the Hotmart player with proper authentication and configuration.
-- **Content Lists**: Fetches and displays content from the Hotmart API.
 
 ### Auth (`src/components/auth/`)
 

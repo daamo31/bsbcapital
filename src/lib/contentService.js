@@ -1,6 +1,5 @@
-// Servicio de contenido que usa Supabase para permisos y Hotmart solo como CDN
+// Servicio de contenido y permisos basado en Supabase.
 import { supabase } from '@/lib/customSupabaseClient';
-import hotmartService from '@/lib/hotmartService';
 
 class ContentService {
   constructor() {
@@ -25,10 +24,10 @@ class ContentService {
 
       // 2. Si es contenido gratuito, permitir acceso
       if (content.is_free) {
-        return { 
-          hasAccess: true, 
+        return {
+          hasAccess: true,
           content: content,
-          reason: 'free_content' 
+          reason: 'free_content',
         };
       }
 
@@ -60,24 +59,20 @@ class ContentService {
       );
 
       if (!hasRequiredLevel) {
-        return { 
-          hasAccess: false, 
+        return {
+          hasAccess: false,
           reason: 'insufficient_access_level',
           required: content.required_access_level,
-          current: user.access_level || user.membership_tier || 'basic'
+          current: user.access_level || user.membership_tier || 'basic',
         };
       }
 
-      // 6. Registrar acceso en user_access
-      await this.updateUserAccess(userId, contentId, content.module_id);
-
-      return { 
-        hasAccess: true, 
+      return {
+        hasAccess: true,
         content: content,
         user: user,
-        reason: 'access_granted' 
+        reason: 'access_granted',
       };
-
     } catch (error) {
       console.error('Error verificando acceso:', error);
       return { hasAccess: false, reason: 'system_error', error: error.message };
@@ -87,36 +82,17 @@ class ContentService {
   // Verificar nivel de acceso (usando access_level/membership_tier de users)
   checkAccessLevel(userLevel, requiredLevel) {
     const levels = {
-      'basic': 1,
-      'premium': 2,
-      'enterprise': 3,
-      'pro': 2,      // Alias para premium
-      'admin': 4     // Máximo nivel
+      basic: 1,
+      premium: 2,
+      enterprise: 3,
+      pro: 2, // Alias para premium
+      admin: 4, // Máximo nivel
     };
 
     const userLevelValue = levels[userLevel?.toLowerCase()] || 1;
     const requiredLevelValue = levels[requiredLevel?.toLowerCase()] || 1;
 
     return userLevelValue >= requiredLevelValue;
-  }
-
-  // Actualizar registro de acceso del usuario (usando user_access)
-  async updateUserAccess(userId, contentId, moduleId) {
-    try {
-      await supabase
-        .from('user_access')
-        .upsert({
-          user_id: userId,
-          content_id_ref: contentId,
-          module_id: moduleId,
-          has_access: true,
-          granted_at: new Date().toISOString()
-        }, {
-          onConflict: 'user_id,content_id_ref'
-        });
-    } catch (error) {
-      console.error('Error actualizando acceso:', error);
-    }
   }
 
   // Obtener contenido de un módulo completo (usando course_content)
@@ -143,7 +119,7 @@ class ContentService {
             return {
               ...item,
               hasAccess: access.hasAccess,
-              accessReason: access.reason
+              accessReason: access.reason,
             };
           })
         );
@@ -155,21 +131,20 @@ class ContentService {
         title: this.getModuleTitleFromId(moduleId),
         description: this.getModuleDescriptionFromId(moduleId),
         category: this.getModuleCategoryFromId(moduleId),
-        difficulty_level: this.getModuleDifficultyFromId(moduleId)
+        difficulty_level: this.getModuleDifficultyFromId(moduleId),
       };
 
       return {
         module: moduleInfo,
-        content: contentWithAccess
+        content: contentWithAccess,
       };
-
     } catch (error) {
       console.error('Error obteniendo contenido del módulo:', error);
       return null;
     }
   }
 
-  // Obtener URL de streaming para un video (desde Hotmart)
+  // Obtener una URL directa de vídeo almacenada en Supabase.
   async getVideoStreamURL(contentId, userId) {
     try {
       // Verificar acceso primero
@@ -179,7 +154,7 @@ class ContentService {
       }
 
       const content = access.content;
-      
+
       // Solo para videos
       if (content.content_type !== 'video') {
         throw new Error('El contenido no es un video');
@@ -188,20 +163,11 @@ class ContentService {
       // Verificar cache
       const cacheKey = `${contentId}_${userId}`;
       const cached = this.cache.get(cacheKey);
-      if (cached && (Date.now() - cached.timestamp) < this.cacheExpiry) {
+      if (cached && Date.now() - cached.timestamp < this.cacheExpiry) {
         return cached.url;
       }
 
-      // Obtener URL desde Hotmart (solo para obtener el archivo, no para verificar permisos)
-      let streamURL = null;
-      
-      if (content.direct_url) {
-        // Si tenemos URL directa, usarla
-        streamURL = content.direct_url;
-      } else if (content.hotmart_video_id) {
-        // Si está en Hotmart, obtener URL de streaming
-        streamURL = await hotmartService.getVideoStreamURL(content.hotmart_video_id);
-      }
+      const streamURL = content.direct_url || content.content_url || null;
 
       if (!streamURL) {
         throw new Error('No se pudo obtener URL de streaming');
@@ -210,11 +176,10 @@ class ContentService {
       // Guardar en cache
       this.cache.set(cacheKey, {
         url: streamURL,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
 
       return streamURL;
-
     } catch (error) {
       console.error('Error obteniendo URL de video:', error);
       throw error;
@@ -240,12 +205,9 @@ class ContentService {
       // Obtener URL de descarga
       if (content.direct_url) {
         return content.direct_url;
-      } else if (content.hotmart_file_url) {
-        return content.hotmart_file_url;
       }
 
       throw new Error('No se encontró URL de descarga');
-
     } catch (error) {
       console.error('Error obteniendo URL de descarga:', error);
       throw error;
@@ -257,20 +219,18 @@ class ContentService {
     try {
       const updateData = {
         user_id: userId,
-        content_id_ref: contentId,  // Usando content_id_ref
+        content_id_ref: contentId, // Usando content_id_ref
         last_accessed_at: new Date().toISOString(),
-        ...progressData
+        ...progressData,
       };
 
       if (progressData.completed) {
         updateData.completed_at = new Date().toISOString();
       }
 
-      const { data, error } = await supabase
-        .from('user_progress')
-        .upsert(updateData, {
-          onConflict: 'user_id,content_id_ref'
-        });
+      const { error } = await supabase.from('user_progress').upsert(updateData, {
+        onConflict: 'user_id,content_id_ref',
+      });
 
       if (error) {
         console.error('Error actualizando progreso:', error);
@@ -278,7 +238,6 @@ class ContentService {
       }
 
       return true;
-
     } catch (error) {
       console.error('Error registrando progreso:', error);
       return false;
@@ -288,10 +247,7 @@ class ContentService {
   // Obtener progreso del usuario (usando user_progress existente)
   async getUserProgress(userId, contentId = null) {
     try {
-      let query = supabase
-        .from('user_progress')
-        .select('*')
-        .eq('user_id', userId);
+      let query = supabase.from('user_progress').select('*').eq('user_id', userId);
 
       if (contentId) {
         query = query.eq('content_id_ref', contentId);
@@ -304,8 +260,7 @@ class ContentService {
         return null;
       }
 
-      return contentId ? (data[0] || null) : data;
-
+      return contentId ? data[0] || null : data;
     } catch (error) {
       console.error('Error obteniendo progreso:', error);
       return null;
@@ -328,16 +283,18 @@ class ContentService {
       }
 
       // Crear lista única de módulos
-      const uniqueModules = [...new Set(moduleData.map(item => item.module_id))];
-      
-      const modules = uniqueModules.map(moduleId => ({
-        module_id: moduleId,
-        title: this.getModuleTitleFromId(moduleId),
-        description: this.getModuleDescriptionFromId(moduleId),
-        category: this.getModuleCategoryFromId(moduleId),
-        difficulty_level: this.getModuleDifficultyFromId(moduleId),
-        order_index: this.getModuleOrderFromId(moduleId)
-      })).sort((a, b) => a.order_index - b.order_index);
+      const uniqueModules = [...new Set(moduleData.map((item) => item.module_id))];
+
+      const modules = uniqueModules
+        .map((moduleId) => ({
+          module_id: moduleId,
+          title: this.getModuleTitleFromId(moduleId),
+          description: this.getModuleDescriptionFromId(moduleId),
+          category: this.getModuleCategoryFromId(moduleId),
+          difficulty_level: this.getModuleDifficultyFromId(moduleId),
+          order_index: this.getModuleOrderFromId(moduleId),
+        }))
+        .sort((a, b) => a.order_index - b.order_index);
 
       // Si hay usuario, verificar accesos
       if (userId) {
@@ -355,21 +312,20 @@ class ContentService {
               return {
                 ...module,
                 hasAccess: access.hasAccess,
-                accessReason: access.reason
+                accessReason: access.reason,
               };
             }
 
             return {
               ...module,
               hasAccess: false,
-              accessReason: 'no_content'
+              accessReason: 'no_content',
             };
           })
         );
       }
 
       return modules;
-
     } catch (error) {
       console.error('Error obteniendo módulos:', error);
       return [];
@@ -379,50 +335,52 @@ class ContentService {
   // Funciones auxiliares para obtener información de módulos
   getModuleTitleFromId(moduleId) {
     const titles = {
-      'module_1': 'Fundamentos de Gestión del Riesgo',
-      'module_2': 'Fiscalidad y Cumplimiento Crypto',
-      'module_3': 'Operativa con Derivados',
-      'academia': 'Academia BSB Capital Completa'
+      module_1: 'Fundamentos de Gestión del Riesgo',
+      module_2: 'Fiscalidad y Cumplimiento Crypto',
+      module_3: 'Operativa con Derivados',
+      academia: 'Academia BSB Capital Completa',
     };
     return titles[moduleId] || `Módulo ${moduleId}`;
   }
 
   getModuleDescriptionFromId(moduleId) {
     const descriptions = {
-      'module_1': 'Aprende las bases fundamentales para proteger tu capital de inversión y minimizar riesgos.',
-      'module_2': 'Domina las obligaciones fiscales y el cumplimiento legal en el mundo de las criptomonedas.',
-      'module_3': 'Visión institucional sobre futuros, opciones y otros instrumentos derivados.',
-      'academia': 'Acceso completo a todos los cursos, videos y materiales de la academia.'
+      module_1:
+        'Aprende las bases fundamentales para proteger tu capital de inversión y minimizar riesgos.',
+      module_2:
+        'Domina las obligaciones fiscales y el cumplimiento legal en el mundo de las criptomonedas.',
+      module_3: 'Visión institucional sobre futuros, opciones y otros instrumentos derivados.',
+      academia: 'Acceso completo a todos los cursos, videos y materiales de la academia.',
     };
     return descriptions[moduleId] || `Descripción del ${moduleId}`;
   }
 
   getModuleCategoryFromId(moduleId) {
     const categories = {
-      'module_1': 'risk-management',
-      'module_2': 'crypto-tax', 
-      'module_3': 'derivatives',
-      'academia': 'complete'
+      module_1: 'risk-management',
+      module_2: 'crypto-tax',
+      module_3: 'derivatives',
+      academia: 'complete',
     };
     return categories[moduleId] || 'general';
   }
 
   getModuleDifficultyFromId(moduleId) {
     const difficulties = {
-      'module_1': 'basic',
-      'module_2': 'intermediate',
-      'module_3': 'advanced', 
-      'academia': 'all'
+      module_1: 'basic',
+      module_2: 'intermediate',
+      module_3: 'advanced',
+      academia: 'all',
     };
     return difficulties[moduleId] || 'basic';
   }
 
   getModuleOrderFromId(moduleId) {
     const orders = {
-      'academia': 0,
-      'module_1': 1,
-      'module_2': 2,
-      'module_3': 3
+      academia: 0,
+      module_1: 1,
+      module_2: 2,
+      module_3: 3,
     };
     return orders[moduleId] || 999;
   }

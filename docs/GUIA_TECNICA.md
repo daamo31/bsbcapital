@@ -11,7 +11,7 @@ BSB Capital es una Progressive Web App (PWA) moderna:
 - **Core**: React 18 + Vite.
 - **Backend & Auth**: Supabase.
 - **Estilos**: Tailwind CSS + Framer Motion para animaciones premium.
-- **Pagos**: Stripe (Suscripciones) y Hotmart (Contenido).
+- **Pagos**: Stripe para suscripciones y pagos únicos.
 
 ---
 
@@ -42,18 +42,18 @@ const ComponenteProtegido = () => {
 
 ### Control de Acceso y Academia (`useUserAccess`)
 
-Este hook es el corazón de la lógica de permisos. Valida suscripciones en Supabase y, si es necesario, consulta el estado del contenido en Hotmart.
+Este hook valida el rol y la suscripción activa del usuario en Supabase.
 
 ```javascript
 import { useUserAccess } from '@/hooks/useUserAccess';
 
 const VisualizadorVideo = ({ videoId }) => {
-  const { hasAccess, isLoading, videoStreamURL } = useUserAccess(videoId);
+  const { hasAccess, isLoading } = useUserAccess();
 
   if (isLoading) return <Loader />;
   if (!hasAccess) return <LockMessage />;
 
-  return <video src={videoStreamURL} controls />;
+  return hasAccess ? <ProtectedContent /> : <LockMessage />;
 };
 ```
 
@@ -75,9 +75,9 @@ Las rutas están organizadas por responsabilidades:
 
 ### Cómo Añadir un Nuevo Curso a la Academia
 
-1.  **Stripe/Hotmart**: Crea el producto en la plataforma externa y obtén su ID.
-2.  **Base de Datos**: Añade el ID al objeto de configuración en `hotmartService.js`.
-3.  **UI**: El hook `useUserAccess` detectará automáticamente el nuevo contenido basándose en el mapeo de IDs.
+1.  **Stripe**: Crea el precio y añade su ID al catálogo permitido de la Edge Function.
+2.  **Base de Datos**: Añade metadatos y la URL del contenido en `course_content`.
+3.  **UI**: `ContentPlayer` carga el recurso y registra el progreso del usuario.
 
 ### Implementación del Sistema Anti-Bot
 

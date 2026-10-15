@@ -4,7 +4,14 @@ import { supabase } from '@/lib/customSupabaseClient';
 import { useToast } from '@/components/ui/feedback/use-toast';
 import { Input } from '@/components/ui/forms/input';
 import { Button } from '@/components/ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/data-display/table';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/data-display/table';
 import { Badge } from '@/components/ui/data-display/badge';
 import { Download, Search, Loader2 } from 'lucide-react';
 import {
@@ -13,22 +20,19 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/forms/select";
+} from '@/components/ui/forms/select';
 
 const AccessPanel = () => {
   const [accessData, setAccessData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [stripeFilter, setStripeFilter] = useState('all');
-  const [hotmartFilter, setHotmartFilter] = useState('all');
   const { toast } = useToast();
 
   useEffect(() => {
     const fetchAccessData = async () => {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('vw_access_summary')
-        .select('*');
+      const { data, error } = await supabase.from('vw_access_summary').select('*');
 
       if (error) {
         console.error('Error fetching access data:', error);
@@ -48,10 +52,9 @@ const AccessPanel = () => {
 
   const filteredData = useMemo(() => {
     return accessData
-      .filter(item => item.email.toLowerCase().includes(searchTerm.toLowerCase()))
-      .filter(item => stripeFilter === 'all' || item.stripe_status === stripeFilter)
-      .filter(item => hotmartFilter === 'all' || item.hotmart_status === hotmartFilter);
-  }, [accessData, searchTerm, stripeFilter, hotmartFilter]);
+      .filter((item) => (item.email || '').toLowerCase().includes(searchTerm.toLowerCase()))
+      .filter((item) => stripeFilter === 'all' || item.stripe_status === stripeFilter);
+  }, [accessData, searchTerm, stripeFilter]);
 
   const getStatusBadge = (status) => {
     if (!status) return <Badge variant="secondary">N/A</Badge>;
@@ -81,23 +84,24 @@ const AccessPanel = () => {
   };
 
   const exportToCSV = () => {
-    const headers = ['Email', 'Nombre', 'Stripe Status', 'Stripe Vence', 'Hotmart Status', 'Fecha Registro'];
-    const rows = filteredData.map(item => [
+    const headers = ['Email', 'Nombre', 'Stripe Status', 'Stripe Vence', 'Fecha Registro'];
+    const rows = filteredData.map((item) => [
       item.email,
       item.name || '',
       item.stripe_status || 'N/A',
       item.stripe_expires ? formatDate(item.stripe_expires) : 'N/A',
-      item.hotmart_status || 'N/A',
-      formatDate(item.created_at)
+      formatDate(item.created_at),
     ]);
 
-    let csvContent = "data:text/csv;charset=utf-8," 
-      + headers.join(",") + "\n" 
-      + rows.map(e => e.map(cell => `"${cell.replace(/"/g, '""')}"`).join(",")).join("\n");
+    let csvContent =
+      'data:text/csv;charset=utf-8,' +
+      headers.join(',') +
+      '\n' +
+      rows.map((e) => e.map((cell) => `"${cell.replace(/"/g, '""')}"`).join(',')).join('\n');
 
-    const link = document.createElement("a");
-    link.setAttribute("href", encodeURI(csvContent));
-    link.setAttribute("download", "accesos_bsb_capital.csv");
+    const link = document.createElement('a');
+    link.setAttribute('href', encodeURI(csvContent));
+    link.setAttribute('download', 'accesos_bsb_capital.csv');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -112,7 +116,7 @@ const AccessPanel = () => {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <div>
             <h1 className="text-3xl font-bold">Panel de Accesos</h1>
-            <p className="text-muted-foreground">Monitoriza los accesos de Stripe y Hotmart.</p>
+            <p className="text-muted-foreground">Monitoriza los accesos de Stripe.</p>
           </div>
           <Button onClick={exportToCSV} disabled={loading || filteredData.length === 0}>
             <Download className="mr-2 h-4 w-4" />
@@ -121,7 +125,7 @@ const AccessPanel = () => {
         </div>
 
         <div className="bg-card p-4 rounded-lg border mb-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
@@ -142,18 +146,6 @@ const AccessPanel = () => {
                 <SelectItem value="expired">Expirado</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={hotmartFilter} onValueChange={setHotmartFilter}>
-              <SelectTrigger>
-                <SelectValue placeholder="Filtrar Hotmart" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Hotmart: Todos</SelectItem>
-                <SelectItem value="active">Activo</SelectItem>
-                <SelectItem value="refunded">Reembolsado</SelectItem>
-                <SelectItem value="chargeback">Chargeback</SelectItem>
-                <SelectItem value="canceled">Cancelado</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
         </div>
 
@@ -164,14 +156,13 @@ const AccessPanel = () => {
                 <TableHead>Email</TableHead>
                 <TableHead>Nombre</TableHead>
                 <TableHead className="text-center">Stripe</TableHead>
-                <TableHead className="text-center">Hotmart</TableHead>
                 <TableHead className="text-right">Registrado</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {loading ? (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-24 text-center">
+                  <TableCell colSpan={4} className="h-24 text-center">
                     <Loader2 className="mx-auto h-6 w-6 animate-spin text-primary" />
                   </TableCell>
                 </TableRow>
@@ -184,17 +175,18 @@ const AccessPanel = () => {
                       <div className="flex flex-col items-center gap-1">
                         {getStatusBadge(item.stripe_status)}
                         {item.stripe_status === 'active' && (
-                          <span className="text-xs text-muted-foreground">Vence: {formatDate(item.stripe_expires)}</span>
+                          <span className="text-xs text-muted-foreground">
+                            Vence: {formatDate(item.stripe_expires)}
+                          </span>
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className="text-center">{getStatusBadge(item.hotmart_status)}</TableCell>
                     <TableCell className="text-right">{formatDate(item.created_at)}</TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={5} className="h-24 text-center">
+                  <TableCell colSpan={4} className="h-24 text-center">
                     No se encontraron resultados.
                   </TableCell>
                 </TableRow>
@@ -203,7 +195,12 @@ const AccessPanel = () => {
           </Table>
         </div>
         <footer className="text-center mt-8 text-sm text-muted-foreground">
-            <p>¿Problemas? Contacta a <a href="mailto:info@bsbcapital.io" className="underline hover:text-primary">info@bsbcapital.io</a></p>
+          <p>
+            ¿Problemas? Contacta a{' '}
+            <a href="mailto:info@bsbcapital.io" className="underline hover:text-primary">
+              info@bsbcapital.io
+            </a>
+          </p>
         </footer>
       </div>
     </>

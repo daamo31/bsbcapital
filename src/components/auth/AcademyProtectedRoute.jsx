@@ -5,9 +5,9 @@ import { useUserAccess } from '@/hooks/useUserAccess';
 import { Loader2, Lock, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const AcademyProtectedRoute = ({ children, productId = '6308462', redirectToMemberships = false }) => {
+const AcademyProtectedRoute = ({ children, redirectToMemberships = false }) => {
   const { user, loading: authLoading } = useAuth();
-  const { hasAccess, isLoading: accessLoading, error, refreshAccess } = useUserAccess(productId);
+  const { hasAccess, isLoading: accessLoading, error, refreshAccess } = useUserAccess();
   const location = useLocation();
 
   // Mostrar loader mientras carga la autenticación
@@ -67,11 +67,11 @@ const AcademyProtectedRoute = ({ children, productId = '6308462', redirectToMemb
           <Lock className="h-12 w-12 text-red-500 mx-auto mb-4" />
           <h2 className="text-xl font-semibold mb-2">Acceso restringido</h2>
           <p className="text-muted-foreground mb-4">
-            No tienes acceso a este contenido. Para acceder a la Academia BSB Capital, 
-            necesitas una membresía activa.
+            No tienes acceso a este contenido. Para acceder a la Academia BSB Capital, necesitas una
+            membresía activa.
           </p>
           <div className="space-y-2">
-            <Button onClick={() => window.location.href = '/membresias'} className="w-full">
+            <Button onClick={() => (window.location.href = '/membresias')} className="w-full">
               Ver planes disponibles
             </Button>
             <Button onClick={refreshAccess} variant="outline" className="w-full">

@@ -53,7 +53,6 @@ const AreaCliente = lazy(() => import('@/pages/dashboard/AreaCliente.jsx'));
 
 // Admin
 const AccessPanel = lazy(() => import('@/pages/admin/AccessPanel.jsx'));
-const HotmartSystemStatus = lazy(() => import('@/components/admin/HotmartSystemStatus.jsx'));
 
 // Demo/Testing
 const ConsultationFormDemo = lazy(() => import('@/pages/ConsultationFormDemo.jsx'));
@@ -65,22 +64,9 @@ const Login = lazy(() => import('@/pages/auth/Login'));
 const SignUp = lazy(() => import('@/pages/auth/SignUp'));
 
 // Testing
-const TestPageSimple = lazy(() => import('@/pages/testing/TestPageSimple'));
 const FormularioDemo = lazy(() => import('@/pages/testing/FormularioDemo'));
 const ContentAccessDemo = lazy(() => import('@/components/academy/ContentAccessDemo'));
-const HotmartAcademy = lazy(() => import('@/pages/content/HotmartAcademy'));
-const EmailTester = lazy(() => import('@/pages/EmailTester'));
-const HotmartIntegrationDemo = lazy(() => import('@/pages/content/HotmartIntegrationDemo'));
-const HotmartTestPlayer = lazy(() => import('@/components/hotmart/HotmartTestPlayer'));
 const ContentSystemDemo = lazy(() => import('@/pages/content/ContentSystemDemo'));
-const TestNavigationPage = lazy(() => import('@/pages/testing/TestNavigationPage'));
-
-// Nuevas páginas de integración Hotmart
-const HotmartProfessionalIntegration = lazy(
-  () => import('@/pages/content/HotmartProfessionalIntegration')
-);
-const EjemploUsoHotmart = lazy(() => import('@/pages/examples/EjemploUsoHotmart'));
-const AcademiaTestPage = lazy(() => import('@/pages/testing/AcademiaTestPage'));
 
 // Error & Success Pages
 const NotFound = lazy(() => import('@/pages/NotFound'));
@@ -150,32 +136,8 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<SignUp />} />
               <Route path="/demo-formularios" element={<FormularioDemo />} />
-              <Route path="/test-simple" element={<TestPageSimple />} />
               <Route path="/demo-acceso" element={<ContentAccessDemo />} />
-              <Route path="/hotmart-academy" element={<HotmartAcademy />} />
-              <Route path="/hotmart-demo" element={<HotmartIntegrationDemo />} />
               <Route path="/content-system-demo" element={<ContentSystemDemo />} />
-              <Route
-                path="/hotmart-test"
-                element={
-                  <HotmartTestPlayer
-                    contentId="module_1"
-                    title="Test de Integración Hotmart"
-                    description="Prueba la conexión con Hotmart en diferentes modos"
-                  />
-                }
-              />
-
-              {/* Nuevas rutas para integración profesional Hotmart */}
-              <Route
-                path="/content/hotmart-professional-integration"
-                element={<HotmartProfessionalIntegration />}
-              />
-              <Route path="/examples/ejemplo-uso-hotmart" element={<EjemploUsoHotmart />} />
-              <Route path="/test/academia-real" element={<AcademiaTestPage />} />
-
-              <Route path="/test-navigation" element={<TestNavigationPage />} />
-              <Route path="/hotmart-status" element={<HotmartSystemStatus />} />
               <Route path="/checkout" element={<CheckoutPage />} />
               <Route path="/compra-exitosa" element={<CompraExitosa />} />
               <Route path="/academia/paquete-confirmado" element={<PaqueteConfirmado />} />
@@ -248,20 +210,7 @@ function App() {
               />
 
               {/* Rutas de Testing */}
-              <Route path="/email-tester" element={<EmailTester />} />
-              <Route
-                path="/test/hotmart"
-                element={
-                  <HotmartTestPlayer
-                    contentId="module_1"
-                    title="Test de Integración Hotmart"
-                    description="Prueba la conexión con Hotmart en diferentes modos"
-                  />
-                }
-              />
-              <Route path="/test/user-status" element={<TestNavigationPage />} />
               <Route path="/demo/consultation-form" element={<ConsultationFormDemo />} />
-              <Route path="/test/tools" element={<ContentAccessDemo />} />
 
               {oldAcademyRoutes.map((path) => (
                 <Route

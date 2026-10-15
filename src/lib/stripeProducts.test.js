@@ -5,27 +5,19 @@ import {
   PACKAGE_PRICES,
   MEMBERSHIP_PRICES,
   ACADEMY_PRICES,
-  TEST_PRICE_ID,
   isValidStripePriceId,
-  getTestPriceId,
 } from './stripeProducts';
 
 describe('Stripe Products Configuration', () => {
   describe('Price ID Validation', () => {
     it('should validate correct Stripe price IDs', () => {
       expect(isValidStripePriceId('price_1RtYGsJmSk3VG9oicAWmQ4sN')).toBe(true);
-      expect(isValidStripePriceId('price_1SKG4NJmSk3VG9oi6CjvmqLC')).toBe(true);
     });
 
     it('should reject invalid price IDs', () => {
       expect(isValidStripePriceId('invalid_price')).toBe(false);
       expect(isValidStripePriceId('price_short')).toBe(false);
       expect(isValidStripePriceId('')).toBe(false);
-    });
-
-    it('should return test price ID', () => {
-      expect(getTestPriceId()).toBe(TEST_PRICE_ID);
-      expect(isValidStripePriceId(getTestPriceId())).toBe(true);
     });
   });
 
@@ -42,13 +34,6 @@ describe('Stripe Products Configuration', () => {
       expect(consultation.price).toBe(300);
       expect(consultation.duration_minutes).toBe(60);
       expect(isValidStripePriceId(consultation.price_id)).toBe(true);
-    });
-
-    it('should have test consultation for testing flows', () => {
-      const test = CONSULTATION_PRICES['test'];
-      expect(test.is_test).toBe(true);
-      expect(test.price).toBe(1);
-      expect(isValidStripePriceId(test.price_id)).toBe(true);
     });
   });
 

@@ -31,6 +31,7 @@ serve(async (req: Request) => {
     return new Response('ok', { headers: corsHeaders });
   }
 
+  let claimedEventId: string | null = null;
   try {
     // Log detallado para debugging
     console.log('📨 Webhook request received:', {
@@ -69,6 +70,52 @@ serve(async (req: Request) => {
       });
     }
 
+    const { error: claimError } = await supabase.from('processed_stripe_events').insert({
+      event_id: event.id,
+      event_type: event.type,
+      status: 'processing',
+    });
+
+    if (claimError?.code === '23505') {
+      const { data: existingEvent, error: lookupError } = await supabase
+        .from('processed_stripe_events')
+        .select('status')
+        .eq('event_id', event.id)
+        .maybeSingle();
+      if (lookupError) throw lookupError;
+      if (existingEvent?.status === 'processed') {
+        return new Response(JSON.stringify({ received: true, duplicate: true }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      return new Response(JSON.stringify({ error: 'Event is currently processing' }), {
+        status: 409,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    if (claimError) throw claimError;
+    claimedEventId = event.id;
+
+    const completeEvent = async () => {
+      const { error } = await supabase
+        .from('processed_stripe_events')
+        .update({ status: 'processed', processed_at: new Date().toISOString() })
+        .eq('event_id', event.id)
+        .eq('status', 'processing');
+      if (error) throw error;
+      claimedEventId = null;
+    };
+
+    const releaseEvent = async () => {
+      const { error } = await supabase
+        .from('processed_stripe_events')
+        .delete()
+        .eq('event_id', event.id)
+        .eq('status', 'processing');
+      if (error) throw error;
+      claimedEventId = null;
+    };
+
     // 🎯 Manejar eventos de Stripe
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as any;
@@ -83,8 +130,8 @@ serve(async (req: Request) => {
           '⚠️ Sesión completada pero el pago no está realizado. Estado:',
           session.payment_status
         );
-        return new Response(JSON.stringify({ error: 'Payment not completed' }), {
-          status: 400,
+        await releaseEvent();
+        return new Response(JSON.stringify({ received: true, ignored: 'Payment not completed' }), {
           headers: corsHeaders,
         });
       }
@@ -99,6 +146,7 @@ serve(async (req: Request) => {
       // Validación básica de metadatos
       if (!userId) {
         console.warn('⚠️ Sesión sin supabase_user_id en los metadatos.');
+        await releaseEvent();
         return new Response(JSON.stringify({ error: 'Missing supabase_user_id in metadata' }), {
           status: 400,
           headers: corsHeaders,
@@ -199,6 +247,7 @@ serve(async (req: Request) => {
           }
         }
 
+        await completeEvent();
         return new Response(JSON.stringify({ received: true }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
@@ -239,6 +288,11 @@ serve(async (req: Request) => {
 
         if (!planId) {
           console.warn('⚠️ No se pudo mapear priceId a plan_id para membresía anual:', priceId);
+          await releaseEvent();
+          return new Response(JSON.stringify({ error: 'Invalid priceId mapping' }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
         }
 
         // Crear registro en user_subscriptions
@@ -375,6 +429,7 @@ serve(async (req: Request) => {
           }
         }
 
+        await completeEvent();
         return new Response(JSON.stringify({ received: true }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
@@ -415,7 +470,11 @@ serve(async (req: Request) => {
 
         if (!planId) {
           console.warn('⚠️ No se pudo mapear priceId a plan_id para paquete:', priceId);
-          // Continuar de todas formas, crear registro genérico
+          await releaseEvent();
+          return new Response(JSON.stringify({ error: 'Invalid priceId mapping' }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
         }
 
         // Crear registro en user_subscriptions (aunque sea pago único, para mantener historial)
@@ -556,6 +615,7 @@ serve(async (req: Request) => {
           }
         }
 
+        await completeEvent();
         return new Response(JSON.stringify({ received: true }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
@@ -617,6 +677,7 @@ serve(async (req: Request) => {
 
             if (!planId) {
               console.error('❌ No se pudo mapear priceId a plan_id:', priceId);
+              await releaseEvent();
               return new Response(JSON.stringify({ error: 'Invalid priceId mapping' }), {
                 status: 400,
                 headers: corsHeaders,
@@ -816,6 +877,7 @@ serve(async (req: Request) => {
             console.log('✅ Perfil actualizado correctamente.');
           }
 
+          await completeEvent();
           return new Response(JSON.stringify({ received: true }), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           });
@@ -833,6 +895,7 @@ serve(async (req: Request) => {
 
         if (!subscriptionRes.ok) {
           console.error('❌ Error obteniendo suscripción de Stripe:', subscriptionData);
+          await releaseEvent();
           return new Response(JSON.stringify({ error: 'Failed to fetch subscription data' }), {
             status: 400,
             headers: corsHeaders,
@@ -945,6 +1008,7 @@ serve(async (req: Request) => {
           }
         }
 
+        await completeEvent();
         return new Response(JSON.stringify({ received: true }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
@@ -1072,10 +1136,18 @@ serve(async (req: Request) => {
       }
     }
 
+    await completeEvent();
     return new Response(JSON.stringify({ received: true }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
+    if (claimedEventId) {
+      await supabase
+        .from('processed_stripe_events')
+        .delete()
+        .eq('event_id', claimedEventId)
+        .eq('status', 'processing');
+    }
     console.error('❌ Error en Stripe Webhook:', error);
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : String(error) }),
