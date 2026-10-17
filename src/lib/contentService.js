@@ -110,19 +110,34 @@ class ContentService {
         return null;
       }
 
-      // Si hay usuario, verificar accesos
+      // Load membership once, then evaluate access for every item locally.
       let contentWithAccess = content;
       if (userId) {
-        contentWithAccess = await Promise.all(
-          content.map(async (item) => {
-            const access = await this.checkUserAccess(userId, item.content_id);
-            return {
-              ...item,
-              hasAccess: access.hasAccess,
-              accessReason: access.reason,
-            };
-          })
-        );
+        const { data: user, error: userError } = await supabase
+          .from('users')
+          .select('id, membership_tier, access_level, subscription_status')
+          .eq('id', userId)
+          .single();
+
+        const hasActiveSubscription = !userError && user?.subscription_status === 'active';
+        const userLevel = user?.access_level || user?.membership_tier || 'basic';
+
+        contentWithAccess = content.map((item) => {
+          if (item.is_free) {
+            return { ...item, hasAccess: true, accessReason: 'free_content' };
+          }
+
+          if (!hasActiveSubscription) {
+            return { ...item, hasAccess: false, accessReason: 'subscription_inactive' };
+          }
+
+          const hasRequiredLevel = this.checkAccessLevel(userLevel, item.required_access_level);
+          return {
+            ...item,
+            hasAccess: hasRequiredLevel,
+            accessReason: hasRequiredLevel ? 'access_granted' : 'insufficient_access_level',
+          };
+        });
       }
 
       // Crear un módulo virtual basado en el contenido
@@ -273,7 +288,7 @@ class ContentService {
       // Obtener módulos únicos del contenido
       const { data: moduleData, error } = await supabase
         .from('course_content')
-        .select('module_id')
+        .select('module_id, content_id, is_free, required_access_level')
         .not('module_id', 'is', null)
         .order('module_id');
 
@@ -284,6 +299,12 @@ class ContentService {
 
       // Crear lista única de módulos
       const uniqueModules = [...new Set(moduleData.map((item) => item.module_id))];
+      const contentByModule = new Map();
+      for (const item of moduleData) {
+        const moduleItems = contentByModule.get(item.module_id) || [];
+        moduleItems.push(item);
+        contentByModule.set(item.module_id, moduleItems);
+      }
 
       const modules = uniqueModules
         .map((moduleId) => ({
@@ -296,33 +317,43 @@ class ContentService {
         }))
         .sort((a, b) => a.order_index - b.order_index);
 
-      // Si hay usuario, verificar accesos
+      // Load the user's membership once and evaluate all module contents locally.
       if (userId) {
-        return await Promise.all(
-          modules.map(async (module) => {
-            // Obtener una muestra de contenido para verificar acceso
-            const { data: sampleContent } = await supabase
-              .from('course_content')
-              .select('content_id, required_subscription_level')
-              .eq('module_id', module.module_id)
-              .limit(1);
+        const { data: user, error: userError } = await supabase
+          .from('users')
+          .select('membership_tier, access_level, subscription_status')
+          .eq('id', userId)
+          .single();
 
-            if (sampleContent && sampleContent.length > 0) {
-              const access = await this.checkUserAccess(userId, sampleContent[0].content_id);
-              return {
-                ...module,
-                hasAccess: access.hasAccess,
-                accessReason: access.reason,
-              };
-            }
+        const hasActiveSubscription = !userError && user?.subscription_status === 'active';
+        const userLevel = user?.access_level || user?.membership_tier || 'basic';
 
-            return {
-              ...module,
-              hasAccess: false,
-              accessReason: 'no_content',
-            };
-          })
-        );
+        return modules.map((module) => {
+          const moduleContents = contentByModule.get(module.module_id) || [];
+          const hasFreeContent = moduleContents.some((item) => item.is_free);
+          const hasPaidContent = moduleContents.some((item) => !item.is_free);
+          const hasRequiredLevel = moduleContents.some(
+            (item) => !item.is_free && this.checkAccessLevel(userLevel, item.required_access_level)
+          );
+
+          if (hasFreeContent) {
+            return { ...module, hasAccess: true, accessReason: 'free_content' };
+          }
+
+          if (!hasPaidContent) {
+            return { ...module, hasAccess: false, accessReason: 'no_content' };
+          }
+
+          if (!hasActiveSubscription) {
+            return { ...module, hasAccess: false, accessReason: 'subscription_inactive' };
+          }
+
+          return {
+            ...module,
+            hasAccess: hasRequiredLevel,
+            accessReason: hasRequiredLevel ? 'access_granted' : 'insufficient_access_level',
+          };
+        });
       }
 
       return modules;
